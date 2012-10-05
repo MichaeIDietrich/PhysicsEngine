@@ -1,9 +1,11 @@
 package de.engine.objects;
 
 import de.engine.math.Point;
+import de.engine.math.Util;
 
 public class Square extends PhysicalProperties
 {
+	private Point corner;
 
 	public Square(Point position)
 	{
@@ -26,6 +28,11 @@ public class Square extends PhysicalProperties
 	public void destroy() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public double getRadius() {
+		return Util.distanceToOrigin(corner);
 	}
 
 }
