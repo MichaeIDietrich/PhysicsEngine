@@ -2,12 +2,14 @@ package de.engine.objects;
 
 import de.engine.math.Point;
 import de.engine.math.Util;
+import de.engine.math.Vector;
 
-public class Square extends PhysicalProperties
+
+public class Square extends ObjectProperties
 {
 	private Point corner;
 
-	public Square(Point position)
+	public Square(Vector position)
 	{
 		this.position = position;
 	}
