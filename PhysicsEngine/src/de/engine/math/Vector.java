@@ -1,5 +1,6 @@
 package de.engine.math;
 
+
 public class Vector {
 	private Point p;
 	private double length;

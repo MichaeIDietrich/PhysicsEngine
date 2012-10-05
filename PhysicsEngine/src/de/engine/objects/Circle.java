@@ -1,8 +1,19 @@
 package de.engine.objects;
 
-public class Circle extends PhysicalProperties
+import de.engine.math.Vector;
+
+
+public class Circle extends ObjectProperties
 {
 	private double radius;
+	
+	
+	public Circle( Vector position, int radius ) {
+		
+		this.id++;
+		this.position = position;
+		this.radius   = radius;
+	}
 	
 	@Override
 	public void translation() {
@@ -26,5 +37,4 @@ public class Circle extends PhysicalProperties
 	public double getRadius() {
 		return radius;
 	}
-
 }
