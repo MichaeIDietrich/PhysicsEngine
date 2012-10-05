@@ -2,6 +2,6 @@ package de.engine.math;
 
 public class Point 
 {
-	public float x;
-	public float y;
+	public double x;
+	public double y;
 }
