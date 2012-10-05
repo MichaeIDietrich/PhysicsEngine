@@ -2,9 +2,9 @@ package de.engine.math;
 
 public class Util {
 	
-	public static double distance(Point p1, Point p2) {
-		double x = p2.x - p1.x;
-		double y = p2.y - p1.y;
+	public static double distance(Vector p1, Vector p2) {
+		double x = p2.getPoint().x - p1.getPoint().x;
+		double y = p2.getPoint().y - p1.getPoint().y;
 		return Math.sqrt((x * x) + (y * y));
 	}
 
