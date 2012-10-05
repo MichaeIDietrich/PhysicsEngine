@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.LineBorder;
 
 public class MainWindow extends JFrame
 {
@@ -69,7 +70,8 @@ public class MainWindow extends JFrame
         this.add(toolBar, BorderLayout.PAGE_START);
         
         canvas = new JPanel();
-        canvas.setBackground(Color.BLACK);
+        canvas.setBackground( Color.WHITE );
+        canvas.setBorder( LineBorder.createBlackLineBorder() );
         this.add(canvas);
     }
 }
