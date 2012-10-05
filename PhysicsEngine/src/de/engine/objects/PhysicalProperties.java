@@ -18,6 +18,7 @@ public abstract class PhysicalProperties
 	public double      		 mass = Float.MAX_VALUE;
 	public double  		 velocity = 0;
 	public double  	     momentum = 0;
+	//TODO forces sollten Vektoren sein, da sie eine Richtung haben 
 	public double     normal_force = 0;
 	public double   downhill_force = 0;
 	public double   kinetic_energy = 0;
