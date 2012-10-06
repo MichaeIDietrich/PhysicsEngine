@@ -1,8 +1,8 @@
 package de.engineapp.controls;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -17,25 +17,33 @@ import java.io.IOException;
 
 import javax.swing.JComponent;
 
-
 public class Canvas extends JComponent
 {
-    
+    // inteface to recognize drops
     public interface DropCallback
     {
-        public void drop(String command);
+        public void drop(String command, Point location);
+    }
+    
+    
+    // inteface to recognize repaints caused by component resizing
+    public interface RepaintCallback
+    {
+        public void repaint();
     }
     
     
     private static final long serialVersionUID = -5320479580417617983L;
     
     private BufferedImage buffer = null;
+    private RepaintCallback repaintCallback;
     
-    public Canvas(final DropCallback callback)
+    public Canvas(final DropCallback dropCallback, RepaintCallback repaintCallback)
     {
         
         /** create back buffer */
-//        buffer = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+        // buffer = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+        this.repaintCallback = repaintCallback;
         
         /** set up Drag and Drop */
         new DropTarget(this, new DropTargetAdapter()
@@ -43,49 +51,54 @@ public class Canvas extends JComponent
             @Override
             public void dragOver(DropTargetDragEvent e)
             {
-            	if (e.getTransferable().getTransferDataFlavors()[0].isFlavorJavaFileListType()) 
-            	{
-                	e.rejectDrag();
+                if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType())
+                {
+                    e.rejectDrag();
                 }
             }
+            
             
             @Override
             public void drop(DropTargetDropEvent e)
             {
-            	if (e.isLocalTransfer()) 
-            	{
-	                Transferable tr = e.getTransferable();
-	                DataFlavor[] flavors = tr.getTransferDataFlavors();
-	                
-	                try
-	                {
-	                    if (flavors != null && flavors.length == 1 && tr.getTransferData(flavors[0]) instanceof String)
-	                    {
-	                        String command = (String) tr.getTransferData(flavors[0]);
-	 
-	                        System.out.println( "Drop accepted." );
-	                        
-	                        if (command.equals("circle") || command.equals("rect"))
-	                        {
-	                            callback.drop(command);
-	                        } 
-	                    }
-	                }
-	                catch (UnsupportedFlavorException | IOException ex)
-	                {
-	                    ex.printStackTrace();
-	                }
-	                
-	                e.acceptDrop(e.getSourceActions());
-            	} 
-            		else 
-            	{
-            		System.err.println( "Drop rejected. Foreign component." );
-                	e.rejectDrop();
+                if (e.isLocalTransfer())
+                {
+                    Transferable tr = e.getTransferable();
+                    DataFlavor[] flavors = tr.getTransferDataFlavors();
+                    
+                    try
+                    {
+                        if (flavors != null && flavors.length == 1 && tr.getTransferData(flavors[0]) instanceof String)
+                        {
+                            String command = (String) tr.getTransferData(flavors[0]);
+                            
+                            System.out.println("Drop accepted.");
+                            
+                            if (command.equals("circle") || command.equals("rect"))
+                            {
+                                dropCallback.drop(command, e.getLocation());
+                                e.acceptDrop(e.getSourceActions());
+                                
+                                return;
+                            }
+                            else
+                            {
+                                // should never occur
+                                System.err.println("Unknown Drop Command");
+                            }
+                        }
+                    }
+                    catch (UnsupportedFlavorException | IOException ex)
+                    {
+                        System.err.println("Something went wrong while dropping some Flavor");
+                        ex.printStackTrace();
+                    }
+                    
                 }
-            } 
+                System.err.println("Drop rejected. Foreign component.");
+                e.rejectDrop();
+            }
         });
-        
         
         this.addComponentListener(new ComponentAdapter()
         {
@@ -93,11 +106,30 @@ public class Canvas extends JComponent
             @Override
             public void componentResized(ComponentEvent e)
             {
-            	
-                buffer = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-                
+                resizeBuffer();
             }
         });
+    }
+    
+    
+    private void resizeBuffer()
+    {
+        buffer = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+        
+        // clear it to backcolor
+        clearBuffer();
+        
+        // fire repaint
+        repaintCallback.repaint();
+    }
+    
+    
+    public void clearBuffer()
+    {
+        Graphics2D g = getGraphics();
+        g.setBackground(this.getBackground());
+        
+        g.clearRect(0, 0, this.getWidth(), this.getHeight());
     }
     
     
@@ -106,17 +138,10 @@ public class Canvas extends JComponent
         return (Graphics2D) buffer.getGraphics();
     }
     
-    
     @Override
     public void paint(Graphics g)
     {
         super.paint(g);
-        
-        // TODO Call a method which draws the objects
-        
-        // The fist number of the color-quadruple is the transparency value
-        g.setColor( new Color( 255,  255,255,255) ); 
-        g.fillRect(0,0,Canvas.this.getWidth(), Canvas.this.getHeight());
         
         g.drawImage(buffer, 0, 0, null);
     }

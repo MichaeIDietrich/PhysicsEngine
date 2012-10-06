@@ -1,13 +1,15 @@
 package de.engineapp.windows;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -16,20 +18,15 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
 import javax.swing.TransferHandler;
-import javax.swing.TransferHandler.TransferSupport;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.LineBorder;
 
+import de.engine.math.Vector;
+import de.engine.objects.Circle;
+import de.engine.objects.ObjectProperties;
 import de.engineapp.controls.Canvas;
 import de.engineapp.controls.CommandHandler;
-
-
-
-
-
-
 
 
 public class MainWindow extends JFrame
@@ -37,6 +34,8 @@ public class MainWindow extends JFrame
     private static final long serialVersionUID = -1405279482198323306L;
     
     private Canvas canvas;
+    
+    private List<ObjectProperties> objects;
     
     public MainWindow()
     {
@@ -58,6 +57,8 @@ public class MainWindow extends JFrame
         
         initializeLookAndFeel();
         initializeComponents();
+        
+        objects = new ArrayList<>();
         
         this.setVisible(true);
     }
@@ -88,6 +89,9 @@ public class MainWindow extends JFrame
         JButton pause = new JButton(new ImageIcon("images/pause.png"));
         JButton reset = new JButton(new ImageIcon("images/reset.png"));
         
+        pause.setEnabled(false);
+        reset.setEnabled(false);
+        
         play.setFocusable(false);
         pause.setFocusable(false);
         reset.setFocusable(false);
@@ -97,20 +101,16 @@ public class MainWindow extends JFrame
         toolBarMain.add(reset);
         
         this.add(toolBarMain, BorderLayout.PAGE_START);
-
-
+        
+        
         // set up left toolbar, enabling drag'n'drop objects
         JToolBar toolBarObjects = new JToolBar(JToolBar.VERTICAL);
         toolBarObjects.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         toolBarObjects.setFloatable(false);
         
         JButton circle = new JButton(new ImageIcon("images/circle.png"));
-        JButton square = new JButton(new ImageIcon("images/rect.png"));
         circle.setFocusable(false);
-        square.setFocusable(false);
-        circle.setTransferHandler(new CommandHandler("circle"));      
-        square.setTransferHandler(new CommandHandler("square"));
-        
+        circle.setTransferHandler(new CommandHandler("circle"));
         circle.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -124,6 +124,11 @@ public class MainWindow extends JFrame
             }
             
         });
+        
+        JButton square = new JButton(new ImageIcon("images/rect.png"));
+        square.setFocusable(false);
+        square.setTransferHandler(new CommandHandler("square"));
+        
         toolBarObjects.add(circle);
         toolBarObjects.add(square);
         
@@ -135,20 +140,54 @@ public class MainWindow extends JFrame
         {
             // this method is necessary to recognize drops from the left toolbar
             @Override
-            public void drop(String command)
+            public void drop(String command, Point location)
             {
                 switch (command)
                 {
                     case "circle":
+                        System.out.println("Dropped a Circle at " + location);
                         
+                        de.engine.math.Point position = new de.engine.math.Point();
+                        position.x = location.x - 10; position.y = location.y - 10;
+                        objects.add(new Circle(new Vector(position), 8));
+                        drawObjects();
                         break;
                 }
             }
+        }, new Canvas.RepaintCallback()
+        {
+            
+            @Override
+            public void repaint()
+            {
+                drawObjects();
+            }
         });
+        canvas.setBackground(Color.WHITE);
         canvas.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED ) );
         
         
-        
         this.add(canvas);
+    }
+    
+    
+    private void drawObjects()
+    {
+        canvas.clearBuffer();
+        
+        Graphics2D g = canvas.getGraphics();
+        
+        // TODO - draw objects
+        g.setColor(Color.RED);
+        
+        for (ObjectProperties obj : objects)
+        {
+            if (obj instanceof Circle)
+            {
+                g.fillOval((int) obj.position.getPoint().x, (int) obj.position.getPoint().y, (int) obj.getRadius() * 2, (int) obj.getRadius() * 2);
+            }
+        }
+        
+        canvas.repaint();
     }
 }
