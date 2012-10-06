@@ -36,14 +36,10 @@ public class Canvas extends JComponent
     private static final long serialVersionUID = -5320479580417617983L;
     
     private BufferedImage buffer = null;
-    private RepaintCallback repaintCallback;
     
-    public Canvas(final DropCallback dropCallback, RepaintCallback repaintCallback)
+    
+    public Canvas(final DropCallback dropCallback, final RepaintCallback repaintCallback)
     {
-        
-        /** create back buffer */
-        // buffer = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
-        this.repaintCallback = repaintCallback;
         
         /** set up Drag and Drop */
         new DropTarget(this, new DropTargetAdapter()
@@ -106,27 +102,17 @@ public class Canvas extends JComponent
             @Override
             public void componentResized(ComponentEvent e)
             {
-                resizeBuffer();
+                buffer = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), BufferedImage.TYPE_INT_RGB);
+                
+                // fire repaint
+                repaintCallback.repaint();
             }
         });
     }
     
     
-    private void resizeBuffer()
+    public void clearBuffer(Graphics2D g)
     {
-        buffer = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
-        
-        // clear it to backcolor
-        clearBuffer();
-        
-        // fire repaint
-        repaintCallback.repaint();
-    }
-    
-    
-    public void clearBuffer()
-    {
-        Graphics2D g = getGraphics();
         g.setBackground(this.getBackground());
         
         g.clearRect(0, 0, this.getWidth(), this.getHeight());
@@ -135,14 +121,17 @@ public class Canvas extends JComponent
     
     public Graphics2D getGraphics()
     {
-        return (Graphics2D) buffer.getGraphics();
+        Graphics2D g = (Graphics2D) buffer.getGraphics();
+        
+        // automatically clear buffer, may be removed later
+        clearBuffer(g);
+        
+        return g;
     }
     
     @Override
     public void paint(Graphics g)
     {
-        super.paint(g);
-        
         g.drawImage(buffer, 0, 0, null);
     }
 }
