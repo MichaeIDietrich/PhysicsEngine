@@ -17,6 +17,7 @@ import java.io.IOException;
 
 import javax.swing.JComponent;
 
+
 public class Canvas extends JComponent
 {
     
@@ -42,35 +43,47 @@ public class Canvas extends JComponent
             @Override
             public void dragOver(DropTargetDragEvent e)
             {
-                e.acceptDrag(e.getSourceActions());
+            	if (e.getTransferable().getTransferDataFlavors()[0].isFlavorJavaFileListType()) 
+            	{
+                	e.rejectDrag();
+                }
             }
             
             @Override
             public void drop(DropTargetDropEvent e)
             {
-                Transferable tr = e.getTransferable();
-                DataFlavor[] flavors = tr.getTransferDataFlavors();
-                
-                try
-                {
-                    if (flavors != null && flavors.length == 1 && tr.getTransferData(flavors[0]) instanceof String)
-                    {
-                        String command = (String) tr.getTransferData(flavors[0]);
-                        
-                        if (command.equals("circle") || command.equals("rect"))
-                        {
-                            callback.drop(command);
-                        }
-                    }
+            	if (e.isLocalTransfer()) 
+            	{
+	                Transferable tr = e.getTransferable();
+	                DataFlavor[] flavors = tr.getTransferDataFlavors();
+	                
+	                try
+	                {
+	                    if (flavors != null && flavors.length == 1 && tr.getTransferData(flavors[0]) instanceof String)
+	                    {
+	                        String command = (String) tr.getTransferData(flavors[0]);
+	 
+	                        System.out.println( "Drop accepted." );
+	                        
+	                        if (command.equals("circle") || command.equals("rect"))
+	                        {
+	                            callback.drop(command);
+	                        } 
+	                    }
+	                }
+	                catch (UnsupportedFlavorException | IOException ex)
+	                {
+	                    ex.printStackTrace();
+	                }
+	                
+	                e.acceptDrop(e.getSourceActions());
+            	} 
+            		else 
+            	{
+            		System.err.println( "Drop rejected. Foreign component." );
+                	e.rejectDrop();
                 }
-                catch (UnsupportedFlavorException | IOException ex)
-                {
-                    ex.printStackTrace();
-                }
-                
-                
-                e.acceptDrop(e.getSourceActions());
-            }
+            } 
         });
         
         
@@ -80,7 +93,9 @@ public class Canvas extends JComponent
             @Override
             public void componentResized(ComponentEvent e)
             {
-                buffer = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), BufferedImage.TYPE_INT_RGB);
+            	
+                buffer = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+                
             }
         });
     }
@@ -96,6 +111,12 @@ public class Canvas extends JComponent
     public void paint(Graphics g)
     {
         super.paint(g);
+        
+        // TODO Call a method which draws the objects
+        
+        // The fist number of the color-quadruple is the transparency value
+        g.setColor( new Color( 255,  255,255,255) ); 
+        g.fillRect(0,0,Canvas.this.getWidth(), Canvas.this.getHeight());
         
         g.drawImage(buffer, 0, 0, null);
     }
