@@ -1,20 +1,25 @@
 package de.engineapp.windows;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
 import javax.swing.TransferHandler;
+import javax.swing.TransferHandler.TransferSupport;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 
 import de.engineapp.controls.Canvas;
@@ -76,23 +81,37 @@ public class MainWindow extends JFrame
     {
         // set up upper toolbar
         JToolBar toolBarMain = new JToolBar();
+        toolBarMain.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         toolBarMain.setFloatable(false);
         
-        toolBarMain.add(new JButton(new ImageIcon("images/play.png")));
-        toolBarMain.add(new JButton(new ImageIcon("images/pause.png")));
-        toolBarMain.add(new JButton(new ImageIcon("images/reset.png")));
+        JButton play  = new JButton(new ImageIcon("images/play.png"));
+        JButton pause = new JButton(new ImageIcon("images/pause.png"));
+        JButton reset = new JButton(new ImageIcon("images/reset.png"));
+        
+        play.setFocusable(false);
+        pause.setFocusable(false);
+        reset.setFocusable(false);
+        
+        toolBarMain.add(play);
+        toolBarMain.add(pause);
+        toolBarMain.add(reset);
         
         this.add(toolBarMain, BorderLayout.PAGE_START);
-        
-        
+
+
         // set up left toolbar, enabling drag'n'drop objects
         JToolBar toolBarObjects = new JToolBar(JToolBar.VERTICAL);
+        toolBarObjects.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         toolBarObjects.setFloatable(false);
         
-        JButton button = new JButton(new ImageIcon("images/circle.png"));
-        button.setTransferHandler(new CommandHandler("circle"));
+        JButton circle = new JButton(new ImageIcon("images/circle.png"));
+        JButton square = new JButton(new ImageIcon("images/rect.png"));
+        circle.setFocusable(false);
+        square.setFocusable(false);
+        circle.setTransferHandler(new CommandHandler("circle"));      
+        square.setTransferHandler(new CommandHandler("square"));
         
-        button.addMouseListener(new MouseAdapter()
+        circle.addMouseListener(new MouseAdapter()
         {
             @Override
             public void mousePressed(MouseEvent e)
@@ -105,8 +124,8 @@ public class MainWindow extends JFrame
             }
             
         });
-        toolBarObjects.add(button);
-        toolBarObjects.add(new JButton(new ImageIcon("images/rect.png")));
+        toolBarObjects.add(circle);
+        toolBarObjects.add(square);
         
         this.add(toolBarObjects, BorderLayout.LINE_START);
         
@@ -126,7 +145,9 @@ public class MainWindow extends JFrame
                 }
             }
         });
-        canvas.setBorder( LineBorder.createBlackLineBorder() );
+        canvas.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED ) );
+        
+        
         
         this.add(canvas);
     }
