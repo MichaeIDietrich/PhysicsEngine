@@ -173,11 +173,9 @@ public class MainWindow extends JFrame
     
     private void drawObjects()
     {
-        canvas.clearBuffer();
-        
         Graphics2D g = canvas.getGraphics();
         
-        // TODO - draw objects
+        // TODO - improve draw objects
         g.setColor(Color.RED);
         
         for (ObjectProperties obj : objects)
