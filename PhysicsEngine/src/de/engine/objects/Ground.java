@@ -1,18 +1,14 @@
 package de.engine.objects;
 
-import de.engine.math.Vector;
 
-
-public class Circle extends ObjectProperties
+public class Ground extends ObjectProperties
 {
-	private double radius;
+	int watermark;
 	
-	
-	public Circle( Vector position, int radius ) 
+	public Ground( int watermark ) 
 	{
 		this.id++;
-		this.position = position;
-		this.radius   = radius;
+		this.watermark = watermark;
 	}
 	
 	@Override
@@ -35,6 +31,7 @@ public class Circle extends ObjectProperties
 
 	@Override
 	public double getRadius() {
-		return radius;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

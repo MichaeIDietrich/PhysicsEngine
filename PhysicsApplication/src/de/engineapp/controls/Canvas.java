@@ -19,14 +19,14 @@ import javax.swing.JComponent;
 
 public class Canvas extends JComponent
 {
-    // inteface to recognize drops
+    // interface to recognize drops
     public interface DropCallback
     {
         public void drop(String command, Point location);
     }
     
     
-    // inteface to recognize repaints caused by component resizing
+    // interface to recognize repaints caused by component resizing
     public interface RepaintCallback
     {
         public void repaint();
@@ -70,7 +70,7 @@ public class Canvas extends JComponent
                             
                             System.out.println("Drop accepted.");
                             
-                            if (command.equals("circle") || command.equals("rect"))
+                            if (command.equals("circle") || command.equals("rect") || command.equals("ground"))
                             {
                                 dropCallback.drop(command, e.getLocation());
                                 e.acceptDrop(e.getSourceActions());
@@ -103,7 +103,7 @@ public class Canvas extends JComponent
             public void componentResized(ComponentEvent e)
             {
                 buffer = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), BufferedImage.TYPE_INT_RGB);
-                
+
                 // fire repaint
                 repaintCallback.repaint();
             }
