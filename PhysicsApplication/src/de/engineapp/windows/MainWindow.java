@@ -4,9 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -37,6 +40,10 @@ public class MainWindow extends JFrame
     
     private Canvas canvas;
     
+    // stores the navigation offset (navigation by the use of the right mouse button)
+    private Point viewPosition = new Point();
+    
+    
     private List<ObjectProperties> objects;
     private RenderingHints antialias = new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     
@@ -52,6 +59,45 @@ public class MainWindow extends JFrame
             public void windowClosing(WindowEvent e)
             {
                 MainWindow.this.dispose();
+            }
+        });
+        
+        
+        // TODO - move this code to canvas
+        // stores the mouse offset while dragging
+        final Point mouseOffset = new Point();
+        
+        // implement mouse (motion) listener to make navigating throw the scene
+        // and manipulating objects possible
+        this.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mousePressed(MouseEvent e)
+            {
+                if (SwingUtilities.isRightMouseButton(e))
+                {
+                    System.out.println("right mouse button pressed");
+                    
+                    mouseOffset.x = e.getPoint().x;
+                    mouseOffset.y = e.getPoint().y;
+                }
+            }
+        });
+        
+        this.addMouseMotionListener(new MouseMotionAdapter()
+        {
+            @Override
+            public void mouseDragged(MouseEvent e)
+            {
+                if (SwingUtilities.isRightMouseButton(e))
+                {
+                    viewPosition.translate(e.getX() - mouseOffset.x, e.getY() - mouseOffset.y);
+                    mouseOffset.x = e.getPoint().x;
+                    mouseOffset.y = e.getPoint().y;
+                    
+                    // refresh canvas
+                    drawObjects();
+                }
             }
         });
         
@@ -172,7 +218,7 @@ public class MainWindow extends JFrame
         // set up canvas
         canvas = new Canvas(new Canvas.DropCallback()
         {
-            // this method is necessary to recognize drops from the left toolbar
+            // this method is necessary to recognize object drops from the left toolbar
             @Override
             public void drop(String command, Point location)
             {
@@ -182,7 +228,7 @@ public class MainWindow extends JFrame
                         System.out.println("Dropped a Circle at " + location);
                         
                         de.engine.math.Point position = new de.engine.math.Point();
-                        position.x = location.x - 10; position.y = location.y - 10;
+                        position.x = location.x - 10 - viewPosition.x; position.y = location.y - 10 - viewPosition.y;
                         objects.add(new Circle(new Vector(position), 8));
                         
                         drawObjects();
@@ -191,17 +237,19 @@ public class MainWindow extends JFrame
                     case "ground":
                         System.out.println("Add ground at " + location.y);
                         
-                        for (ObjectProperties obj : objects) 
+                        ObjectProperties ground = null;
+                        
+                        for (ObjectProperties obj : objects)
                         {
-                        	if (obj instanceof Ground) 
-                        	{
-                        		// BUGFIXING: ConcurrentModificationException
-                        		int index = objects.indexOf( obj );
-                        		objects.remove( index );
-                        	}
+                            if (obj instanceof Ground)
+                            {
+                                ground = obj;
+                                break;
+                            }
                         }
-                        objects.add( new Ground(location.y) );
-
+                        objects.remove(ground);
+                        objects.add(new Ground(location.y));
+                        
                         drawObjects();
                         break;
                 }
@@ -214,6 +262,7 @@ public class MainWindow extends JFrame
                 drawObjects();
             }
         });
+        
         canvas.setBackground(Color.WHITE);
         canvas.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED ) );
         
@@ -222,31 +271,53 @@ public class MainWindow extends JFrame
     }
     
     
+    // TODO - adjust coordinates (negate y + translation)
+    // TODO - improve this method at all
     private void drawObjects()
     {
+        // HINT - always the getGraphics()-Method is called,
+        // the background buffer will be cleared automatically
         Graphics2D g = canvas.getGraphics();
         
-        // TODO - improve draw objects
         g.addRenderingHints( antialias );
+        
+        g.translate(viewPosition.x, viewPosition.y);
         
         for (ObjectProperties obj : objects)
         {
             if (obj instanceof Circle)
             {
-            	g.setColor( Color.RED );
-                g.fillOval( (int) obj.position.getPoint().x, (int) obj.position.getPoint().y, (int) obj.getRadius() * 2, (int) obj.getRadius() * 2);
+                g.setColor( Color.RED );
+                g.fillOval( (int) obj.position.getPoint().x, (int) obj.position.getPoint().y, 
+                        (int) obj.getRadius() * 2, (int) obj.getRadius() * 2);
             }
             if (obj instanceof Ground)
             {
-                for(int i=0; i<canvas.getWidth(); i++)
-            	{
-//                	ObjectProperties ground = (Ground) obj;
-            		g.setColor( Color.GRAY);
-            		g.drawLine(i, function(i),   i, function(i));
-            		
-            		g.setColor( Color.ORANGE );
-            		g.drawLine(i, function(i)+1, i, canvas.getHeight());
-            	} 
+                
+                Ground ground = (Ground) obj;
+                
+                
+                // TODO - this should maybe cached if possible
+                Polygon polygon = new Polygon();
+                
+                for (int i = 0; i < canvas.getWidth(); i++)
+                {
+//                    g.setColor(Color.GRAY);
+//                    g.drawLine(i, function(i), i, function(i));
+//                    
+//                    g.setColor(Color.ORANGE);
+//                    g.drawLine(i, function(i) + 1, i, canvas.getHeight());
+                    
+                    polygon.addPoint(i, function(i) + ground.watermark);
+                }
+                
+                polygon.addPoint(canvas.getWidth(), canvas.getHeight());
+                polygon.addPoint(0, canvas.getHeight());
+                
+                g.setColor(Color.ORANGE);
+                g.fillPolygon(polygon);
+                g.setColor(Color.GRAY);
+                g.drawPolygon(polygon);
             }
         }
         
@@ -254,13 +325,14 @@ public class MainWindow extends JFrame
     }
     
     
+    // TODO - will be replaced by something dynamic later
     private int function(int i) 
-	{
-    	// if positive, a hill will drawn; if negative the hill will be a valley
-    	int phase = -2;
-    	// what height are you going to go?
-    	int hill_height = 100;
-    	
-		return (int)( Math.sin( phase *i* Math.PI/canvas.getWidth()) * hill_height + canvas.getHeight()-200);
-	}
+    {
+        // if positive, a hill will drawn; if negative the hill will be a valley
+        int phase = -1;
+        // what height are you going to go?
+        int hill_height = 100;
+        
+        return (int) (Math.sin(phase * i * Math.PI / 300) * hill_height); // + canvas.getHeight() - 200);
+    }
 }
