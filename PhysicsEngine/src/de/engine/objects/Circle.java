@@ -1,18 +1,18 @@
 package de.engine.objects;
 
+import de.engine.math.Rotation;
+import de.engine.math.Transformation;
 import de.engine.math.Vector;
 
 
 public class Circle extends ObjectProperties
-{
-	private double radius;
-	
+{	
 	
 	public Circle( Vector position, int radius ) {
 		
 		this.id++;
-		this.position = position;
-		this.radius   = radius;
+		this.world_position = new Transformation(position, new Rotation(0));
+		this.radius = radius;
 	}
 	
 	@Override
