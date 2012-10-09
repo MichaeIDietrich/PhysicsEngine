@@ -274,7 +274,9 @@ public class MainWindow extends JFrame
         
         if (scene.getGround() != null)
         {
-            // TODO - this should propably be cached if possible
+            Ground ground = scene.getGround();
+            
+            // TODO - this should probably be cached if possible
             Polygon polygon = new Polygon();
             
             for (int i = 0; i < canvas.getWidth(); i++)
@@ -285,15 +287,18 @@ public class MainWindow extends JFrame
 //                g.setColor(Color.ORANGE);
 //                g.drawLine(i, function(i) + 1, i, canvas.getHeight());
                 int x = i - viewPosition.x;
-                polygon.addPoint(x, function(x) + scene.getGround().watermark);
+//                polygon.addPoint(x, function(x) + scene.getGround().watermark);
+                polygon.addPoint(x, ground.function( ground.DOWNHILL, x) + scene.getGround().watermark);
             }
             
             polygon.addPoint(canvas.getWidth() - viewPosition.x, canvas.getHeight() - viewPosition.y);
             polygon.addPoint(-viewPosition.x, canvas.getHeight() - viewPosition.y);
             
-            g.setColor(Color.ORANGE);
+//            g.setColor(Color.ORANGE);
+            g.setColor( ground.coreColor );
             g.fillPolygon(polygon);
-            g.setColor(Color.GRAY);
+//            g.setColor(Color.GRAY);
+            g.setColor( ground.groundColor );
             g.drawPolygon(polygon);
         }
         
