@@ -182,7 +182,7 @@ public class MainWindow extends JFrame
         {
             if (obj instanceof Circle)
             {
-                g.fillOval((int) obj.position.getPoint().x, (int) obj.position.getPoint().y, (int) obj.getRadius() * 2, (int) obj.getRadius() * 2);
+                g.fillOval((int) obj.getWorldTranslation().getPoint().x, (int) obj.getWorldTranslation().getPoint().y, (int) obj.getRadius() * 2, (int) obj.getRadius() * 2);
             }
         }
         

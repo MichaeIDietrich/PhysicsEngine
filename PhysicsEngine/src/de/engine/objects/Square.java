@@ -5,13 +5,17 @@ import de.engine.math.Util;
 import de.engine.math.Vector;
 
 
-public class Square extends ObjectProperties
+public class Square extends Polygon
 {
-	private Point corner;
-
-	public Square(Vector position)
+	public Square(Vector position, Point corner)
 	{
-		this.position = position;
+		super(position);
+		edges = new Edge[4];
+		edges[0] = new Edge(new Vector(corner), new Vector(corner.x, -1 * corner.y));
+		edges[1] = new Edge(new Vector(corner.x, -1 * corner.y), new Vector(-1 * corner.x, -1 * corner.y));
+		edges[2] = new Edge(new Vector(-1 * corner.x, -1 * corner.y), new Vector(-1 * corner.x, corner.y));
+		edges[3] = new Edge(new Vector(-1 * corner.x, corner.y), new Vector(corner));
+		radius = Util.distanceToOrigin(corner);
 	}
 	
 	@Override
@@ -30,11 +34,6 @@ public class Square extends ObjectProperties
 	public void destroy() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public double getRadius() {
-		return Util.distanceToOrigin(corner);
 	}
 
 }

@@ -31,7 +31,19 @@ public class Vector {
 		length = Util.distanceToOrigin(p);
 	}
 	
+	public double getX() {
+		return p.x;
+	}
+
+	public double getY() {
+		return p.y;
+	}
+	
 	public double getLength() {
 		return length;
+	}
+	
+	public Vector scale(double s) {
+		return new Vector(p.x * s, p.y * s);
 	}
 }
