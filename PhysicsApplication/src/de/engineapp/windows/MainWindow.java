@@ -15,11 +15,9 @@ import java.awt.event.WindowEvent;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
@@ -30,7 +28,8 @@ import de.engine.objects.Circle;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.controls.Canvas;
-import de.engineapp.controls.CommandHandler;
+import de.engineapp.controls.DragButton;
+import de.engineapp.controls.dnd.DragAndDropController;
 
 
 public class MainWindow extends JFrame
@@ -159,51 +158,10 @@ public class MainWindow extends JFrame
         toolBarObjects.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         toolBarObjects.setFloatable(false);
         
-        JButton circle = new JButton(new ImageIcon("images/circle.png"));
-        circle.setFocusable(false);
-        circle.setTransferHandler(new CommandHandler("circle", new ImageIcon("images/circle.png").getImage()));
-        circle.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-                JComponent comp = (JComponent) e.getSource();
-                TransferHandler handler = comp.getTransferHandler();
-                handler.exportAsDrag(comp, e, TransferHandler.COPY);
-            }
-            
-        });
-        
-        JButton square = new JButton(new ImageIcon("images/square.png"));
-        square.setFocusable(false);
-        square.setTransferHandler(new CommandHandler("square", new ImageIcon("images/square.png").getImage()));
-        square.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-                JComponent comp = (JComponent) e.getSource();
-                TransferHandler handler = comp.getTransferHandler();
-                handler.exportAsDrag(comp, e, TransferHandler.COPY);
-            }
-            
-        });
-        
-        JButton ground = new JButton(new ImageIcon("images/ground.png"));
-        ground.setFocusable(false);
-        ground.setTransferHandler(new CommandHandler("ground", new ImageIcon("images/ruler.png").getImage(), 
-                new Point(16, 14)));
-        ground.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-                JComponent comp = (JComponent) e.getSource();
-                TransferHandler handler = comp.getTransferHandler();
-                handler.exportAsDrag(comp, e, TransferHandler.COPY);
-            }
-            
-        });
+        DragButton circle = new DragButton(new ImageIcon("images/circle.png"), "circle", true);
+        DragButton square = new DragButton(new ImageIcon("images/square.png"), "square", true);
+        DragButton ground = new DragButton(new ImageIcon("images/ground.png"), "ground", 
+                new ImageIcon("images/ruler.png").getImage(), new Point(16, 14));
         
         toolBarObjects.add(circle);
         toolBarObjects.add(square);
@@ -213,7 +171,18 @@ public class MainWindow extends JFrame
         
         
         // set up canvas
-        canvas = new Canvas(new Canvas.DropCallback()
+        canvas = new Canvas(new Canvas.RepaintCallback()
+        {
+            @Override
+            public void repaint()
+            {
+                drawObjects();
+            }
+        });
+        
+        
+        // this one is handling all the drag'n'drop stuff
+        DragAndDropController dndController = new DragAndDropController(canvas, new DragAndDropController.DropCallback()
         {
             // this method is necessary to recognize object drops from the left toolbar
             @Override
@@ -234,20 +203,15 @@ public class MainWindow extends JFrame
                     case "ground":
                         System.out.println("Add ground at " + location.y);
                         
-                        scene.setGround(new Ground(location.y));
+                        scene.setGround(new Ground(location.y - viewPosition.y));
                         
                         drawObjects();
                         break;
                 }
             }
-        }, new Canvas.RepaintCallback()
-        {
-            @Override
-            public void repaint()
-            {
-                drawObjects();
-            }
         });
+        dndController.setScene(scene);
+        
         
         canvas.setBackground(Color.WHITE);
         canvas.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED ) );
@@ -281,23 +245,16 @@ public class MainWindow extends JFrame
             
             for (int i = 0; i < canvas.getWidth(); i++)
             {
-//                g.setColor(Color.GRAY);
-//                g.drawLine(i, function(i), i, function(i));
-//                
-//                g.setColor(Color.ORANGE);
-//                g.drawLine(i, function(i) + 1, i, canvas.getHeight());
                 int x = i - viewPosition.x;
-//                polygon.addPoint(x, function(x) + scene.getGround().watermark);
+                
                 polygon.addPoint(x, ground.function( ground.DOWNHILL, x) + scene.getGround().watermark);
             }
             
             polygon.addPoint(canvas.getWidth() - viewPosition.x, canvas.getHeight() - viewPosition.y);
             polygon.addPoint(-viewPosition.x, canvas.getHeight() - viewPosition.y);
             
-//            g.setColor(Color.ORANGE);
             g.setColor( ground.coreColor );
             g.fillPolygon(polygon);
-//            g.setColor(Color.GRAY);
             g.setColor( ground.groundColor );
             g.drawPolygon(polygon);
         }
@@ -316,16 +273,4 @@ public class MainWindow extends JFrame
         
         System.out.println("drawObjects: " + (System.currentTimeMillis() - t) + "ms");
     }
-    
-    
-//    // TODO - will be replaced by something dynamic later
-//    private int function(int i)
-//    {
-//        // if positive, a hill will drawn; if negative the hill will be a valley
-//        int phase = -1;
-//        // what height are you going to go?
-//        int hill_height = 100;
-//        
-//        return (int) (Math.sin(phase * i * Math.PI / 300) * hill_height + hill_height); // + canvas.getHeight() - 200);
-//    }
 }

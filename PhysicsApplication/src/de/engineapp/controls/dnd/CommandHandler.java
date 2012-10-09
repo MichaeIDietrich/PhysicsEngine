@@ -1,4 +1,4 @@
-package de.engineapp.controls;
+package de.engineapp.controls.dnd;
 
 import java.awt.Image;
 import java.awt.Point;
@@ -39,13 +39,44 @@ public class CommandHandler extends TransferHandler implements Transferable
         if (dragImage != null)
         {
             this.setDragImage(dragImage);
-            this.setDragImageOffset(new Point(dragImageOffset.x, dragImageOffset.y));
+            this.setDragImageOffset(dragImageOffset);
         }
     }
     
-    public int getSourceActions(JComponent c) {
+    public int getSourceActions(JComponent c)
+    {
       return TransferHandler.COPY;
     }
+    
+    
+    @Override
+    protected void exportDone(JComponent source, Transferable data, int action)
+    {
+//        System.out.println(source);
+//        if (source instanceof DragButton)
+//        {
+//            System.out.println(true);
+//            source.setVisible(false);
+//            source.setVisible(true);
+////            ((DragButton) source).setSelected(true);
+//            ((DragButton) source).setSelected(false);
+//        }
+    };
+    
+    
+    @Override
+    public boolean canImport(JComponent comp, DataFlavor flavor[])
+    {
+        return false;
+    }
+    
+    
+    @Override
+    public boolean importData(JComponent comp, Transferable t)
+    {
+        return false;
+    }
+    
     
     @Override
     public Transferable createTransferable(JComponent comp)
