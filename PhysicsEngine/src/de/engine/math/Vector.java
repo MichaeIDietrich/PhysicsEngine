@@ -46,4 +46,13 @@ public class Vector {
 	public Vector scale(double s) {
 		return new Vector(p.x * s, p.y * s);
 	}
+	
+	public Vector getNormalVector() {
+		return new Vector(-1 * p.y, p.x);
+	}
+	
+	public Vector getUnitVector() {
+		double scale = 1 / length;
+		return this.scale(scale);
+	}
 }
