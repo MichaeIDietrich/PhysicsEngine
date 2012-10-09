@@ -2,9 +2,12 @@ package de.engine.environment;
 
 import java.util.ArrayList;
 
+import javax.swing.JComponent;
+
 import de.engine.math.PhysicsEngine2D;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
+
 
 public class Scene extends EnvironmentProperties
 {
@@ -13,7 +16,7 @@ public class Scene extends EnvironmentProperties
     double ratio = 2d/1d;
     
     private PhysicsEngine2D physicsEngine2D = null;
-    
+    private JComponent canvas = null;
     
     public Scene()
     {
@@ -73,6 +76,18 @@ public class Scene extends EnvironmentProperties
     {
         this.objects.clear();
         this.ground = null;
+    }
+    
+    
+    public void setCanvas(JComponent canvas)
+    {
+        this.canvas = canvas;
+    }
+    
+    
+    public JComponent getCanvas()
+    {
+        return this.canvas;
     }
     
     

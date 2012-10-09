@@ -40,16 +40,15 @@ public class MainWindow extends JFrame
     private static final long serialVersionUID = -1405279482198323306L;
     
     private RenderingHints antialias = new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    
-    
+     
     private Canvas canvas;
     
     // stores the navigation offset (navigation by the use of the right mouse button)
     private Point viewPosition = new Point();
     
-    
     private Scene scene = null;
     private PhysicsEngine2D physicsEngine2D = null;
+    
     
     public MainWindow()
     {
@@ -118,6 +117,8 @@ public class MainWindow extends JFrame
 
         initializeLookAndFeel();
         initializeComponents();
+        
+        scene.setCanvas( this.canvas );
         
         this.setVisible(true);
     }
@@ -227,7 +228,7 @@ public class MainWindow extends JFrame
                         de.engine.math.Point position = new de.engine.math.Point();
                         position.x = location.x - viewPosition.x; position.y = location.y - viewPosition.y;
                         scene.add(new Circle(new Vector(position), 8));
-                        
+                                                
                         drawObjects();
                         break;
                         
