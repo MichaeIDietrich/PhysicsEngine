@@ -17,6 +17,8 @@ import java.io.IOException;
 
 import javax.swing.JComponent;
 
+import de.engineapp.windows.MainWindow;
+
 public class Canvas extends JComponent
 {
     // interface to recognize drops
@@ -47,7 +49,8 @@ public class Canvas extends JComponent
             @Override
             public void dragOver(DropTargetDragEvent e)
             {
-                if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType())
+                // TODO: Compare the Y-coordinate of the ball to the Y-coordinate of the drawn function
+                if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType() )
                 {
                     e.rejectDrag();
                 }

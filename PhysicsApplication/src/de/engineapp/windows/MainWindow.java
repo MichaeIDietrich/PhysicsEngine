@@ -312,22 +312,20 @@ public class MainWindow extends JFrame
                 g.fillOval( ((int) obj.position.getPoint().x) - r, ((int) obj.position.getPoint().y) - r, r * 2, r * 2);
             }
         }
-        
-        
         canvas.repaint();
         
         System.out.println("drawObjects: " + (System.currentTimeMillis() - t) + "ms");
     }
     
     
-    // TODO - will be replaced by something dynamic later
-    private int function(int i)
-    {
-        // if positive, a hill will drawn; if negative the hill will be a valley
-        int phase = -1;
-        // what height are you going to go?
-        int hill_height = 100;
-        
-        return (int) (Math.sin(phase * i * Math.PI / 300) * hill_height + hill_height); // + canvas.getHeight() - 200);
-    }
+//    // TODO - will be replaced by something dynamic later
+//    private int function(int i)
+//    {
+//        // if positive, a hill will drawn; if negative the hill will be a valley
+//        int phase = -1;
+//        // what height are you going to go?
+//        int hill_height = 100;
+//        
+//        return (int) (Math.sin(phase * i * Math.PI / 300) * hill_height + hill_height); // + canvas.getHeight() - 200);
+//    }
 }
