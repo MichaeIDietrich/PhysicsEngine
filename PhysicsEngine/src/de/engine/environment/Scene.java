@@ -8,6 +8,10 @@ import de.engine.objects.ObjectProperties;
 public class Scene extends EnvironmentProperties
 {
     
+    // How much pixels are one meter? The ratio could be pixel/meter:
+    double ratio = 2d/1d;
+    
+    
     public Scene()
     {
         this.objects = new ArrayList<ObjectProperties>();
