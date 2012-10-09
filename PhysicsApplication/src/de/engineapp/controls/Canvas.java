@@ -70,9 +70,9 @@ public class Canvas extends JComponent
                             
                             System.out.println("Drop accepted.");
                             
-                            if (command.equals("circle") || command.equals("rect") || command.equals("ground"))
+                            if (command.equals("circle") || command.equals("square") || command.equals("ground"))
                             {
-                                dropCallback.drop(command, e.getLocation());
+                                dropCallback.drop(command, new Point(e.getLocation().x, e.getLocation().y));
                                 e.acceptDrop(e.getSourceActions());
                                 
                                 return;
