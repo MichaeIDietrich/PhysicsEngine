@@ -1,22 +1,26 @@
 package de.engine.math;
 
 
-public class Vector {
+public class Vector 
+{
 	private Point p;
 	private double length;
 	
-	public Vector() {
+	public Vector() 
+	{
 		p.x = 0.0;
 		p.y = 0.0;
 		length = 0.0;
 	}
 	
-	public Vector(Point p) {
+	public Vector(Point p) 
+	{
 		this.p = p;
 		length = Util.distanceToOrigin(p);
 	}
 
-	public Vector(double x, double y) {
+	public Vector(double x, double y) 
+	{
 		p.x = x;
 		p.y = y;
 		length = Util.distanceToOrigin(p);
