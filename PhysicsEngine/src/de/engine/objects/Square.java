@@ -10,11 +10,11 @@ public class Square extends Polygon
 	public Square(Vector position, Point corner)
 	{
 		super(position);
-		edges = new Edge[4];
-		edges[0] = new Edge(new Vector(corner), new Vector(corner.x, -1 * corner.y));
-		edges[1] = new Edge(new Vector(corner.x, -1 * corner.y), new Vector(-1 * corner.x, -1 * corner.y));
-		edges[2] = new Edge(new Vector(-1 * corner.x, -1 * corner.y), new Vector(-1 * corner.x, corner.y));
-		edges[3] = new Edge(new Vector(-1 * corner.x, corner.y), new Vector(corner));
+		points = new Vector[4];
+		points[0] = new Vector(corner);
+		points[1] = new Vector(corner.x, -1 * corner.y);
+		points[2] = new Vector(-1 * corner.x, -1 * corner.y);
+		points[3] = new Vector(-1 * corner.x, corner.y);
 		radius = Util.distanceToOrigin(corner);
 	}
 	

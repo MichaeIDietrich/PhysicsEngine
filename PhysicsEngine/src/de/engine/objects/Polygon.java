@@ -6,25 +6,29 @@ import de.engine.math.Vector;
 
 public class Polygon extends ObjectProperties{
 
-	public Edge[] edges;
+	public Vector[] points;
 	
 	protected Polygon(Vector position) {
 		this.world_position = new Transformation(position, new Rotation(0));
 		radius = 0;
 	}
 	
-	public Polygon(Vector position, Edge[] edges) {
+	public Polygon(Vector position, Vector[] points) {
 		this(position);
-		this.edges = edges;
+		this.points = points;
 		calcRadius();
 	}
 	
 	protected void calcRadius() {
 		radius = 0;
-		for (Edge edge : edges) {
-			double corner_dist = edge.origin.getLength();
+		for (Vector point : points) {
+			double corner_dist = point.getLength();
 			radius = (corner_dist > radius) ? corner_dist : radius;
 		}
+	}
+	
+	public Vector getWorldPointPos(int i) {
+		return world_position.getPostion(points[i]);
 	}
 
 	@Override

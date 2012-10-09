@@ -19,4 +19,8 @@ public class Util {
 	public static Vector minus(Vector vec1, Vector vec2) {
 		return new Vector(vec1.getX() - vec2.getX(), vec1.getY() - vec2.getY());
 	}
+	
+	public static double scalarProduct(Vector vec1, Vector vec2) {
+		return vec1.getX() * vec2.getX() + vec1.getY() * vec2.getY();
+	}
 }
