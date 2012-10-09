@@ -13,22 +13,22 @@ import javax.swing.JComponent;
 
 import de.engine.environment.Scene;
 
+
 public class DragAndDropController extends DropTarget
 {
+    
     // interface to recognize drops
     public interface DropCallback
     {
         public void drop(String command, Point location);
     }
     
-    
-    private static final long serialVersionUID = 5894635825032464086L;
-    
+    private static final long serialVersionUID = 5L;
     
     private Scene scene;
-    
     private DropCallback dropCallback;
-    
+    public boolean dontDrag = false;
+
     
     public DragAndDropController(JComponent source, DropCallback dropCallback)
     {
@@ -42,7 +42,7 @@ public class DragAndDropController extends DropTarget
     public void dragOver(DropTargetDragEvent e)
     {
         // TODO: Compare the Y-coordinate of the ball to the Y-coordinate of the drawn function
-        if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType() )
+        if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType() || !scene.getPhysicsEngine2D().semaphore)
         {
             e.rejectDrag();
         }
