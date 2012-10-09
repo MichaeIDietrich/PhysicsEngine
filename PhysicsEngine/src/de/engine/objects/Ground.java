@@ -5,7 +5,7 @@ import java.awt.Color;
 public class Ground //extends ObjectProperties
 {
     public int     watermark;
-    public Color groundColor;
+    public Color surfaceColor;
     public Color   coreColor;
     
     public final int HILLANDVALLEY = 1;
@@ -20,7 +20,7 @@ public class Ground //extends ObjectProperties
    
     public Ground(int watermark)
     {
-        this.groundColor = Color.GRAY;
+        this.surfaceColor = Color.GRAY;
         this.coreColor   = this.BITTER_ORANGE;
         this.watermark = watermark;
     }
@@ -40,8 +40,8 @@ public class Ground //extends ObjectProperties
     // TODO - will be replaced by something dynamic later
     private int function_hill_valley(int i)
     {
-        this.groundColor = Color.GRAY;
-        this.coreColor   = this.BITTER_ORANGE;
+        this.surfaceColor = Color.GRAY;
+        this.coreColor    = this.BITTER_ORANGE;
         
         // if positive, a hill will drawn; if negative the hill will be a valley
         int phase = -1;
@@ -54,8 +54,8 @@ public class Ground //extends ObjectProperties
     
     private int function_downhill(int i)
     {
-        this.groundColor = this.GRASS_GREEN;
-        this.coreColor   = this.FREAKY_GREEN;
+        this.surfaceColor = this.GRASS_GREEN;
+        this.coreColor    = this.FREAKY_GREEN;
         
         // if positive, a hill will drawn; if negative the hill will be a valley
         int phase = -1;

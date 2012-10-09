@@ -2,6 +2,7 @@ package de.engine.environment;
 
 import java.util.ArrayList;
 
+import de.engine.math.PhysicsEngine2D;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 
@@ -10,6 +11,8 @@ public class Scene extends EnvironmentProperties
     
     // How much pixels are one meter? The ratio could be pixel/meter:
     double ratio = 2d/1d;
+    
+    private PhysicsEngine2D physicsEngine2D = null;
     
     
     public Scene()
@@ -70,5 +73,17 @@ public class Scene extends EnvironmentProperties
     {
         this.objects.clear();
         this.ground = null;
+    }
+    
+    
+    public void setPhysicsEngine2D( PhysicsEngine2D pysicsEngine2D )
+    {
+        this.physicsEngine2D = pysicsEngine2D;
+    }
+    
+    
+    public PhysicsEngine2D getPhysicsEngine2D()
+    {
+        return this.physicsEngine2D;
     }
 }

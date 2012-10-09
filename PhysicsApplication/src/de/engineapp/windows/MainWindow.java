@@ -6,6 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -23,6 +25,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
 
 import de.engine.environment.Scene;
+import de.engine.math.PhysicsEngine2D;
 import de.engine.math.Vector;
 import de.engine.objects.Circle;
 import de.engine.objects.Ground;
@@ -46,7 +49,7 @@ public class MainWindow extends JFrame
     
     
     private Scene scene = null;
-    
+    private PhysicsEngine2D physicsEngine2D = null;
     
     public MainWindow()
     {
@@ -105,10 +108,16 @@ public class MainWindow extends JFrame
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
         
+        scene = new Scene();
+        physicsEngine2D = new PhysicsEngine2D();
+        physicsEngine2D.setScene( scene );
+        scene.setPhysicsEngine2D( physicsEngine2D );
+
+        Thread phy2d = new Thread( physicsEngine2D );
+        phy2d.start();
+
         initializeLookAndFeel();
         initializeComponents();
-        
-        scene = new Scene();
         
         this.setVisible(true);
     }
@@ -135,9 +144,9 @@ public class MainWindow extends JFrame
         toolBarMain.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         toolBarMain.setFloatable(false);
         
-        JButton play  = new JButton(new ImageIcon("images/play.png"));
-        JButton pause = new JButton(new ImageIcon("images/pause.png"));
-        JButton reset = new JButton(new ImageIcon("images/reset.png"));
+        final JButton play  = new JButton(new ImageIcon("images/play.png"));
+        final JButton pause = new JButton(new ImageIcon("images/pause.png"));
+        final JButton reset = new JButton(new ImageIcon("images/reset.png"));
         
         pause.setEnabled(false);
         reset.setEnabled(false);
@@ -145,6 +154,28 @@ public class MainWindow extends JFrame
         play.setFocusable(false);
         pause.setFocusable(false);
         reset.setFocusable(false);
+        
+        play.addActionListener( new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent arg0)
+            {
+                play.setEnabled( false );
+                pause.setEnabled( true );
+                physicsEngine2D.semaphore = false;
+            }
+        });
+        
+        pause.addActionListener( new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent arg0)
+            {
+                pause.setEnabled( false );
+                play.setEnabled(   true );
+                physicsEngine2D.semaphore = true;
+            }
+        });
         
         toolBarMain.add(play);
         toolBarMain.add(pause);
@@ -210,8 +241,8 @@ public class MainWindow extends JFrame
                 }
             }
         });
-        dndController.setScene(scene);
         
+        dndController.setScene(scene);
         
         canvas.setBackground(Color.WHITE);
         canvas.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED ) );
@@ -255,7 +286,7 @@ public class MainWindow extends JFrame
             
             g.setColor( ground.coreColor );
             g.fillPolygon(polygon);
-            g.setColor( ground.groundColor );
+            g.setColor( ground.surfaceColor );
             g.drawPolygon(polygon);
         }
         
