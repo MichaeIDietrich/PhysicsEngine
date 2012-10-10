@@ -9,7 +9,7 @@ public abstract class ObjectProperties
         STEEL, ALUMINIUM, NACL, RUBBER
     };
     
-    // will get incremented every time it's use, to apply unique id's to each of the new objects
+    // will get incremented every time it's used, to apply unique id's to each of the new objects
     public static int idCounter = 0;
     
     
@@ -46,7 +46,7 @@ public abstract class ObjectProperties
     
     protected ObjectProperties()
     {
-        this.id = id++;
+        this.id = idCounter++;
     }
     
     
@@ -54,4 +54,7 @@ public abstract class ObjectProperties
     {
         return id;
     }
+    
+    
+    public abstract ObjectProperties copy();
 }

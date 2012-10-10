@@ -30,6 +30,7 @@ import de.engine.math.Vector;
 import de.engine.objects.Circle;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
+import de.engineapp.Physics;
 import de.engineapp.controls.Canvas;
 import de.engineapp.controls.DragButton;
 import de.engineapp.controls.dnd.DragAndDropController;
@@ -46,8 +47,11 @@ public class MainWindow extends JFrame
     // stores the navigation offset (navigation by the use of the right mouse button)
     private Point viewPosition = new Point();
     
-    private Scene scene = null;
     private PhysicsEngine2D physicsEngine2D = null;
+    
+    private Scene scene = null;
+    
+    Physics workingThread = null;
     
     
     public MainWindow()
@@ -107,14 +111,22 @@ public class MainWindow extends JFrame
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
         
-        scene = new Scene();
+        
         physicsEngine2D = new PhysicsEngine2D();
+        scene = new Scene();
         physicsEngine2D.setScene( scene );
-        scene.setPhysicsEngine2D( physicsEngine2D );
-
-        Thread phy2d = new Thread( physicsEngine2D );
-        phy2d.start();
-
+        
+        workingThread = new Physics(physicsEngine2D, 1000L / 30L, new Physics.FinishedCallback()
+        {
+            
+            @Override
+            public void done()
+            {
+                canvas.repaint();
+            }
+        });
+        
+        
         initializeLookAndFeel();
         initializeComponents();
         
@@ -159,22 +171,22 @@ public class MainWindow extends JFrame
         play.addActionListener( new ActionListener() 
         {
             @Override
-            public void actionPerformed(ActionEvent arg0)
+            public void actionPerformed(ActionEvent e)
             {
                 play.setEnabled( false );
                 pause.setEnabled( true );
-                physicsEngine2D.semaphore = false;
+                workingThread.start();
             }
         });
         
         pause.addActionListener( new ActionListener() 
         {
             @Override
-            public void actionPerformed(ActionEvent arg0)
+            public void actionPerformed(ActionEvent e)
             {
                 pause.setEnabled( false );
                 play.setEnabled(   true );
-                physicsEngine2D.semaphore = true;
+                workingThread.pause();
             }
         });
         

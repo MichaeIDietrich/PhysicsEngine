@@ -66,4 +66,14 @@ public class Ground //extends ObjectProperties
         
         return (int) (Math.sin(phase * i * Math.PI / 300) * hill_height + hill_height + grass_heigth*Math.sin(i)); // + canvas.getHeight() - 200);
     }
+    
+    
+    public Ground copy()
+    {
+     // TODO - add all properties, that need to be copied
+        Ground newGround = new Ground(this.watermark);
+        // ...
+        
+        return newGround;
+    }
 }
