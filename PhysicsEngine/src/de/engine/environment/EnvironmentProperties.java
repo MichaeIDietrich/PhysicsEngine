@@ -7,7 +7,7 @@ import de.engine.objects.ObjectProperties;
 
 public abstract class EnvironmentProperties
 {
-    public double gravitational_acceleration = 9.80665; // m/s²
+    public double gravitational_acceleration = -9.80665; // m/sï¿½
     
     // ground is unique thats why it has it's own property
     protected Ground ground;
