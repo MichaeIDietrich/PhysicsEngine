@@ -52,6 +52,10 @@ public class Physics
                     {
                         // may occur, but should be no problem, we just ignore it
                         //e.printStackTrace();
+                        
+                        // finally we need to set the interrupt flag again, because 
+                        // it was rejected by the exception
+                        this.interrupt();
                     }
                 }
             }
