@@ -11,7 +11,7 @@ import de.engine.objects.ObjectProperties;
 
 public class Scene extends EnvironmentProperties
 {
-    
+    // HINT - isn't the right place for this, belongs to the application window
     // How much pixels are one meter? The ratio could be pixel/meter:
     double ratio = 2d/1d;
     
@@ -91,6 +91,7 @@ public class Scene extends EnvironmentProperties
     }
     
     
+    // I don't think there is a need of this relation anymore
     public void setPhysicsEngine2D( PhysicsEngine2D pysicsEngine2D )
     {
         this.physicsEngine2D = pysicsEngine2D;
@@ -100,5 +101,21 @@ public class Scene extends EnvironmentProperties
     public PhysicsEngine2D getPhysicsEngine2D()
     {
         return this.physicsEngine2D;
+    }
+    
+    
+    public Scene copy()
+    {
+     // TODO - add all properties, that need to be copied
+        Scene newScene = new Scene();
+        
+        newScene.setGround(this.getGround() != null ? this.getGround().copy() : null);
+        
+        for (ObjectProperties object : this.getObjects())
+        {
+            newScene.add(object.copy());
+        }
+        
+        return newScene;
     }
 }

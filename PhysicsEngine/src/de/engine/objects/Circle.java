@@ -6,7 +6,7 @@ public class Circle extends ObjectProperties
 {
     private double radius;
     
-    public Circle(Vector position, int radius)
+    public Circle(Vector position, double radius)
     {
         this.position = position;
         this.radius = radius;
@@ -37,5 +37,17 @@ public class Circle extends ObjectProperties
     public double getRadius()
     {
         return radius;
+    }
+    
+    
+    @Override
+    public Circle copy()
+    {
+        // TODO - add all properties, that need to be copied
+        Circle newCircle = new Circle(this.position, this.radius);
+        newCircle.mass = this.mass;
+        // ...
+        
+        return newCircle;
     }
 }

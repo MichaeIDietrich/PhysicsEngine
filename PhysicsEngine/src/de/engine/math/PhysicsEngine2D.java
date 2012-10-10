@@ -90,4 +90,10 @@ public class PhysicsEngine2D implements Runnable
         }
     }
     
+    
+    // here starts the entry point for all the physical calculation
+    public void calculateNextFrame(long deltaTime)
+    {
+        
+    }
 }
