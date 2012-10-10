@@ -93,7 +93,7 @@ public class PhysicsEngine2D implements Runnable
                 // Collision detection
                 
                 oldposition = obj.position.getPoint().y;
-                obj.position.getPoint().y = 9.81/2d*deltaTime + obj.velocity.getPoint().y * (double)deltaTime + obj.position.getPoint().y;
+                obj.position.getPoint().y = -9.81/2d*deltaTime + obj.velocity.getPoint().y * (double)deltaTime + obj.position.getPoint().y;
                 
                 obj.velocity.getPoint().y = (obj.position.getPoint().y-oldposition)/deltaTime;
             }
