@@ -38,7 +38,7 @@ public class Physics
                 {
                     long t = System.currentTimeMillis();
                     
-                    engine.calculateNextFrame(deltaTime);
+                    engine.calculateNextFrame( deltaTime/1000d );
                     finishedCallback.done();
                     
                     t = System.currentTimeMillis() - t;

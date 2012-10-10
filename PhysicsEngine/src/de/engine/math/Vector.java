@@ -8,6 +8,7 @@ public class Vector
 	
 	public Vector() 
 	{
+	    p = new Point();
 		p.x = 0.0;
 		p.y = 0.0;
 		length = 0.0;
@@ -34,6 +35,12 @@ public class Vector
 		this.p = p;
 		length = Util.distanceToOrigin(p);
 	}
+	
+    public void setPoint( double x, double y) {
+        this.p.x = x;
+        this.p.y = y;
+        length = Util.distanceToOrigin(p);
+    }
 	
 	public double getLength() {
 		return length;

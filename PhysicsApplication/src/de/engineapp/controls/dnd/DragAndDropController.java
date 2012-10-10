@@ -42,7 +42,8 @@ public class DragAndDropController extends DropTarget
     public void dragOver(DropTargetDragEvent e)
     {
         // TODO: Compare the Y-coordinate of the ball to the Y-coordinate of the drawn function
-        if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType() || !scene.getPhysicsEngine2D().semaphore)
+        if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType() ||
+           ( (scene.getPhysicsEngine2D()!=null)?(!scene.getPhysicsEngine2D().semaphore):false))
         {
             e.rejectDrag();
         }

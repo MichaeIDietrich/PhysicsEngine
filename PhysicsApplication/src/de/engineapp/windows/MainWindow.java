@@ -122,7 +122,7 @@ public class MainWindow extends JFrame
             @Override
             public void done()
             {
-                canvas.repaint();
+               drawObjects();
             }
         });
         
@@ -239,7 +239,13 @@ public class MainWindow extends JFrame
                         
                         de.engine.math.Point position = new de.engine.math.Point();
                         position.x = location.x - viewPosition.x; position.y = location.y - viewPosition.y;
-                        scene.add(new Circle(new Vector(position), 8));
+                        
+                        Circle circle = new Circle(new Vector(position), 8);
+                        circle.mass = 10;
+                        circle.position.setPoint( position );
+                        circle.velocity.setPoint( 0, 0 );
+                        
+                        scene.add( circle );
                                                 
                         drawObjects();
                         break;
