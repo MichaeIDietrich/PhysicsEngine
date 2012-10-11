@@ -51,4 +51,16 @@ public class Square extends ObjectProperties
         
         return newSquare;
     }
+
+    @Override
+    public Vector[] getAABB()
+    {
+        double x = ((corner.x > 0) ? 1 : -1) * corner.x;
+        double y = ((corner.y > 0) ? 1 : -1) * corner.y;
+        
+        Vector aabb[] = new Vector[2];
+        aabb[0] = new Vector(position.getPoint().x - x, position.getPoint().y - y);
+        aabb[1] = new Vector(position.getPoint().x + x, position.getPoint().y + y);
+        return aabb;
+    }
 }
