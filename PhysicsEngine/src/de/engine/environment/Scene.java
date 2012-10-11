@@ -15,9 +15,6 @@ public class Scene extends EnvironmentProperties
     // How much pixels are one meter? The ratio could be pixel/meter:
     double ratio = 2d/1d;
     
-    private PhysicsEngine2D physicsEngine2D = null;
-    private JComponent canvas = null;
-    
     public Scene()
     {
         this.objects = new ArrayList<ObjectProperties>();
@@ -77,33 +74,7 @@ public class Scene extends EnvironmentProperties
         this.objects.clear();
         this.ground = null;
     }
-    
-    
-    public void setCanvas(JComponent canvas)
-    {
-        this.canvas = canvas;
-    }
-    
-    
-    public JComponent getCanvas()
-    {
-        return this.canvas;
-    }
-    
-    
-    // I don't think there is a need of this relation anymore
-    public void setPhysicsEngine2D( PhysicsEngine2D pysicsEngine2D )
-    {
-        this.physicsEngine2D = pysicsEngine2D;
-    }
-    
-    
-    public PhysicsEngine2D getPhysicsEngine2D()
-    {
-        return this.physicsEngine2D;
-    }
-    
-    
+        
     public Scene copy()
     {
      // TODO - add all properties, that need to be copied
