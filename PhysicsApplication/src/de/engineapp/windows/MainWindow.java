@@ -140,9 +140,7 @@ public class MainWindow extends JFrame
         
         initializeLookAndFeel();
         initializeComponents();
-        
-        scene.setCanvas( this.canvas );
-        
+                
         this.setVisible(true);
     }
     

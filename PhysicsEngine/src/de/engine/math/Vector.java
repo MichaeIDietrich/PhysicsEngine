@@ -22,6 +22,7 @@ public class Vector
 
 	public Vector(double x, double y) 
 	{
+		p = new Point();
 		p.x = x;
 		p.y = y;
 		length = Util.distanceToOrigin(p);
