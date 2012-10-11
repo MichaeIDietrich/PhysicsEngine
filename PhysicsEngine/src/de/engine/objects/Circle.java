@@ -10,6 +10,8 @@ public class Circle extends ObjectProperties
     {
         this.position = position;
         this.radius = radius;
+        
+        this.velocity = new Vector();
     }
     
     @Override

@@ -1,5 +1,6 @@
 package de.engineapp.windows;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -18,6 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -44,14 +46,20 @@ public class MainWindow extends JFrame
      
     private Canvas canvas;
     
-    // stores the navigation offset (navigation by the use of the right mouse button)
+    /** wether a grid is drawn on the canvas */
+    private boolean showGrid = false;
+    
+    /** do not change - not yet fully implemented */
+    private double zoom = 1.0;
+    
+    /** stores the navigation offset (navigation by the use of the right mouse button) */
     private Point viewPosition = new Point();
     
     private PhysicsEngine2D physicsEngine2D = null;
     
     private Scene scene = null;
     
-    Physics workingThread = null;
+    private Physics workingThread = null;
     
     
     public MainWindow()
@@ -65,6 +73,7 @@ public class MainWindow extends JFrame
             @Override
             public void windowClosing(WindowEvent e)
             {
+                workingThread.pause();
                 MainWindow.this.dispose();
             }
         });
@@ -122,7 +131,9 @@ public class MainWindow extends JFrame
             @Override
             public void done()
             {
-                canvas.repaint();
+                // it seems canvas.repaint() doesn't work here
+//              canvas.repaint();
+              drawObjects();
             }
         });
         
@@ -160,6 +171,7 @@ public class MainWindow extends JFrame
         final JButton play  = new JButton(new ImageIcon("images/play.png"));
         final JButton pause = new JButton(new ImageIcon("images/pause.png"));
         final JButton reset = new JButton(new ImageIcon("images/reset.png"));
+        final JToggleButton grid = new JToggleButton(new ImageIcon("images/grid.png"));
         
         pause.setEnabled(false);
         reset.setEnabled(false);
@@ -167,6 +179,7 @@ public class MainWindow extends JFrame
         play.setFocusable(false);
         pause.setFocusable(false);
         reset.setFocusable(false);
+        grid.setFocusable(false);
         
         play.addActionListener( new ActionListener() 
         {
@@ -190,9 +203,22 @@ public class MainWindow extends JFrame
             }
         });
         
+        grid.addActionListener( new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                showGrid = !showGrid;
+                grid.setSelected(showGrid);
+                drawObjects();
+            }
+        });
+        
         toolBarMain.add(play);
         toolBarMain.add(pause);
         toolBarMain.add(reset);
+        toolBarMain.addSeparator();
+        toolBarMain.add(grid);
         
         this.add(toolBarMain, BorderLayout.PAGE_START);
         
@@ -232,22 +258,33 @@ public class MainWindow extends JFrame
             @Override
             public void drop(String command, Point location)
             {
+                // translate location
+                
+                location = new Point(location.x - viewPosition.x,
+                                    -location.y + viewPosition.y + canvas.getHeight());
+                
                 switch (command)
                 {
                     case "circle":
                         System.out.println("Dropped a Circle at " + location);
                         
                         de.engine.math.Point position = new de.engine.math.Point();
-                        position.x = location.x - viewPosition.x; position.y = location.y - viewPosition.y;
-                        scene.add(new Circle(new Vector(position), 8));
-                                                
+                        position.x = location.x; position.y = location.y;
+                        
+                        Circle circle = new Circle(new Vector(position), 8);
+                        circle.mass = 10;
+                        circle.position.setPoint( position );
+                        circle.velocity.setPoint( 0, 0 );
+                        
+                        scene.add( circle );
+                        
                         drawObjects();
                         break;
                         
                     case "ground":
                         System.out.println("Add ground at " + location.y);
                         
-                        scene.setGround(new Ground(location.y - viewPosition.y));
+                        scene.setGround(new Ground(location.y));
                         
                         drawObjects();
                         break;
@@ -265,7 +302,7 @@ public class MainWindow extends JFrame
     }
     
     
-    // TODO - adjust coordinates (negate y + translation)
+    // TODO - adjust coordinates (negate y + translation) - half work is done, some is left :p
     // TODO - improve this method at all
     private void drawObjects()
     {
@@ -279,6 +316,25 @@ public class MainWindow extends JFrame
         
         // translate the scene to the point you have navigated to before
         g.translate(viewPosition.x, viewPosition.y);
+        g.scale(zoom, -zoom);
+        g.translate(0, -canvas.getHeight());
+        
+        
+        if (showGrid)
+        {
+            // grid will be global later and not only around the origin
+            g.setColor(Color.BLACK);
+            for (int i = -15; i < 16; i++)
+            {
+                g.drawLine(i * 50, -800, i * 50, 800);
+                g.drawLine(-800, i * 50, 800, i * 50);
+            }
+            g.setStroke(new BasicStroke(3));
+            g.drawLine(0, -800, 0, 800);
+            g.drawLine(-800, 0, 800, 0);
+            g.setStroke(new BasicStroke(1));
+        }
+        
         
         if (scene.getGround() != null)
         {
@@ -294,8 +350,8 @@ public class MainWindow extends JFrame
                 polygon.addPoint(x, ground.function( ground.DOWNHILL, x) + scene.getGround().watermark);
             }
             
-            polygon.addPoint(canvas.getWidth() - viewPosition.x, canvas.getHeight() - viewPosition.y);
-            polygon.addPoint(-viewPosition.x, canvas.getHeight() - viewPosition.y);
+            polygon.addPoint(canvas.getWidth() - viewPosition.x, viewPosition.y);
+            polygon.addPoint(-viewPosition.x, viewPosition.y);
             
             g.setColor( ground.coreColor );
             g.fillPolygon(polygon);
