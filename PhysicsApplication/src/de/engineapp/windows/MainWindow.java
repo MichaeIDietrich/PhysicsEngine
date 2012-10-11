@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -46,7 +47,7 @@ public class MainWindow extends JFrame
      
     private Canvas canvas;
     
-    /** wether a grid is drawn on the canvas */
+    /** weather a grid is drawn on the canvas */
     private boolean showGrid = false;
     
     /** do not change - not yet fully implemented */
@@ -61,11 +62,14 @@ public class MainWindow extends JFrame
     
     private Physics workingThread = null;
     
+    private MessageWindow msgwin;
+    
     
     public MainWindow()
     {
         super("Physics Engine");
         
+        setDefaultCloseOperation( EXIT_ON_CLOSE );
         
         // Free objects (if necessary) before this application ends
         this.addWindowListener(new WindowAdapter()
@@ -92,7 +96,8 @@ public class MainWindow extends JFrame
             {
                 if (SwingUtilities.isRightMouseButton(e))
                 {
-                    System.out.println("right mouse button pressed");
+                    msgwin.setData( MessageWindow.ACTION, "Rechte Maustaste gedrückt" );
+//                    System.out.println("right mouse button pressed");
                     
                     mouseOffset.x = e.getPoint().x;
                     mouseOffset.y = e.getPoint().y;
@@ -113,7 +118,17 @@ public class MainWindow extends JFrame
                     
                     // refresh canvas
                     drawObjects();
+                    
+                    msgwin.setData( msgwin.COORDINATES, e.getX()+", "+ e.getY() );
+                    msgwin.refresh();
                 }
+            }
+            
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                msgwin.setData( msgwin.COORDINATES, e.getX()+", "+ e.getY());
+                msgwin.refresh();
             }
         });
         
@@ -142,6 +157,12 @@ public class MainWindow extends JFrame
         initializeComponents();
         
         scene.setCanvas( this.canvas );
+        
+        // open message window contains information
+        msgwin = new MessageWindow( new Point(this.getLocation().x+this.getWidth(), this.getLocation().y) );
+        msgwin.setData( MessageWindow.COORDINATES, "120, 200");
+        
+        this.addMouseListener( new MouseController(this) );
         
         this.setVisible(true);
     }
@@ -266,7 +287,8 @@ public class MainWindow extends JFrame
                 switch (command)
                 {
                     case "circle":
-                        System.out.println("Dropped a Circle at " + location);
+                        msgwin.setData( MessageWindow.ACTION, "Kreis erstellt an ["+ location.x +", "+ location.y +"]" );
+//                        System.out.println("Dropped a Circle at " + location);
                         
                         de.engine.math.Point position = new de.engine.math.Point();
                         position.x = location.x; position.y = location.y;
@@ -282,7 +304,8 @@ public class MainWindow extends JFrame
                         break;
                         
                     case "ground":
-                        System.out.println("Add ground at " + location.y);
+                        msgwin.setData( MessageWindow.ACTION, "Boden erstellt an ["+ location.x +", "+ location.y +"]" );
+//                        System.out.println("Add ground at " + location.y);
                         
                         scene.setGround(new Ground(location.y));
                         
@@ -347,7 +370,7 @@ public class MainWindow extends JFrame
             {
                 int x = i - viewPosition.x;
                 
-                polygon.addPoint(x, ground.function( ground.DOWNHILL, x) + scene.getGround().watermark);
+                polygon.addPoint(x, ground.function( ground.STAIRS, x) + scene.getGround().watermark);
             }
             
             polygon.addPoint(canvas.getWidth() - viewPosition.x, viewPosition.y);
@@ -371,6 +394,52 @@ public class MainWindow extends JFrame
         }
         canvas.repaint();
         
-        System.out.println("drawObjects: " + (System.currentTimeMillis() - t) + "ms");
+        msgwin.setData( MessageWindow.TIMEFORDRAWING, ""+(System.currentTimeMillis() - t) );
+    }
+    
+    
+    // The information window shall be docked on the right corner outside of the main window
+    public class MouseController implements MouseListener 
+    {
+        private JFrame frame = null;
+        
+        public MouseController( JFrame frame )
+        {
+            this.frame = frame;
+        }
+        
+
+        @Override
+        public void mouseClicked(MouseEvent e)
+        {
+            
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e)
+        {
+            msgwin.updateLocation( frame.getLocation().x+frame.getWidth(), frame.getLocation().y );  
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     }
 }
