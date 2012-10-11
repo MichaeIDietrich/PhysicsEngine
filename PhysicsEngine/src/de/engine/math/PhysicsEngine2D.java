@@ -9,7 +9,7 @@ public class PhysicsEngine2D implements Runnable
 {
     private Scene scene;
     public boolean semaphore = true;
-
+    
     
     public PhysicsEngine2D()
     {
@@ -84,7 +84,7 @@ public class PhysicsEngine2D implements Runnable
     // here starts the entry point for all the physical calculation
     public void calculateNextFrame( double deltaTime)
     {
-        double oldposition = 0;
+        double oldposition = 0d;
         
         for (ObjectProperties obj : scene.getObjects())
         {
@@ -93,7 +93,7 @@ public class PhysicsEngine2D implements Runnable
                 // Collision detection
                 
                 oldposition = obj.position.getPoint().y;
-                obj.position.getPoint().y = -9.81/2d*deltaTime + obj.velocity.getPoint().y * (double)deltaTime + obj.position.getPoint().y;
+                obj.position.getPoint().y = ( -9.81/2d*deltaTime + obj.velocity.getPoint().y  )*deltaTime + obj.position.getPoint().y;
                 
                 obj.velocity.getPoint().y = (obj.position.getPoint().y-oldposition)/deltaTime;
             }
