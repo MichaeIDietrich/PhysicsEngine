@@ -1,5 +1,6 @@
 package de.engineapp.windows;
 
+import java.awt.Font;
 import java.awt.Point;
 import java.util.HashMap;
 
@@ -30,12 +31,13 @@ public class MessageWindow extends JFrame
         super( "Informationen" );
         setLocation( mainframepos.x, mainframepos.y );
         MessageWindow.instance = this;
-        
+
         hmap  = new HashMap<>();
         model = new DefaultListModel<>();
         
         list = new JList<>();
         list.setModel( model );
+        list.setFont( new Font("Times New Roman", Font.PLAIN, 13) );
         
         add( list );
         
