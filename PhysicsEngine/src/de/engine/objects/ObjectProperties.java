@@ -43,6 +43,8 @@ public abstract class ObjectProperties
     // function for collision
     public abstract double getRadius();
     
+    public abstract Vector[] getAABB();
+    
     
     protected ObjectProperties()
     {

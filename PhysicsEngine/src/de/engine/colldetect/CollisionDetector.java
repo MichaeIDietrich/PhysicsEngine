@@ -1,4 +1,4 @@
-package de.engine.physics;
+package de.engine.colldetect;
 
 import de.engine.math.Util;
 import de.engine.objects.ObjectProperties;
@@ -6,7 +6,7 @@ import de.engine.objects.ObjectProperties;
 
 public class CollisionDetector {
 	/**
-	 * Einfache Überprüfung ob Kollision zwischen zwei Objekten stattfinden könnte.
+	 * Einfache ï¿½berprï¿½fung ob Kollision zwischen zwei Objekten stattfinden kï¿½nnte.
 	 * 
 	 * @param pp1
 	 * @param pp2

@@ -50,4 +50,13 @@ public class Circle extends ObjectProperties
         
         return newCircle;
     }
+
+    @Override
+    public Vector[] getAABB()
+    {
+        Vector aabb[] = new Vector[2];
+        aabb[0] = new Vector(position.getPoint().x - radius, position.getPoint().y - radius);
+        aabb[1] = new Vector(position.getPoint().x + radius, position.getPoint().y + radius);
+        return aabb;
+    }
 }
