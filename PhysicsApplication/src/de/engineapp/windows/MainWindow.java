@@ -49,6 +49,7 @@ public class MainWindow extends JFrame
     
     /** weather a grid is drawn on the canvas */
     private boolean showGrid = false;
+    private boolean showInfo = false;
     
     /** do not change - not yet fully implemented */
     private double zoom = 1.0;
@@ -96,8 +97,7 @@ public class MainWindow extends JFrame
             {
                 if (SwingUtilities.isRightMouseButton(e))
                 {
-                    msgwin.setData( MessageWindow.ACTION, "Rechte Maustaste gedrückt" );
-//                    System.out.println("right mouse button pressed");
+                    MessageWindow.setData( MessageWindow.ACTION, "Rechte Maustaste gedrückt" );
                     
                     mouseOffset.x = e.getPoint().x;
                     mouseOffset.y = e.getPoint().y;
@@ -119,16 +119,16 @@ public class MainWindow extends JFrame
                     // refresh canvas
                     drawObjects();
                     
-                    msgwin.setData( msgwin.COORDINATES, e.getX()+", "+ e.getY() );
-                    msgwin.refresh();
+                    MessageWindow.setData( MessageWindow.COORDINATES, e.getX()+", "+ e.getY() );
+                    MessageWindow.refresh();
                 }
             }
             
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                msgwin.setData( msgwin.COORDINATES, e.getX()+", "+ e.getY());
-                msgwin.refresh();
+                MessageWindow.setData( MessageWindow.COORDINATES, e.getX()+", "+ e.getY());
+                MessageWindow.refresh();
             }
         });
         
@@ -160,7 +160,6 @@ public class MainWindow extends JFrame
         
         // open message window contains information
         msgwin = new MessageWindow( new Point(this.getLocation().x+this.getWidth(), this.getLocation().y) );
-        msgwin.setData( MessageWindow.COORDINATES, "120, 200");
         
         this.addMouseListener( new MouseController(this) );
         
@@ -193,6 +192,7 @@ public class MainWindow extends JFrame
         final JButton pause = new JButton(new ImageIcon("images/pause.png"));
         final JButton reset = new JButton(new ImageIcon("images/reset.png"));
         final JToggleButton grid = new JToggleButton(new ImageIcon("images/grid.png"));
+        final JButton info  = new JButton(new ImageIcon("images/loupe.png"));
         
         pause.setEnabled(false);
         reset.setEnabled(false);
@@ -201,6 +201,7 @@ public class MainWindow extends JFrame
         pause.setFocusable(false);
         reset.setFocusable(false);
         grid.setFocusable(false);
+        info.setFocusable(false);
         
         play.addActionListener( new ActionListener() 
         {
@@ -235,11 +236,24 @@ public class MainWindow extends JFrame
             }
         });
         
+        info.addActionListener( new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                showInfo = !showInfo;
+                info.setSelected(showInfo);
+                MessageWindow.getInstance().showWindow(showInfo);
+            }
+        });
+        
         toolBarMain.add(play);
         toolBarMain.add(pause);
         toolBarMain.add(reset);
         toolBarMain.addSeparator();
         toolBarMain.add(grid);
+        toolBarMain.addSeparator();
+        toolBarMain.add(info);
         
         this.add(toolBarMain, BorderLayout.PAGE_START);
         
@@ -287,8 +301,7 @@ public class MainWindow extends JFrame
                 switch (command)
                 {
                     case "circle":
-                        msgwin.setData( MessageWindow.ACTION, "Kreis erstellt an ["+ location.x +", "+ location.y +"]" );
-//                        System.out.println("Dropped a Circle at " + location);
+                        MessageWindow.setData( MessageWindow.ACTION, "Kreis erstellt ["+ location.x +", "+ location.y +"]" );
                         
                         de.engine.math.Point position = new de.engine.math.Point();
                         position.x = location.x; position.y = location.y;
@@ -304,8 +317,7 @@ public class MainWindow extends JFrame
                         break;
                         
                     case "ground":
-                        msgwin.setData( MessageWindow.ACTION, "Boden erstellt an ["+ location.x +", "+ location.y +"]" );
-//                        System.out.println("Add ground at " + location.y);
+                        MessageWindow.setData( MessageWindow.ACTION, "Boden erstellt ["+ location.x +", "+ location.y +"]" );
                         
                         scene.setGround(new Ground(location.y));
                         
@@ -370,7 +382,7 @@ public class MainWindow extends JFrame
             {
                 int x = i - viewPosition.x;
                 
-                polygon.addPoint(x, ground.function( ground.STAIRS, x) + scene.getGround().watermark);
+                polygon.addPoint(x, ground.function( ground.DOWNHILL, x) + scene.getGround().watermark);
             }
             
             polygon.addPoint(canvas.getWidth() - viewPosition.x, viewPosition.y);
@@ -394,8 +406,9 @@ public class MainWindow extends JFrame
         }
         canvas.repaint();
         
-        msgwin.setData( MessageWindow.TIMEFORDRAWING, ""+(System.currentTimeMillis() - t) );
+        MessageWindow.setData( MessageWindow.TIMEFORDRAWING, ""+(System.currentTimeMillis() - t) );
     }
+    
     
     
     // The information window shall be docked on the right corner outside of the main window
@@ -423,11 +436,7 @@ public class MainWindow extends JFrame
         }
 
         @Override
-        public void mouseExited(MouseEvent e)
-        {
-            // TODO Auto-generated method stub
-            
-        }
+        public void mouseExited(MouseEvent e) {}
 
         @Override
         public void mousePressed(MouseEvent e)

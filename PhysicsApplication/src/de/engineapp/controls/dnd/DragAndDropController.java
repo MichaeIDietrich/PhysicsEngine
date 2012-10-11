@@ -12,10 +12,12 @@ import java.io.IOException;
 import javax.swing.JComponent;
 
 import de.engine.environment.Scene;
+import de.engineapp.windows.MessageWindow;
 
 
 public class DragAndDropController extends DropTarget
 {
+    MessageWindow msgwin = null;
     
     // interface to recognize drops
     public interface DropCallback
@@ -32,6 +34,8 @@ public class DragAndDropController extends DropTarget
     
     public DragAndDropController(JComponent source, DropCallback dropCallback)
     {
+        msgwin = MessageWindow.getInstance();
+        
         this.setComponent(source);
         
         this.dropCallback = dropCallback;
@@ -64,7 +68,8 @@ public class DragAndDropController extends DropTarget
                 {
                     String command = (String) tr.getTransferData(flavors[0]);
                     
-                    System.out.println("Drop accepted.");
+                    msgwin.setData( MessageWindow.DROPPING, "akzepiert" );
+//                    System.out.println("Drop accepted.");
                     
                     if (command.equals("circle") || command.equals("square") || command.equals("ground"))
                     {
