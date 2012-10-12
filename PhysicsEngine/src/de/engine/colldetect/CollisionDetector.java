@@ -2,6 +2,8 @@ package de.engine.colldetect;
 
 import de.engine.environment.Scene;
 import de.engine.math.Util;
+import de.engine.math.Vector;
+import de.engine.objects.Circle;
 import de.engine.objects.ObjectProperties;
 
 public class CollisionDetector {
@@ -32,5 +34,10 @@ public class CollisionDetector {
 			if (needCheck(grid.scene.getObject(ops[0]), grid.scene.getObject(ops[1])))
 				System.out.println("collision");
 		}
+	}
+	
+	private CollisionData collCircles(Circle c1, Circle c2) {
+		Vector pos1 = c1.getNextPosition();
+		return null;
 	}
 }

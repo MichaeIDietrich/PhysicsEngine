@@ -1,6 +1,8 @@
 package de.engine.objects;
 
+import de.engine.environment.Timer;
 import de.engine.math.Transformation;
+import de.engine.math.Util;
 import de.engine.math.Vector;
 
 public abstract class ObjectProperties {
@@ -24,6 +26,15 @@ public abstract class ObjectProperties {
 
 	public Vector getPosition() {
 		return world_position.translation;
+	}
+
+	public Vector getNextPosition() {
+		Timer timer = Timer.getTimer();
+		return Util
+				.add(world_position.translation, new Vector(
+						(velocity.getX() * timer.deltaTime), (-9.81 / 2d
+								* timer.deltaTime + velocity.getY()
+								* timer.deltaTime)));
 	}
 
 	// TODO forces, velocity, momentum should be a vector, because of their
@@ -52,8 +63,18 @@ public abstract class ObjectProperties {
 
 	public Vector[] getAABB() {
 		Vector aabb[] = new Vector[2];
-		aabb[0] = new Vector(getPosition().getX() - radius, getPosition().getY() - radius);
-		aabb[1] = new Vector(getPosition().getX() + radius, getPosition().getY() + radius);
+		aabb[0] = new Vector(getPosition().getX() - radius, getPosition()
+				.getY() - radius);
+		aabb[1] = new Vector(getPosition().getX() + radius, getPosition()
+				.getY() + radius);
+		return aabb;
+	}
+
+	public Vector[] getNextAABB() {
+		Vector aabb[] = new Vector[2];
+		Vector nextPos = getNextPosition();
+		aabb[0] = new Vector(nextPos.getX() - radius, nextPos.getY() - radius);
+		aabb[1] = new Vector(nextPos.getX() + radius, nextPos.getY() + radius);
 		return aabb;
 	}
 
