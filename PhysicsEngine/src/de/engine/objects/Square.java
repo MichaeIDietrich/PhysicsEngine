@@ -4,63 +4,33 @@ import de.engine.math.Point;
 import de.engine.math.Util;
 import de.engine.math.Vector;
 
-public class Square extends ObjectProperties
-{
-    private Point corner;
-    
-    public Square(Vector position)
-    {
-        this.position = position;
-    }
-    
-    @Override
-    public void translation()
-    {
-        // TODO Auto-generated method stub
-        
-    }
-    
-    @Override
-    public void rotation()
-    {
-        // TODO Auto-generated method stub
-        
-    }
-    
-    @Override
-    public void destroy()
-    {
-        // TODO Auto-generated method stub
-        
-    }
-    
-    @Override
-    public double getRadius()
-    {
-        return Util.distanceToOrigin(corner);
-    }
-    
-    
-    @Override
-    public Square copy()
-    {
-     // TODO - add all properties, that need to be copied
-        Square newSquare = new Square(this.position);
-        newSquare.mass = this.mass;
-        // ...
-        
-        return newSquare;
-    }
+public class Square extends Polygon {
+	
+	public Square(Vector position, Point corner) {
+		super(position);
+		points = new Vector[4];
+		points[0] = new Vector(corner);
+		points[1] = new Vector(corner.getX(), -1 * corner.getY());
+		points[2] = new Vector(-1 * corner.getX(), -1 * corner.getY());
+		points[3] = new Vector(-1 * corner.getX(), corner.getY());
+		radius = Util.distanceToOrigin(corner);
+	}
 
-    @Override
-    public Vector[] getAABB()
-    {
-        double x = ((corner.x > 0) ? 1 : -1) * corner.x;
-        double y = ((corner.y > 0) ? 1 : -1) * corner.y;
-        
-        Vector aabb[] = new Vector[2];
-        aabb[0] = new Vector(position.getPoint().x - x, position.getPoint().y - y);
-        aabb[1] = new Vector(position.getPoint().x + x, position.getPoint().y + y);
-        return aabb;
-    }
+	@Override
+	public void translation() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void rotation() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+
+	}
 }

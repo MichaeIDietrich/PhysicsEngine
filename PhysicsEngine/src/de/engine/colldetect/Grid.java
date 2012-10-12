@@ -8,7 +8,7 @@ import de.engine.math.Vector;
 import de.engine.objects.ObjectProperties;
 
 public class Grid {
-	private double cellSize = 8;
+	private double cellSize = 50;
 	public Scene scene;
 	private HashMap<Integer, HashMap<Integer, java.util.Vector<Integer>>> objectFields;
 
@@ -30,10 +30,10 @@ public class Grid {
 
 	public void scanFieldsForObject(ObjectProperties op, Integer id) {
 		Vector[] aabb = op.getAABB();
-		int minx = (int) (aabb[0].getPoint().x / cellSize) + 1;
-		int miny = (int) (aabb[0].getPoint().y / cellSize) + 1;
-		int maxx = (int) (aabb[1].getPoint().x / cellSize) + 1;
-		int maxy = (int) (aabb[1].getPoint().y / cellSize) + 1;
+		int minx = (int) (aabb[0].getX() / cellSize) + 1;
+		int miny = (int) (aabb[0].getY() / cellSize) + 1;
+		int maxx = (int) (aabb[1].getX() / cellSize) + 1;
+		int maxy = (int) (aabb[1].getY() / cellSize) + 1;
 
 		for (int i = minx; i <= maxx; i++) {
 			for (int j = miny; j <= maxy; j++) {
