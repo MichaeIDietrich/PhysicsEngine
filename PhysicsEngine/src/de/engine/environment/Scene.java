@@ -2,9 +2,6 @@ package de.engine.environment;
 
 import java.util.ArrayList;
 
-import javax.swing.JComponent;
-
-import de.engine.math.PhysicsEngine2D;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 

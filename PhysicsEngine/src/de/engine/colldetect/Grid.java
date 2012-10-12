@@ -29,7 +29,7 @@ public class Grid {
 	}
 
 	public void scanFieldsForObject(ObjectProperties op, Integer id) {
-		Vector[] aabb = op.getAABB();
+		Vector[] aabb = op.getNextAABB();
 		int minx = (int) (aabb[0].getX() / cellSize) + 1;
 		int miny = (int) (aabb[0].getY() / cellSize) + 1;
 		int maxx = (int) (aabb[1].getX() / cellSize) + 1;
