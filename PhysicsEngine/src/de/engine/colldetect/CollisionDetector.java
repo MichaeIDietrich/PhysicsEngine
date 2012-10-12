@@ -21,7 +21,7 @@ public class CollisionDetector {
 	 * @return
 	 */
 	public static boolean needCheck(ObjectProperties pp1, ObjectProperties pp2) {
-		double distance = Util.distance(pp1.position, pp2.position);
+		double distance = Util.distance(pp1.getPosition(), pp2.getPosition());
 		double min_distance = pp1.getRadius() + pp2.getRadius();
 		return (distance <= min_distance) ? true : false;
 	}

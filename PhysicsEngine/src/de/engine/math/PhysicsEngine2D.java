@@ -1,7 +1,6 @@
 package de.engine.math;
 
 import de.engine.colldetect.CollisionDetector;
-import de.engine.colldetect.Grid;
 import de.engine.environment.Scene;
 import de.engine.objects.Circle;
 import de.engine.objects.ObjectProperties;
@@ -71,13 +70,13 @@ public class PhysicsEngine2D implements Runnable {
 			if (obj instanceof Circle) {
 				// Collision detection
 
-				oldposition = obj.position.getPoint().y;
-				obj.position.getPoint().y = -9.81 / 2d * deltaTime
-						+ obj.velocity.getPoint().y * (double) deltaTime
-						+ obj.position.getPoint().y;
+				oldposition = obj.getPosition().getY();
+				obj.getPosition()
+						.setY(-9.81 / 2d * deltaTime + obj.velocity.getY()
+								* (double) deltaTime + obj.getPosition().getY());
 
-				obj.velocity.getPoint().y = (obj.position.getPoint().y - oldposition)
-						/ deltaTime;
+				obj.velocity.setY((obj.getPosition().getY() - oldposition)
+						/ deltaTime);
 			}
 		}
 

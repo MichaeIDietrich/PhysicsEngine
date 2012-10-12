@@ -267,11 +267,12 @@ public class MainWindow extends JFrame
                         System.out.println("Dropped a Circle at " + location);
                         
                         de.engine.math.Point position = new de.engine.math.Point();
-                        position.x = location.x; position.y = location.y;
+                        position.setX(location.x);
+                        position.setY(location.y);
                         
                         Circle circle = new Circle(new Vector(position), 8);
                         circle.mass = 10;
-                        circle.position.setPoint( position );
+                        circle.getPosition().setPoint( position );
                         circle.velocity.setPoint( 0, 0 );
                         
                         scene.add( circle );
@@ -364,7 +365,7 @@ public class MainWindow extends JFrame
                 int r = (int) obj.getRadius();
                 
                 g.setColor( Color.RED );
-                g.fillOval( ((int) obj.position.getPoint().x) - r, ((int) obj.position.getPoint().y) - r, r * 2, r * 2);
+                g.fillOval( ((int) obj.getPosition().getX()) - r, ((int) obj.getPosition().getY()) - r, r * 2, r * 2);
             }
         }
         canvas.repaint();
