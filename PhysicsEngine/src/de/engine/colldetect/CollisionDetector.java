@@ -38,14 +38,6 @@ public class CollisionDetector {
 	
 	private CollisionData collCircles(Circle c1, Circle c2) {
 		Vector pos1 = c1.getNextPosition();
-		Vector pos2 = c2.getNextPosition();
-		Vector distance = Util.minus(pos1, pos2);
-		Vector normal = distance.scale(1.0d / distance.getLength());
-		CollisionData cd = new CollisionData();
-		cd.contacts = new CollisionData.Contact[1];
-		cd.contacts[0].normal = normal;
-		cd.contacts[0].point = Util.add(pos1, distance.scale((distance.getLength() - c2.getRadius()) / distance.getLength()));
-		cd.contacts[0].penetration = (c1.getRadius() + c2.getRadius() - distance.getLength()) / 2.0;
-		return cd;
+		return null;
 	}
 }

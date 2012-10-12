@@ -68,7 +68,7 @@ public class DragAndDropController extends DropTarget
                 {
                     String command = (String) tr.getTransferData(flavors[0]);
                     
-                    msgwin.setData( MessageWindow.DROPPING, "akzepiert" );
+                    MessageWindow.setData( MessageWindow.DROPPING, "akzepiert" );
 //                    System.out.println("Drop accepted.");
                     
                     if (command.equals("circle") || command.equals("square") || command.equals("ground"))
