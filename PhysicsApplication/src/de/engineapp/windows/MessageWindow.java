@@ -41,7 +41,7 @@ public class MessageWindow extends JFrame
         
         add( list );
         
-        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
         setSize( 250, 310 );
     }
     

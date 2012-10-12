@@ -97,7 +97,7 @@ public class MainWindow extends JFrame
             {
                 if (SwingUtilities.isRightMouseButton(e))
                 {
-                    MessageWindow.setData( MessageWindow.ACTION, "Rechte Maustaste gedrückt" );
+                    MessageWindow.setData( MessageWindow.ACTION, "Rechte Maustaste gedrï¿½ckt" );
                     
                     mouseOffset.x = e.getPoint().x;
                     mouseOffset.y = e.getPoint().y;
@@ -155,8 +155,6 @@ public class MainWindow extends JFrame
         
         initializeLookAndFeel();
         initializeComponents();
-        
-        scene.setCanvas( this.canvas );
         
         // open message window contains information
         msgwin = new MessageWindow( new Point(this.getLocation().x+this.getWidth(), this.getLocation().y) );
@@ -304,11 +302,12 @@ public class MainWindow extends JFrame
                         MessageWindow.setData( MessageWindow.ACTION, "Kreis erstellt ["+ location.x +", "+ location.y +"]" );
                         
                         de.engine.math.Point position = new de.engine.math.Point();
-                        position.x = location.x; position.y = location.y;
+                        position.setX(location.x);
+                        position.setY(location.y);
                         
                         Circle circle = new Circle(new Vector(position), 8);
                         circle.mass = 10;
-                        circle.position.setPoint( position );
+                        circle.getPosition().setPoint( position );
                         circle.velocity.setPoint( 0, 0 );
                         
                         scene.add( circle );
@@ -401,7 +400,7 @@ public class MainWindow extends JFrame
                 int r = (int) obj.getRadius();
                 
                 g.setColor( Color.RED );
-                g.fillOval( ((int) obj.position.getPoint().x) - r, ((int) obj.position.getPoint().y) - r, r * 2, r * 2);
+                g.fillOval( ((int) obj.getPosition().getX()) - r, ((int) obj.getPosition().getY()) - r, r * 2, r * 2);
             }
         }
         canvas.repaint();
