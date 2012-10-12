@@ -301,13 +301,10 @@ public class MainWindow extends JFrame
                     case "circle":
                         MessageWindow.setData( MessageWindow.ACTION, "Kreis erstellt ["+ location.x +", "+ location.y +"]" );
                         
-                        de.engine.math.Point position = new de.engine.math.Point();
-                        position.setX(location.x);
-                        position.setY(location.y);
-                        
-                        Circle circle = new Circle(new Vector(position), 8);
+                        Circle circle = new Circle(new Vector(location.getX(), location.getY()), 8);
                         circle.mass = 10;
-                        circle.getPosition().setPoint( position );
+                        // is it necessary?
+//                        circle.getPosition().setPoint( location.getX(), location.getY() );
                         circle.velocity.setPoint( 0, 0 );
                         
                         scene.add( circle );

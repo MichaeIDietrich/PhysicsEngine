@@ -8,8 +8,8 @@ public class Util {
 		return Math.hypot(x, y);
 	}
 
-	public static double distanceToOrigin(Point p) {
-		return Math.hypot(p.x, p.y);
+	public static double distanceToOrigin(Vector p) {
+		return Math.hypot(p.getX(), p.getY());
 	}
 	
 	public static Vector add(Vector vec1, Vector vec2) {
