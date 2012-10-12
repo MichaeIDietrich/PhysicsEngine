@@ -1,6 +1,6 @@
 package de.engine.objects;
 
-import de.engine.environment.Timer;
+import de.engine.environment.EnvironmentProperties;
 import de.engine.math.Transformation;
 import de.engine.math.Util;
 import de.engine.math.Vector;
@@ -29,12 +29,12 @@ public abstract class ObjectProperties {
 	}
 
 	public Vector getNextPosition() {
-		Timer timer = Timer.getTimer();
+		EnvironmentProperties envProps = EnvironmentProperties.getInstance();
 		return Util
 				.add(world_position.translation, new Vector(
-						(velocity.getX() * timer.deltaTime), (-9.81 / 2d
-								* timer.deltaTime + velocity.getY()
-								* timer.deltaTime)));
+						(velocity.getX() * envProps.deltaTime), (-9.81 / 2d
+								* envProps.deltaTime + velocity.getY()
+								* envProps.deltaTime)));
 	}
 
 	// TODO forces, velocity, momentum should be a vector, because of their

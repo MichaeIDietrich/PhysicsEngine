@@ -17,16 +17,27 @@
 
 package de.engine.environment;
 
-import java.util.ArrayList;
-
 import de.engine.objects.Ground;
-import de.engine.objects.ObjectProperties;
 
-public abstract class EnvironmentProperties {
+public class EnvironmentProperties {
+	
+	static EnvironmentProperties instance;
+	
+	public double deltaTime;
+	
 	public double gravitational_acceleration = -9.80665; // m/s²
 
 	// ground is unique thats why it has it's own property
 	protected Ground ground;
 
-	protected ArrayList<ObjectProperties> objects;
+	private EnvironmentProperties() {
+		deltaTime = 0.5;
+		gravitational_acceleration = -9.80665; 
+	}
+	
+	public static EnvironmentProperties getInstance() {
+		if(instance == null)
+			instance =  new EnvironmentProperties();
+		return instance;
+	}
 }
