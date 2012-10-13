@@ -5,6 +5,7 @@ import de.engine.math.Util;
 import de.engine.math.Vector;
 import de.engine.objects.Circle;
 import de.engine.objects.ObjectProperties;
+import de.engine.physics.PhysicsCalcer;
 
 public class CollisionDetector {
 
@@ -13,7 +14,7 @@ public class CollisionDetector {
 	public CollisionDetector(Scene scene) {
 		grid = new Grid(scene);
 	}
-	
+
 	/**
 	 * Einfache Überprüfung ob Kollision zwischen zwei Objekten stattfinden
 	 * könnte.
@@ -31,11 +32,22 @@ public class CollisionDetector {
 	public void checkScene() {
 		grid.scanScene();
 		for (Integer[] ops : grid.getCollisionPairs()) {
-			if (needCheck(grid.scene.getObject(ops[0]), grid.scene.getObject(ops[1])))
-				System.out.println("collision");
+			if (needCheck(grid.scene.getObject(ops[0]),
+					grid.scene.getObject(ops[1]))) {
+				if (grid.scene.getObject(ops[0]) instanceof Circle
+						&& grid.scene.getObject(ops[1]) instanceof Circle) {
+					PhysicsCalcer.calcCicles(
+							(Circle) grid.scene.getObject(ops[0]),
+							(Circle) grid.scene.getObject(ops[1]),
+							CollisionTimer.getCirclesCollTime(
+									(Circle) grid.scene.getObject(ops[0]),
+									(Circle) grid.scene.getObject(ops[1])));
+					System.out.println("collision");
+				}
+			}
 		}
 	}
-	
+
 	private CollisionData collCircles(Circle c1, Circle c2) {
 		Vector pos1 = c1.getNextPosition();
 		Vector pos2 = c2.getNextPosition();
@@ -44,8 +56,12 @@ public class CollisionDetector {
 		CollisionData cd = new CollisionData();
 		cd.contacts = new CollisionData.Contact[1];
 		cd.contacts[0].normal = normal;
-		cd.contacts[0].point = Util.add(pos1, distance.scale((distance.getLength() - c2.getRadius()) / distance.getLength()));
-		cd.contacts[0].penetration = (c1.getRadius() + c2.getRadius() - distance.getLength()) / 2.0;
+		cd.contacts[0].point = Util.add(
+				pos1,
+				distance.scale((distance.getLength() - c2.getRadius())
+						/ distance.getLength()));
+		cd.contacts[0].penetration = (c1.getRadius() + c2.getRadius() - distance
+				.getLength()) / 2.0;
 		return cd;
 	}
 }
