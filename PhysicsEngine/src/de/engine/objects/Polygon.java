@@ -61,9 +61,17 @@ public class Polygon extends ObjectProperties{
 
 	@Override
 	public ObjectProperties copy() {
-		//TODO
+		// TODO
 		Polygon newPolygon = new Polygon(getPosition());
 		return newPolygon;
 	}
+
+	
+    @Override
+    public boolean contains(double x, double y)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
 }

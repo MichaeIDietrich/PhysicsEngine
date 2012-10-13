@@ -119,4 +119,6 @@ public abstract class ObjectProperties {
 	}
 
 	public abstract ObjectProperties copy();
+
+	public abstract boolean contains(double x, double y);
 }
