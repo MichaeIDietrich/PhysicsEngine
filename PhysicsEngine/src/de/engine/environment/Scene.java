@@ -91,7 +91,10 @@ public class Scene extends EnvironmentProperties
     {
         for (ObjectProperties object : objects)
         {
-            // check for insections
+            if (object.contains(x, y))
+            {
+                return object;
+            }
         }
         
         return null;
