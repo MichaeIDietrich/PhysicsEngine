@@ -73,15 +73,15 @@ public class PhysicsEngine2D implements Runnable {
 		for (ObjectProperties obj : scene.getObjects()) {
 			if (obj instanceof Circle) {
 				// Collision detection
-
-				oldposition = obj.getPosition().getY();
-				obj.world_position.translation = obj.getNextPosition();
+				
+				obj.update();
+				//oldposition = obj.getPosition().getY();
+				//obj.world_position.translation = obj.getNextPosition();
 				//obj.getPosition().setY(
 					//	-9.81 / 2d * deltaTime + obj.velocity.getY()
 						//		* deltaTime + obj.getPosition().getY());
 
-				obj.velocity.setY((obj.getPosition().getY() - oldposition)
-						/ deltaTime);
+				//obj.velocity.setY((obj.getPosition().getY() - oldposition) / deltaTime);
 			}
 		}
 	}

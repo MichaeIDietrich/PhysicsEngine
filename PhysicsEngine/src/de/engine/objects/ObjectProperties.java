@@ -10,6 +10,8 @@ public abstract class ObjectProperties {
 		STEEL, ALUMINIUM, NACL, RUBBER
 	};
 
+	private boolean updated;
+	
 	// will get incremented every time it's used, to apply unique id's to each
 	// of the new objects
 	public static int idCounter = 0;
@@ -28,11 +30,18 @@ public abstract class ObjectProperties {
 		return world_position.translation;
 	}
 
+	public Vector getPosition(double time) {
+		EnvironmentProperties envProps = EnvironmentProperties.getInstance();
+		return Util.add(world_position.translation, new Vector(
+				(velocity.getX() * time), (envProps.gravitational_acceleration
+						/ 2d * time + velocity.getY() * time)));
+	}
+
 	public Vector getNextPosition() {
 		EnvironmentProperties envProps = EnvironmentProperties.getInstance();
-		return Util
-				.add(world_position.translation, new Vector(
-						(velocity.getX() * envProps.deltaTime), (-9.81 / 2d
+		return Util.add(world_position.translation,
+				new Vector((velocity.getX() * envProps.deltaTime),
+						(envProps.gravitational_acceleration / 2d
 								* envProps.deltaTime + velocity.getY()
 								* envProps.deltaTime)));
 	}
@@ -84,6 +93,29 @@ public abstract class ObjectProperties {
 
 	public int getId() {
 		return id;
+	}
+	
+	public void update() {
+		if(updated)
+			updated = false;
+		else {
+			double oldposition = getPosition().getY();
+			world_position.translation = getNextPosition();
+			//obj.getPosition().setY(
+				//	-9.81 / 2d * deltaTime + obj.velocity.getY()
+					//		* deltaTime + obj.getPosition().getY());
+
+			velocity.setY((getPosition().getY() - oldposition)
+					/ EnvironmentProperties.getInstance().deltaTime);
+		}
+	}
+	
+	public void update(double time) {
+		updated = true;
+		double oldposition = getPosition().getY();
+		world_position.translation = getPosition(time);
+		velocity.setY((getPosition().getY() - oldposition)
+				/ time);
 	}
 
 	public abstract ObjectProperties copy();
