@@ -1,6 +1,7 @@
 package de.engineapp;
 
 import de.engine.math.PhysicsEngine2D;
+import de.engineapp.windows.MessageWindow;
 
 public class Physics
 {
@@ -29,8 +30,14 @@ public class Physics
     public void start()
     {
         
+        
         worker = new Thread()
         {
+            // necessary to count frames per secound
+            long fpsCounter = 0;
+            long timeCounter = 0;
+            
+            
             @Override
             public void run()
             {
@@ -40,6 +47,7 @@ public class Physics
                     
                     engine.calculateNextFrame( deltaTime/1000d );
                     finishedCallback.done();
+                    
                     
                     t = System.currentTimeMillis() - t;
                     
@@ -57,7 +65,20 @@ public class Physics
                         // it was rejected by the exception
                         this.interrupt();
                     }
+                    
+                    
+                    fpsCounter++;
+                    if (System.currentTimeMillis() >= timeCounter)
+                    {
+                        timeCounter = System.currentTimeMillis() + 1000;
+                        MessageWindow.setData(MessageWindow.FPS, "" + fpsCounter);
+                        MessageWindow.refresh();
+                        fpsCounter = 0;
+                    }
                 }
+                
+                MessageWindow.setData(MessageWindow.FPS, "0");
+                MessageWindow.refresh();
             }
         };
         

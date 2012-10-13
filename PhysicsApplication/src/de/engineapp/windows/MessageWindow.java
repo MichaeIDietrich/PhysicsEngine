@@ -11,14 +11,19 @@ import javax.swing.JList;
 
 public class MessageWindow extends JFrame
 {
+    private static final long serialVersionUID = 1L;
+    
+    
     private static MessageWindow instance;
     
     public final static int COORDINATES    = 0;
     public final static int TIMEFORDRAWING = 1;
     public final static int ACTION         = 2;
     public final static int DROPPING       = 3;
+    public final static int VELOCITY       = 4;
+    public final static int POSITION       = 5;
+    public final static int FPS            = 6;
     
-    private static final long serialVersionUID = 1L;
     private static HashMap<Integer, String>  hmap = null;
     private static DefaultListModel<String> model = null;
     private JList<String>             list = null;
@@ -46,22 +51,45 @@ public class MessageWindow extends JFrame
     }
     
     
-    public static void setData( Integer typ, String data )
+    public static void setData( Integer type, String data )
     {
-        switch( typ )
+        switch( type )
         {
-            case 0: hmap.put( typ, "x-y-Koordinaten: " + data);
-                    isChanged = true;
-                    break;
-            case 1: hmap.put( typ, "zeichne Objekte: " + data + " ms");
-                    isChanged = true;
-                    break;
-            case 2: hmap.put( typ, "letzte Aktion: "   + data );
-                    isChanged = true;
-                    break;
-            case 3: hmap.put( typ, "Drop " + data );
-                    isChanged = true;
-                    break;
+            case COORDINATES:
+                hmap.put( type, "x-y-Koordinaten: " + data);
+                isChanged = true;
+                break;
+                
+            case TIMEFORDRAWING:
+                hmap.put( type, "zeichne Objekte: " + data + " ms");
+                isChanged = true;
+                break;
+                
+            case ACTION:
+                hmap.put( type, "letzte Aktion: "   + data );
+                isChanged = true;
+                break;
+                
+            case DROPPING:
+                hmap.put( type, "Drop " + data );
+                isChanged = true;
+                break;
+                
+            case VELOCITY:
+                hmap.put( type, "Geschwindigkeit: " + data );
+                isChanged = true;
+                break;
+                
+            case POSITION:
+                hmap.put( type, "Position: " + data );
+                isChanged = true;
+                break;
+                
+            case FPS:
+                hmap.put( type, "FPS: " + data );
+                isChanged = true;
+                break;
+                
             default: ;
         }
     }
@@ -73,9 +101,13 @@ public class MessageWindow extends JFrame
         {
             model.clear();
             
-            for(int i=0; hmap.get(i)!=null; i++)
+//            for(int i=0; hmap.get(i)!=null; i++)
+//            {
+//                model.addElement( hmap.get(i) );
+//            }
+            for (int index : hmap.keySet())
             {
-                model.addElement( hmap.get(i) );
+                model.addElement(hmap.get(index));
             }
             
             isChanged = false;
