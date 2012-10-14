@@ -42,7 +42,7 @@ public class CollisionDetector {
 							CollisionTimer.getCirclesCollTime(
 									(Circle) grid.scene.getObject(ops[0]),
 									(Circle) grid.scene.getObject(ops[1])));
-					System.out.println("collision");
+					//System.out.println("collision");
 				}
 			}
 		}
