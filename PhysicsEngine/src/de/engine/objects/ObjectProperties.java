@@ -97,23 +97,18 @@ public abstract class ObjectProperties {
 		if(updated)
 			updated = false;
 		else {
-			double oldposition = getPosition().getY();
 			world_position.translation = getNextPosition();
 			//obj.getPosition().setY(
 				//	-9.81 / 2d * deltaTime + obj.velocity.getY()
 					//		* deltaTime + obj.getPosition().getY());
-
-			velocity.setY((getPosition().getY() - oldposition)
-					/ EnvProps.deltaTime());
+			velocity.add(0, EnvProps.grav_acc() / 2d * EnvProps.deltaTime());
 		}
 	}
 	
 	public void update(double time) {
 		updated = true;
-		double oldposition = getPosition().getY();
 		world_position.translation = getPosition(time);
-		velocity.setY((getPosition().getY() - oldposition)
-				/ time);
+		velocity.add(0, EnvProps.grav_acc() / 2d * time);
 	}
 
 	public abstract ObjectProperties copy();
