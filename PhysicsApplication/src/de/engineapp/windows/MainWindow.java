@@ -65,6 +65,15 @@ public class MainWindow extends JFrame
     
     private MessageWindow msgwin;
     
+    private JToolBar toolBarMain;
+    private JToolBar toolBarObjects;
+    
+    // standard mouse coordinates inside the canvas
+    private static int mousex = 0;
+    private static int mousey = 0;
+    
+    // there is a need for relative mouse coordinates maybe
+
     
     public MainWindow()
     {
@@ -110,6 +119,12 @@ public class MainWindow extends JFrame
             @Override
             public void mouseDragged(MouseEvent e)
             {
+                if (SwingUtilities.isLeftMouseButton(e))
+                {
+                    MessageWindow.setData( MessageWindow.ACTION, "Linke Maustaste gedrückt" );
+                    MessageWindow.refresh();
+                }
+                
                 if (SwingUtilities.isRightMouseButton(e))
                 {
                     viewPosition.translate(e.getX() - mouseOffset.x, e.getY() - mouseOffset.y);
@@ -119,7 +134,9 @@ public class MainWindow extends JFrame
                     // refresh canvas
                     drawObjects();
                     
-                    MessageWindow.setData( MessageWindow.COORDINATES, e.getX()+", "+ e.getY() );
+                    MainWindow.mousex = e.getX();
+                    MainWindow.mousey = e.getY();
+                    MessageWindow.setData( MessageWindow.COORDINATES, getRelativeMouseCoordinates() );
                     MessageWindow.refresh();
                 }
             }
@@ -127,7 +144,9 @@ public class MainWindow extends JFrame
             @Override
             public void mouseMoved(MouseEvent e)
             {
-                MessageWindow.setData( MessageWindow.COORDINATES, e.getX()+", "+ e.getY());
+                MainWindow.mousex = e.getX();
+                MainWindow.mousey = e.getY();
+                MessageWindow.setData( MessageWindow.COORDINATES, getRelativeMouseCoordinates() );
                 MessageWindow.refresh();
             }
         });
@@ -184,7 +203,7 @@ public class MainWindow extends JFrame
     private void initializeComponents()
     {
         // set up upper toolbar
-        JToolBar toolBarMain = new JToolBar();
+        toolBarMain = new JToolBar();
         toolBarMain.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         toolBarMain.setFloatable(false);
         
@@ -259,7 +278,7 @@ public class MainWindow extends JFrame
         
         
         // set up left toolbar, enabling drag'n'drop objects
-        JToolBar toolBarObjects = new JToolBar(JToolBar.VERTICAL);
+        toolBarObjects = new JToolBar(JToolBar.VERTICAL);
         toolBarObjects.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         toolBarObjects.setFloatable(false);
         
@@ -409,6 +428,18 @@ public class MainWindow extends JFrame
         MessageWindow.setData( MessageWindow.TIMEFORDRAWING, ""+(System.currentTimeMillis() - t) );
     }
     
+    
+    public Vector getRelativeMouseCoordinates()
+    {
+        Vector vector = null;
+        if (viewPosition!=null && canvas!=null && toolBarMain!=null && toolBarObjects!=null)
+        {
+            vector = new Vector( 
+                     this.mousex - viewPosition.x - toolBarObjects.getWidth() - 8, 
+                    -this.mousey + viewPosition.y - toolBarMain.getHeight()   + 84 + canvas.getHeight() );
+        }
+        return vector;
+    }
     
     
     // The information window shall be docked on the right corner outside of the main window

@@ -8,6 +8,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
 
+import de.engine.math.Vector;
+
 
 public class MessageWindow extends JFrame
 {
@@ -46,25 +48,26 @@ public class MessageWindow extends JFrame
     }
     
     
-    public static void setData( Integer typ, String data )
+    public static void setData( Integer typ, Object data )
     {
         switch( typ )
         {
-            case 0: hmap.put( typ, "x-y-Koordinaten: " + data);
+            case 0: hmap.put( typ, "x-y-Koordinaten: " + ((Vector)data).getPoint().x +", "+ ((Vector)data).getPoint().y);
                     isChanged = true;
                     break;
-            case 1: hmap.put( typ, "zeichne Objekte: " + data + " ms");
+            case 1: hmap.put( typ, "zeichne Objekte: " + (String)data + " ms");
                     isChanged = true;
                     break;
-            case 2: hmap.put( typ, "letzte Aktion: "   + data );
+            case 2: hmap.put( typ, "letzte Aktion: "   + (String)data );
                     isChanged = true;
                     break;
-            case 3: hmap.put( typ, "Drop " + data );
+            case 3: hmap.put( typ, "Drop " + (String)data );
                     isChanged = true;
                     break;
             default: ;
         }
     }
+
     
     
     public static void refresh()
