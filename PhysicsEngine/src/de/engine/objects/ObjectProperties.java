@@ -32,15 +32,15 @@ public abstract class ObjectProperties {
 
 	public Vector getPosition(double time) {
 		return Util.add(world_position.translation, new Vector(
-				(velocity.getX() * time), (EnvProps.grav_acc()
-						/ 2d * time + velocity.getY() * time)));
+				(velocity.getX() * time), ((EnvProps.grav_acc()
+						/ 2d * time + velocity.getY()) * time)));
 	}
 
 	public Vector getNextPosition() {
 		return Util.add(world_position.translation,
 				new Vector((velocity.getX() * EnvProps.deltaTime()),
-						(EnvProps.grav_acc() / 2d
-								* EnvProps.deltaTime() + velocity.getY()
+						((EnvProps.grav_acc() / 2d
+								* EnvProps.deltaTime() + velocity.getY())
 								* EnvProps.deltaTime())));
 	}
 
