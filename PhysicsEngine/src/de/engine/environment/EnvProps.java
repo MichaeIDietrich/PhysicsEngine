@@ -19,10 +19,10 @@ package de.engine.environment;
 
 import de.engine.objects.Ground;
 
-public class EnvironmentProperties
+public class EnvProps
 {
     
-    static EnvironmentProperties instance;
+    static EnvProps instance;
     
     public double deltaTime;
     
@@ -31,16 +31,28 @@ public class EnvironmentProperties
     // ground is unique thats why it has it's own property
     protected Ground ground;
     
-    private EnvironmentProperties()
+    private EnvProps()
     {
         deltaTime = 0.5;
         gravitational_acceleration = -9.80665;
     }
     
-    public static EnvironmentProperties getInstance()
+    public static EnvProps getInstance()
     {
         if (instance == null)
-            instance = new EnvironmentProperties();
+            instance = new EnvProps();
         return instance;
+    }
+    
+    public static double deltaTime() {
+        return getInstance().deltaTime;
+    }
+    
+    public static void deltaTime(double deltaTime) {
+        getInstance().deltaTime = deltaTime;
+    }
+
+    public static double grav_acc() {
+        return getInstance().gravitational_acceleration;
     }
 }
