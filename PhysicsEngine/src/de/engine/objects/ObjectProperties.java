@@ -1,6 +1,6 @@
 package de.engine.objects;
 
-import de.engine.environment.EnvironmentProperties;
+import de.engine.environment.EnvProps;
 import de.engine.math.Transformation;
 import de.engine.math.Util;
 import de.engine.math.Vector;
@@ -31,19 +31,17 @@ public abstract class ObjectProperties {
 	}
 
 	public Vector getPosition(double time) {
-		EnvironmentProperties envProps = EnvironmentProperties.getInstance();
 		return Util.add(world_position.translation, new Vector(
-				(velocity.getX() * time), (envProps.gravitational_acceleration
+				(velocity.getX() * time), (EnvProps.grav_acc()
 						/ 2d * time + velocity.getY() * time)));
 	}
 
 	public Vector getNextPosition() {
-		EnvironmentProperties envProps = EnvironmentProperties.getInstance();
 		return Util.add(world_position.translation,
-				new Vector((velocity.getX() * envProps.deltaTime),
-						(envProps.gravitational_acceleration / 2d
-								* envProps.deltaTime + velocity.getY()
-								* envProps.deltaTime)));
+				new Vector((velocity.getX() * EnvProps.deltaTime()),
+						(EnvProps.grav_acc() / 2d
+								* EnvProps.deltaTime() + velocity.getY()
+								* EnvProps.deltaTime())));
 	}
 
 	// TODO forces, velocity, momentum should be a vector, because of their
@@ -106,7 +104,7 @@ public abstract class ObjectProperties {
 					//		* deltaTime + obj.getPosition().getY());
 
 			velocity.setY((getPosition().getY() - oldposition)
-					/ EnvironmentProperties.getInstance().deltaTime);
+					/ EnvProps.deltaTime());
 		}
 	}
 	
@@ -120,5 +118,5 @@ public abstract class ObjectProperties {
 
 	public abstract ObjectProperties copy();
 
-	public abstract boolean contains(double x, double y);
+    public abstract boolean contains(double x, double y);
 }

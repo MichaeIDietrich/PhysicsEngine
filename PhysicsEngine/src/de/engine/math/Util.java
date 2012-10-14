@@ -20,6 +20,11 @@ public class Util {
 		return new Vector(vec1.getX() - vec2.getX(), vec1.getY() - vec2.getY());
 	}
 	
+	public static Vector scale(Vector v, double s)
+    {
+	    return new Vector(v.getX() * s,  v.getY() * s);
+    }
+	
 	public static double scalarProduct(Vector vec1, Vector vec2) {
 		return vec1.getX() * vec2.getX() + vec1.getY() * vec2.getY();
 	}

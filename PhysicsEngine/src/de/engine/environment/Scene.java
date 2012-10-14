@@ -46,23 +46,23 @@ public class Scene
     
     public void setGround(Ground ground)
     {
-        EnvironmentProperties.getInstance().ground = ground;
+        EnvProps.getInstance().ground = ground;
     }
     
     public Ground getGround()
     {
-        return EnvironmentProperties.getInstance().ground;
+        return EnvProps.getInstance().ground;
     }
     
     public void removeGround()
     {
-        EnvironmentProperties.getInstance().ground = null;
+        EnvProps.getInstance().ground = null;
     }
     
     public void removeAll()
     {
         this.objects.clear();
-        EnvironmentProperties.getInstance().ground = null;
+        EnvProps.getInstance().ground = null;
     }
     
     public Scene copy()

@@ -2,16 +2,17 @@ package de.engine.math;
 
 public class Vector
 {
+    private boolean calcLength;
     private double length;
     
     private double x;
     private double y;
     
-    
     public Vector()
     {
         x = 0.0;
         y = 0.0;
+        calcLength = true;
         length = 0.0;
     }
     
@@ -19,7 +20,7 @@ public class Vector
     {
         this.x = x;
         this.y = y;
-        length = Util.distanceToOrigin(this);
+        calcLength = false;
     }
     
     public double getX()
@@ -35,29 +36,70 @@ public class Vector
     public void setX(double x)
     {
         this.x = x;
+        calcLength = false;
         
     }
     
     public void setY(double y)
     {
         this.y = y;
+        calcLength = false;
     }
     
     public void setPoint(double x, double y)
     {
         this.x = x;
         this.y = y;
-        length = Util.distanceToOrigin(this);
+        calcLength = false;
     }
     
     public double getLength()
     {
+        if (!calcLength)
+        {
+            length = Util.distanceToOrigin(this);
+            calcLength = true;
+        }
         return length;
+    }
+    
+    public Vector add(Vector v)
+    {
+        x += v.x;
+        y += v.y;
+        calcLength = false;
+        return this;
+    }
+    
+    public Vector add(double x, double y)
+    {
+        this.x += x;
+        this.y += y;
+        calcLength = false;
+        return this;
+    }
+    
+    public Vector minus(Vector v)
+    {
+        x -= v.x;
+        y -= v.y;
+        calcLength = false;
+        return this;
+    }
+    
+    public Vector minus(double x, double y)
+    {
+        this.x -= x;
+        this.y -= y;
+        calcLength = false;
+        return this;
     }
     
     public Vector scale(double s)
     {
-        return new Vector(x * s, y * s);
+        x *= s;
+        y *= s;
+        return this;
     }
     
     public Vector getNormalVector()
@@ -68,6 +110,6 @@ public class Vector
     public Vector getUnitVector()
     {
         double scale = 1 / length;
-        return this.scale(scale);
+        return Util.scale(this, scale);
     }
 }

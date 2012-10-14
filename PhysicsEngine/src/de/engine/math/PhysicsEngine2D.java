@@ -1,7 +1,7 @@
 package de.engine.math;
 
 import de.engine.colldetect.CollisionDetector;
-import de.engine.environment.EnvironmentProperties;
+import de.engine.environment.EnvProps;
 import de.engine.environment.Scene;
 import de.engine.objects.Circle;
 import de.engine.objects.ObjectProperties;
@@ -32,7 +32,7 @@ public class PhysicsEngine2D {
 
 	// here starts the entry point for all the physical calculation
 	public void calculateNextFrame(double deltaTime) {
-		EnvironmentProperties.getInstance().deltaTime = deltaTime;
+		EnvProps.deltaTime(deltaTime);
 		double oldposition = 0;
 
 		collDetector.checkScene();
