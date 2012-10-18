@@ -34,15 +34,19 @@ import de.engine.environment.Scene;
 import de.engine.math.PhysicsEngine2D;
 import de.engine.math.Util;
 import de.engine.math.Vector;
-import de.engine.objects.Circle;
-import de.engine.objects.Ground;
+//import de.engine.objects.Circle;
+//import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.Configuration;
 import de.engineapp.Physics;
+import de.engineapp.PresentationModel;
 import de.engineapp.controls.Canvas;
 import de.engineapp.controls.DragButton;
 import de.engineapp.controls.ZoomSlider;
 import de.engineapp.controls.dnd.DragAndDropController;
+import de.engineapp.visual.Circle;
+import de.engineapp.visual.Ground;
+import de.engineapp.visual.IObject;
 
 
 public class MainWindow extends JFrame
@@ -54,17 +58,19 @@ public class MainWindow extends JFrame
     
     private final static RenderingHints ANTIALIAS = new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
      
+    private PresentationModel pModel = null;
+    
     private Canvas canvas;
     
     
     /** stores the navigation offset (navigation by the use of the right mouse button) */
-    private Point viewPosition = new Point();
+    /*private Point viewOffset = new Point();
     
     private Physics workingThread = null;
     
     private PhysicsEngine2D physicsEngine2D = null;
     private Scene scene = null;
-    private ObjectProperties selectedObject = null;
+    private ObjectProperties selectedObject = null;*/
     
     private MessageWindow msgwin;
     
@@ -79,13 +85,15 @@ public class MainWindow extends JFrame
     {
         super("Physics Engine");
         
+        pModel = new PresentationModel();
+        
         // Free objects (if necessary) before this application ends
         this.addWindowListener(new WindowAdapter()
         {
             @Override
             public void windowClosing(WindowEvent e)
             {
-                workingThread.pause();
+                pModel.getPhysicsState().pause();
                 MainWindow.this.dispose();
                 MessageWindow.getInstance().dispose();
                 Configuration.save();
@@ -97,27 +105,28 @@ public class MainWindow extends JFrame
         this.setLocationRelativeTo(null);
         
         
-        physicsEngine2D = new PhysicsEngine2D();
-        scene = new Scene();
-        physicsEngine2D.setScene( scene );
+        pModel.setPhysicsEngine2D(new PhysicsEngine2D());
+        pModel.setScene(new Scene());
         
-        workingThread = new Physics(physicsEngine2D, 1000L / 30L, new Physics.FinishedCallback()
+        pModel.setPhysicsState(new Physics(pModel.getPhysicsEngine2D(), 1000L / 30L, new Physics.FinishedCallback()
         {
             
             @Override
             public void done()
             {
-                if (selectedObject != null)
+                ObjectProperties selObject = pModel.getSelectedObject();
+                
+                if (selObject != null)
                 {
-                    MessageWindow.setData(MessageWindow.VELOCITY, selectedObject.velocity.getX() + ", " + selectedObject.velocity.getY());
+                    MessageWindow.setData(MessageWindow.VELOCITY, selObject.velocity.getX() + ", " + selObject.velocity.getY());
                     MessageWindow.refresh();
-                    MessageWindow.setData(MessageWindow.POSITION, selectedObject.getPosition().getX() + ", " + selectedObject.getPosition().getY());
+                    MessageWindow.setData(MessageWindow.POSITION, selObject.getPosition().getX() + ", " + selObject.getPosition().getY());
                     MessageWindow.refresh();
                 }
                 
                 renderObjects();
             }
-        });
+        }));
         
         
         initializeLookAndFeel();
@@ -176,7 +185,7 @@ public class MainWindow extends JFrame
             {
                 play.setEnabled( false );
                 pause.setEnabled( true );
-                workingThread.start();
+                pModel.getPhysicsState().start();
             }
         });
         
@@ -187,7 +196,7 @@ public class MainWindow extends JFrame
             {
                 pause.setEnabled( false );
                 play.setEnabled(   true );
-                workingThread.pause();
+                pModel.getPhysicsState().pause();
             }
         });
         
@@ -222,13 +231,13 @@ public class MainWindow extends JFrame
 //        }
         
         
-        final ZoomSlider slider = new ZoomSlider(config.getZoom());
+        final ZoomSlider slider = new ZoomSlider(pModel.getZoom());
         slider.addChangeListener(new ChangeListener()
         {
             @Override
             public void stateChanged(ChangeEvent e)
             {
-                config.setZoom(slider.getValue());
+                pModel.setZoom(slider.getValue());
                 renderObjects();
             }
         });
@@ -300,10 +309,7 @@ public class MainWindow extends JFrame
             @Override
             public void drop(String command, Point location)
             {
-                // transform location
-                
-//                location = new Point((int) (location.x * config.getZoom()) - viewPosition.x,
-//                                    -(int) (location.y * config.getZoom()) + viewPosition.y + canvas.getHeight());
+                // transformed location
                 Vector vector = toTransformedVector(location);
                 
                 switch (command)
@@ -311,16 +317,15 @@ public class MainWindow extends JFrame
                     case "circle":
                         MessageWindow.setData( MessageWindow.ACTION, "Kreis erstellt ["+ location.x +", "+ location.y +"]" );
                         
-                        Circle circle = new Circle(vector, 8);
+                        Circle circle = new Circle(pModel, vector, 8);
                         circle.mass = 10;
                         // is it necessary?
 //                        circle.setPosition( vector );
                         circle.velocity.setPoint( 0, 0 );
                         
-                        scene.add( circle );
+                        pModel.addObject( circle );
                         
                         clearPointingVector();
-                        selectedObject = circle;
                         
                         renderObjects();
                         break;
@@ -328,7 +333,7 @@ public class MainWindow extends JFrame
                     case "ground":
                         MessageWindow.setData( MessageWindow.ACTION, "Boden erstellt ["+ location.x +", "+ location.y +"]" );
                         
-                        scene.setGround(new Ground((int) vector.getY()));
+                        pModel.setGround(new Ground(pModel, (int) vector.getY()));
                         
                         renderObjects();
                         break;
@@ -350,8 +355,8 @@ public class MainWindow extends JFrame
                 if (SwingUtilities.isLeftMouseButton(e))
                 {
                     Vector v = toTransformedVector(e.getPoint());
-                    selectedObject = scene.getObjectFromPoint(v.getX(), v.getY());
-                    MessageWindow.setData( MessageWindow.ACTION, "Auswahl: " + selectedObject );
+                    pModel.setSelectedObject(pModel.getScene().getObjectFromPoint(v.getX(), v.getY()));
+                    MessageWindow.setData( MessageWindow.ACTION, "Auswahl: " + pModel.getSelectedObject() );
                     MessageWindow.refresh();
                     System.out.println(v.getX() + "; " +v.getY());
                     
@@ -396,7 +401,7 @@ public class MainWindow extends JFrame
                 
                 if (SwingUtilities.isRightMouseButton(e))
                 {
-                    viewPosition.translate(e.getX() - mouseOffset.x, e.getY() - mouseOffset.y);
+                    pModel.moveViewOffset(e.getX() - mouseOffset.x, e.getY() - mouseOffset.y);
                     mouseOffset.x = e.getPoint().x;
                     mouseOffset.y = e.getPoint().y;
                     
@@ -417,7 +422,7 @@ public class MainWindow extends JFrame
         });
         
         
-        dndController.setScene(scene);
+        dndController.setScene(pModel.getScene());
         
         canvas.setBackground(Color.WHITE);
         canvas.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED ) );
@@ -440,75 +445,57 @@ public class MainWindow extends JFrame
         g.addRenderingHints( ANTIALIAS );
         
         // translate the scene to the point you have navigated to before
-        g.translate(viewPosition.x, viewPosition.y);
-        g.scale(config.getZoom(), -config.getZoom());
+        g.translate(pModel.getViewOffsetX(), pModel.getViewOffsetY());
+        g.scale(pModel.getZoom(), -pModel.getZoom());
         g.translate(0, -canvas.getHeight());
         
         
         if (config.isShowGrid())
         {
             // grid will be global later and not only around the origin
-            g.setStroke(new BasicStroke(1 / (float) config.getZoom()));
+            g.setStroke(new BasicStroke(1 / (float) pModel.getZoom()));
             g.setColor(Color.BLACK);
             for (int i = -15; i < 16; i++)
             {
                 g.drawLine(i * 50, -800, i * 50, 800);
                 g.drawLine(-800, i * 50, 800, i * 50);
             }
-            g.setStroke(new BasicStroke(3 / (float) config.getZoom()));
+            g.setStroke(new BasicStroke(3 / (float) pModel.getZoom()));
             g.drawLine(0, -800, 0, 800);
             g.drawLine(-800, 0, 800, 0);
-            g.setStroke(new BasicStroke(1 / (float) config.getZoom()));
+            g.setStroke(new BasicStroke(1 / (float) pModel.getZoom()));
         }
         
         
-        if (scene.getGround() != null)
+        if (pModel.getScene().getGround() != null)
         {
-            Ground ground = scene.getGround();
-            
-            // TODO - this should probably be cached if possible
-            Polygon polygon = new Polygon();
-            
-            for (int i = 0; i < canvas.getWidth() / config.getZoom(); i++)
+            ((IObject) pModel.getScene().getGround()).render(g);
+        }
+        
+        
+        for (ObjectProperties obj : pModel.getScene().getObjects())
+        {
+            if (obj instanceof IObject)
             {
-                int x = i - (int) (viewPosition.x / config.getZoom());
-                
-                polygon.addPoint(x, ground.function( ground.DOWNHILL, x) + scene.getGround().watermark);
+                ((IObject) obj).render(g);
             }
-            
-            polygon.addPoint((int) ((canvas.getWidth() - viewPosition.x) / config.getZoom()), viewPosition.y);
-            polygon.addPoint((int) (-viewPosition.x / config.getZoom()), viewPosition.y);
-            
-            g.setColor( ground.coreColor );
-            g.fillPolygon(polygon);
-            g.setColor( ground.surfaceColor );
-            g.drawPolygon(polygon);
-        }
-        
-        
-        for (ObjectProperties obj : scene.getObjects())
-        {
-            if (obj instanceof Circle)
+            else
             {
-                int r = (int) obj.getRadius();
-                
-                g.setColor( Color.RED );
-                g.fillOval( ((int) obj.getPosition().getX()) - r, ((int) obj.getPosition().getY()) - r, r * 2, r * 2);
+                System.err.println("Cannot render object: " + obj);
             }
         }
         
         
-        if ( selectedObject!=null && (point_2_x != Integer.MAX_VALUE) && (point_2_y != Integer.MAX_VALUE))
+        if ( pModel.getSelectedObject()!=null && (point_2_x != Integer.MAX_VALUE) && (point_2_y != Integer.MAX_VALUE))
         {
-            Vector vec = selectedObject.world_position.translation;
+            Vector vec = pModel.getSelectedObject().world_position.translation;
             
             // Begins drawing the force-arrow
             Vector from = new Vector( vec.getX(), vec.getY() );
-            Vector   to = new Vector( vec.getX()+selectedObject.velocity.getX(), vec.getY()+selectedObject.velocity.getY() );
+            Vector   to = new Vector( vec.getX()+pModel.getSelectedObject().velocity.getX(), vec.getY()+pModel.getSelectedObject().velocity.getY() );
 //            Vector   to = new Vector( point_2_x, point_2_y );
             
-            System.out.println( selectedObject.velocity.getX() );
-            System.out.println( selectedObject.velocity.getY() );
+            System.out.println( pModel.getSelectedObject().velocity.getX() );
             
             int arrowlength    = (int) Util.distance( from, to );
             Polygon poly_arrow = createArrowPolygon( arrowlength );
@@ -531,8 +518,8 @@ public class MainWindow extends JFrame
     private Vector toTransformedVector(Point point)
     {
         return new Vector(
-                 (point.x - viewPosition.x) / config.getZoom(),
-                (-point.y + viewPosition.y) / config.getZoom() + canvas.getHeight()
+                 (point.x - pModel.getViewOffsetX()) / pModel.getZoom(),
+                (-point.y + pModel.getViewOffsetY()) / pModel.getZoom() + canvas.getHeight()
         );
     }
     

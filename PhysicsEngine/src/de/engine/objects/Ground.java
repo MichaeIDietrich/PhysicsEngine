@@ -1,30 +1,18 @@
 package de.engine.objects;
 
-import java.awt.Color;
-
 public class Ground //extends ObjectProperties
 {
     public int     watermark;
-    public Color surfaceColor;
-    public Color   coreColor;
     
     public final int HILLANDVALLEY = 1;
     public final int DOWNHILL      = 2;
     public final int STAIRS        = 3;
-   
-    public final Color GRASS_GREEN_LIGHT = new Color( 052, 158, 052 );
-    public final Color GRASS_GREEN       = new Color( 032, 128, 032 );
-    public final Color BITTER_ORANGE     = new Color( 228, 168, 040 );
-    public final Color EARTH_BROWN       = new Color( 100, 48, 032 );
-    public final Color FREAKY_GREEN      = new Color( 128, 164, 032 );
-    public final Color DAAAARK_GREY      = new Color( 20, 20, 20 );
-    public final Color LIGHT_BLUE        = new Color( 90, 140, 220 );
     
     
     public Ground(int watermark)
     {
-        this.surfaceColor = Color.GRAY;
-        this.coreColor   = this.BITTER_ORANGE;
+//        this.surfaceColor = Color.GRAY;
+//        this.coreColor   = this.BITTER_ORANGE;
         this.watermark = watermark;
     }
     
@@ -44,8 +32,8 @@ public class Ground //extends ObjectProperties
     // TODO - will be replaced by something dynamic later
     private int function_hill_valley(int i)
     {
-        this.surfaceColor = Color.GRAY;
-        this.coreColor    = this.BITTER_ORANGE;
+//        this.surfaceColor = Color.GRAY;
+//        this.coreColor    = this.BITTER_ORANGE;
         
         // if positive, a hill will drawn; if negative the hill will be a valley
         int phase = -1;
@@ -58,8 +46,8 @@ public class Ground //extends ObjectProperties
     
     private int function_downhill(int i)
     {
-        this.surfaceColor = this.GRASS_GREEN;
-        this.coreColor    = this.FREAKY_GREEN;
+//        this.surfaceColor = this.GRASS_GREEN;
+//        this.coreColor    = this.FREAKY_GREEN;
         
         // if positive, a hill will drawn; if negative the hill will be a valley
         int phase = -1;
@@ -74,8 +62,8 @@ public class Ground //extends ObjectProperties
     
     private int function_stairs(int i)
     {
-        this.surfaceColor = this.DAAAARK_GREY;
-        this.coreColor    = this.LIGHT_BLUE;
+//        this.surfaceColor = this.DAAAARK_GREY;
+//        this.coreColor    = this.LIGHT_BLUE;
 
         // stairs 
         int stairs = 12;
