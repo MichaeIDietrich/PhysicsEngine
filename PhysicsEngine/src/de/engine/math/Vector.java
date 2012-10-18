@@ -15,8 +15,7 @@ public class Vector
         calcLength = true;
         length = 0.0;
     }
-    
-    public Vector(double x, double y)
+        public Vector(double x, double y)
     {
         this.x = x;
         this.y = y;

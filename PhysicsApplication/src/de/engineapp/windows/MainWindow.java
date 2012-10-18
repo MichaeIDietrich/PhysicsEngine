@@ -9,6 +9,8 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -74,6 +76,7 @@ public class MainWindow extends JFrame
     private int point_2_x = Integer.MAX_VALUE;
     private int point_2_y = Integer.MAX_VALUE;
     
+    private KeyEvent keyPressed = null;
     
     public MainWindow()
     {
@@ -375,6 +378,8 @@ public class MainWindow extends JFrame
                     
                     mouseOffset.x = e.getPoint().x;
                     mouseOffset.y = e.getPoint().y;
+                    
+                    canvas.requestFocusInWindow();
                 }
             }
         });
@@ -417,12 +422,35 @@ public class MainWindow extends JFrame
         });
         
         
+        canvas.addKeyListener( new KeyListener() 
+        {
+
+            @Override
+            public void keyPressed(KeyEvent event )
+            {
+                setKeyPressed( event );
+            }
+
+            @Override
+            public void keyReleased(KeyEvent arg0)
+            {
+                setKeyPressed( null );
+            }
+
+            @Override
+            public void keyTyped(KeyEvent arg0)
+            {
+                // TODO Auto-generated method stub
+                
+            }
+            
+        });
+        
         dndController.setScene(scene);
         
         canvas.setBackground(Color.WHITE);
         canvas.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED ) );
-        
-        
+
         this.add(canvas);
     }
     
@@ -498,18 +526,25 @@ public class MainWindow extends JFrame
         }
         
         
-        if ( selectedObject!=null && (point_2_x != Integer.MAX_VALUE) && (point_2_y != Integer.MAX_VALUE))
+        if ( selectedObject!=null ) // && (point_2_x != Integer.MAX_VALUE) && (point_2_y != Integer.MAX_VALUE))
         {
             Vector vec = selectedObject.world_position.translation;
-            
+
             // Begins drawing the force-arrow
             Vector from = new Vector( vec.getX(), vec.getY() );
-            Vector   to = new Vector( vec.getX()+selectedObject.velocity.getX(), vec.getY()+selectedObject.velocity.getY() );
+            Vector to = new Vector();
+//            Vector   to = new Vector( vec.getX()+selectedObject.velocity.getX(), vec.getY()+selectedObject.velocity.getY() );
 //            Vector   to = new Vector( point_2_x, point_2_y );
             
-            System.out.println( selectedObject.velocity.getX() );
-            System.out.println( selectedObject.velocity.getY() );
-            
+            if ((keyPressed!=null) && keyPressed.getKeyCode() == KeyEvent.VK_CONTROL )
+            {
+                to = new Vector( point_2_x, point_2_y );
+                selectedObject.velocity.setPoint( point_2_x-vec.getX(), point_2_y-vec.getY() );
+                System.out.println( "set velocity to ["+(point_2_x-vec.getX())+","+(point_2_y-vec.getY()) );
+            } else {
+                to = new Vector( vec.getX()+selectedObject.velocity.getX(), vec.getY()+selectedObject.velocity.getY() );
+            } 
+
             int arrowlength    = (int) Util.distance( from, to );
             Polygon poly_arrow = createArrowPolygon( arrowlength );
             
@@ -616,6 +651,11 @@ public class MainWindow extends JFrame
         this.point_2_y = Integer.MAX_VALUE;
     }
     
+    
+    public void setKeyPressed( KeyEvent event )
+    {
+        this.keyPressed = event;
+    }
     
     // The information window shall be docked on the right corner outside of the main window
     public class MouseController implements MouseListener 
