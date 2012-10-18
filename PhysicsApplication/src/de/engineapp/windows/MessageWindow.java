@@ -25,6 +25,7 @@ public class MessageWindow extends JFrame
     public final static int VELOCITY       = 4;
     public final static int POSITION       = 5;
     public final static int FPS            = 6;
+    public final static int NEWVELODIR     = 7;
     
     private static HashMap<Integer, String>  hmap = null;
     private static DefaultListModel<String> model = null;
@@ -49,7 +50,7 @@ public class MessageWindow extends JFrame
         add( list );
         
         setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-        setSize( 250, 310 );
+        setSize( 270, 330 );
     }
     
     
@@ -90,6 +91,10 @@ public class MessageWindow extends JFrame
                 
             case FPS:
                 hmap.put( type, "FPS: " + data );
+                isChanged = true;
+                break;
+            case NEWVELODIR:
+                hmap.put( type, "setze Geschwindigk.: vx="+ (int)((Vector)data).getX() +" m/s,  vy="+ (int)((Vector)data).getY() +" m/s");
                 isChanged = true;
                 break;
             default: ;

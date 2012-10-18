@@ -477,12 +477,13 @@ public class MainWindow extends JFrame
         {
             // grid will be global later and not only around the origin
             g.setStroke(new BasicStroke(1 / (float) config.getZoom()));
-            g.setColor(Color.BLACK);
+            g.setColor(Color.LIGHT_GRAY);
             for (int i = -15; i < 16; i++)
             {
                 g.drawLine(i * 50, -800, i * 50, 800);
                 g.drawLine(-800, i * 50, 800, i * 50);
             }
+            g.setColor(Color.DARK_GRAY);
             g.setStroke(new BasicStroke(3 / (float) config.getZoom()));
             g.drawLine(0, -800, 0, 800);
             g.drawLine(-800, 0, 800, 0);
@@ -526,21 +527,24 @@ public class MainWindow extends JFrame
         }
         
         
-        if ( selectedObject!=null ) // && (point_2_x != Integer.MAX_VALUE) && (point_2_y != Integer.MAX_VALUE))
+        // Only draw if an object has been choosen
+        if ( selectedObject!=null )
         {
             Vector vec = selectedObject.world_position.translation;
 
             // Begins drawing the force-arrow
             Vector from = new Vector( vec.getX(), vec.getY() );
-            Vector to = new Vector();
-//            Vector   to = new Vector( vec.getX()+selectedObject.velocity.getX(), vec.getY()+selectedObject.velocity.getY() );
-//            Vector   to = new Vector( point_2_x, point_2_y );
+            Vector to   = new Vector();
+            Vector vel  = new Vector();
             
             if ((keyPressed!=null) && keyPressed.getKeyCode() == KeyEvent.VK_CONTROL )
             {
-                to = new Vector( point_2_x, point_2_y );
-                selectedObject.velocity.setPoint( point_2_x-vec.getX(), point_2_y-vec.getY() );
-                System.out.println( "set velocity to ["+(point_2_x-vec.getX())+","+(point_2_y-vec.getY()) );
+                to  = new Vector( point_2_x, point_2_y );
+                vel = new Vector(point_2_x-vec.getX(), point_2_y-vec.getY() ); 
+                selectedObject.velocity.setPoint( vel.getX(), vel.getY() );
+                
+                MessageWindow.setData( MessageWindow.NEWVELODIR, vel );
+                MessageWindow.refresh();
             } else {
                 to = new Vector( vec.getX()+selectedObject.velocity.getX(), vec.getY()+selectedObject.velocity.getY() );
             } 
