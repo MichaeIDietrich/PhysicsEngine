@@ -61,7 +61,7 @@ public abstract class ObjectProperties {
 
 	public Material surface = Material.STEEL;
 
-	public static int id = 0;
+	public int id = 0;
 
 	protected double radius;
 
