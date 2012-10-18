@@ -20,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
@@ -161,7 +162,7 @@ public class MainWindow extends JFrame
         
         pause.setEnabled(false);
         reset.setEnabled(false);
-        
+       
         play.setFocusable(false);
         pause.setFocusable(false);
         reset.setFocusable(false);
@@ -260,7 +261,25 @@ public class MainWindow extends JFrame
         toolBarObjects.add(square);
         toolBarObjects.add(ground);
         
+        
         this.add(toolBarObjects, BorderLayout.LINE_START);
+        toolBarObjects.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
+        
+        // set up right toolbar
+        JToolBar toolBarProperties = new JToolBar(JToolBar.VERTICAL);
+        toolBarProperties.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
+        toolBarProperties.setFloatable(false);
+
+                JTextField massInput = new JTextField("Masse");
+                JTextField surface   = new JTextField("Material");
+                
+                massInput.setSize(100,100);
+                
+                toolBarProperties.add(massInput);
+                toolBarProperties.add(surface);
+        
+        this.add(toolBarProperties, BorderLayout.LINE_END);
+        toolBarObjects.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         
         
         // set up canvas
