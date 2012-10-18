@@ -577,20 +577,38 @@ public class MainWindow extends JFrame
     
     
     // Defines the look of the polygon arrow
-    private Polygon createArrowPolygon( int arrow_length)
+    private Polygon createArrowPolygon( int arrow_length )
     {
-        int arrowthickness = 2;
+        Polygon poly_arrow = null;
         
-        Polygon poly_arrow = new Polygon();
-        
-        poly_arrow.addPoint(0,0);
-        poly_arrow.addPoint(0,arrowthickness);
-        poly_arrow.addPoint(arrow_length-20,    arrowthickness);
-        poly_arrow.addPoint(arrow_length-20,  3*arrowthickness);
-        poly_arrow.addPoint(arrow_length,     0);
-        poly_arrow.addPoint(arrow_length-20, -3*arrowthickness);
-        poly_arrow.addPoint(arrow_length-20,   -arrowthickness);
-        poly_arrow.addPoint(0,                 -arrowthickness);
+        if (arrow_length<=6)
+        {
+            poly_arrow = new Polygon();
+            int r = 6; 
+            
+            for(int i=0; i<=32; i++)
+            {
+                poly_arrow.addPoint( (int)(r*Math.sin( 2d*i/32d*Math.PI )), (int)(r*Math.cos( 2d*i/32d*Math.PI) ) );
+            }
+        } 
+            else 
+        {
+            int max_width  = 6;
+            int arrow_peak = 2*max_width;
+            
+            if (arrow_length<=arrow_peak) arrow_length=arrow_peak;
+            
+            poly_arrow = new Polygon();
+            
+            poly_arrow.addPoint(0,0);
+            poly_arrow.addPoint(0,                        (int) (max_width/2.5d));
+            poly_arrow.addPoint(arrow_length-arrow_peak,  (int) (max_width/2.5d));
+            poly_arrow.addPoint(arrow_length-arrow_peak,  (int) (max_width));
+            poly_arrow.addPoint(arrow_length,     0);
+            poly_arrow.addPoint(arrow_length-arrow_peak,  (int) (-max_width));
+            poly_arrow.addPoint(arrow_length-arrow_peak,  (int) (-max_width/2.5d));
+            poly_arrow.addPoint(0,                        (int) (-max_width/2.5d));
+        } 
         
         return poly_arrow;
     }
