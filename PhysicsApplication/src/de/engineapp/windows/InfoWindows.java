@@ -11,12 +11,12 @@ import javax.swing.JList;
 import de.engine.math.Vector;
 
 
-public class MessageWindow extends JFrame
+public class InfoWindows extends JFrame
 {
     private static final long serialVersionUID = 1L;
     
     
-    private static MessageWindow instance;
+    private static InfoWindows instance;
     
     public final static int COORDINATES    = 0;
     public final static int TIMEFORDRAWING = 1;
@@ -33,11 +33,10 @@ public class MessageWindow extends JFrame
     private static boolean isChanged = false;
     
     
-    public MessageWindow( Point mainframepos )
+    private InfoWindows()
     {
         super( "Informationen" );
-        setLocation( mainframepos.x, mainframepos.y );
-        MessageWindow.instance = this;
+        InfoWindows.instance = this;
 
         hmap  = new HashMap<>();
         model = new DefaultListModel<>();
@@ -118,16 +117,14 @@ public class MessageWindow extends JFrame
     }
     
     
-    // Tells the information window where the main window is located and set its location nearby
-    public void updateLocation( int location_x, int location_y )
+    public static InfoWindows getInstance()
     {
-        setLocation( location_x, location_y );
-    }
-    
-    
-    public static MessageWindow getInstance()
-    {
-        return MessageWindow.instance;
+        if (instance != null)
+        {
+            instance = new InfoWindows();
+        }
+        
+        return instance;
     }
     
     

@@ -43,6 +43,7 @@ import de.engineapp.controls.Canvas;
 import de.engineapp.controls.DragButton;
 import de.engineapp.controls.MainToolBar;
 import de.engineapp.controls.ObjectToolBar;
+import de.engineapp.controls.PropertiesPanel;
 import de.engineapp.controls.ZoomSlider;
 import de.engineapp.controls.dnd.DragAndDropController;
 import de.engineapp.visual.Circle;
@@ -55,7 +56,7 @@ public class MainWindow extends JFrame implements SceneListener
     private static final long serialVersionUID = -1405279482198323306L;
     
     
-    private Configuration config = Configuration.getInstance();
+//    private Configuration config = Configuration.getInstance();
     
     private final static RenderingHints ANTIALIAS = new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
      
@@ -87,7 +88,7 @@ public class MainWindow extends JFrame implements SceneListener
             {
                 pModel.getPhysicsState().pause();
                 MainWindow.this.dispose();
-                MessageWindow.getInstance().dispose();
+                InfoWindows.getInstance().dispose();
                 Configuration.save();
             }
         });
@@ -110,9 +111,9 @@ public class MainWindow extends JFrame implements SceneListener
                 
                 if (selObject != null)
                 {
-                    MessageWindow.setData(MessageWindow.VELOCITY, selObject.velocity.getX() + ", " + selObject.velocity.getY());
-                    MessageWindow.setData(MessageWindow.POSITION, selObject.getPosition().getX() + ", " + selObject.getPosition().getY());
-                    MessageWindow.refresh();
+                    InfoWindows.setData(InfoWindows.VELOCITY, selObject.velocity.getX() + ", " + selObject.velocity.getY());
+                    InfoWindows.setData(InfoWindows.POSITION, selObject.getPosition().getX() + ", " + selObject.getPosition().getY());
+                    InfoWindows.refresh();
                 }
                 
                 renderScene();
@@ -123,10 +124,7 @@ public class MainWindow extends JFrame implements SceneListener
         initializeLookAndFeel();
         initializeComponents();
         
-        // open message window contains information
-        new MessageWindow( new Point(this.getLocation().x + this.getWidth(), this.getLocation().y) );
         
-
         this.setVisible(true);
     }
     
@@ -156,21 +154,10 @@ public class MainWindow extends JFrame implements SceneListener
         ObjectToolBar toolBarObjects = new ObjectToolBar(pModel);
         this.add(toolBarObjects, BorderLayout.LINE_START);
         
-        // set up right toolbar
-        JToolBar toolBarProperties = new JToolBar(JToolBar.VERTICAL);
-        toolBarProperties.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
-        toolBarProperties.setFloatable(false);
         
-        JTextField massInput = new JTextField("Masse");
-        JTextField surface   = new JTextField("Material");
-        
-        massInput.setSize(100,100);
-        
-        toolBarProperties.add(massInput);
-        toolBarProperties.add(surface);
-        
-        this.add(toolBarProperties, BorderLayout.LINE_END);
-        toolBarObjects.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
+        // set up right panel
+        PropertiesPanel panelProperties = new PropertiesPanel(pModel);
+        this.add(panelProperties, BorderLayout.LINE_END);
         
         
         // set up canvas
@@ -190,7 +177,7 @@ public class MainWindow extends JFrame implements SceneListener
                 switch (command)
                 {
                     case "circle":
-                        MessageWindow.setData( MessageWindow.ACTION, "Kreis erstellt ["+ location.x +", "+ location.y +"]" );
+                        InfoWindows.setData( InfoWindows.ACTION, "Kreis erstellt ["+ location.x +", "+ location.y +"]" );
                         
                         Circle circle = new Circle(pModel, vector, 8);
                         circle.mass = 10;
@@ -204,7 +191,7 @@ public class MainWindow extends JFrame implements SceneListener
                         break;
                         
                     case "ground":
-                        MessageWindow.setData( MessageWindow.ACTION, "Boden erstellt ["+ location.x +", "+ location.y +"]" );
+                        InfoWindows.setData( InfoWindows.ACTION, "Boden erstellt ["+ location.x +", "+ location.y +"]" );
                         
                         pModel.setGround(new Ground(pModel, (int) vector.getY()));
                         
@@ -215,84 +202,6 @@ public class MainWindow extends JFrame implements SceneListener
         });
         
         
-        // stores the mouse offset while dragging
-        final Point mouseOffset = new Point();
-        
-        // implement mouse (motion) listener to make navigating throw the scene
-        // and manipulating objects possible
-        canvas.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                if (SwingUtilities.isLeftMouseButton(e))
-                {
-                    Vector v = toTransformedVector(e.getPoint());
-                    pModel.setSelectedObject(pModel.getScene().getObjectFromPoint(v.getX(), v.getY()));
-                    MessageWindow.setData( MessageWindow.ACTION, "Auswahl: " + pModel.getSelectedObject() );
-                    MessageWindow.refresh();
-                    System.out.println(v.getX() + "; " +v.getY());
-                    
-                    // remember first mouse click
-                    point_1_x = (int) v.getX();
-                    point_1_y = (int) v.getY();
-                    
-                    // clean canvas from arrow polygon
-                    renderScene();
-                }
-            }
-            
-            
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-                if (SwingUtilities.isRightMouseButton(e))
-                {
-                    MessageWindow.setData( MessageWindow.ACTION, "Rechte Maustaste gedrückt" );
-                    MessageWindow.refresh();
-                    
-                    mouseOffset.x = e.getPoint().x;
-                    mouseOffset.y = e.getPoint().y;
-                }
-            }
-        });
-        
-        canvas.addMouseMotionListener(new MouseMotionAdapter()
-        {
-            @Override
-            public void mouseDragged(MouseEvent e)
-            {
-                // Changes the length of the force-arrow
-                if (SwingUtilities.isLeftMouseButton(e))
-                {
-                    Vector v = toTransformedVector(e.getPoint());
-                    point_2_x = (int) v.getX();
-                    point_2_y = (int) v.getY();
-                    
-                    renderScene();
-                }
-                
-                if (SwingUtilities.isRightMouseButton(e))
-                {
-                    pModel.moveViewOffset(e.getX() - mouseOffset.x, e.getY() - mouseOffset.y);
-                    mouseOffset.x = e.getPoint().x;
-                    mouseOffset.y = e.getPoint().y;
-                    
-                    // refresh canvas
-                    renderScene();
-                    
-                    MessageWindow.setData( MessageWindow.COORDINATES, toTransformedVector(e.getPoint()) );
-                    MessageWindow.refresh();
-                }
-            }
-            
-            @Override
-            public void mouseMoved(MouseEvent e)
-            {
-                MessageWindow.setData( MessageWindow.COORDINATES, toTransformedVector(e.getPoint()) );
-                MessageWindow.refresh();
-            }
-        });
         
         
         dndController.setScene(pModel.getScene());
@@ -322,7 +231,7 @@ public class MainWindow extends JFrame implements SceneListener
         g.translate(0, -canvas.getHeight());
         
         
-        if (config.isShowGrid())
+        if (pModel.isShowGrid())
         {
             // grid will be global later and not only around the origin
             g.setStroke(new BasicStroke(1 / (float) pModel.getZoom()));
@@ -381,7 +290,7 @@ public class MainWindow extends JFrame implements SceneListener
         
         canvas.repaint();
         
-        MessageWindow.setData( MessageWindow.TIMEFORDRAWING, ""+(System.currentTimeMillis() - t) );
+        InfoWindows.setData( InfoWindows.TIMEFORDRAWING, ""+(System.currentTimeMillis() - t) );
     }
     
     
