@@ -18,11 +18,14 @@ public class PresentationModel
         public void groundRemoved(Ground ground);
         public void objectSelected(ObjectProperties object);
         public void objectUnselected(ObjectProperties object);
+        
+        public void redrawScene();
     }
     
     public interface ViewBoxListener
     {
         public void offsetChanged(int offsetX, int offsetY);
+        public void sizeChanged(int width, int height);
         public void zoomChanged(double zoom);
     }
     
@@ -35,8 +38,14 @@ public class PresentationModel
     /** stores the navigation offset (navigation by the use of the right mouse button) */
     private int viewOffsetX = 0;
     private int viewOffsetY = 0;
+    private int canvasWidth = 0;
+    private int canvasHeight = 0;
     
     private double zoom = 1.0;
+    
+    private boolean showGrid;
+    
+    private boolean showInfo;
     
     private Physics physicsState = null;
     
@@ -69,6 +78,14 @@ public class PresentationModel
         for (ViewBoxListener listener : viewBoxListeners)
         {
             listener.offsetChanged(viewOffsetX, viewOffsetY);
+        }
+    }
+    
+    private void fireResizeCanvasEvents()
+    {
+        for (ViewBoxListener listener : viewBoxListeners)
+        {
+            listener.sizeChanged(canvasWidth, canvasHeight);
         }
     }
     
@@ -273,4 +290,66 @@ public class PresentationModel
         }
     }
     
+    
+    public int getCanvasWidth()
+    {
+        return canvasWidth;
+    }
+    
+    public void setCanvasWidth(int canvasWidth)
+    {
+        this.canvasWidth = canvasWidth;
+        
+        fireResizeCanvasEvents();
+    }
+    
+    
+    public int getCanvasHeight()
+    {
+        return canvasHeight;
+    }
+    
+    public void setCanvasHeight(int canvasHeight)
+    {
+        this.canvasHeight = canvasHeight;
+        
+        fireResizeCanvasEvents();
+    }
+    
+    public void resizeCanvas(int width, int height)
+    {
+        this.canvasWidth = width;
+        this.canvasHeight = height;
+        
+        fireResizeCanvasEvents();
+    }
+    
+    
+    public void fireRedrawSceneEvents()
+    {
+        for (SceneListener listener : sceneListeners)
+        {
+            listener.redrawScene();
+        }
+    }
+
+    public boolean isShowGrid()
+    {
+        return showGrid;
+    }
+
+    public void setShowGrid(boolean showGrid)
+    {
+        this.showGrid = showGrid;
+    }
+
+    public boolean isShowInfo()
+    {
+        return showInfo;
+    }
+
+    public void setShowInfo(boolean showInfo)
+    {
+        this.showInfo = showInfo;
+    }
 }

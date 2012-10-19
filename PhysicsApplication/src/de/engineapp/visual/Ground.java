@@ -64,8 +64,7 @@ public class Ground extends de.engine.objects.Ground implements IObject
     @Override
     public void render(Graphics2D g)
     {
-//        int width = g.getClipBounds().width;
-        int width = 400;
+        int width = pModel.getCanvasWidth();
         
         // TODO - this should propably be cached if possible
         Polygon polygon = new Polygon();
