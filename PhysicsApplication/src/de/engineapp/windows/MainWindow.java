@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -17,6 +18,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.Ellipse2D;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -376,6 +378,12 @@ public class MainWindow extends JFrame
             @Override
             public void mousePressed(MouseEvent e)
             {
+                if (SwingUtilities.isLeftMouseButton(e))
+                {
+                    Vector v = toTransformedVector(e.getPoint());
+                    selectedObject = scene.getObjectFromPoint(v.getX(), v.getY());
+                }
+                
                 if (SwingUtilities.isRightMouseButton(e))
                 {
                     MessageWindow.setData( MessageWindow.ACTION, "Rechte Maustaste gedrückt" );
@@ -400,14 +408,15 @@ public class MainWindow extends JFrame
                 {
                     Vector v = toTransformedVector(e.getPoint());
                     
+                    // Non keys are pressed
                     if (keyEvent==null) 
                     {
-                        selectedObject = scene.getObjectFromPoint(v.getX(), v.getY());
+                        if (selectedObject!=null) selectedObject.world_position.translation.setPoint( v.getX(), v.getY() );
+                        
                         MessageWindow.setData( MessageWindow.ACTION, "Auswahl: " + selectedObject );
                         MessageWindow.refresh();
-//                        System.out.println(v.getX() + "; " +v.getY());
                     }
-                    
+ 
                     point_2_x = (int) v.getX();
                     point_2_y = (int) v.getY();
                     
@@ -540,21 +549,22 @@ public class MainWindow extends JFrame
         }
         
         
-        // Only draw if an object has been choosen
+        // Only draw if an object has been chosen
         if ( selectedObject!=null )
         {
             Vector vec = selectedObject.world_position.translation;
 
-            // Begins drawing the force-arrow
+            // Begins drawing the resulting velocity arrow vector
             Vector from = new Vector( vec.getX(), vec.getY() );
-            Vector to   = new Vector();
-            Vector vel  = new Vector();
+            Vector to;
             
-            if ((keyEvent!=null) && keyEvent.getKeyCode() == KeyEvent.VK_CONTROL )
+            if ((keyEvent!=null) && keyEvent.getKeyCode() == KeyEvent.VK_CONTROL && point_2_x != Integer.MAX_VALUE )
             {
                 to  = new Vector( point_2_x, point_2_y );
-                vel = new Vector( point_2_x-vec.getX(), point_2_y-vec.getY()); 
+                Vector vel = new Vector( point_2_x-vec.getX(), point_2_y-vec.getY()); 
                 selectedObject.velocity.setPoint( vel.getX(), vel.getY());
+                
+                clearPointingVector();
                 
                 MessageWindow.setData( MessageWindow.NEWVELODIR, vel );
                 MessageWindow.refresh();
@@ -562,13 +572,13 @@ public class MainWindow extends JFrame
                 to = new Vector( vec.getX()+selectedObject.velocity.getX(), vec.getY()+selectedObject.velocity.getY() );
             } 
 
-            int arrowlength    = (int) Util.distance( from, to );
-            Polygon poly_arrow = createArrowPolygon( arrowlength );
+            int arrowlength  = (int) Util.distance( from, to );
+            Shape poly_arrow = createArrowShape( arrowlength, from, to );
             
             g.setColor( new Color( 180, 120, 20) );
-            g.fillPolygon( polyTransform( poly_arrow, from, to ));
+            g.fill( poly_arrow );
             g.setColor( Color.DARK_GRAY );
-            g.drawPolygon( polyTransform( poly_arrow, from, to ));
+            g.draw( poly_arrow );
         }
         
         
@@ -590,22 +600,16 @@ public class MainWindow extends JFrame
     
     
     // Defines the look of the polygon arrow
-    private Polygon createArrowPolygon( int arrow_length )
+    private Shape createArrowShape( int arrow_length, Vector from,  Vector to )
     {
-        Polygon poly_arrow = null;
-        
         if (arrow_length<=6)
         {
-            poly_arrow = new Polygon();
-            int r = 6; 
-            
-            for(int i=0; i<=32; i++)
-            {
-                poly_arrow.addPoint( (int)(r*Math.sin( 2d*i/32d*Math.PI )), (int)(r*Math.cos( 2d*i/32d*Math.PI) ) );
-            }
+            return new Ellipse2D.Float( (float) from.getX()-5f, (float) from.getY()-5f , 10f, 10f );
         } 
             else 
-        {
+        { 
+            Polygon poly_arrow = null;
+            
             int max_width  = 6;
             int arrow_peak = 2*max_width;
             
@@ -621,9 +625,9 @@ public class MainWindow extends JFrame
             poly_arrow.addPoint(arrow_length-arrow_peak,  (int) (-max_width));
             poly_arrow.addPoint(arrow_length-arrow_peak,  (int) (-max_width/2.5d));
             poly_arrow.addPoint(0,                        (int) (-max_width/2.5d));
-        } 
-        
-        return poly_arrow;
+            
+            return polyTransform( poly_arrow, from, to );
+        }
     }
     
     
