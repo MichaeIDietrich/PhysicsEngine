@@ -11,7 +11,7 @@ import javax.swing.event.ChangeListener;
 
 import de.engineapp.PresentationModel;
 import de.engineapp.VUtil;
-import de.engineapp.windows.MessageWindow;
+import de.engineapp.windows.InfoWindows;
 
 public class MainToolBar extends JToolBar implements ActionListener, ChangeListener
 {
@@ -27,6 +27,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     private ToolBarButton info;
     
     private ZoomSlider slider;
+    
     
     public MainToolBar(PresentationModel model)
     {
@@ -63,6 +64,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     @Override
     public void actionPerformed(ActionEvent e)
     {
+        System.out.println(e.getActionCommand());
         switch (e.getActionCommand())
         {
             case "play":
@@ -93,7 +95,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             case "info":
                 pModel.setShowInfo(!pModel.isShowInfo());
                 info.setSelected(pModel.isShowInfo());
-                MessageWindow.getInstance().showWindow(pModel.isShowInfo());
+                InfoWindows.getInstance().showWindow(pModel.isShowInfo());
                 
                 break;
         }

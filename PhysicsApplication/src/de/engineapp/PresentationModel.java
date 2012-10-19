@@ -1,10 +1,12 @@
 package de.engineapp;
 
+import java.awt.Point;
 import java.util.HashSet;
 import java.util.Set;
 
 import de.engine.environment.Scene;
 import de.engine.math.PhysicsEngine2D;
+import de.engine.math.Vector;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 
@@ -332,24 +334,35 @@ public class PresentationModel
             listener.redrawScene();
         }
     }
-
+    
+    
     public boolean isShowGrid()
     {
         return showGrid;
     }
-
+    
     public void setShowGrid(boolean showGrid)
     {
         this.showGrid = showGrid;
     }
-
+    
+    
     public boolean isShowInfo()
     {
         return showInfo;
     }
-
+    
     public void setShowInfo(boolean showInfo)
     {
         this.showInfo = showInfo;
+    }
+    
+    
+    public Vector toTransformedVector(Point point)
+    {
+        return new Vector(
+                 (point.x - viewOffsetX) / zoom,
+                (-point.y + viewOffsetY) / zoom + canvasWidth
+        );
     }
 }
