@@ -76,7 +76,7 @@ public class MainWindow extends JFrame
     private int point_2_x = Integer.MAX_VALUE;
     private int point_2_y = Integer.MAX_VALUE;
     
-    private KeyEvent keyPressed = null;
+    private KeyEvent keyEvent = null;
     
     
     
@@ -359,7 +359,7 @@ public class MainWindow extends JFrame
                     selectedObject = scene.getObjectFromPoint(v.getX(), v.getY());
                     MessageWindow.setData( MessageWindow.ACTION, "Auswahl: " + selectedObject );
                     MessageWindow.refresh();
-                    System.out.println(v.getX() + "; " +v.getY());
+//                    System.out.println(v.getX() + "; " +v.getY());
                     
                     // remember first mouse click
                     point_1_x = (int) v.getX();
@@ -399,6 +399,15 @@ public class MainWindow extends JFrame
                 if (SwingUtilities.isLeftMouseButton(e))
                 {
                     Vector v = toTransformedVector(e.getPoint());
+                    
+                    if (keyEvent==null) 
+                    {
+                        selectedObject = scene.getObjectFromPoint(v.getX(), v.getY());
+                        MessageWindow.setData( MessageWindow.ACTION, "Auswahl: " + selectedObject );
+                        MessageWindow.refresh();
+//                        System.out.println(v.getX() + "; " +v.getY());
+                    }
+                    
                     point_2_x = (int) v.getX();
                     point_2_y = (int) v.getY();
                     
@@ -541,7 +550,7 @@ public class MainWindow extends JFrame
             Vector to   = new Vector();
             Vector vel  = new Vector();
             
-            if ((keyPressed!=null) && keyPressed.getKeyCode() == KeyEvent.VK_CONTROL )
+            if ((keyEvent!=null) && keyEvent.getKeyCode() == KeyEvent.VK_CONTROL )
             {
                 to  = new Vector( point_2_x, point_2_y );
                 vel = new Vector( point_2_x-vec.getX(), point_2_y-vec.getY()); 
@@ -565,7 +574,7 @@ public class MainWindow extends JFrame
         
         canvas.repaint();
         
-        MessageWindow.setData( MessageWindow.TIMEFORDRAWING, ""+(System.currentTimeMillis() - t) );
+        MessageWindow.setData( MessageWindow.DRAWINGTIME, ""+(System.currentTimeMillis() - t) );
     }
     
     
@@ -681,7 +690,7 @@ public class MainWindow extends JFrame
     
     public void setKeyPressed( KeyEvent event )
     {
-        this.keyPressed = event;
+        this.keyEvent = event;
     }
     
     
