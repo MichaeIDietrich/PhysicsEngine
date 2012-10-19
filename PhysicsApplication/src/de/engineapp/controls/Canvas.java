@@ -8,23 +8,23 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
+import de.engineapp.PresentationModel;
+
 
 public class Canvas extends JComponent
 {
-    // interface to recognize repaints caused by component resizing
-    public interface RepaintCallback
-    {
-        public void repaint();
-    }
-    
-    
     private static final long serialVersionUID = -5320479580417617983L;
+    
+    
+    private PresentationModel pModel;
     
     private BufferedImage buffer = null;
     
     
-    public Canvas(final RepaintCallback repaintCallback)
+    public Canvas(PresentationModel model)
     {
+        pModel = model;
+        
         this.addComponentListener(new ComponentAdapter()
         {
             // resize back buffer
@@ -33,8 +33,11 @@ public class Canvas extends JComponent
             {
                 buffer = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), BufferedImage.TYPE_INT_RGB);
                 
+                // fire resize
+                pModel.resizeCanvas(Canvas.this.getWidth(), Canvas.this.getHeight());
+                
                 // fire repaint
-                repaintCallback.repaint();
+                pModel.fireRedrawSceneEvents();
             }
         });
     }

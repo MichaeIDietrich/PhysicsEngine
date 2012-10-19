@@ -11,17 +11,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -40,8 +37,12 @@ import de.engine.objects.ObjectProperties;
 import de.engineapp.Configuration;
 import de.engineapp.Physics;
 import de.engineapp.PresentationModel;
+import de.engineapp.VUtil;
+import de.engineapp.PresentationModel.SceneListener;
 import de.engineapp.controls.Canvas;
 import de.engineapp.controls.DragButton;
+import de.engineapp.controls.MainToolBar;
+import de.engineapp.controls.ObjectToolBar;
 import de.engineapp.controls.ZoomSlider;
 import de.engineapp.controls.dnd.DragAndDropController;
 import de.engineapp.visual.Circle;
@@ -49,7 +50,7 @@ import de.engineapp.visual.Ground;
 import de.engineapp.visual.IObject;
 
 
-public class MainWindow extends JFrame
+public class MainWindow extends JFrame implements SceneListener
 {
     private static final long serialVersionUID = -1405279482198323306L;
     
@@ -63,17 +64,6 @@ public class MainWindow extends JFrame
     private Canvas canvas;
     
     
-    /** stores the navigation offset (navigation by the use of the right mouse button) */
-    /*private Point viewOffset = new Point();
-    
-    private Physics workingThread = null;
-    
-    private PhysicsEngine2D physicsEngine2D = null;
-    private Scene scene = null;
-    private ObjectProperties selectedObject = null;*/
-    
-    private MessageWindow msgwin;
-    
     private int point_1_x = 0;
     private int point_1_y = 0;
     
@@ -86,6 +76,8 @@ public class MainWindow extends JFrame
         super("Physics Engine");
         
         pModel = new PresentationModel();
+        
+        pModel.addSceneListener(this);
         
         // Free objects (if necessary) before this application ends
         this.addWindowListener(new WindowAdapter()
@@ -119,12 +111,11 @@ public class MainWindow extends JFrame
                 if (selObject != null)
                 {
                     MessageWindow.setData(MessageWindow.VELOCITY, selObject.velocity.getX() + ", " + selObject.velocity.getY());
-                    MessageWindow.refresh();
                     MessageWindow.setData(MessageWindow.POSITION, selObject.getPosition().getX() + ", " + selObject.getPosition().getY());
                     MessageWindow.refresh();
                 }
                 
-                renderObjects();
+                renderScene();
             }
         }));
         
@@ -133,9 +124,7 @@ public class MainWindow extends JFrame
         initializeComponents();
         
         // open message window contains information
-        msgwin = new MessageWindow( new Point(this.getLocation().x + this.getWidth(), this.getLocation().y) );
-        
-        this.addMouseListener( new MouseController(this) );
+        new MessageWindow( new Point(this.getLocation().x + this.getWidth(), this.getLocation().y) );
         
 
         this.setVisible(true);
@@ -159,147 +148,33 @@ public class MainWindow extends JFrame
     private void initializeComponents()
     {
         // set up upper toolbar
-        JToolBar toolBarMain = new JToolBar();
-        toolBarMain.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
-        toolBarMain.setFloatable(false);
-        
-        final JButton play  = new JButton(new ImageIcon("images/play.png"));
-        final JButton pause = new JButton(new ImageIcon("images/pause.png"));
-        final JButton reset = new JButton(new ImageIcon("images/reset.png"));
-        final JToggleButton grid = new JToggleButton(new ImageIcon("images/grid.png"));
-        final JButton info  = new JButton(new ImageIcon("images/loupe.png"));
-        
-        pause.setEnabled(false);
-        reset.setEnabled(false);
-       
-        play.setFocusable(false);
-        pause.setFocusable(false);
-        reset.setFocusable(false);
-        grid.setFocusable(false);
-        info.setFocusable(false);
-        
-        play.addActionListener( new ActionListener() 
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                play.setEnabled( false );
-                pause.setEnabled( true );
-                pModel.getPhysicsState().start();
-            }
-        });
-        
-        pause.addActionListener( new ActionListener() 
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                pause.setEnabled( false );
-                play.setEnabled(   true );
-                pModel.getPhysicsState().pause();
-            }
-        });
-        
-        grid.addActionListener( new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                config.setShowGrid(!config.isShowGrid());
-                grid.setSelected(config.isShowGrid());
-                renderObjects();
-            }
-        });
-        
-        info.addActionListener( new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                config.setShowInfo(!config.isShowInfo());
-                info.setSelected(config.isShowInfo());
-                MessageWindow.getInstance().showWindow(config.isShowInfo());
-            }
-        });
-        
-        grid.setSelected(config.isShowGrid());
-        // disabled - will cause an exception
-//        if (config.isShowInfo())
-//        {
-//            info.setSelected(true);
-//            MessageWindow.getInstance().showWindow(true);
-//        }
-        
-        
-        final ZoomSlider slider = new ZoomSlider(pModel.getZoom());
-        slider.addChangeListener(new ChangeListener()
-        {
-            @Override
-            public void stateChanged(ChangeEvent e)
-            {
-                pModel.setZoom(slider.getValue());
-                renderObjects();
-            }
-        });
-        
-        
-        toolBarMain.add(play);
-        toolBarMain.add(pause);
-        toolBarMain.add(reset);
-        toolBarMain.addSeparator();
-        toolBarMain.add(grid);
-        toolBarMain.addSeparator();
-        toolBarMain.add(info);
-        toolBarMain.addSeparator();
-        toolBarMain.add(slider);
-        
+        MainToolBar toolBarMain = new MainToolBar(pModel);
         this.add(toolBarMain, BorderLayout.PAGE_START);
         
         
         // set up left toolbar, enabling drag'n'drop objects
-        JToolBar toolBarObjects = new JToolBar(JToolBar.VERTICAL);
-        toolBarObjects.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
-        toolBarObjects.setFloatable(false);
-        
-        DragButton circle = new DragButton(new ImageIcon("images/circle.png"), "circle", true);
-        DragButton square = new DragButton(new ImageIcon("images/square.png"), "square", true);
-        DragButton ground = new DragButton(new ImageIcon("images/ground.png"), "ground", 
-                new ImageIcon("images/ruler.png").getImage(), new Point(16, 14));
-        
-        toolBarObjects.add(circle);
-        toolBarObjects.add(square);
-        toolBarObjects.add(ground);
-        
-        
+        ObjectToolBar toolBarObjects = new ObjectToolBar(pModel);
         this.add(toolBarObjects, BorderLayout.LINE_START);
-        toolBarObjects.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         
         // set up right toolbar
         JToolBar toolBarProperties = new JToolBar(JToolBar.VERTICAL);
         toolBarProperties.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         toolBarProperties.setFloatable(false);
-
-                JTextField massInput = new JTextField("Masse");
-                JTextField surface   = new JTextField("Material");
-                
-                massInput.setSize(100,100);
-                
-                toolBarProperties.add(massInput);
-                toolBarProperties.add(surface);
+        
+        JTextField massInput = new JTextField("Masse");
+        JTextField surface   = new JTextField("Material");
+        
+        massInput.setSize(100,100);
+        
+        toolBarProperties.add(massInput);
+        toolBarProperties.add(surface);
         
         this.add(toolBarProperties, BorderLayout.LINE_END);
         toolBarObjects.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         
         
         // set up canvas
-        canvas = new Canvas(new Canvas.RepaintCallback()
-        {
-            @Override
-            public void repaint()
-            {
-                renderObjects();
-            }
-        });
+        canvas = new Canvas(pModel);
         
         
         // this one is handling all the drag'n'drop stuff
@@ -319,15 +194,13 @@ public class MainWindow extends JFrame
                         
                         Circle circle = new Circle(pModel, vector, 8);
                         circle.mass = 10;
-                        // is it necessary?
-//                        circle.setPosition( vector );
                         circle.velocity.setPoint( 0, 0 );
                         
                         pModel.addObject( circle );
                         
                         clearPointingVector();
                         
-                        renderObjects();
+                        renderScene();
                         break;
                         
                     case "ground":
@@ -335,7 +208,7 @@ public class MainWindow extends JFrame
                         
                         pModel.setGround(new Ground(pModel, (int) vector.getY()));
                         
-                        renderObjects();
+                        renderScene();
                         break;
                 }
             }
@@ -365,7 +238,7 @@ public class MainWindow extends JFrame
                     point_1_y = (int) v.getY();
                     
                     // clean canvas from arrow polygon
-                    renderObjects();
+                    renderScene();
                 }
             }
             
@@ -396,7 +269,7 @@ public class MainWindow extends JFrame
                     point_2_x = (int) v.getX();
                     point_2_y = (int) v.getY();
                     
-                    renderObjects();
+                    renderScene();
                 }
                 
                 if (SwingUtilities.isRightMouseButton(e))
@@ -406,7 +279,7 @@ public class MainWindow extends JFrame
                     mouseOffset.y = e.getPoint().y;
                     
                     // refresh canvas
-                    renderObjects();
+                    renderScene();
                     
                     MessageWindow.setData( MessageWindow.COORDINATES, toTransformedVector(e.getPoint()) );
                     MessageWindow.refresh();
@@ -432,9 +305,8 @@ public class MainWindow extends JFrame
     }
     
     
-    // TODO - adjust coordinates (negate y + translation) - half work is done, some is left :p
     // TODO - improve this method at all
-    private void renderObjects()
+    private void renderScene()
     {
         long t = System.currentTimeMillis();
         
@@ -604,44 +476,50 @@ public class MainWindow extends JFrame
     }
     
     
-    // The information window shall be docked on the right corner outside of the main window
-    public class MouseController implements MouseListener 
+    @Override
+    public void objectAdded(ObjectProperties object)
     {
-        private JFrame frame = null;
         
-        public MouseController( JFrame frame )
-        {
-            this.frame = frame;
-        }
+    }
+    
+    
+    @Override
+    public void objectRemoved(ObjectProperties object)
+    {
         
-
-        @Override
-        public void mouseClicked(MouseEvent e)
-        {
-            
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {}
-
-        @Override
-        public void mousePressed(MouseEvent e)
-        {
-            msgwin.updateLocation( frame.getLocation().x+frame.getWidth(), frame.getLocation().y );  
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e)
-        {
-            // TODO Auto-generated method stub
-            
-        }
+    }
+    
+    
+    @Override
+    public void groundAdded(de.engine.objects.Ground ground)
+    {
+        
+    }
+    
+    
+    @Override
+    public void groundRemoved(de.engine.objects.Ground ground)
+    {
+        
+    }
+    
+    
+    @Override
+    public void objectSelected(ObjectProperties object)
+    {
+        
+    }
+    
+    
+    @Override
+    public void objectUnselected(ObjectProperties object)
+    {
+        
+    }
+    
+    @Override
+    public void redrawScene()
+    {
+        renderScene();
     }
 }
