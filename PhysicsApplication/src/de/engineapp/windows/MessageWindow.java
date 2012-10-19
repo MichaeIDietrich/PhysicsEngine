@@ -19,7 +19,7 @@ public class MessageWindow extends JFrame
     private static MessageWindow instance;
     
     public final static int COORDINATES    = 0;
-    public final static int TIMEFORDRAWING = 1;
+    public final static int DRAWINGTIME    = 1;
     public final static int ACTION         = 2;
     public final static int DROPPING       = 3;
     public final static int VELOCITY       = 4;
@@ -64,7 +64,7 @@ public class MessageWindow extends JFrame
                 isChanged = true;
                 break;
                 
-            case TIMEFORDRAWING:
+            case DRAWINGTIME:
                 hmap.put( type, "zeichne Objekte: " + data + " ms");
                 isChanged = true;
                 break;
