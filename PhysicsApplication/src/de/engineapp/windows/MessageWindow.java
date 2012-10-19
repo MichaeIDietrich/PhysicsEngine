@@ -29,7 +29,7 @@ public class MessageWindow extends JFrame
     
     private static HashMap<Integer, String>  hmap = null;
     private static DefaultListModel<String> model = null;
-    private JList<String>             list = null;
+    private static JList<String>             list = null;
    
     private static boolean isChanged = false;
     
@@ -109,15 +109,18 @@ public class MessageWindow extends JFrame
         {
             model.clear();
             
-//            for(int i=0; hmap.get(i)!=null; i++)
-//            {
-//                model.addElement( hmap.get(i) );
-//            }
             for (int index : hmap.keySet())
             {
-                model.addElement(hmap.get(index));
+                try 
+                {
+                    model.addElement(hmap.get(index));
+                } 
+                    catch(Exception e) 
+                {
+                    System.out.println("Text");
+                }
             }
-            
+
             isChanged = false;
         }
     }

@@ -78,9 +78,11 @@ public class MainWindow extends JFrame
     
     private KeyEvent keyPressed = null;
     
+    
+    
     public MainWindow()
     {
-        super("Physics Engine");
+        super("Oizys Physics Engine");
         
         // Free objects (if necessary) before this application ends
         this.addWindowListener(new WindowAdapter()
@@ -216,7 +218,7 @@ public class MainWindow extends JFrame
             }
         });
         
-        grid.setSelected(config.isShowGrid());
+        grid.setSelected( config.isShowGrid() );
         // disabled - will cause an exception
 //        if (config.isShowInfo())
 //        {
@@ -352,6 +354,7 @@ public class MainWindow extends JFrame
             {
                 if (SwingUtilities.isLeftMouseButton(e))
                 {
+                    // choose an object if the mouse coordinates equals its coordinates
                     Vector v = toTransformedVector(e.getPoint());
                     selectedObject = scene.getObjectFromPoint(v.getX(), v.getY());
                     MessageWindow.setData( MessageWindow.ACTION, "Auswahl: " + selectedObject );
@@ -361,6 +364,8 @@ public class MainWindow extends JFrame
                     // remember first mouse click
                     point_1_x = (int) v.getX();
                     point_1_y = (int) v.getY();
+                    
+                    canvas.requestFocusInWindow();
                     
                     // clean canvas from arrow polygon
                     renderObjects();
@@ -384,6 +389,7 @@ public class MainWindow extends JFrame
             }
         });
         
+        
         canvas.addMouseMotionListener(new MouseMotionAdapter()
         {
             @Override
@@ -396,6 +402,8 @@ public class MainWindow extends JFrame
                     point_2_x = (int) v.getX();
                     point_2_y = (int) v.getY();
                     
+                    canvas.requestFocusInWindow();
+                    
                     renderObjects();
                 }
                 
@@ -404,6 +412,8 @@ public class MainWindow extends JFrame
                     viewPosition.translate(e.getX() - mouseOffset.x, e.getY() - mouseOffset.y);
                     mouseOffset.x = e.getPoint().x;
                     mouseOffset.y = e.getPoint().y;
+                    
+                    canvas.requestFocusInWindow();
                     
                     // refresh canvas
                     renderObjects();
@@ -424,7 +434,6 @@ public class MainWindow extends JFrame
         
         canvas.addKeyListener( new KeyListener() 
         {
-
             @Override
             public void keyPressed(KeyEvent event )
             {
@@ -438,12 +447,7 @@ public class MainWindow extends JFrame
             }
 
             @Override
-            public void keyTyped(KeyEvent arg0)
-            {
-                // TODO Auto-generated method stub
-                
-            }
-            
+            public void keyTyped(KeyEvent arg0) {}
         });
         
         dndController.setScene(scene);
@@ -540,8 +544,8 @@ public class MainWindow extends JFrame
             if ((keyPressed!=null) && keyPressed.getKeyCode() == KeyEvent.VK_CONTROL )
             {
                 to  = new Vector( point_2_x, point_2_y );
-                vel = new Vector(point_2_x-vec.getX(), point_2_y-vec.getY() ); 
-                selectedObject.velocity.setPoint( vel.getX(), vel.getY() );
+                vel = new Vector( point_2_x-vec.getX(), point_2_y-vec.getY()); 
+                selectedObject.velocity.setPoint( vel.getX(), vel.getY());
                 
                 MessageWindow.setData( MessageWindow.NEWVELODIR, vel );
                 MessageWindow.refresh();
@@ -666,6 +670,7 @@ public class MainWindow extends JFrame
         return polygon;
     }
     
+    
     // Set the pointing destination of the arrow to unpossible
     public void clearPointingVector()
     {
@@ -679,6 +684,7 @@ public class MainWindow extends JFrame
         this.keyPressed = event;
     }
     
+    
     // The information window shall be docked on the right corner outside of the main window
     public class MouseController implements MouseListener 
     {
@@ -688,35 +694,23 @@ public class MainWindow extends JFrame
         {
             this.frame = frame;
         }
-        
-
-        @Override
-        public void mouseClicked(MouseEvent e)
-        {
-            
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e)
-        {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {}
 
         @Override
         public void mousePressed(MouseEvent e)
         {
             msgwin.updateLocation( frame.getLocation().x+frame.getWidth(), frame.getLocation().y );  
         }
+        
+        @Override
+        public void mouseClicked(MouseEvent e) {}
 
         @Override
-        public void mouseReleased(MouseEvent e)
-        {
-            // TODO Auto-generated method stub
-            
-        }
+        public void mouseEntered(MouseEvent e) {}
+
+        @Override
+        public void mouseExited(MouseEvent e) {}
+
+        @Override
+        public void mouseReleased(MouseEvent e) {}
     }
 }
