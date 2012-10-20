@@ -7,51 +7,34 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.BevelBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import de.engine.environment.Scene;
 import de.engine.math.PhysicsEngine2D;
 import de.engine.math.Util;
 import de.engine.math.Vector;
-//import de.engine.objects.Circle;
-//import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.Configuration;
 import de.engineapp.Physics;
 import de.engineapp.PresentationModel;
-import de.engineapp.VUtil;
-import de.engineapp.PresentationModel.SceneListener;
+import de.engineapp.PresentationModel.PaintListener;
 import de.engineapp.controls.Canvas;
-import de.engineapp.controls.DragButton;
 import de.engineapp.controls.MainToolBar;
 import de.engineapp.controls.ObjectToolBar;
 import de.engineapp.controls.PropertiesPanel;
-import de.engineapp.controls.ZoomSlider;
 import de.engineapp.controls.dnd.DragAndDropController;
 import de.engineapp.visual.Circle;
+import de.engineapp.visual.Grid;
 import de.engineapp.visual.Ground;
 import de.engineapp.visual.IObject;
 
 
-public class MainWindow extends JFrame implements SceneListener
+public class MainWindow extends JFrame implements PaintListener
 {
     private static final long serialVersionUID = -1405279482198323306L;
     
@@ -78,7 +61,7 @@ public class MainWindow extends JFrame implements SceneListener
         
         pModel = new PresentationModel();
         
-        pModel.addSceneListener(this);
+        pModel.addPaintListener(this);
         
         // Free objects (if necessary) before this application ends
         this.addWindowListener(new WindowAdapter()
@@ -88,7 +71,7 @@ public class MainWindow extends JFrame implements SceneListener
             {
                 pModel.getPhysicsState().pause();
                 MainWindow.this.dispose();
-                InfoWindows.getInstance().dispose();
+                InfoWindow.dispose();
                 Configuration.save();
             }
         });
@@ -111,9 +94,9 @@ public class MainWindow extends JFrame implements SceneListener
                 
                 if (selObject != null)
                 {
-                    InfoWindows.setData(InfoWindows.VELOCITY, selObject.velocity.getX() + ", " + selObject.velocity.getY());
-                    InfoWindows.setData(InfoWindows.POSITION, selObject.getPosition().getX() + ", " + selObject.getPosition().getY());
-                    InfoWindows.refresh();
+                    InfoWindow.setData(InfoWindow.VELOCITY, selObject.velocity.getX() + ", " + selObject.velocity.getY());
+                    InfoWindow.setData(InfoWindow.POSITION, selObject.getPosition().getX() + ", " + selObject.getPosition().getY());
+                    InfoWindow.refresh();
                 }
                 
                 renderScene();
@@ -126,6 +109,8 @@ public class MainWindow extends JFrame implements SceneListener
         
         
         this.setVisible(true);
+        
+        InfoWindow.attachToFrame(this);
     }
     
     
@@ -172,12 +157,12 @@ public class MainWindow extends JFrame implements SceneListener
             public void drop(String command, Point location)
             {
                 // transformed location
-                Vector vector = toTransformedVector(location);
+                Vector vector = pModel.toTransformedVector(location);
                 
                 switch (command)
                 {
                     case "circle":
-                        InfoWindows.setData( InfoWindows.ACTION, "Kreis erstellt ["+ location.x +", "+ location.y +"]" );
+                        InfoWindow.setData( InfoWindow.ACTION, "Kreis erstellt ["+ location.x +", "+ location.y +"]" );
                         
                         Circle circle = new Circle(pModel, vector, 8);
                         circle.mass = 10;
@@ -191,7 +176,7 @@ public class MainWindow extends JFrame implements SceneListener
                         break;
                         
                     case "ground":
-                        InfoWindows.setData( InfoWindows.ACTION, "Boden erstellt ["+ location.x +", "+ location.y +"]" );
+                        InfoWindow.setData( InfoWindow.ACTION, "Boden erstellt ["+ location.x +", "+ location.y +"]" );
                         
                         pModel.setGround(new Ground(pModel, (int) vector.getY()));
                         
@@ -202,12 +187,7 @@ public class MainWindow extends JFrame implements SceneListener
         });
         
         
-        
-        
-        dndController.setScene(pModel.getScene());
-        
-        canvas.setBackground(Color.WHITE);
-        canvas.setBorder( BorderFactory.createBevelBorder( BevelBorder.LOWERED ) );
+        canvas.setBackground(new Color(250, 250, 250, 255));
         
         
         this.add(canvas);
@@ -223,28 +203,35 @@ public class MainWindow extends JFrame implements SceneListener
         // the background buffer will be cleared automatically
         Graphics2D g = canvas.getGraphics();
         
+        // enable anti aliasing
         g.addRenderingHints( ANTIALIAS );
         
+        // declare the origin
+        g.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
         // translate the scene to the point you have navigated to before
         g.translate(pModel.getViewOffsetX(), pModel.getViewOffsetY());
+        // zoom into the scene
         g.scale(pModel.getZoom(), -pModel.getZoom());
-        g.translate(0, -canvas.getHeight());
+        g.scale(PresentationModel.RATIO, PresentationModel.RATIO);
         
+        // scale the stroke to ensure its contour has a one pixel width
+        g.setStroke(new BasicStroke(1 / (float) pModel.getZoom()));
         
-        if (pModel.isShowGrid())
+        if (pModel.isState("grid"))
         {
             // grid will be global later and not only around the origin
-            g.setStroke(new BasicStroke(1 / (float) pModel.getZoom()));
-            g.setColor(Color.BLACK);
-            for (int i = -15; i < 16; i++)
-            {
-                g.drawLine(i * 50, -800, i * 50, 800);
-                g.drawLine(-800, i * 50, 800, i * 50);
-            }
-            g.setStroke(new BasicStroke(3 / (float) pModel.getZoom()));
-            g.drawLine(0, -800, 0, 800);
-            g.drawLine(-800, 0, 800, 0);
-            g.setStroke(new BasicStroke(1 / (float) pModel.getZoom()));
+//            g.setColor(Color.BLACK);
+//            for (int i = -15; i < 16; i++)
+//            {
+//                g.drawLine(i * 50, -800, i * 50, 800);
+//                g.drawLine(-800, i * 50, 800, i * 50);
+//            }
+//            g.setStroke(new BasicStroke(3 / (float) pModel.getZoom()));
+//            g.drawLine(0, -800, 0, 800);
+//            g.drawLine(-800, 0, 800, 0);
+//            g.setStroke(new BasicStroke(1 / (float) pModel.getZoom()));
+            
+            (new Grid(pModel)).render(g);
         }
         
         
@@ -288,20 +275,20 @@ public class MainWindow extends JFrame implements SceneListener
         }
         
         
+        // DEBUG
+        g.scale(1 / pModel.getZoom(), 1 / -pModel.getZoom());
+        g.scale(1 / PresentationModel.RATIO, 1 / PresentationModel.RATIO);
+        g.setStroke(new BasicStroke(1));
+        g.setColor(Color.BLUE);
+        g.drawRect(-pModel.getViewOffsetX() - pModel.getCanvasWidth() / 2, -pModel.getViewOffsetY() - pModel.getCanvasHeight() / 2, 
+                pModel.getCanvasWidth(), pModel.getCanvasHeight());
+        g.drawString("80% Sichtgrenzen - noch leicht buggy", -pModel.getViewOffsetX() - pModel.getCanvasWidth() / 2, 
+                -pModel.getViewOffsetY() - pModel.getCanvasHeight() / 2 - 3);
+        
+        
         canvas.repaint();
         
-        InfoWindows.setData( InfoWindows.TIMEFORDRAWING, ""+(System.currentTimeMillis() - t) );
-    }
-    
-    
-    // this method will transform a local cursor position on the canvas
-    // to the internal Physics Engine coordinates
-    private Vector toTransformedVector(Point point)
-    {
-        return new Vector(
-                 (point.x - pModel.getViewOffsetX()) / pModel.getZoom(),
-                (-point.y + pModel.getViewOffsetY()) / pModel.getZoom() + canvas.getHeight()
-        );
+        InfoWindow.setData( InfoWindow.TIMEFORDRAWING, ""+(System.currentTimeMillis() - t) );
     }
     
     
@@ -386,48 +373,7 @@ public class MainWindow extends JFrame implements SceneListener
     
     
     @Override
-    public void objectAdded(ObjectProperties object)
-    {
-        
-    }
-    
-    
-    @Override
-    public void objectRemoved(ObjectProperties object)
-    {
-        
-    }
-    
-    
-    @Override
-    public void groundAdded(de.engine.objects.Ground ground)
-    {
-        
-    }
-    
-    
-    @Override
-    public void groundRemoved(de.engine.objects.Ground ground)
-    {
-        
-    }
-    
-    
-    @Override
-    public void objectSelected(ObjectProperties object)
-    {
-        
-    }
-    
-    
-    @Override
-    public void objectUnselected(ObjectProperties object)
-    {
-        
-    }
-    
-    @Override
-    public void redrawScene()
+    public void repaintCanvas()
     {
         renderScene();
     }

@@ -11,14 +11,11 @@ import java.io.IOException;
 
 import javax.swing.JComponent;
 
-import de.engine.environment.Scene;
-import de.engineapp.windows.InfoWindows;
+import de.engineapp.windows.InfoWindow;
 
 
 public class DragAndDropController extends DropTarget
 {
-    InfoWindows msgwin = null;
-    
     // interface to recognize drops
     public interface DropCallback
     {
@@ -27,15 +24,12 @@ public class DragAndDropController extends DropTarget
     
     private static final long serialVersionUID = 5L;
     
-    private Scene scene;
     private DropCallback dropCallback;
     public boolean dontDrag = false;
 
     
     public DragAndDropController(JComponent source, DropCallback dropCallback)
     {
-        msgwin = InfoWindows.getInstance();
-        
         this.setComponent(source);
         
         this.dropCallback = dropCallback;
@@ -68,7 +62,7 @@ public class DragAndDropController extends DropTarget
                 {
                     String command = (String) tr.getTransferData(flavors[0]);
                     
-                    InfoWindows.setData( InfoWindows.DROPPING, "akzepiert" );
+                    InfoWindow.setData( InfoWindow.DROPPING, "akzepiert" );
 //                    System.out.println("Drop accepted.");
                     
                     if (command.equals("circle") || command.equals("square") || command.equals("ground"))
@@ -94,17 +88,5 @@ public class DragAndDropController extends DropTarget
         }
         System.err.println("Drop rejected. Foreign component.");
         e.rejectDrop();
-    }
-    
-    
-    public Scene getScene()
-    {
-        return scene;
-    }
-    
-    
-    public void setScene(Scene scene)
-    {
-        this.scene = scene;
     }
 }

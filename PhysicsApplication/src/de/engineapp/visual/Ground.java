@@ -2,7 +2,7 @@ package de.engineapp.visual;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
+import java.awt.geom.Path2D;
 
 import de.engineapp.PresentationModel;
 
@@ -19,8 +19,8 @@ public class Ground extends de.engine.objects.Ground implements IObject
     
     private PresentationModel pModel = null;
     
-    private Color color = Color.GRAY;
-    private Color border = BITTER_ORANGE;
+    private Color color = FREAKY_GREEN;
+    private Color border = GRASS_GREEN;
     
     
     public Ground(PresentationModel model, int watermark)
@@ -65,27 +65,54 @@ public class Ground extends de.engine.objects.Ground implements IObject
     public void render(Graphics2D g)
     {
         int width = pModel.getCanvasWidth();
+        int halfWidth = width / 2;
+        int height = pModel.getCanvasHeight();
+        int halfHeight = height / 2;
         
-        // TODO - this should propably be cached if possible
-        Polygon polygon = new Polygon();
+        Path2D.Float polygon = new Path2D.Float();
+        
+        polygon.moveTo((-pModel.getViewOffsetX() - halfWidth) / pModel.getZoom(), (pModel.getViewOffsetY() - halfHeight) / pModel.getZoom());
         
         for (int i = 0; i < width / pModel.getZoom(); i++)
         {
-            int x = i - (int) (pModel.getViewOffsetX() / pModel.getZoom());
+            int x = i - (int) ((pModel.getViewOffsetX() + halfWidth) / pModel.getZoom());
             
-            polygon.addPoint(x, this.function( this.DOWNHILL, x) + this.watermark);
+            polygon.lineTo(x, this.function( this.DOWNHILL, x) + this.watermark);
         }
         
-        polygon.addPoint((int) ((width - pModel.getViewOffsetX()) / pModel.getZoom()), pModel.getViewOffsetY());
-        polygon.addPoint((int) (-pModel.getViewOffsetX() / pModel.getZoom()), pModel.getViewOffsetY());
+        polygon.lineTo((-pModel.getViewOffsetX() + halfWidth) / pModel.getZoom(), (pModel.getViewOffsetY() - halfHeight) / pModel.getZoom());
+        polygon.lineTo((-pModel.getViewOffsetX() - halfWidth) / pModel.getZoom(), (pModel.getViewOffsetY() - halfHeight) / pModel.getZoom());
         
         g.setColor( color );
-        g.fillPolygon(polygon);
+        g.fill(polygon);
         
         if (border != null)
         {
             g.setColor( border );
-            g.drawPolygon(polygon);
+            g.draw(polygon);
         }
+        
+        
+        // TODO - this should propably be cached if possible
+//        Polygon polygon = new Polygon();
+//        
+//        for (int i = 0; i < width / pModel.getZoom(); i++)
+//        {
+//            int x = i - (int) (pModel.getViewOffsetX() / pModel.getZoom());
+//            
+//            polygon.addPoint(x, this.function( this.DOWNHILL, x) + this.watermark);
+//        }
+//        
+//        polygon.addPoint((int) ((width - pModel.getViewOffsetX()) / pModel.getZoom()), pModel.getViewOffsetY());
+//        polygon.addPoint((int) (-pModel.getViewOffsetX() / pModel.getZoom()), pModel.getViewOffsetY());
+//        
+//        g.setColor( color );
+//        g.fillPolygon(polygon);
+//        
+//        if (border != null)
+//        {
+//            g.setColor( border );
+//            g.drawPolygon(polygon);
+//        }
     }
 }

@@ -1,7 +1,7 @@
 package de.engineapp;
 
 import de.engine.math.PhysicsEngine2D;
-import de.engineapp.windows.InfoWindows;
+import de.engineapp.windows.InfoWindow;
 
 public class Physics
 {
@@ -71,14 +71,14 @@ public class Physics
                     if (System.currentTimeMillis() >= timeCounter)
                     {
                         timeCounter = System.currentTimeMillis() + 1000;
-                        InfoWindows.setData(InfoWindows.FPS, "" + fpsCounter);
-                        InfoWindows.refresh();
+                        InfoWindow.setData(InfoWindow.FPS, "" + fpsCounter);
+                        InfoWindow.refresh();
                         fpsCounter = 0;
                     }
                 }
                 
-                InfoWindows.setData(InfoWindows.FPS, "0");
-                InfoWindows.refresh();
+                InfoWindow.setData(InfoWindow.FPS, "0");
+                InfoWindow.refresh();
             }
         };
         

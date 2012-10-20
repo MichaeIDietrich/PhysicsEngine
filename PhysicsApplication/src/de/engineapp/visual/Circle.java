@@ -2,6 +2,7 @@ package de.engineapp.visual;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
 
 import de.engine.math.Vector;
 import de.engineapp.PresentationModel;
@@ -48,18 +49,19 @@ public class Circle extends de.engine.objects.Circle implements IObject
     @Override
     public void render(Graphics2D g)
     {
-        int r = (int) this.getRadius();
-        int r2 = r * 2;
-        int x = (int) this.getPosition().getX() - r;
-        int y = (int) this.getPosition().getY() - r;
+        double r = this.getRadius() / PresentationModel.RATIO;
+        double r2 = r * 2;
+        double x = this.getPosition().getX() - r;
+        double y = this.getPosition().getY() - r;
         
-        g.setColor( color );
-        g.fillOval( x, y, r2, r2);
+        Ellipse2D.Double circle = new Ellipse2D.Double(x, y, r2, r2);
+        
+        g.setColor(color);
+        g.fill(circle);
         
         if (border != null)
         {
-            System.out.println("render");
-            g.drawOval(x, y, r2, r2);
+            g.draw(circle);
         }
     }
 }

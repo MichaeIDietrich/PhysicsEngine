@@ -10,10 +10,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import de.engineapp.PresentationModel;
+import de.engineapp.PresentationModel.StateListener;
 import de.engineapp.VUtil;
-import de.engineapp.windows.InfoWindows;
+import de.engineapp.windows.InfoWindow;
 
-public class MainToolBar extends JToolBar implements ActionListener, ChangeListener
+public class MainToolBar extends JToolBar implements ActionListener, ChangeListener, StateListener
 {
     private static final long serialVersionUID = 4164673212238397915L;
     
@@ -86,16 +87,16 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 break;
                 
             case "grid":
-                pModel.setShowGrid(!pModel.isShowGrid());
-                grid.setSelected(pModel.isShowGrid());
-                pModel.fireRedrawSceneEvents();
+                pModel.toggleState("grid");
+                grid.setSelected(pModel.isState("grid"));
+                pModel.fireRepaintEvents();
                 
                 break;
                 
             case "info":
-                pModel.setShowInfo(!pModel.isShowInfo());
-                info.setSelected(pModel.isShowInfo());
-                InfoWindows.getInstance().showWindow(pModel.isShowInfo());
+                pModel.toggleState("info");
+                info.setSelected(pModel.isState("info"));
+                InfoWindow.showWindow(pModel.isState("info"));
                 
                 break;
         }
@@ -106,6 +107,22 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     public void stateChanged(ChangeEvent e)
     {
         pModel.setZoom(slider.getValue());
-        pModel.fireRedrawSceneEvents();
+        pModel.fireRepaintEvents();
+    }
+    
+    
+    @Override
+    public void stateChanged(String id, boolean value)
+    {
+        switch (id)
+        {
+            case "grid":
+                grid.setSelected(value);
+                break;
+                
+            case "info":
+                info.setSelected(value);
+                InfoWindow.showWindow(value);
+        }
     }
 }
