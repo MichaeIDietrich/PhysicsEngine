@@ -1,6 +1,7 @@
 package de.engineapp;
 
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,8 +21,6 @@ public class PresentationModel
         public void groundRemoved(Ground ground);
         public void objectSelected(ObjectProperties object);
         public void objectUnselected(ObjectProperties object);
-        
-        public void redrawScene();
     }
     
     public interface ViewBoxListener
@@ -31,9 +30,25 @@ public class PresentationModel
         public void zoomChanged(double zoom);
     }
     
+    public interface PaintListener
+    {
+        public void repaintCanvas();
+    }
+    
+    public interface StateListener
+    {
+        public void stateChanged(String id, boolean value);
+    }
+    
+    
+    public final static double RATIO = 1.0;
+    
+    
     /** Listeners */
     private Set<ViewBoxListener> viewBoxListeners = null;
     private Set<SceneListener> sceneListeners = null;
+    private Set<PaintListener> paintListeners = null;
+    private Set<StateListener> stateListeners = null;
     
     
     
@@ -45,9 +60,8 @@ public class PresentationModel
     
     private double zoom = 1.0;
     
-    private boolean showGrid;
-    
-    private boolean showInfo;
+    /** stores all boolean states, e.g. show grid, show info */
+    private HashMap<String, Boolean> stateMap;
     
     private Physics physicsState = null;
     
@@ -63,6 +77,10 @@ public class PresentationModel
     {
         viewBoxListeners = new HashSet<>();
         sceneListeners = new HashSet<>();
+        paintListeners = new HashSet<>();
+        stateListeners = new HashSet<>();
+        
+        stateMap = new HashMap<>();
     }
     
     public void addViewBoxListener(ViewBoxListener listener)
@@ -102,6 +120,40 @@ public class PresentationModel
         sceneListeners.add(listener);
     }
     
+    
+    public void addPaintListener(PaintListener listener)
+    {
+        paintListeners.add(listener);
+    }
+    
+    public void removePaintListener(PaintListener listener)
+    {
+        paintListeners.add(listener);
+    }
+    
+    
+    public void addStateListener(StateListener listener)
+    {
+        stateListeners.add(listener);
+    }
+    
+    public void removeToggletListener(StateListener listener)
+    {
+        stateListeners.add(listener);
+    }
+    
+    private void fireStateListeners(String id)
+    {
+        Boolean value = stateMap.get(id);
+        
+        if (value != null)
+        {
+            for (StateListener listener : stateListeners)
+            {
+                listener.stateChanged(id, value);
+            }
+        }
+    }
     
     
     public int getViewOffsetX()
@@ -295,7 +347,8 @@ public class PresentationModel
     
     public int getCanvasWidth()
     {
-        return canvasWidth;
+        // DEBUG
+        return (int) (canvasWidth * 0.8);
     }
     
     public void setCanvasWidth(int canvasWidth)
@@ -308,7 +361,8 @@ public class PresentationModel
     
     public int getCanvasHeight()
     {
-        return canvasHeight;
+        // DEBUG
+        return (int) (canvasHeight * 0.8);
     }
     
     public void setCanvasHeight(int canvasHeight)
@@ -327,42 +381,42 @@ public class PresentationModel
     }
     
     
-    public void fireRedrawSceneEvents()
+    public void fireRepaintEvents()
     {
-        for (SceneListener listener : sceneListeners)
+        for (PaintListener listener : paintListeners)
         {
-            listener.redrawScene();
+            listener.repaintCanvas();
         }
     }
     
     
-    public boolean isShowGrid()
+    public boolean isState(String id)
     {
-        return showGrid;
+        return Boolean.TRUE.equals(stateMap.get(id));
     }
     
-    public void setShowGrid(boolean showGrid)
+    public void setState(String id, boolean value)
     {
-        this.showGrid = showGrid;
+        stateMap.put(id, value);
+        
+        fireStateListeners(id);
+    }
+    
+    public void toggleState(String id)
+    {
+        stateMap.put(id, !isState(id));
+        
+        fireStateListeners(id);
     }
     
     
-    public boolean isShowInfo()
-    {
-        return showInfo;
-    }
-    
-    public void setShowInfo(boolean showInfo)
-    {
-        this.showInfo = showInfo;
-    }
-    
-    
+    // this method will transform a local cursor position on the canvas
+    // to the internal Physics Engine coordinates
     public Vector toTransformedVector(Point point)
     {
         return new Vector(
-                 (point.x - viewOffsetX) / zoom,
-                (-point.y + viewOffsetY) / zoom + canvasWidth
+                 (point.x - viewOffsetX - canvasWidth  / 2) /  zoom / RATIO,
+                 (point.y - viewOffsetY - canvasHeight / 2) / -zoom / RATIO
         );
     }
 }

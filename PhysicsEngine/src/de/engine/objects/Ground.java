@@ -11,8 +11,6 @@ public class Ground //extends ObjectProperties
     
     public Ground(int watermark)
     {
-//        this.surfaceColor = Color.GRAY;
-//        this.coreColor   = this.BITTER_ORANGE;
         this.watermark = watermark;
     }
     

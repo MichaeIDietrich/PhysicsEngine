@@ -15,7 +15,7 @@ import javax.swing.SwingUtilities;
 
 import de.engine.math.Vector;
 import de.engineapp.PresentationModel;
-import de.engineapp.windows.InfoWindows;
+import de.engineapp.windows.InfoWindow;
 
 
 public class Canvas extends JComponent implements MouseListener, MouseMotionListener
@@ -49,7 +49,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 pModel.resizeCanvas(Canvas.this.getWidth(), Canvas.this.getHeight());
                 
                 // fire repaint
-                pModel.fireRedrawSceneEvents();
+                pModel.fireRepaintEvents();
             }
         });
         
@@ -93,8 +93,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         {
             Vector v = pModel.toTransformedVector(e.getPoint());
             pModel.setSelectedObject(pModel.getScene().getObjectFromPoint(v.getX(), v.getY()));
-            InfoWindows.setData( InfoWindows.ACTION, "Auswahl: " + pModel.getSelectedObject() );
-            InfoWindows.refresh();
+            InfoWindow.setData( InfoWindow.ACTION, "Auswahl: " + pModel.getSelectedObject() );
+            InfoWindow.refresh();
             System.out.println(v.getX() + "; " +v.getY());
             
             // remember first mouse click
@@ -102,7 +102,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
 //            point_1_y = (int) v.getY();
             
             // clean canvas from arrow polygon
-            pModel.fireRedrawSceneEvents();
+            pModel.fireRepaintEvents();
         }
     }
     
@@ -126,8 +126,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     {
         if (SwingUtilities.isRightMouseButton(e))
         {
-            InfoWindows.setData( InfoWindows.ACTION, "Rechte Maustaste gedrückt" );
-            InfoWindows.refresh();
+            InfoWindow.setData( InfoWindow.ACTION, "Rechte Maustaste gedrückt" );
+            InfoWindow.refresh();
             
             mouseOffset = new Point(e.getPoint());
         }
@@ -151,7 +151,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
 //            point_2_x = (int) v.getX();
 //            point_2_y = (int) v.getY();
             
-            pModel.fireRedrawSceneEvents();
+            pModel.fireRepaintEvents();
         }
         
         if (SwingUtilities.isRightMouseButton(e))
@@ -161,10 +161,10 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             mouseOffset.y = e.getPoint().y;
             
             // refresh canvas
-            pModel.fireRedrawSceneEvents();
+            pModel.fireRepaintEvents();
             
-            InfoWindows.setData( InfoWindows.COORDINATES, pModel.toTransformedVector(e.getPoint()) );
-            InfoWindows.refresh();
+            InfoWindow.setData( InfoWindow.COORDINATES, pModel.toTransformedVector(e.getPoint()) );
+            InfoWindow.refresh();
         }
     }
     
@@ -172,7 +172,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void mouseMoved(MouseEvent e)
     {
-        InfoWindows.setData( InfoWindows.COORDINATES, pModel.toTransformedVector(e.getPoint()) );
-        InfoWindows.refresh();
+        InfoWindow.setData( InfoWindow.COORDINATES, pModel.toTransformedVector(e.getPoint()) );
+        InfoWindow.refresh();
     }
 }
