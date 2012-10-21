@@ -80,7 +80,8 @@ public class MainWindow extends JFrame
     
     private KeyEvent keyEvent = null;
     
-    
+    Thread  thread = null;
+    Threadski tski = null;
     
     public MainWindow()
     {
@@ -116,8 +117,7 @@ public class MainWindow extends JFrame
             {
                 if (selectedObject != null)
                 {
-                    MessageWindow.setData(MessageWindow.VELOCITY, selectedObject.velocity.getX() + ", " + selectedObject.velocity.getY());
-                    MessageWindow.refresh();
+                    MessageWindow.setData(MessageWindow.VELOCITY, selectedObject.velocity.getX()      + ", " + selectedObject.velocity.getY());
                     MessageWindow.setData(MessageWindow.POSITION, selectedObject.getPosition().getX() + ", " + selectedObject.getPosition().getY());
                     MessageWindow.refresh();
                 }
@@ -134,8 +134,6 @@ public class MainWindow extends JFrame
         msgwin = new MessageWindow( new Point(this.getLocation().x + this.getWidth(), this.getLocation().y) );
         
         this.addMouseListener( new MouseController(this) );
-        
-
         this.setVisible(true);
     }
     
@@ -308,9 +306,6 @@ public class MainWindow extends JFrame
             public void drop(String command, Point location)
             {
                 // transform location
-                
-//                location = new Point((int) (location.x * config.getZoom()) - viewPosition.x,
-//                                    -(int) (location.y * config.getZoom()) + viewPosition.y + canvas.getHeight());
                 Vector vector = toTransformedVector(location);
                 
                 switch (command)
@@ -320,13 +315,9 @@ public class MainWindow extends JFrame
                         
                         Circle circle = new Circle(vector, 8);
                         circle.mass = 10;
-                        // is it necessary?
-//                        circle.setPosition( vector );
                         circle.velocity.setPoint( 0, 0 );
                         
                         scene.add( circle );
-                        
-                        clearPointingVector();
                         selectedObject = circle;
                         
                         renderObjects();
@@ -356,22 +347,29 @@ public class MainWindow extends JFrame
             {
                 if (SwingUtilities.isLeftMouseButton(e))
                 {
-                    // choose an object if the mouse coordinates equals its coordinates
                     Vector v = toTransformedVector(e.getPoint());
-                    selectedObject = scene.getObjectFromPoint(v.getX(), v.getY());
-                    MessageWindow.setData( MessageWindow.ACTION, "Auswahl: " + selectedObject );
-                    MessageWindow.refresh();
-//                    System.out.println(v.getX() + "; " +v.getY());
+                    
+                    if (keyEvent==null) 
+                    {
+                        // choose an object if the mouse coordinates equals its coordinates
+                        selectedObject = scene.getObjectFromPoint(v.getX(), v.getY());
+                        MessageWindow.setData( MessageWindow.ACTION, "Auswahl: " + selectedObject );
+                        MessageWindow.refresh();
+                    }
                     
                     // remember first mouse click
                     point_1_x = (int) v.getX();
                     point_1_y = (int) v.getY();
-                    
-                    canvas.requestFocusInWindow();
-                    
+
                     // clean canvas from arrow polygon
                     renderObjects();
                 }
+            }
+            
+            
+            public void mouseReleased(MouseEvent e) 
+            {
+                thread = null;
             }
             
             
@@ -381,7 +379,22 @@ public class MainWindow extends JFrame
                 if (SwingUtilities.isLeftMouseButton(e))
                 {
                     Vector v = toTransformedVector(e.getPoint());
-                    selectedObject = scene.getObjectFromPoint(v.getX(), v.getY());
+                    
+                    if (thread == null) {
+                        tski   = new Threadski();
+                        thread = new Thread( tski );
+                        thread.start();
+                    }
+
+                    if (keyEvent==null) 
+                    {
+                        selectedObject = scene.getObjectFromPoint(v.getX(), v.getY());
+                    }
+                    
+                    point_2_x = (int) v.getX();
+                    point_2_y = (int) v.getY();
+                    
+                    renderObjects();
                 }
                 
                 if (SwingUtilities.isRightMouseButton(e))
@@ -391,8 +404,6 @@ public class MainWindow extends JFrame
                     
                     mouseOffset.x = e.getPoint().x;
                     mouseOffset.y = e.getPoint().y;
-                    
-                    canvas.requestFocusInWindow();
                 }
             }
         });
@@ -407,20 +418,17 @@ public class MainWindow extends JFrame
                 if (SwingUtilities.isLeftMouseButton(e))
                 {
                     Vector v = toTransformedVector(e.getPoint());
-                    
+
                     // Non keys are pressed
-                    if (keyEvent==null) 
+                    if (keyEvent==null && tski.isTrue()) 
                     {
                         if (selectedObject!=null) selectedObject.world_position.translation.setPoint( v.getX(), v.getY() );
-                        
                         MessageWindow.setData( MessageWindow.ACTION, "Auswahl: " + selectedObject );
-                        MessageWindow.refresh();
+                        MessageWindow.refresh(); 
                     }
- 
+                    
                     point_2_x = (int) v.getX();
                     point_2_y = (int) v.getY();
-                    
-                    canvas.requestFocusInWindow();
                     
                     renderObjects();
                 }
@@ -430,8 +438,6 @@ public class MainWindow extends JFrame
                     viewPosition.translate(e.getX() - mouseOffset.x, e.getY() - mouseOffset.y);
                     mouseOffset.x = e.getPoint().x;
                     mouseOffset.y = e.getPoint().y;
-                    
-                    canvas.requestFocusInWindow();
                     
                     // refresh canvas
                     renderObjects();
@@ -444,6 +450,8 @@ public class MainWindow extends JFrame
             @Override
             public void mouseMoved(MouseEvent e)
             {
+                if (!canvas.hasFocus()) canvas.requestFocusInWindow();
+                
                 MessageWindow.setData( MessageWindow.COORDINATES, toTransformedVector(e.getPoint()) );
                 MessageWindow.refresh();
             }
@@ -580,7 +588,6 @@ public class MainWindow extends JFrame
             g.setColor( Color.DARK_GRAY );
             g.draw( poly_arrow );
         }
-        
         
         canvas.repaint();
         
@@ -725,5 +732,35 @@ public class MainWindow extends JFrame
 
         @Override
         public void mouseReleased(MouseEvent e) {}
+    }
+    
+    
+    public class Threadski implements Runnable 
+    {
+        private Boolean bool = false;
+        
+        public Boolean isTrue()
+        {
+            return bool;
+        }
+        
+        public void setFalse()
+        {
+            bool = false;
+        }
+        
+        @Override
+        public void run()
+        {
+            try
+            {
+                Thread.sleep(200);
+                this.bool = true;
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 }
