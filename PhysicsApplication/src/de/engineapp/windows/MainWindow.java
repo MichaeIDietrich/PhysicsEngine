@@ -19,6 +19,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Ellipse2D;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -82,6 +83,8 @@ public class MainWindow extends JFrame
     
     Thread  thread = null;
     Threadski tski = null;
+    
+    
     
     public MainWindow()
     {
@@ -314,7 +317,7 @@ public class MainWindow extends JFrame
                         MessageWindow.setData( MessageWindow.ACTION, "Kreis erstellt ["+ location.x +", "+ location.y +"]" );
                         
                         Circle circle = new Circle(vector, 8);
-                        circle.mass = 10;
+                        circle.mass = new Random().nextInt(99)+1;
                         circle.velocity.setPoint( 0, 0 );
                         
                         scene.add( circle );
@@ -393,6 +396,8 @@ public class MainWindow extends JFrame
                     
                     point_2_x = (int) v.getX();
                     point_2_y = (int) v.getY();
+                    
+                    if (selectedObject!=null) System.out.println( selectedObject.mass );
                     
                     renderObjects();
                 }
