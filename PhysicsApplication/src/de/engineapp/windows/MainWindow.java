@@ -463,6 +463,13 @@ public class MainWindow extends JFrame
             @Override
             public void keyPressed(KeyEvent event )
             {
+                // Delete selected object.
+                if (event.getKeyCode() == KeyEvent.VK_DELETE) 
+                {
+                    scene.remove( selectedObject );
+                    selectedObject = null;
+                    renderObjects();
+                }
                 setKeyPressed( event );
             }
 
