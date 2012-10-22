@@ -31,9 +31,9 @@ public class PhysicsCalcer
         }
         else
         {
-            Vector u = c1_vp.scale(c1.mass).add(c2_vp.scale(c2.mass)).scale(2.0 / (c1.mass + c2.mass));
-            c1.velocity = Util.minus(u, c1_vs);
-            c2.velocity = Util.minus(u, c2_vs);
+            Vector u = Util.scale(c1_vp, c1.mass).add(Util.scale(c2_vp, c2.mass)).scale(2 / (c1.mass + c2.mass));
+            c1.velocity = Util.add(Util.minus(u, c1_vp), c1_vs);
+            c2.velocity = Util.add(Util.minus(u, c2_vp), c2_vs);
         }
         c1.update(afterCollTime);
         c2.update(afterCollTime);
