@@ -20,7 +20,7 @@ public class Grid {
 	public void scanScene() {
 		this.reset();
 		for (int i = 0; i < scene.getCount(); i++) {
-			this.scanFieldsForObject(scene.getObject(i), i);
+			this.scanFieldsForObjectWithSweep(scene.getObject(i), i);
 		}
 	}
 
@@ -56,6 +56,48 @@ public class Grid {
 
 		}
 	}
+	
+	   public void scanFieldsForObjectWithSweep(ObjectProperties op, Integer id) {
+	       //tuning needed
+	        Vector[] aabb = op.getAABB();
+	        int minx = (int) (aabb[0].getX() / cellSize) + 1;
+	        int miny = (int) (aabb[0].getY() / cellSize) + 1;
+	        int maxx = (int) (aabb[1].getX() / cellSize) + 1;
+	        int maxy = (int) (aabb[1].getY() / cellSize) + 1;
+            aabb = op.getNextAABB();
+            int minxn = (int) (aabb[0].getX() / cellSize) + 1;
+            int minyn = (int) (aabb[0].getY() / cellSize) + 1;
+            int maxxn = (int) (aabb[1].getX() / cellSize) + 1;
+            int maxyn = (int) (aabb[1].getY() / cellSize) + 1;
+
+            minx = minx > minxn ? minxn : minx;
+            miny = miny > minxn ? minyn : miny;
+            maxx = maxx < maxxn ? maxxn : maxx;
+            maxy = maxy < maxyn ? maxyn : maxy;
+            
+	        for (int i = minx; i <= maxx; i++) {
+	            for (int j = miny; j <= maxy; j++) {
+	                if (objectFields.containsKey(i)) {
+	                    if (objectFields.get(i).containsKey(j)) {
+	                        objectFields.get(i).get(j).add(id);
+	                    } else {
+	                        java.util.Vector<Integer> ops = new java.util.Vector<Integer>();
+	                        ops.add(id);
+	                        objectFields.get(i).put(j, ops);
+	                    }
+	                } else {
+	                    HashMap<Integer, java.util.Vector<Integer>> row = new HashMap<Integer, java.util.Vector<Integer>>();
+	                    java.util.Vector<Integer> ops = new java.util.Vector<Integer>();
+	                    ops.add(id);
+	                    row.put(j, ops);
+	                    objectFields.put(i, row);
+	                }
+	            }
+
+	        }
+	    }
+	
+	
 
 	public java.util.Vector<Integer[]> getCollisionPairs() {
 		java.util.Vector<Integer[]> collisionPairs = new java.util.Vector<Integer[]>();

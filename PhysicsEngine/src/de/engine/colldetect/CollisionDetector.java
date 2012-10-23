@@ -32,8 +32,7 @@ public class CollisionDetector {
 	public void checkScene() {
 		grid.scanScene();
 		for (Integer[] ops : grid.getCollisionPairs()) {
-			if (needCheck(grid.scene.getObject(ops[0]),
-					grid.scene.getObject(ops[1]))) {
+			//if (needCheck(grid.scene.getObject(ops[0]), grid.scene.getObject(ops[1]))) {
 				if (grid.scene.getObject(ops[0]) instanceof Circle
 						&& grid.scene.getObject(ops[1]) instanceof Circle) {
 					PhysicsCalcer.calcCicles(
@@ -44,7 +43,7 @@ public class CollisionDetector {
 									(Circle) grid.scene.getObject(ops[1])));
 					//System.out.println("collision");
 				}
-			}
+			//}
 		}
 	}
 
