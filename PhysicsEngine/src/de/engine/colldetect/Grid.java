@@ -3,7 +3,9 @@ package de.engine.colldetect;
 import java.util.HashMap;
 import java.util.Set;
 
+import de.engine.environment.EnvProps;
 import de.engine.environment.Scene;
+import de.engine.math.Util;
 import de.engine.math.Vector;
 import de.engine.objects.ObjectProperties;
 
@@ -28,73 +30,55 @@ public class Grid {
 		objectFields = new HashMap<>();
 	}
 
+	private void scan(Vector[] aabb, Integer id) {
+        int minx = (int) (aabb[0].getX() / cellSize) + 1;
+        int miny = (int) (aabb[0].getY() / cellSize) + 1;
+        int maxx = (int) (aabb[1].getX() / cellSize) + 1;
+        int maxy = (int) (aabb[1].getY() / cellSize) + 1;
+        
+	    for (int i = minx; i <= maxx; i++) {
+            for (int j = miny; j <= maxy; j++) {
+                if (objectFields.containsKey(i)) {
+                    if (objectFields.get(i).containsKey(j)) {
+                        if(!objectFields.get(i).get(j).contains(id))
+                            objectFields.get(i).get(j).add(id);
+                    } else {
+                        java.util.Vector<Integer> ops = new java.util.Vector<Integer>();
+                        ops.add(id);
+                        objectFields.get(i).put(j, ops);
+                    }
+                } else {
+                    HashMap<Integer, java.util.Vector<Integer>> row = new HashMap<Integer, java.util.Vector<Integer>>();
+                    java.util.Vector<Integer> ops = new java.util.Vector<Integer>();
+                    ops.add(id);
+                    row.put(j, ops);
+                    objectFields.put(i, row);
+                }
+            }
+
+        }
+	}
+	
 	public void scanFieldsForObject(ObjectProperties op, Integer id) {
 		Vector[] aabb = op.getNextAABB();
-		int minx = (int) (aabb[0].getX() / cellSize) + 1;
-		int miny = (int) (aabb[0].getY() / cellSize) + 1;
-		int maxx = (int) (aabb[1].getX() / cellSize) + 1;
-		int maxy = (int) (aabb[1].getY() / cellSize) + 1;
-
-		for (int i = minx; i <= maxx; i++) {
-			for (int j = miny; j <= maxy; j++) {
-				if (objectFields.containsKey(i)) {
-					if (objectFields.get(i).containsKey(j)) {
-						objectFields.get(i).get(j).add(id);
-					} else {
-						java.util.Vector<Integer> ops = new java.util.Vector<Integer>();
-						ops.add(id);
-						objectFields.get(i).put(j, ops);
-					}
-				} else {
-					HashMap<Integer, java.util.Vector<Integer>> row = new HashMap<Integer, java.util.Vector<Integer>>();
-					java.util.Vector<Integer> ops = new java.util.Vector<Integer>();
-					ops.add(id);
-					row.put(j, ops);
-					objectFields.put(i, row);
-				}
-			}
-
-		}
+        scan(aabb, id);
 	}
 	
 	   public void scanFieldsForObjectWithSweep(ObjectProperties op, Integer id) {
 	       //tuning needed
 	        Vector[] aabb = op.getAABB();
-	        int minx = (int) (aabb[0].getX() / cellSize) + 1;
-	        int miny = (int) (aabb[0].getY() / cellSize) + 1;
-	        int maxx = (int) (aabb[1].getX() / cellSize) + 1;
-	        int maxy = (int) (aabb[1].getY() / cellSize) + 1;
+	        scan(aabb, id);
+	        
+	        double d_step = Util.scale(op.velocity, EnvProps.deltaTime()).getLength() / (2 * op.getRadius());
+            double d_time = EnvProps.deltaTime() / d_step;
+            for (int i = 1; i <= (int) d_step; i++)
+            {
+                aabb = op.getAABB(d_time * i);
+                scan(aabb, id);
+            }
             aabb = op.getNextAABB();
-            int minxn = (int) (aabb[0].getX() / cellSize) + 1;
-            int minyn = (int) (aabb[0].getY() / cellSize) + 1;
-            int maxxn = (int) (aabb[1].getX() / cellSize) + 1;
-            int maxyn = (int) (aabb[1].getY() / cellSize) + 1;
-
-            minx = minx > minxn ? minxn : minx;
-            miny = miny > minxn ? minyn : miny;
-            maxx = maxx < maxxn ? maxxn : maxx;
-            maxy = maxy < maxyn ? maxyn : maxy;
+            scan(aabb, id);
             
-	        for (int i = minx; i <= maxx; i++) {
-	            for (int j = miny; j <= maxy; j++) {
-	                if (objectFields.containsKey(i)) {
-	                    if (objectFields.get(i).containsKey(j)) {
-	                        objectFields.get(i).get(j).add(id);
-	                    } else {
-	                        java.util.Vector<Integer> ops = new java.util.Vector<Integer>();
-	                        ops.add(id);
-	                        objectFields.get(i).put(j, ops);
-	                    }
-	                } else {
-	                    HashMap<Integer, java.util.Vector<Integer>> row = new HashMap<Integer, java.util.Vector<Integer>>();
-	                    java.util.Vector<Integer> ops = new java.util.Vector<Integer>();
-	                    ops.add(id);
-	                    row.put(j, ops);
-	                    objectFields.put(i, row);
-	                }
-	            }
-
-	        }
 	    }
 	
 	
