@@ -10,7 +10,11 @@ public class CollisionTimer {
 		double distance = Util.minus(c1.getPosition(), c2.getPosition()).getLength();
 		double min_distance = c1.getRadius() + c2.getRadius();
 		double velocity = Util.minus(c1.velocity, c2.velocity).getLength();
-		return (distance - min_distance) / velocity;
+		double coll_time = (distance - min_distance) / velocity;
+		if((min_distance + 2) < Util.minus(c1.getPosition(coll_time), c2.getPosition(coll_time)).getLength())
+		    return -1;
+		else
+		    return coll_time;
 	}
 	
 	public static IntersectTimeInfo getSweepTimeInfo(ObjectProperties o1, ObjectProperties o2) {

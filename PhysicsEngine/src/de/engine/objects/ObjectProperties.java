@@ -76,6 +76,14 @@ public abstract class ObjectProperties {
 				.getY() + radius);
 		return aabb;
 	}
+	
+	public Vector[] getAABB(double time) {
+        Vector aabb[] = new Vector[2];
+        Vector pos = getPosition(time);
+        aabb[0] = new Vector(pos.getX() - radius, pos.getY() - radius);
+        aabb[1] = new Vector(pos.getX() + radius, pos.getY() + radius);
+        return aabb;
+    }
 
 	public Vector[] getNextAABB() {
 		Vector aabb[] = new Vector[2];
