@@ -9,10 +9,13 @@ public class VerticalBoxPanel extends JPanel
     private static final long serialVersionUID = -4990424757171113810L;
     
     
+    private Box box;
+    
     public VerticalBoxPanel()
     {
-        this.setOpaque(false);
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        box = Box.createVerticalBox();
+        box.setOpaque(false);
+        super.add(box);
     }
     
     
@@ -47,30 +50,24 @@ public class VerticalBoxPanel extends JPanel
             throw new RuntimeException("contraints must be either LEFT_ALIGNMENT, CENTER_ALIGNMENT or RIGHT_ALIGNMENT");
         }
         
+        JPanel panel;
+        
         if (alignment == Component.RIGHT_ALIGNMENT)
         {
-            JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            panel.setOpaque(false);
-            panel.add(comp);
-            super.add(panel);
+            panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         }
         else if (alignment == Component.CENTER_ALIGNMENT)
         {
-            JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            panel.setOpaque(false);
-            panel.add(comp);
-            super.add(panel);
+            panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         }
         else
         {
-            // stupid, but it seems to be a design issue, because the 
-            // setAlignmentX-method is missing im java.awt.Component
-            if (comp instanceof JComponent)
-            {
-                ((JComponent) comp).setAlignmentX(Component.LEFT_ALIGNMENT);
-            }
-            super.add(comp);
+            panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         }
+        
+        panel.setOpaque(false);
+        panel.add(comp);
+        box.add(panel);
     }
     
     
@@ -84,18 +81,18 @@ public class VerticalBoxPanel extends JPanel
             group.add(comp);
         }
         
-        super.add(group);
+        box.add(group);
     }
     
     
     public void addGap(int height)
     {
-        super.add(Box.createVerticalStrut(height));
+        box.add(Box.createVerticalStrut(height));
     }
     
     
     public void addSeparator()
     {
-        super.add(new JSeparator());
+        box.add(new JSeparator());
     }
 }
