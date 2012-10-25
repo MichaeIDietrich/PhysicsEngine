@@ -7,15 +7,32 @@ import java.awt.geom.Ellipse2D;
 import de.engine.math.Vector;
 import de.engineapp.PresentationModel;
 
-public class Circle extends de.engine.objects.Circle implements IObject
+public class Circle extends de.engine.objects.Circle implements IDrawable, ISelectable
 {
+    private String name;
     private Color color = Color.RED;
     private Color border = null;
+    private Arrow arrow = null;
     
     
     public Circle(PresentationModel model, Vector position, double radius)
     {
         super(position, radius);
+        
+        name ="Object " + this.id;
+    }
+    
+    
+    @Override
+    public String getName()
+    {
+        return name;
+    }
+    
+    @Override
+    public void setName(String name)
+    {
+        this.name = name;
     }
     
     
@@ -63,5 +80,23 @@ public class Circle extends de.engine.objects.Circle implements IObject
         {
             g.draw(circle);
         }
+        
+        if (arrow != null)
+        {
+            arrow.render(g);
+        }
+    }
+    
+    
+    @Override
+    public Arrow getArrow()
+    {
+        return arrow;
+    }
+    
+    @Override
+    public void setArrow(Arrow arrow)
+    {
+        this.arrow = arrow;
     }
 }

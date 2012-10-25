@@ -1,13 +1,9 @@
 package de.engineapp.visual;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 
-public interface IObject
+public interface IDrawable
 {
-    public String getName();
-    public void setName(String name);
-    
     public Color getColor();
     public void setColor(Color color);
     
@@ -15,7 +11,4 @@ public interface IObject
     public void setBorder(Color color);
     
     public void render(Graphics2D g);
-    
-    public Arrow getArrow();
-    public void setArrow(Arrow arrow);
 }

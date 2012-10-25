@@ -5,7 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -16,7 +15,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import de.engine.environment.Scene;
 import de.engine.math.PhysicsEngine2D;
-import de.engine.math.Util;
 import de.engine.math.Vector;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.Configuration;
@@ -28,10 +26,7 @@ import de.engineapp.controls.MainToolBar;
 import de.engineapp.controls.ObjectToolBar;
 import de.engineapp.controls.PropertiesPanel;
 import de.engineapp.controls.dnd.DragAndDropController;
-import de.engineapp.visual.Circle;
-import de.engineapp.visual.Grid;
-import de.engineapp.visual.Ground;
-import de.engineapp.visual.IObject;
+import de.engineapp.visual.*;
 
 
 public class MainWindow extends JFrame implements PaintListener
@@ -46,13 +41,6 @@ public class MainWindow extends JFrame implements PaintListener
     private PresentationModel pModel = null;
     
     private Canvas canvas;
-    
-    
-    private int point_1_x = 0;
-    private int point_1_y = 0;
-    
-    private int point_2_x = Integer.MAX_VALUE;
-    private int point_2_y = Integer.MAX_VALUE;
     
     
     public MainWindow()
@@ -150,7 +138,7 @@ public class MainWindow extends JFrame implements PaintListener
         
         
         // this one is handling all the drag'n'drop stuff
-        DragAndDropController dndController = new DragAndDropController(canvas, new DragAndDropController.DropCallback()
+        new DragAndDropController(canvas, new DragAndDropController.DropCallback()
         {
             // this method is necessary to recognize object drops from the left toolbar
             @Override
@@ -162,21 +150,29 @@ public class MainWindow extends JFrame implements PaintListener
                 switch (command)
                 {
                     case "circle":
-                        InfoWindow.setData( InfoWindow.ACTION, "Kreis erstellt ["+ location.x +", "+ location.y +"]" );
+                        InfoWindow.setData( InfoWindow.ACTION, "Kreis erstellt [" + location.x + ", " + location.y + "]" );
                         
                         Circle circle = new Circle(pModel, vector, 8);
                         circle.mass = 10;
-                        circle.velocity.setPoint( 0, 0 );
                         
                         pModel.addObject( circle );
                         
-                        clearPointingVector();
+                        renderScene();
+                        break;
+                        
+                    case "square":
+                        InfoWindow.setData( InfoWindow.ACTION, "Quadrat erstellt [" + location.x + ", " + location.y + "]" );
+                        
+                        Square square = new Square(pModel, vector, 16);
+                        square.mass = 10;
+                        
+                        pModel.addObject( square );
                         
                         renderScene();
                         break;
                         
                     case "ground":
-                        InfoWindow.setData( InfoWindow.ACTION, "Boden erstellt ["+ location.x +", "+ location.y +"]" );
+                        InfoWindow.setData( InfoWindow.ACTION, "Boden erstellt [" + location.x + ", " + location.y + "]" );
                         
                         pModel.setGround(new Ground(pModel, (int) vector.getY()));
                         
@@ -219,59 +215,26 @@ public class MainWindow extends JFrame implements PaintListener
         
         if (pModel.isState("grid"))
         {
-            // grid will be global later and not only around the origin
-//            g.setColor(Color.BLACK);
-//            for (int i = -15; i < 16; i++)
-//            {
-//                g.drawLine(i * 50, -800, i * 50, 800);
-//                g.drawLine(-800, i * 50, 800, i * 50);
-//            }
-//            g.setStroke(new BasicStroke(3 / (float) pModel.getZoom()));
-//            g.drawLine(0, -800, 0, 800);
-//            g.drawLine(-800, 0, 800, 0);
-//            g.setStroke(new BasicStroke(1 / (float) pModel.getZoom()));
-            
             (new Grid(pModel)).render(g);
         }
         
         
         if (pModel.getScene().getGround() != null)
         {
-            ((IObject) pModel.getScene().getGround()).render(g);
+            ((IDrawable) pModel.getScene().getGround()).render(g);
         }
         
         
         for (ObjectProperties obj : pModel.getScene().getObjects())
         {
-            if (obj instanceof IObject)
+            if (obj instanceof IDrawable)
             {
-                ((IObject) obj).render(g);
+                ((IDrawable) obj).render(g);
             }
             else
             {
                 System.err.println("Cannot render object: " + obj);
             }
-        }
-        
-        
-        if ( pModel.getSelectedObject()!=null && (point_2_x != Integer.MAX_VALUE) && (point_2_y != Integer.MAX_VALUE))
-        {
-            Vector vec = pModel.getSelectedObject().world_position.translation;
-            
-            // Begins drawing the force-arrow
-            Vector from = new Vector( vec.getX(), vec.getY() );
-            Vector   to = new Vector( vec.getX()+pModel.getSelectedObject().velocity.getX(), vec.getY()+pModel.getSelectedObject().velocity.getY() );
-//            Vector   to = new Vector( point_2_x, point_2_y );
-            
-            System.out.println( pModel.getSelectedObject().velocity.getX() );
-            
-            int arrowlength    = (int) Util.distance( from, to );
-            Polygon poly_arrow = createArrowPolygon( arrowlength );
-            
-            g.setColor( new Color( 180, 120, 20) );
-            g.fillPolygon( polyTransform( poly_arrow, from, to ));
-            g.setColor( Color.DARK_GRAY );
-            g.drawPolygon( polyTransform( poly_arrow, from, to ));
         }
         
         
@@ -288,87 +251,7 @@ public class MainWindow extends JFrame implements PaintListener
         
         canvas.repaint();
         
-        InfoWindow.setData( InfoWindow.TIMEFORDRAWING, ""+(System.currentTimeMillis() - t) );
-    }
-    
-    
-    // Defines the look of the polygon arrow
-    private Polygon createArrowPolygon( int arrow_length)
-    {
-        int arrowthickness = 2;
-        
-        Polygon poly_arrow = new Polygon();
-        
-        poly_arrow.addPoint(0,0);
-        poly_arrow.addPoint(0,arrowthickness);
-        poly_arrow.addPoint(arrow_length-20,    arrowthickness);
-        poly_arrow.addPoint(arrow_length-20,  3*arrowthickness);
-        poly_arrow.addPoint(arrow_length,     0);
-        poly_arrow.addPoint(arrow_length-20, -3*arrowthickness);
-        poly_arrow.addPoint(arrow_length-20,   -arrowthickness);
-        poly_arrow.addPoint(0,                 -arrowthickness);
-        
-        return poly_arrow;
-    }
-    
-    
-    /**
-     * Rotates a polygon by the angle determining the vectors 'from' and 'to'. <br>
-     * 
-     * @param polygon The polygon which will be transformed.
-     * @param from 
-     * @param to
-     * @return
-     */
-    private Polygon polyTransform( Polygon polygon, Vector from, Vector to )
-    {
-        Polygon tmp_polygon = new Polygon();
-        double     rotation = Util.getAngle( from, to );
-        
-        for (int i=0; i<polygon.npoints; i++)
-        {
-           tmp_polygon.addPoint(
-                   (int) (from.getX() + polygon.xpoints[i] * Math.cos(rotation) - (polygon.ypoints[i]) * Math.sin(rotation)),
-                   (int) (from.getY() + polygon.xpoints[i] * Math.sin(rotation) + (polygon.ypoints[i]) * Math.cos(rotation)));            
-        }
-        return tmp_polygon;
-    }
-    
-    
-    /**
-     * Draws an arrow vector polygon which scales automatically depending on <br>
-     * the distance of the vectors 'from' and 'to'.                          <br>
-     * 
-     * @param Vector from. Where the arrow starts from.
-     * @param Vector to. The pointing vector.
-     * @return A arrow polygon. 
-     */
-    private Polygon graphVelocityVector( Vector from, Vector to )
-    {
-        double direction = Util.getAngle( from, to );
-        int       length = (int) Util.distance( from, to );
-        double[]  rscale = {0.18, 0.53, 0.6, 1d, 0.6, 0.53, 0.18};
-        double[]   angle = {90d, 20d, 35d, 0d, 325d, 340d, 270d};
-        
-        Polygon polygon = new Polygon();
-        
-        polygon.addPoint( (int)from.getX(), (int)from.getY() );
-        for(int i=0; i<7; i++)
-        {
-            polygon.addPoint( 
-                    (int) (from.getX() + (rscale[i]*length)*Math.cos( direction + Math.toRadians( angle[i] )) ), 
-                    (int) (from.getY() + (rscale[i]*length)*Math.sin( direction + Math.toRadians( angle[i] )) ) 
-            );
-        }
-        
-        return polygon;
-    }
-    
-    // Set the pointing destination of the arrow to unpossible
-    public void clearPointingVector()
-    {
-        this.point_2_x = Integer.MAX_VALUE;
-        this.point_2_y = Integer.MAX_VALUE;
+        InfoWindow.setData( InfoWindow.TIMEFORDRAWING, "" + (System.currentTimeMillis() - t) );
     }
     
     
