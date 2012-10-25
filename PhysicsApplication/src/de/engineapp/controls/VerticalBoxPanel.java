@@ -4,13 +4,22 @@ import java.awt.*;
 
 import javax.swing.*;
 
+/**
+ * An easy-to-use Panel, which organizes its contained components into rows, depending
+ * on the used constraints.
+ * 
+ * @author Micha
+ */
 public class VerticalBoxPanel extends JPanel
 {
     private static final long serialVersionUID = -4990424757171113810L;
     
-    
     private Box box;
     
+    
+    /**
+     * Create a new <code>VerticalBoxPanel</code>, which will align components in row.
+     */
     public VerticalBoxPanel()
     {
         box = Box.createVerticalBox();
@@ -19,6 +28,10 @@ public class VerticalBoxPanel extends JPanel
     }
     
     
+    /**
+     * Adds a component to the panel, whereas every component will be placed in its own row.
+     * The component will be aligned left.
+     */
     @Override
     public Component add(Component comp)
     {
@@ -27,6 +40,11 @@ public class VerticalBoxPanel extends JPanel
     }
     
     
+    /**
+     * Adds a component to the panel, whereas every component will be placed in its own row.
+     * Use LEFT_ALIGNMENT, CENTER_ALIGNMENT or RIGHT_ALIGNMENT to align a component.
+     * LEFT_ALIGNMENT is default.
+     */
     @Override
     public void add(Component comp, Object contraints)
     {
@@ -71,6 +89,12 @@ public class VerticalBoxPanel extends JPanel
     }
     
     
+    /**
+     * Adds multiple components in one row to the panel.
+     * 
+     * @param gap - size of the gap between these components
+     * @param components - array of components to be added
+     */
     public void addGroup(int gap, Component... components)
     {
         JPanel group = new JPanel(new GridLayout(1, components.length, gap, gap));
@@ -85,12 +109,20 @@ public class VerticalBoxPanel extends JPanel
     }
     
     
+    /**
+     * Adds a vertical gap between the last and the next row.
+     * 
+     * @param height - size of the gap between these rows
+     */
     public void addGap(int height)
     {
         box.add(Box.createVerticalStrut(height));
     }
     
     
+    /**
+     * Adds a separating line after the last row.
+     */
     public void addSeparator()
     {
         box.add(new JSeparator());
