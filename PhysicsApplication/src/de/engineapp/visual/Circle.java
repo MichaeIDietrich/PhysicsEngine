@@ -3,23 +3,24 @@ package de.engineapp.visual;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
+import java.util.*;
 
 import de.engine.math.Vector;
 import de.engineapp.PresentationModel;
 
-public class Circle extends de.engine.objects.Circle implements IDrawable, ISelectable
+public class Circle extends de.engine.objects.Circle implements IDrawable, ISelectable, IDecorable
 {
     private String name;
     private Color color = Color.RED;
     private Color border = null;
-    private Arrow arrow = null;
+    private HashMap<String, IDrawable> decorMap;
     
     
     public Circle(PresentationModel model, Vector position, double radius)
     {
         super(position, radius);
-        
         name ="Object " + this.id;
+        decorMap = new HashMap<>();
     }
     
     
@@ -80,23 +81,30 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
         {
             g.draw(circle);
         }
-        
-        if (arrow != null)
-        {
-            arrow.render(g);
-        }
     }
     
     
     @Override
-    public Arrow getArrow()
+    public void putDecor(String key, IDrawable decor)
     {
-        return arrow;
+        decorMap.put(key, decor);
     }
     
     @Override
-    public void setArrow(Arrow arrow)
+    public IDrawable getDecor(String key)
     {
-        this.arrow = arrow;
+        return decorMap.get(key);
+    }
+    
+    @Override
+    public void removeDecor(String key)
+    {
+        decorMap.remove(key);
+    }
+    
+    @Override
+    public Collection<IDrawable> getDecorSet()
+    {
+        return decorMap.values();
     }
 }

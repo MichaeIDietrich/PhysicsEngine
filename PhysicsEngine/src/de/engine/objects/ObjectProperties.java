@@ -67,6 +67,7 @@ public abstract class ObjectProperties {
 
 	// function for collision
 	public abstract double getRadius();
+	public abstract void setRadius(double radius);
 
 	public Vector[] getAABB() {
 		Vector aabb[] = new Vector[2];

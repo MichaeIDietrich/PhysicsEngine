@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.*;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -145,14 +146,14 @@ public class MainWindow extends JFrame implements PaintListener
             public void drop(String command, Point location)
             {
                 // transformed location
-                Vector vector = pModel.toTransformedVector(location);
+                Vector sceneLocation = pModel.toTransformedVector(location);
                 
                 switch (command)
                 {
                     case "circle":
                         InfoWindow.setData( InfoWindow.ACTION, "Kreis erstellt [" + location.x + ", " + location.y + "]" );
                         
-                        Circle circle = new Circle(pModel, vector, 8);
+                        Circle circle = new Circle(pModel, sceneLocation, 8);
                         circle.mass = 10;
                         
                         pModel.addObject( circle );
@@ -163,7 +164,7 @@ public class MainWindow extends JFrame implements PaintListener
                     case "square":
                         InfoWindow.setData( InfoWindow.ACTION, "Quadrat erstellt [" + location.x + ", " + location.y + "]" );
                         
-                        Square square = new Square(pModel, vector, 16);
+                        Square square = new Square(pModel, sceneLocation, 8);
                         square.mass = 10;
                         
                         pModel.addObject( square );
@@ -174,7 +175,7 @@ public class MainWindow extends JFrame implements PaintListener
                     case "ground":
                         InfoWindow.setData( InfoWindow.ACTION, "Boden erstellt [" + location.x + ", " + location.y + "]" );
                         
-                        pModel.setGround(new Ground(pModel, (int) vector.getY()));
+                        pModel.setGround(new Ground(pModel, (int) sceneLocation.getY()));
                         
                         renderScene();
                         break;
@@ -224,6 +225,7 @@ public class MainWindow extends JFrame implements PaintListener
             ((IDrawable) pModel.getScene().getGround()).render(g);
         }
         
+        Collection<IDrawable> decorSet = new ArrayList<>();
         
         for (ObjectProperties obj : pModel.getScene().getObjects())
         {
@@ -235,6 +237,16 @@ public class MainWindow extends JFrame implements PaintListener
             {
                 System.err.println("Cannot render object: " + obj);
             }
+            
+            if (obj instanceof IDecorable)
+            {
+                decorSet.addAll(((IDecorable) obj).getDecorSet());
+            }
+        }
+        
+        for (IDrawable decor : decorSet)
+        {
+            decor.render(g);
         }
         
         

@@ -3,16 +3,16 @@ package de.engineapp.visual;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.*;
+import java.util.Collection;
 
 import de.engine.math.Vector;
 import de.engineapp.PresentationModel;
 
-public class Square extends de.engine.objects.Square implements IDrawable, ISelectable
+public class Square extends de.engine.objects.Square implements IDrawable, ISelectable, IDecorable
 {
     private String name;
     private Color color = Color.GREEN;
     private Color border = null;
-    private Arrow arrow = null;
     
     
     public Square(PresentationModel model, Vector position, Vector corner)
@@ -22,9 +22,9 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     }
     
     
-    public Square(PresentationModel model, Vector position, double diagonal)
+    public Square(PresentationModel model, Vector position, double radius)
     {
-        super(position, new Vector(diagonal / 2.0, diagonal / 2.0));
+        super(position, new Vector(radius, radius));
         name = "Objekt " + this.id;
     }
     
@@ -94,14 +94,24 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     
     
     @Override
-    public Arrow getArrow()
+    public void putDecor(String key, IDrawable decor)
     {
-        return arrow;
     }
     
     @Override
-    public void setArrow(Arrow arrow)
+    public IDrawable getDecor(String key)
     {
-        this.arrow = arrow;
+        return null;
+    }
+    
+    @Override
+    public void removeDecor(String key)
+    {
+    }
+    
+    @Override
+    public Collection<IDrawable> getDecorSet()
+    {
+        return null;
     }
 }

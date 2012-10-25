@@ -53,6 +53,12 @@ public class Circle extends ObjectProperties
         return radius;
     }
     
+    @Override
+    public void setRadius(double radius)
+    {
+        this.radius = radius;
+    }
+    
     
     @Override
     public boolean contains(double x, double y)

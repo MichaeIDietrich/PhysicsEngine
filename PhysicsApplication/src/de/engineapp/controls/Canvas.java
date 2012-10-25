@@ -146,23 +146,37 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             
             mouseOffset = new Point(e.getPoint());
         }
+        else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
+        {
+            RangeIndicator range = new RangeIndicator(pModel.getSelectedObject(), "radius");
+            ((IDecorable) pModel.getSelectedObject()).putDecor("RANGE", range);
+            pModel.fireRepaintEvents();
+        }
     }
     
     
     @Override
     public void mouseReleased(MouseEvent e)
     {
-        dragDelay = null;
+        if (SwingUtilities.isLeftMouseButton(e))
+        {
+            dragDelay = null;
+        }
+        else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
+        {
+            ((IDecorable) pModel.getSelectedObject()).removeDecor("RANGE");
+            pModel.fireRepaintEvents();
+        }
     }
     
     
     @Override
     public void mouseDragged(MouseEvent e)
     {
+        Vector cursor = pModel.toTransformedVector(e.getPoint());
+        
         if (SwingUtilities.isLeftMouseButton(e) && pModel.getSelectedObject() != null)
         {
-            Vector cursor = pModel.toTransformedVector(e.getPoint());
-            
             if (e.isControlDown() && !e.isShiftDown() && !e.isAltDown())
             {
                 // set new velocity
@@ -186,6 +200,11 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             
             InfoWindow.setData( InfoWindow.COORDINATES, pModel.toTransformedVector(e.getPoint()) );
             InfoWindow.refresh();
+        }
+        else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
+        {
+            pModel.getSelectedObject().setRadius(Util.distance(pModel.getSelectedObject().getPosition(), cursor));
+            pModel.fireRepaintEvents();
         }
     }
     
@@ -216,12 +235,12 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     public void objectSelected(ObjectProperties object)
     {
         Arrow arrow = new Arrow(object, "velocity");
-        ((ISelectable) object).setArrow(arrow);
+        ((IDecorable) object).putDecor("ARROW", arrow);
     }
     
     @Override
     public void objectUnselected(ObjectProperties object)
     {
-        ((ISelectable) object).setArrow(null);
+        ((IDecorable) object).removeDecor("ARROW");
     }
 }
