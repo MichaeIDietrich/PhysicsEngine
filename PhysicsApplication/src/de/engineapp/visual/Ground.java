@@ -6,7 +6,7 @@ import java.awt.geom.Path2D;
 
 import de.engineapp.PresentationModel;
 
-public class Ground extends de.engine.objects.Ground implements IObject
+public class Ground extends de.engine.objects.Ground implements IDrawable
 {
     public final static Color GRASS_GREEN_LIGHT = new Color( 052, 158, 052 );
     public final static Color GRASS_GREEN       = new Color( 032, 128, 032 );
@@ -69,7 +69,7 @@ public class Ground extends de.engine.objects.Ground implements IObject
         int height = pModel.getCanvasHeight();
         int halfHeight = height / 2;
         
-        Path2D.Float polygon = new Path2D.Float();
+        Path2D.Double polygon = new Path2D.Double();
         
         polygon.moveTo((-pModel.getViewOffsetX() - halfWidth) / pModel.getZoom(), (pModel.getViewOffsetY() - halfHeight) / pModel.getZoom());
         

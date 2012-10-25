@@ -3,22 +3,22 @@ package de.engineapp.controls;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
-import de.engine.math.Vector;
-import de.engineapp.PresentationModel;
+import de.engine.math.*;
+import de.engine.objects.*;
+import de.engine.objects.Ground;
+import de.engineapp.*;
+import de.engineapp.PresentationModel.SceneListener;
+import de.engineapp.visual.*;
 import de.engineapp.windows.InfoWindow;
 
 
-public class Canvas extends JComponent implements MouseListener, MouseMotionListener
+public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener
 {
     private static final long serialVersionUID = -5320479580417617983L;
     
@@ -31,6 +31,10 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     
     // stores the mouse offset while dragging
     private Point mouseOffset;
+    
+    // this objects causes a little delay till an object can be dragged
+    // this should avoid drags, if an object should only be selected
+    Task dragDelay = null;
     
     
     public Canvas(PresentationModel model)
@@ -57,6 +61,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         // and manipulating objects possible
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+        pModel.addSceneListener(this);
     }
     
     
@@ -89,42 +94,52 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void mouseClicked(MouseEvent e)
     {
-        if (SwingUtilities.isLeftMouseButton(e))
-        {
-            Vector v = pModel.toTransformedVector(e.getPoint());
-            pModel.setSelectedObject(pModel.getScene().getObjectFromPoint(v.getX(), v.getY()));
-            InfoWindow.setData( InfoWindow.ACTION, "Auswahl: " + pModel.getSelectedObject() );
-            InfoWindow.refresh();
-            System.out.println(v.getX() + "; " +v.getY());
-            
-            // remember first mouse click
-//            point_1_x = (int) v.getX();
-//            point_1_y = (int) v.getY();
-            
-            // clean canvas from arrow polygon
-            pModel.fireRepaintEvents();
-        }
+//        if (SwingUtilities.isLeftMouseButton(e))
+//        {
+//            Vector v = pModel.toTransformedVector(e.getPoint());
+//            pModel.setSelectedObject(pModel.getScene().getObjectFromPoint(v.getX(), v.getY()));
+//            
+//            pModel.fireRepaintEvents();
+//            
+//            InfoWindow.setData( InfoWindow.ACTION, "Auswahl: " + pModel.getSelectedObject() );
+//            InfoWindow.refresh();
+//        }
     }
     
     
     @Override
-    public void mouseEntered(MouseEvent e)
-    {
-        
-    }
+    public void mouseEntered(MouseEvent e) { }
     
     
     @Override
-    public void mouseExited(MouseEvent e)
-    {
-        
-    }
+    public void mouseExited(MouseEvent e) { }
     
     
     @Override
     public void mousePressed(MouseEvent e)
     {
-        if (SwingUtilities.isRightMouseButton(e))
+        if (SwingUtilities.isLeftMouseButton(e))
+        {
+            dragDelay = new Task(200);
+            dragDelay.start();
+            
+            if ((e.getModifiers() & InputEvent.CTRL_MASK) != 0 && pModel.getSelectedObject() != null)
+            {
+                Vector cursor = pModel.toTransformedVector(e.getPoint());
+                // set new velocity
+                pModel.getSelectedObject().velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
+                
+                pModel.fireRepaintEvents();
+            }
+            else
+            {
+                Vector v = pModel.toTransformedVector(e.getPoint());
+                pModel.setSelectedObject(pModel.getScene().getObjectFromPoint(v.getX(), v.getY()));
+            }
+            
+            pModel.fireRepaintEvents();
+        }
+        else if (SwingUtilities.isRightMouseButton(e))
         {
             InfoWindow.setData( InfoWindow.ACTION, "Rechte Maustaste gedrückt" );
             InfoWindow.refresh();
@@ -137,24 +152,30 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void mouseReleased(MouseEvent e)
     {
-        
+        dragDelay = null;
     }
     
     
     @Override
     public void mouseDragged(MouseEvent e)
     {
-        // Changes the length of the force-arrow
-        if (SwingUtilities.isLeftMouseButton(e))
+        if (SwingUtilities.isLeftMouseButton(e) && pModel.getSelectedObject() != null)
         {
-//            Vector v = pModel.toTransformedVector(e.getPoint());
-//            point_2_x = (int) v.getX();
-//            point_2_y = (int) v.getY();
+            Vector cursor = pModel.toTransformedVector(e.getPoint());
             
-            pModel.fireRepaintEvents();
+            if (e.isControlDown() && !e.isShiftDown() && !e.isAltDown())
+            {
+                // set new velocity
+                pModel.getSelectedObject().velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
+                pModel.fireRepaintEvents();
+            }
+            else if (dragDelay != null && dragDelay.isDone() && !e.isControlDown() && !e.isShiftDown() && !e.isAltDown())
+            {
+                pModel.getSelectedObject().world_position.translation = cursor;
+                pModel.fireRepaintEvents();
+            }
         }
-        
-        if (SwingUtilities.isRightMouseButton(e))
+        else if (SwingUtilities.isRightMouseButton(e))
         {
             pModel.moveViewOffset(e.getX() - mouseOffset.x, e.getY() - mouseOffset.y);
             mouseOffset.x = e.getPoint().x;
@@ -174,5 +195,33 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     {
         InfoWindow.setData( InfoWindow.COORDINATES, pModel.toTransformedVector(e.getPoint()) );
         InfoWindow.refresh();
+    }
+    
+    
+    @Override
+    public void objectAdded(ObjectProperties object) { }
+    
+    @Override
+    public void objectRemoved(ObjectProperties object) { }
+    
+    
+    @Override
+    public void groundAdded(Ground ground) { }
+    
+    @Override
+    public void groundRemoved(Ground ground) { }
+    
+    
+    @Override
+    public void objectSelected(ObjectProperties object)
+    {
+        Arrow arrow = new Arrow(object, "velocity");
+        ((ISelectable) object).setArrow(arrow);
+    }
+    
+    @Override
+    public void objectUnselected(ObjectProperties object)
+    {
+        ((ISelectable) object).setArrow(null);
     }
 }
