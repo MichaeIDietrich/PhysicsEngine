@@ -41,7 +41,7 @@ public class PresentationModel
     }
     
     
-    public final static double RATIO = 1.0;
+//    public final static double RATIO = 10.0;
     
     
     /** Listeners */
@@ -347,8 +347,7 @@ public class PresentationModel
     
     public int getCanvasWidth()
     {
-        // DEBUG
-        return (int) (canvasWidth * 0.8);
+        return (int) canvasWidth;
     }
     
     public void setCanvasWidth(int canvasWidth)
@@ -361,8 +360,7 @@ public class PresentationModel
     
     public int getCanvasHeight()
     {
-        // DEBUG
-        return (int) (canvasHeight * 0.8);
+        return (int) canvasHeight;
     }
     
     public void setCanvasHeight(int canvasHeight)
@@ -415,8 +413,8 @@ public class PresentationModel
     public Vector toTransformedVector(Point point)
     {
         return new Vector(
-                 (point.x - viewOffsetX - canvasWidth  / 2) /  zoom / RATIO,
-                 (point.y - viewOffsetY - canvasHeight / 2) / -zoom / RATIO
+                 (point.x - viewOffsetX - canvasWidth  / 2) /  zoom,
+                 (point.y - viewOffsetY - canvasHeight / 2) / -zoom
         );
     }
 }

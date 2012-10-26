@@ -11,7 +11,7 @@ import javax.swing.event.ChangeListener;
 
 import de.engineapp.PresentationModel;
 import de.engineapp.PresentationModel.StateListener;
-import de.engineapp.VUtil;
+import de.engineapp.Util;
 import de.engineapp.windows.InfoWindow;
 
 public class MainToolBar extends JToolBar implements ActionListener, ChangeListener, StateListener
@@ -37,11 +37,11 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         this.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         this.setFloatable(false);
         
-        play  = new ToolBarButton(VUtil.getIcon("play"),  "play",  this);
-        pause = new ToolBarButton(VUtil.getIcon("pause"), "pause", this);
-        reset = new ToolBarButton(VUtil.getIcon("reset"), "reset", this);
-        grid  = new ToolBarButton(VUtil.getIcon("grid"),  "grid",  this);
-        info  = new ToolBarButton(VUtil.getIcon("loupe"), "info",  this);
+        play  = new ToolBarButton(Util.getIcon("play"),  "play",  this);
+        pause = new ToolBarButton(Util.getIcon("pause"), "pause", this);
+        reset = new ToolBarButton(Util.getIcon("reset"), "reset", this);
+        grid  = new ToolBarButton(Util.getIcon("grid"),  "grid",  this);
+        info  = new ToolBarButton(Util.getIcon("loupe"), "info",  this);
         
         pause.setEnabled(false);
         reset.setEnabled(false);

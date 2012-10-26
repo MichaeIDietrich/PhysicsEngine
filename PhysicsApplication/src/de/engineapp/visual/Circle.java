@@ -19,7 +19,7 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
     public Circle(PresentationModel model, Vector position, double radius)
     {
         super(position, radius);
-        name ="Object " + this.id;
+        name = "Object " + this.id;
         decorMap = new HashMap<>();
     }
     
@@ -67,7 +67,7 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
     @Override
     public void render(Graphics2D g)
     {
-        double r = this.getRadius() / PresentationModel.RATIO;
+        double r = this.getRadius();
         double r2 = r * 2;
         double x = this.getPosition().getX() - r;
         double y = this.getPosition().getY() - r;
