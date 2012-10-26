@@ -1,7 +1,6 @@
 package de.engineapp.visual;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.util.*;
 
@@ -67,12 +66,7 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
     @Override
     public void render(Graphics2D g)
     {
-        double r = this.getRadius();
-        double r2 = r * 2;
-        double x = this.getPosition().getX() - r;
-        double y = this.getPosition().getY() - r;
-        
-        Ellipse2D.Double circle = new Ellipse2D.Double(x, y, r2, r2);
+        Shape circle = getShape();
         
         g.setColor(color);
         g.fill(circle);
@@ -106,5 +100,39 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
     public Collection<IDrawable> getDecorSet()
     {
         return decorMap.values();
+    }
+    
+    
+      //////////////////////////
+     //////    caching    /////
+    //////////////////////////
+    
+    private Shape cachedShape = null;
+    private Vector lastPosition = null;
+    private double lastRadius = 0.0;
+    
+    
+    private Shape getShape()
+    {
+        if (cachedShape == null || lastPosition != this.getPosition() || lastRadius != this.getRadius())
+        {
+            cachedShape = createNewShape();
+            lastPosition = this.getPosition();
+            lastRadius = this.getRadius();
+        }
+        
+        return cachedShape;
+    }
+    
+    private Shape createNewShape()
+    {
+        double r = this.getRadius();
+        double r2 = r * 2;
+        double x = this.getPosition().getX() - r;
+        double y = this.getPosition().getY() - r;
+        
+        Ellipse2D.Double circle = new Ellipse2D.Double(x, y, r2, r2);
+        
+        return circle;
     }
 }

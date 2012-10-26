@@ -18,10 +18,9 @@ import de.engine.environment.Scene;
 import de.engine.math.PhysicsEngine2D;
 import de.engine.math.Vector;
 import de.engine.objects.ObjectProperties;
-import de.engineapp.Configuration;
-import de.engineapp.Physics;
-import de.engineapp.PresentationModel;
+import de.engineapp.*;
 import de.engineapp.PresentationModel.PaintListener;
+import de.engineapp.PresentationModel.StateListener;
 import de.engineapp.controls.Canvas;
 import de.engineapp.controls.MainToolBar;
 import de.engineapp.controls.ObjectToolBar;
@@ -30,7 +29,7 @@ import de.engineapp.controls.dnd.DragAndDropController;
 import de.engineapp.visual.*;
 
 
-public class MainWindow extends JFrame implements PaintListener
+public class MainWindow extends JFrame implements PaintListener, StateListener
 {
     private static final long serialVersionUID = -1405279482198323306L;
     
@@ -43,6 +42,8 @@ public class MainWindow extends JFrame implements PaintListener
     
     private Canvas canvas;
     
+    private Grid grid = null;
+    
     
     public MainWindow()
     {
@@ -51,6 +52,7 @@ public class MainWindow extends JFrame implements PaintListener
         pModel = new PresentationModel();
         
         pModel.addPaintListener(this);
+        pModel.addStateListener(this);
         
         // Free objects (if necessary) before this application ends
         this.addWindowListener(new WindowAdapter()
@@ -88,7 +90,7 @@ public class MainWindow extends JFrame implements PaintListener
                     InfoWindow.refresh();
                 }
                 
-                renderScene();
+                pModel.fireRepaintEvents(true);
             }
         }));
         
@@ -158,7 +160,7 @@ public class MainWindow extends JFrame implements PaintListener
                         
                         pModel.addObject( circle );
                         
-                        renderScene();
+                        pModel.fireRepaintEvents();
                         break;
                         
                     case "square":
@@ -169,7 +171,7 @@ public class MainWindow extends JFrame implements PaintListener
                         
                         pModel.addObject( square );
                         
-                        renderScene();
+                        pModel.fireRepaintEvents();
                         break;
                         
                     case "ground":
@@ -177,7 +179,7 @@ public class MainWindow extends JFrame implements PaintListener
                         
                         pModel.setGround(new Ground(pModel, (int) sceneLocation.getY()));
                         
-                        renderScene();
+                        pModel.fireRepaintEvents();
                         break;
                 }
             }
@@ -215,7 +217,7 @@ public class MainWindow extends JFrame implements PaintListener
         
         if (pModel.isState("grid"))
         {
-            (new Grid(pModel)).render(g);
+            grid.render(g);
         }
         
         
@@ -259,5 +261,25 @@ public class MainWindow extends JFrame implements PaintListener
     public void repaintCanvas()
     {
         renderScene();
+    }
+    
+    
+    @Override
+    public void stateChanged(String id, boolean value)
+    {
+        System.out.println(id + ": " + value);
+        switch (id)
+        {
+            case "grid":
+                if (value)
+                {
+                    grid = new Grid(pModel);
+                }
+                else
+                {
+                    grid = null;
+                }
+                break;
+        }
     }
 }

@@ -379,11 +379,27 @@ public class PresentationModel
     }
     
     
+    /**
+     * If the PhysicsEngine is not running, this method will cause a repaint of the canvas and its content.
+     */
     public void fireRepaintEvents()
     {
-        for (PaintListener listener : paintListeners)
+        fireRepaintEvents(false);
+    }
+    
+    /**
+     * This method will cause a repaint of the canvas and its content.
+     * 
+     * @param force - if this parameter is true, the canvas will be repainted even if the PhysicsEngine is running.
+     */
+    public void fireRepaintEvents(boolean force)
+    {
+        if (force || !physicsState.isRunning())
         {
-            listener.repaintCanvas();
+            for (PaintListener listener : paintListeners)
+            {
+                listener.repaintCanvas();
+            }
         }
     }
     
