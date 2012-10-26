@@ -203,13 +203,12 @@ public class MainWindow extends JFrame implements PaintListener
         // enable anti aliasing
         g.addRenderingHints( ANTIALIAS );
         
-        // declare the origin
+        // define the origin
         g.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
         // translate the scene to the point you have navigated to before
         g.translate(pModel.getViewOffsetX(), pModel.getViewOffsetY());
-        // zoom into the scene
+        // zoom into the scene + invert y-axis
         g.scale(pModel.getZoom(), -pModel.getZoom());
-        g.scale(PresentationModel.RATIO, PresentationModel.RATIO);
         
         // scale the stroke to ensure its contour has a one pixel width
         g.setStroke(new BasicStroke(1 / (float) pModel.getZoom()));
@@ -248,17 +247,6 @@ public class MainWindow extends JFrame implements PaintListener
         {
             decor.render(g);
         }
-        
-        
-        // DEBUG
-        g.scale(1 / pModel.getZoom(), 1 / -pModel.getZoom());
-        g.scale(1 / PresentationModel.RATIO, 1 / PresentationModel.RATIO);
-        g.setStroke(new BasicStroke(1));
-        g.setColor(Color.BLUE);
-        g.drawRect(-pModel.getViewOffsetX() - pModel.getCanvasWidth() / 2, -pModel.getViewOffsetY() - pModel.getCanvasHeight() / 2, 
-                pModel.getCanvasWidth(), pModel.getCanvasHeight());
-        g.drawString("80% Sichtgrenzen - noch leicht buggy", -pModel.getViewOffsetX() - pModel.getCanvasWidth() / 2, 
-                -pModel.getViewOffsetY() - pModel.getCanvasHeight() / 2 - 3);
         
         
         canvas.repaint();

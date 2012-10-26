@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 
-public class VUtil
+public class Util
 {
     private static HashMap<String, ImageIcon> iconMap;
     
@@ -15,7 +15,7 @@ public class VUtil
     }
     
     // private constructor
-    private VUtil() { }
+    private Util() { }
     
     
     public static ImageIcon getIcon(String id)
