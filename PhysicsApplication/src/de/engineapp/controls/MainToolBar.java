@@ -26,6 +26,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     private ToolBarButton reset;
     private ToolBarButton grid;
     private ToolBarButton info;
+    private ToolBarButton focus;
     
     private ZoomSlider slider;
     
@@ -42,6 +43,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         reset = new ToolBarButton(Util.getIcon("reset"), "reset", this);
         grid  = new ToolBarButton(Util.getIcon("grid"),  "grid",  this);
         info  = new ToolBarButton(Util.getIcon("loupe"), "info",  this);
+        focus = new ToolBarButton(Util.getIcon("focus"), "focus", this);
         
         pause.setEnabled(false);
         reset.setEnabled(false);
@@ -50,13 +52,15 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         slider.addChangeListener(this);
         
         
+        
+        
         this.add(play);
         this.add(pause);
         this.add(reset);
         this.addSeparator();
         this.add(grid);
-        this.addSeparator();
         this.add(info);
+        this.add(focus);
         this.addSeparator();
         this.add(slider);
     }
@@ -97,6 +101,12 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 pModel.toggleState("info");
                 info.setSelected(pModel.isState("info"));
                 InfoWindow.showWindow(pModel.isState("info"));
+                
+                break;
+                
+            case "focus":
+                pModel.setViewOffsetY(0, 0);
+                pModel.fireRepaintEvents();
                 
                 break;
         }

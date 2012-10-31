@@ -41,6 +41,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     public Canvas(PresentationModel model)
     {
         pModel = model;
+        model.setCanvas(this);
         
         this.addComponentListener(new ComponentAdapter()
         {

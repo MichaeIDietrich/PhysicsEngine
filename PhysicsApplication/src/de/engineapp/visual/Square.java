@@ -3,7 +3,7 @@ package de.engineapp.visual;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.*;
-import java.util.Collection;
+import java.util.*;
 
 import de.engine.math.Vector;
 import de.engineapp.PresentationModel;
@@ -13,12 +13,14 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     private String name;
     private Color color = Color.GREEN;
     private Color border = null;
+    private HashMap<String, IDrawable> decorMap;
     
     
     public Square(PresentationModel model, Vector position, Vector corner)
     {
         super(position, corner);
         name = "Objekt " + this.id;
+        decorMap = new HashMap<>();
     }
     
     
@@ -26,6 +28,7 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     {
         super(position, new Vector(radius, radius));
         name = "Objekt " + this.id;
+        decorMap = new HashMap<>();
     }
     
     
@@ -47,7 +50,7 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     {
         return color;
     }
-
+    
     @Override
     public void setColor(Color color)
     {
@@ -56,19 +59,21 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
             this.color = color;
         }
     }
-
+    
+    
     @Override
     public Color getBorder()
     {
         return border;
     }
-
+    
     @Override
     public void setBorder(Color color)
     {
         this.border = color;
     }
-
+    
+    
     @Override
     public void render(Graphics2D g)
     {
@@ -112,6 +117,6 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     @Override
     public Collection<IDrawable> getDecorSet()
     {
-        return null;
+        return decorMap.values();
     }
 }
