@@ -25,9 +25,9 @@ public class ObjectToolBar extends JToolBar
         this.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         this.setFloatable(false);
         
-        circle = new DragButton(Util.getIcon("circle"), "circle", true);
-        square = new DragButton(Util.getIcon("square"), "square", true);
-        ground = new DragButton(Util.getIcon("ground"), "ground", Util.getImage("ruler"), new Point(16, 14));
+        circle = new DragButton(Util.getIcon("circle2"), "circle", true);
+        square = new DragButton(Util.getIcon("square2"), "square", true);
+        ground = new DragButton(Util.getIcon("ground2"), "ground", Util.getImage("ruler"), new Point(16, 14));
         
         
         this.add(circle);

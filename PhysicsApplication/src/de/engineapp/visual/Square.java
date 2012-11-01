@@ -50,7 +50,7 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     {
         return color;
     }
-
+    
     @Override
     public void setColor(Color color)
     {
@@ -59,19 +59,21 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
             this.color = color;
         }
     }
-
+    
+    
     @Override
     public Color getBorder()
     {
         return border;
     }
-
+    
     @Override
     public void setBorder(Color color)
     {
         this.border = color;
     }
-
+    
+    
     @Override
     public void render(Graphics2D g)
     {

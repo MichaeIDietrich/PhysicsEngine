@@ -1,6 +1,7 @@
 package de.engineapp;
 
 import java.awt.Point;
+import java.awt.event.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,6 +11,7 @@ import de.engine.math.PhysicsEngine2D;
 import de.engine.math.Vector;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
+import de.engineapp.controls.Canvas;
 
 public class PresentationModel
 {
@@ -71,6 +73,8 @@ public class PresentationModel
     private Scene scene = null;
     /** Selected object in the active Scene */
     private ObjectProperties selectedObject = null;
+    /** Canvas control */
+    private Canvas canvas = null;
     
     
     public PresentationModel()
@@ -155,6 +159,21 @@ public class PresentationModel
         }
     }
     
+    
+    public void addMouseListenerToCanvas(MouseListener listener)
+    {
+        canvas.addMouseListener(listener);
+    }
+    
+    public void addMouseMotionListenerToCanvas(MouseMotionListener listener)
+    {
+        canvas.addMouseMotionListener(listener);
+    }
+    
+    
+    ////////////////////////
+    /// GETTER // SETTER ///
+    ////////////////////////
     
     public int getViewOffsetX()
     {
@@ -278,6 +297,12 @@ public class PresentationModel
                 listener.objectSelected(selectedObject);
             }
         }
+    }
+    
+    
+    public void setCanvas(Canvas canvas)
+    {
+        this.canvas = canvas;
     }
     
     
