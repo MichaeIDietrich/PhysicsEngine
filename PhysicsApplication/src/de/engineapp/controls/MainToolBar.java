@@ -9,12 +9,12 @@ import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import de.engineapp.PresentationModel;
-import de.engineapp.PresentationModel.StateListener;
-import de.engineapp.Util;
+import de.engineapp.*;
+import de.engineapp.PresentationModel.StorageListener;
+import de.engineapp.PresentationModel.ViewBoxListener;
 import de.engineapp.windows.InfoWindow;
 
-public class MainToolBar extends JToolBar implements ActionListener, ChangeListener, StateListener
+public class MainToolBar extends JToolBar implements ActionListener, ChangeListener, StorageListener, ViewBoxListener
 {
     private static final long serialVersionUID = 4164673212238397915L;
     
@@ -38,6 +38,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         this.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         this.setFloatable(false);
         
+        pModel.addViewBoxListener(this);
+        
         play  = new ToolBarButton(Util.getIcon("play"),  "play",  this);
         pause = new ToolBarButton(Util.getIcon("pause"), "pause", this);
         reset = new ToolBarButton(Util.getIcon("reset"), "reset", this);
@@ -50,8 +52,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         
         slider = new ZoomSlider(pModel.getZoom());
         slider.addChangeListener(this);
-        
-        
         
         
         this.add(play);
@@ -69,7 +69,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        System.out.println(e.getActionCommand());
         switch (e.getActionCommand())
         {
             case "play":
@@ -134,5 +133,21 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 info.setSelected(value);
                 InfoWindow.showWindow(value);
         }
+    }
+    
+    @Override
+    public void propertyChanged(String id, String value) { }
+    
+    
+    @Override
+    public void offsetChanged(int offsetX, int offsetY) { }
+    
+    @Override
+    public void sizeChanged(int width, int height) { }
+    
+    @Override
+    public void zoomChanged(double zoom)
+    {
+        slider.setValue(pModel.getZoom());
     }
 }

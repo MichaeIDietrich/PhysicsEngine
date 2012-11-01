@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import javax.swing.JComponent;
 
+import de.engineapp.PresentationModel;
 import de.engineapp.windows.InfoWindow;
 
 
@@ -22,12 +23,17 @@ public class DragAndDropController extends DropTarget
     
     private static final long serialVersionUID = 5L;
     
+    
+    PresentationModel pModel;
+    
     private DropCallback dropCallback;
     public boolean dontDrag = false;
 
     
-    public DragAndDropController(JComponent source, DropCallback dropCallback)
+    public DragAndDropController(PresentationModel model, JComponent source, DropCallback dropCallback)
     {
+        pModel = model;
+        
         this.setComponent(source);
         
         this.dropCallback = dropCallback;
@@ -37,7 +43,7 @@ public class DragAndDropController extends DropTarget
     @Override
     public void dragOver(DropTargetDragEvent e)
     {
-        if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType())
+        if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType() || pModel.getPhysicsState().isRunning())
         {
             e.rejectDrag();
         }
@@ -62,6 +68,8 @@ public class DragAndDropController extends DropTarget
                     
                     if (command.equals("circle") || command.equals("square") || command.equals("ground"))
                     {
+                        e.getDropTargetContext().getComponent().requestFocusInWindow();
+                        
                         dropCallback.drop(command, new Point(e.getLocation().x, e.getLocation().y));
                         e.acceptDrop(e.getSourceActions());
                         

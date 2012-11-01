@@ -8,6 +8,9 @@ import de.engineapp.PresentationModel;
 
 public class Grid
 {
+    private static final int GAP_SIZE = 50;
+    
+    
     private PresentationModel pModel;
     
     
@@ -19,7 +22,6 @@ public class Grid
     
     public void render(Graphics2D g)
     {
-        long t = System.currentTimeMillis();
         // - store the active transformation
         // - use the stored tranformation to transform the cache image
         // - render the cached image without transformation
@@ -28,13 +30,12 @@ public class Grid
         g.setTransform(AffineTransform.getTranslateInstance(0, 0));
         g.drawImage(getImage(activeTransformation), 0, 0, null);
         g.setTransform(activeTransformation);
-        System.out.println(System.currentTimeMillis() - t);
     }
     
     
-    //////////////////////////
-   //////    caching    /////
-  //////////////////////////
+    /////////////////////////
+   /////    caching    /////
+  /////////////////////////
   
   private Image cachedImage = null;
   private double lastZoom = 0.0;
@@ -64,9 +65,23 @@ public class Grid
   
   private Image createNewImage(AffineTransform transformation)
   {
-//      long t = System.currentTimeMillis();
       int width = pModel.getCanvasWidth();
       int height = pModel.getCanvasHeight();
+      
+      Stroke bigStroke, mediumStroke, smallStroke;
+      
+      if (pModel.getZoom() > 1.0)
+      {
+          bigStroke = new BasicStroke((float) (3.0 / pModel.getZoom()));
+          mediumStroke = new BasicStroke((float) (1.8 / pModel.getZoom()));
+          smallStroke = new BasicStroke((float) (1.0 / pModel.getZoom()));
+      }
+      else
+      {
+          bigStroke = new BasicStroke(3.0f);
+          mediumStroke = new BasicStroke(1.8f);
+          smallStroke = new BasicStroke(1.0f);
+      }
       
       // could be switch to TYPE_INT_RGB from TYPE_INT_ARGB later
       BufferedImage buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -85,52 +100,52 @@ public class Grid
       double minX = (-width / 2 - pModel.getViewOffsetX()) / pModel.getZoom();
       double maxX = ( width / 2 - pModel.getViewOffsetX()) / pModel.getZoom();
       
-      int xFrom = (int) Math.ceil(minX / 50.0);
-      int xTo   = (int) Math.floor(maxX / 50.0);
+      int xFrom = (int) Math.ceil(minX / GAP_SIZE);
+      int xTo   = (int) Math.floor(maxX / GAP_SIZE);
       
       double minY = (-height / 2 + pModel.getViewOffsetY()) / pModel.getZoom();
       double maxY = ( height / 2 + pModel.getViewOffsetY()) / pModel.getZoom();
       
-      int yFrom = (int) Math.ceil(minY / 50.0);
-      int yTo   = (int) Math.floor(maxY / 50.0);
+      int yFrom = (int) Math.ceil(minY / GAP_SIZE);
+      int yTo   = (int) Math.floor(maxY / GAP_SIZE);
       
       
       for (int i = xFrom; i <= xTo; i++)
       {
           if (i == 0)
           {
-              g.setStroke(new BasicStroke(3));
+              g.setStroke(bigStroke);
           }
           else if (i % 5 == 0)
           {
-              g.setStroke(new BasicStroke(1.8f));
+              g.setStroke(mediumStroke);
           }
           else
           {
-              g.setStroke(new BasicStroke(1));
+              g.setStroke(smallStroke);
           }
           
-          g.drawLine(i * 50, (int) minY, i * 50, (int) maxY);
+          g.drawLine(i * GAP_SIZE, (int) minY, i * GAP_SIZE, (int) maxY);
       }
       
       for (int i = yFrom; i <= yTo; i++)
       {
           if (i == 0)
           {
-              g.setStroke(new BasicStroke(3));
+              g.setStroke(bigStroke);
           }
           else if (i % 5 == 0)
           {
-              g.setStroke(new BasicStroke(1.8f));
+              g.setStroke(mediumStroke);
           }
           else
           {
-              g.setStroke(new BasicStroke(1));
+              g.setStroke(smallStroke);
           }
           
-          g.drawLine((int) minX, i * 50, (int) maxX, i * 50);
+          g.drawLine((int) minX, i * GAP_SIZE, (int) maxX, i * GAP_SIZE);
       }
-//      System.out.println(System.currentTimeMillis() - t);
+      
       return buffer;
   }
 }

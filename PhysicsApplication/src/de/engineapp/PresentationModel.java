@@ -37,9 +37,10 @@ public class PresentationModel
         public void repaintCanvas();
     }
     
-    public interface StateListener
+    public interface StorageListener
     {
         public void stateChanged(String id, boolean value);
+        public void propertyChanged(String id, String value);
     }
     
     
@@ -50,7 +51,7 @@ public class PresentationModel
     private Set<ViewBoxListener> viewBoxListeners = null;
     private Set<SceneListener> sceneListeners = null;
     private Set<PaintListener> paintListeners = null;
-    private Set<StateListener> stateListeners = null;
+    private Set<StorageListener> storageListeners = null;
     
     
     
@@ -64,6 +65,8 @@ public class PresentationModel
     
     /** stores all boolean states, e.g. show grid, show info */
     private HashMap<String, Boolean> stateMap;
+    /** stores all String properties */
+    private HashMap<String, String> propertyMap;
     
     private Physics physicsState = null;
     
@@ -82,9 +85,10 @@ public class PresentationModel
         viewBoxListeners = new HashSet<>();
         sceneListeners = new HashSet<>();
         paintListeners = new HashSet<>();
-        stateListeners = new HashSet<>();
+        storageListeners = new HashSet<>();
         
         stateMap = new HashMap<>();
+        propertyMap = new HashMap<>();
     }
     
     public void addViewBoxListener(ViewBoxListener listener)
@@ -136,14 +140,14 @@ public class PresentationModel
     }
     
     
-    public void addStateListener(StateListener listener)
+    public void addStorageListener(StorageListener listener)
     {
-        stateListeners.add(listener);
+        storageListeners.add(listener);
     }
     
-    public void removeToggletListener(StateListener listener)
+    public void removeStorageListener(StorageListener listener)
     {
-        stateListeners.add(listener);
+        storageListeners.add(listener);
     }
     
     private void fireStateListeners(String id)
@@ -152,10 +156,18 @@ public class PresentationModel
         
         if (value != null)
         {
-            for (StateListener listener : stateListeners)
+            for (StorageListener listener : storageListeners)
             {
                 listener.stateChanged(id, value);
             }
+        }
+    }
+    
+    private void firePropertyListeners(String id)
+    {
+        for (StorageListener listener : storageListeners)
+        {
+            listener.propertyChanged(id, propertyMap.get(id));
         }
     }
     
@@ -446,6 +458,19 @@ public class PresentationModel
         stateMap.put(id, !isState(id));
         
         fireStateListeners(id);
+    }
+    
+    
+    public String getProperty(String id)
+    {
+        return propertyMap.get(id);
+    }
+    
+    public void setProperty(String id, String value)
+    {
+        propertyMap.put(id, value);
+        
+        firePropertyListeners(id);
     }
     
     

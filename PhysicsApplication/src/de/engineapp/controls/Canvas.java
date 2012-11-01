@@ -16,10 +16,11 @@ import de.engine.objects.Ground;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.SceneListener;
 import de.engineapp.visual.*;
+import de.engineapp.visual.Circle;
 import de.engineapp.windows.InfoWindow;
 
 
-public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener
+public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener, KeyListener, MouseWheelListener
 {
     private static final long serialVersionUID = -5320479580417617983L;
     
@@ -63,6 +64,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         // and manipulating objects possible
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+        this.addKeyListener(this);
+        this.addMouseWheelListener(this);
         pModel.addSceneListener(this);
     }
     
@@ -94,19 +97,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     
     
     @Override
-    public void mouseClicked(MouseEvent e)
-    {
-//        if (SwingUtilities.isLeftMouseButton(e))
-//        {
-//            Vector v = pModel.toTransformedVector(e.getPoint());
-//            pModel.setSelectedObject(pModel.getScene().getObjectFromPoint(v.getX(), v.getY()));
-//            
-//            pModel.fireRepaintEvents();
-//            
-//            InfoWindow.setData( InfoWindow.ACTION, "Auswahl: " + pModel.getSelectedObject() );
-//            InfoWindow.refresh();
-//        }
-    }
+    public void mouseClicked(MouseEvent e) { }
     
     
     @Override
@@ -120,6 +111,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void mousePressed(MouseEvent e)
     {
+        this.requestFocusInWindow();
+        
         if (SwingUtilities.isLeftMouseButton(e))
         {
             dragDelay = new Task(200);
@@ -135,8 +128,25 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             }
             else
             {
-                Vector v = pModel.toTransformedVector(e.getPoint());
-                pModel.setSelectedObject(pModel.getScene().getObjectFromPoint(v.getX(), v.getY()));
+                if (!pModel.getPhysicsState().isRunning() && pModel.getProperty("ObjectMode") != null)
+                {
+                    switch (pModel.getProperty("ObjectMode"))
+                    {
+                        case "circle":
+                            Circle circle = new Circle(pModel, pModel.toTransformedVector(e.getPoint()), 8);
+                            circle.mass = 10;
+                            
+                            pModel.addObject(circle);
+                            pModel.fireRepaintEvents();
+                            
+                            break;
+                    }
+                }
+                else
+                {
+                    Vector v = pModel.toTransformedVector(e.getPoint());
+                    pModel.setSelectedObject(pModel.getScene().getObjectFromPoint(v.getX(), v.getY()));
+                }
             }
             
             pModel.fireRepaintEvents();
@@ -244,5 +254,65 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     public void objectUnselected(ObjectProperties object)
     {
         ((IDecorable) object).removeDecor("ARROW");
+    }
+    
+    
+    @Override
+    public void keyPressed(KeyEvent e) { }
+    
+    @Override
+    public void keyReleased(KeyEvent e) { }
+    
+    @Override
+    public void keyTyped(KeyEvent e)
+    {
+        if (pModel.getSelectedObject() != null)
+        {
+            pModel.removedObject(pModel.getSelectedObject());
+            pModel.fireRepaintEvents();
+        }
+    }
+    
+    
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e)
+    {
+        int wheel;
+        
+        if (pModel.getZoom() < 2.0)
+        {
+            wheel = (int) (pModel.getZoom() * 10.0 - 10.0);
+        }
+        else
+        {
+            wheel = (int) (pModel.getZoom() + 8.0);
+        }
+        
+        
+        wheel -= e.getWheelRotation();
+        
+        if (wheel < -9)
+        {
+            // set min (0.1x zoom)
+            wheel = -9;
+        }
+        else if (wheel > 18)
+        {
+            // set max (10x zoom)
+            wheel = 18;
+        }
+        
+        
+        if (wheel < 10)
+        {
+            pModel.setZoom(wheel / 10.0 + 1.0);
+        }
+        else
+        {
+            pModel.setZoom(wheel - 8.0);
+        }
+        
+        
+        pModel.fireRepaintEvents();
     }
 }

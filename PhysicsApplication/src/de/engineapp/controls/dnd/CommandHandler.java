@@ -12,6 +12,7 @@ public class CommandHandler extends TransferHandler implements Transferable
 {
     private static final long serialVersionUID = -4596146228196882904L;
     
+    
     private static final DataFlavor flavors[] = { DataFlavor.stringFlavor };
     
     private String command;
@@ -50,21 +51,6 @@ public class CommandHandler extends TransferHandler implements Transferable
     
     
     @Override
-    protected void exportDone(JComponent source, Transferable data, int action)
-    {
-//        System.out.println(source);
-//        if (source instanceof DragButton)
-//        {
-//            System.out.println(true);
-//            source.setVisible(false);
-//            source.setVisible(true);
-////            ((DragButton) source).setSelected(true);
-//            ((DragButton) source).setSelected(false);
-//        }
-    };
-    
-    
-    @Override
     public boolean canImport(JComponent comp, DataFlavor flavor[])
     {
         return false;
@@ -81,7 +67,6 @@ public class CommandHandler extends TransferHandler implements Transferable
     @Override
     public Transferable createTransferable(JComponent comp)
     {
-        System.out.println("create");
         return this;
     }
     
