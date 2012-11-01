@@ -82,15 +82,7 @@ public class ZoomSlider extends JPanel
     
     public double getValue()
     {
-        if (slider.getValue() < 0)
-        {
-            return slider.getValue() / 10.0 + 1.0;
-        }
-        else if (slider.getValue() == 0)
-        {
-            return 1.0;
-        }
-        else if (slider.getValue() < 10)
+        if (slider.getValue() < 10)
         {
             return slider.getValue() / 10.0 + 1.0;
         }
@@ -102,17 +94,9 @@ public class ZoomSlider extends JPanel
     
     public void setValue(double value)
     {
-        if (value < 1.0)
+        if (value < 2.0)
         {
             slider.setValue((int) (value * 10.0 - 10.0));
-        }
-        else if (value == 1.0)
-        {
-            slider.setValue(0);
-        }
-        else if (value < 2.0)
-        {
-            slider.setValue((int) (value * 10.0 - 1.0));
         }
         else
         {

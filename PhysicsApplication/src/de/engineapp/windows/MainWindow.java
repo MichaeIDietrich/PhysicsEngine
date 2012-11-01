@@ -15,14 +15,14 @@ import de.engine.math.Vector;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.PaintListener;
-import de.engineapp.PresentationModel.StateListener;
+import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.controls.*;
 import de.engineapp.controls.Canvas;
 import de.engineapp.controls.dnd.DragAndDropController;
 import de.engineapp.visual.*;
 
 
-public class MainWindow extends JFrame implements PaintListener, StateListener
+public class MainWindow extends JFrame implements PaintListener, StorageListener
 {
     private static final long serialVersionUID = -1405279482198323306L;
     
@@ -45,7 +45,7 @@ public class MainWindow extends JFrame implements PaintListener, StateListener
         pModel = new PresentationModel();
         
         pModel.addPaintListener(this);
-        pModel.addStateListener(this);
+        pModel.addStorageListener(this);
         
         // Free objects (if necessary) before this application ends
         this.addWindowListener(new WindowAdapter()
@@ -138,7 +138,7 @@ public class MainWindow extends JFrame implements PaintListener, StateListener
         
         
         // this one is handling all the drag'n'drop stuff
-        new DragAndDropController(canvas, new DragAndDropController.DropCallback()
+        new DragAndDropController(pModel, canvas, new DragAndDropController.DropCallback()
         {
             // this method is necessary to recognize object drops from the left toolbar
             @Override
@@ -298,4 +298,7 @@ public class MainWindow extends JFrame implements PaintListener, StateListener
                 break;
         }
     }
+    
+    @Override
+    public void propertyChanged(String id, String value) { }
 }
