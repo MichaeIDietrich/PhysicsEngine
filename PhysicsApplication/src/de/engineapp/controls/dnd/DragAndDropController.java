@@ -4,9 +4,7 @@ import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.*;
 import java.io.IOException;
 
 import javax.swing.JComponent;
@@ -39,9 +37,7 @@ public class DragAndDropController extends DropTarget
     @Override
     public void dragOver(DropTargetDragEvent e)
     {
-        // TODO: Compare the Y-coordinate of the ball to the Y-coordinate of the drawn function
-        if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType())// ||
-           //( (scene.getPhysicsEngine2D()!=null)?(!scene.getPhysicsEngine2D().semaphore):false))
+        if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType())
         {
             e.rejectDrag();
         }
@@ -63,7 +59,6 @@ public class DragAndDropController extends DropTarget
                     String command = (String) tr.getTransferData(flavors[0]);
                     
                     InfoWindow.setData( InfoWindow.DROPPING, "akzepiert" );
-//                    System.out.println("Drop accepted.");
                     
                     if (command.equals("circle") || command.equals("square") || command.equals("ground"))
                     {
