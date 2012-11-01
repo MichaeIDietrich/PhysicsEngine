@@ -81,6 +81,7 @@ public class CommandHandler extends TransferHandler implements Transferable
     @Override
     public Transferable createTransferable(JComponent comp)
     {
+        System.out.println("create");
         return this;
     }
     

@@ -1,9 +1,8 @@
 package de.engineapp.controls;
 
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.dnd.*;
+import java.awt.event.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -17,7 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 import de.engineapp.controls.dnd.CommandHandler;
 
-public class DragButton extends JLabel
+public class DragButton extends JLabel implements MouseListener, DropTargetListener
 {
     private static final long serialVersionUID = 6946598301964868381L;
     
@@ -27,6 +26,10 @@ public class DragButton extends JLabel
     private boolean pressed = false;
     // this is need to implement a click event
     private Point clickPosition = null;
+    
+    // colors for hovering
+    private Color hoveredColor = new Color(168, 251, 255);
+    private Color normalColor;
     
     
     public DragButton(ImageIcon buttonIcon, String command)
@@ -57,6 +60,12 @@ public class DragButton extends JLabel
         
         this.setFocusable(false);
         
+        this.setOpaque(true);
+        normalColor = this.getBackground();
+        
+        this.addMouseListener(this);
+        new DropTarget(this, this);
+        
         if (dragImage == null)
         {
             this.setTransferHandler(new CommandHandler(command));
@@ -65,34 +74,6 @@ public class DragButton extends JLabel
         {
             this.setTransferHandler(new CommandHandler(command, dragImage, dragImageOffset));
         }
-        
-        this.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-                clickPosition = e.getPoint();
-                
-                JComponent comp = (JComponent) e.getSource();
-                TransferHandler handler = comp.getTransferHandler();
-                handler.exportAsDrag(comp, e, TransferHandler.COPY);
-            }
-            
-            @Override
-            public void mouseReleased(MouseEvent e)
-            {
-                System.out.println("click");
-                
-                if (SwingUtilities.isLeftMouseButton(e) && 
-                        clickPosition.x == e.getX() && clickPosition.y == e.getY())
-                {
-                    DragButton.this.setPressed(!DragButton.this.pressed);
-                    System.out.println(DragButton.this.pressed);
-                }
-            }
-            
-        });
-        
     }
     
     
@@ -114,4 +95,60 @@ public class DragButton extends JLabel
             this.setBorder(BORDER_NORMAL);
         }
     }
+    
+    @Override
+    public void mouseClicked(MouseEvent e) { }
+    
+    @Override
+    public void mouseEntered(MouseEvent e)
+    {
+        this.setBackground(hoveredColor);
+    }
+    
+    @Override
+    public void mouseExited(MouseEvent e)
+    {
+        this.setBackground(normalColor);
+    }
+    
+    @Override
+    public void mousePressed(MouseEvent e)
+    {
+        clickPosition = e.getPoint();
+        
+        JComponent comp = (JComponent) e.getSource();
+        TransferHandler handler = comp.getTransferHandler();
+        handler.exportAsDrag(comp, e, TransferHandler.COPY);
+    }
+    
+    @Override
+    public void mouseReleased(MouseEvent e)
+    {
+        if (SwingUtilities.isLeftMouseButton(e) && 
+                clickPosition.x == e.getX() && clickPosition.y == e.getY())
+        {
+            DragButton.this.setPressed(!DragButton.this.pressed);
+            System.out.println(DragButton.this.pressed);
+        }
+        
+    }
+    
+    
+    @Override
+    public void dragEnter(DropTargetDragEvent dtde) { }
+    
+    @Override
+    public void dragExit(DropTargetEvent dte)
+    {
+        this.setBackground(normalColor);
+    }
+    
+    @Override
+    public void dragOver(DropTargetDragEvent dtde) { }
+    
+    @Override
+    public void drop(DropTargetDropEvent dtde) { }
+    
+    @Override
+    public void dropActionChanged(DropTargetDragEvent dtde) { }
 }

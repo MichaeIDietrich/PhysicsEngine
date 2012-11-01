@@ -231,7 +231,7 @@ public class MainWindow extends JFrame implements PaintListener, StateListener
         // scale the stroke to ensure its contour has a one pixel width
         g.setStroke(new BasicStroke(1 / (float) pModel.getZoom()));
         
-        if (pModel.isState("grid"))
+        if (grid != null)
         {
             grid.render(g);
         }
