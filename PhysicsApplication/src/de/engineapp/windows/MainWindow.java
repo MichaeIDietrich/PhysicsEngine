@@ -1,11 +1,6 @@
 package de.engineapp.windows;
 
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.*;
@@ -21,10 +16,8 @@ import de.engine.objects.ObjectProperties;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.PaintListener;
 import de.engineapp.PresentationModel.StateListener;
+import de.engineapp.controls.*;
 import de.engineapp.controls.Canvas;
-import de.engineapp.controls.MainToolBar;
-import de.engineapp.controls.ObjectToolBar;
-import de.engineapp.controls.PropertiesPanel;
 import de.engineapp.controls.dnd.DragAndDropController;
 import de.engineapp.visual.*;
 
@@ -68,8 +61,7 @@ public class MainWindow extends JFrame implements PaintListener, StateListener
         });
         
         
-        this.setSize(800, 600);
-        this.setLocationRelativeTo(null);
+        initializeWindow();
         
         
         pModel.setPhysicsEngine2D(new PhysicsEngine2D());
@@ -121,23 +113,28 @@ public class MainWindow extends JFrame implements PaintListener, StateListener
     
     private void initializeComponents()
     {
-        // set up upper toolbar
+        // initiate controls
+        canvas = new Canvas(pModel);
         MainToolBar toolBarMain = new MainToolBar(pModel);
+        StatusBar statusBar = new StatusBar(pModel);
+        ObjectToolBar toolBarObjects = new ObjectToolBar(pModel);
+        PropertiesPanel panelProperties = new PropertiesPanel(pModel);
+        
+        
+        // set up upper toolbar
         this.add(toolBarMain, BorderLayout.PAGE_START);
         
         
+        // set up statusbar
+        this.add(statusBar, BorderLayout.PAGE_END);
+        
+        
         // set up left toolbar, enabling drag'n'drop objects
-        ObjectToolBar toolBarObjects = new ObjectToolBar(pModel);
         this.add(toolBarObjects, BorderLayout.LINE_START);
         
         
         // set up right panel
-        PropertiesPanel panelProperties = new PropertiesPanel(pModel);
         this.add(panelProperties, BorderLayout.LINE_END);
-        
-        
-        // set up canvas
-        canvas = new Canvas(pModel);
         
         
         // this one is handling all the drag'n'drop stuff
@@ -189,7 +186,26 @@ public class MainWindow extends JFrame implements PaintListener, StateListener
         canvas.setBackground(new Color(250, 250, 250, 255));
         
         
+        // set up canvas
         this.add(canvas);
+    }
+    
+    
+    private void initializeWindow()
+    {
+        this.setSize(800, 600);
+        this.setLocationRelativeTo(null);
+        
+        ArrayList<Image> iconList = new ArrayList<>();
+        iconList.add(Util.getImage("main/256"));
+        iconList.add(Util.getImage("main/128"));
+        iconList.add(Util.getImage("main/64"));
+        iconList.add(Util.getImage("main/48"));
+        iconList.add(Util.getImage("main/32"));
+        iconList.add(Util.getImage("main/24"));
+        iconList.add(Util.getImage("main/16"));
+        
+        this.setIconImages(iconList);
     }
     
     
