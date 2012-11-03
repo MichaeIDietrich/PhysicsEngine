@@ -74,6 +74,8 @@ public class PresentationModel
     private PhysicsEngine2D physicsEngine2D = null;
     /** Active Scene */
     private Scene scene = null;
+    /** contains a scene which can be restored */
+    private Scene storedScene = null;
     /** Selected object in the active Scene */
     private ObjectProperties selectedObject = null;
     /** Canvas control */
@@ -282,6 +284,22 @@ public class PresentationModel
         {
             physicsEngine2D.setScene(scene);
         }
+    }
+    
+    
+    public void storeScene()
+    {
+        storedScene = scene.copy();
+    }
+    
+    public void restoreScene()
+    {
+        scene = storedScene;
+    }
+    
+    public boolean hasStoredScene()
+    {
+        return storedScene != null;
     }
     
     
