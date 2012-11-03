@@ -89,7 +89,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 break;
                 
             case "reset":
-                System.out.println("restore feature currently disabled");
                 // TODO - disabled, because it does not work
                 //pModel.restoreScene();
                 break;
@@ -139,7 +138,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                     reset.setEnabled(false);
                     
                     // store scene copy, to enable reset function
-                    pModel.storeScene();
+                    // TODO - disabled, because it does not work
+                    //pModel.storeScene();
                     
                     pModel.getPhysicsState().start();
                 }
