@@ -21,6 +21,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     
     private PresentationModel pModel;
     
+    private ToolBarButton open;
+    private ToolBarButton save;
     private ToolBarButton play;
     private ToolBarButton pause;
     private ToolBarButton reset;
@@ -39,13 +41,16 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         this.setFloatable(false);
         
         pModel.addViewBoxListener(this);
+        pModel.addStorageListener(this);
         
-        play  = new ToolBarButton(Util.getIcon("play"),  "play",  this);
-        pause = new ToolBarButton(Util.getIcon("pause"), "pause", this);
-        reset = new ToolBarButton(Util.getIcon("reset"), "reset", this);
-        grid  = new ToolBarButton(Util.getIcon("grid"),  "grid",  this);
-        info  = new ToolBarButton(Util.getIcon("loupe"), "info",  this);
-        focus = new ToolBarButton(Util.getIcon("focus"), "focus", this);
+        open  = new ToolBarButton(Util.getIcon("open5"),  "open",  this);
+        save  = new ToolBarButton(Util.getIcon("save3"),  "save",  this);
+        play  = new ToolBarButton(Util.getIcon("play2"),  "play",  this);
+        pause = new ToolBarButton(Util.getIcon("pause2"), "pause", this);
+        reset = new ToolBarButton(Util.getIcon("reset2"), "reset", this);
+        grid  = new ToolBarButton(Util.getIcon("grid2"),  "grid",  this);
+        info  = new ToolBarButton(Util.getIcon("loupe"),  "info",  this);
+        focus = new ToolBarButton(Util.getIcon("focus"),  "focus", this);
         
         pause.setEnabled(false);
         reset.setEnabled(false);
@@ -54,6 +59,9 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         slider.addChangeListener(this);
         
         
+        this.add(open);
+        this.add(save);
+        this.addSeparator();
         this.add(play);
         this.add(pause);
         this.add(reset);
@@ -72,21 +80,18 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         switch (e.getActionCommand())
         {
             case "play":
-                play.setEnabled( false );
-                pause.setEnabled( true );
-                pModel.getPhysicsState().start();
+                pModel.setState("runPhysics", true);
                 
                 break;
                 
             case "pause":
-                pause.setEnabled( false );
-                play.setEnabled(   true );
-                pModel.getPhysicsState().pause();
-                
+                pModel.setState("runPhysics", false);
                 break;
                 
             case "reset":
-                
+                System.out.println("restore feature currently disabled");
+                // TODO - disabled, because it does not work
+                //pModel.restoreScene();
                 break;
                 
             case "grid":
@@ -125,6 +130,33 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     {
         switch (id)
         {
+            case "runPhysics":
+                if (value)
+                {
+                    play.setEnabled( false );
+                    pause.setEnabled( true );
+                    
+                    reset.setEnabled(false);
+                    
+                    // store scene copy, to enable reset function
+                    pModel.storeScene();
+                    
+                    pModel.getPhysicsState().start();
+                }
+                else
+                {
+                    pause.setEnabled( false );
+                    play.setEnabled(   true );
+                    pModel.getPhysicsState().pause();
+                    
+                    if (pModel.hasStoredScene())
+                    {
+                        reset.setEnabled(true);
+                    }
+                }
+                
+                break;
+                
             case "grid":
                 grid.setSelected(value);
                 break;
@@ -132,6 +164,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             case "info":
                 info.setSelected(value);
                 InfoWindow.showWindow(value);
+                
+                break;
         }
     }
     
