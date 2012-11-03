@@ -239,7 +239,14 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         
         if (pModel.getScene().getGround() != null)
         {
-            ((IDrawable) pModel.getScene().getGround()).render(g);
+            if (pModel.getScene().getGround() instanceof IDrawable)
+            {
+                ((IDrawable) pModel.getScene().getGround()).render(g);
+            }
+            else
+            {
+                System.err.println("cannot render " + pModel.getScene().getGround());
+            }
         }
         
         Collection<IDrawable> decorSet = new ArrayList<>();
