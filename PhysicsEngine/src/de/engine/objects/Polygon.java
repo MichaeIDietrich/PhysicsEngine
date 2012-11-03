@@ -58,6 +58,10 @@ public class Polygon extends ObjectProperties{
 	public double getRadius() {
 		return radius;
 	}
+	
+	@Override
+	public void setRadius(double radius) {
+	}
 
 	@Override
 	public ObjectProperties copy() {

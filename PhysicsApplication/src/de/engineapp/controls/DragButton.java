@@ -1,31 +1,19 @@
 package de.engineapp.controls;
 
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.dnd.*;
+import java.awt.event.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-import javax.swing.TransferHandler;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
+import javax.swing.*;
 
 import de.engineapp.controls.dnd.CommandHandler;
 
-public class DragButton extends JLabel
+public class DragButton extends JButton implements MouseListener, DropTargetListener
 {
     private static final long serialVersionUID = 6946598301964868381L;
     
-    private static Border BORDER_NORMAL = new EmptyBorder(2, 2, 2, 2);
-    private static Border BORDER_PRESSED = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
     
-    private boolean pressed = false;
-    // this is need to implement a click event
+    // this is needed to implement a click event
     private Point clickPosition = null;
     
     
@@ -53,9 +41,10 @@ public class DragButton extends JLabel
     {
         super(buttonIcon);
         
-        this.setBorder(BORDER_NORMAL);
-        
         this.setFocusable(false);
+        
+        this.addMouseListener(this);
+        new DropTarget(this, this);
         
         if (dragImage == null)
         {
@@ -65,53 +54,91 @@ public class DragButton extends JLabel
         {
             this.setTransferHandler(new CommandHandler(command, dragImage, dragImageOffset));
         }
-        
-        this.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-                clickPosition = e.getPoint();
-                
-                JComponent comp = (JComponent) e.getSource();
-                TransferHandler handler = comp.getTransferHandler();
-                handler.exportAsDrag(comp, e, TransferHandler.COPY);
-            }
-            
-            @Override
-            public void mouseReleased(MouseEvent e)
-            {
-                System.out.println("click");
-                
-                if (SwingUtilities.isLeftMouseButton(e) && 
-                        clickPosition.x == e.getX() && clickPosition.y == e.getY())
-                {
-                    DragButton.this.setPressed(!DragButton.this.pressed);
-                    System.out.println(DragButton.this.pressed);
-                }
-            }
-            
-        });
-        
     }
     
     
     public boolean isPressed()
     {
-        return pressed;
+        return this.isSelected();
     }
     
     public void setPressed(boolean pressed)
     {
-        this.pressed = pressed;
-        
-        if (pressed)
+        this.setSelected(pressed);
+    }
+    
+    @Override
+    public void mouseClicked(MouseEvent e)
+    {
+        if (SwingUtilities.isLeftMouseButton(e))
         {
-            this.setBorder(BORDER_PRESSED);
-        }
-        else
-        {
-            this.setBorder(BORDER_NORMAL);
+            this.setPressed(!this.isPressed());
         }
     }
+    
+    @Override
+    public void mouseEntered(MouseEvent e) { }
+    
+    @Override
+    public void mouseExited(MouseEvent e) { }
+    
+    @Override
+    public void mousePressed(MouseEvent e)
+    {
+        if (SwingUtilities.isLeftMouseButton(e))
+        {
+            clickPosition = e.getPoint();
+            
+            JComponent comp = (JComponent) e.getSource();
+            TransferHandler handler = comp.getTransferHandler();
+            handler.exportAsDrag(comp, e, TransferHandler.COPY);
+        }
+    }
+    
+    @Override
+    public void mouseReleased(MouseEvent e) { }
+    
+    
+    @Override
+    public void dragEnter(DropTargetDragEvent dtde) { }
+    
+    @Override
+    public void dragExit(DropTargetEvent dte)
+    {
+        // fire a mouseExited event to the target component
+        
+        int absX = MouseInfo.getPointerInfo().getLocation().x;
+        int absY = MouseInfo.getPointerInfo().getLocation().y;
+        int x = absX - dte.getDropTargetContext().getComponent().getLocationOnScreen().x;
+        int y = absY - dte.getDropTargetContext().getComponent().getLocationOnScreen().y;
+        this.dispatchEvent(new MouseEvent(this, MouseEvent.MOUSE_EXITED, System.currentTimeMillis(), 
+                MouseEvent.BUTTON1_DOWN_MASK, x, y, absX, absY, 1, false, MouseEvent.BUTTON1));
+    }
+    
+    @Override
+    public void dragOver(DropTargetDragEvent dtde) { }
+    
+    @Override
+    public void drop(DropTargetDropEvent dtde)
+    {
+        // fire a mouseClicked event to the source component
+        
+        int x = dtde.getLocation().x;
+        int y = dtde.getLocation().y;
+        
+        if (clickPosition.x == x && clickPosition.y == y)
+        {
+            // check wether it's this component which dropped
+            if (dtde.getSource() instanceof DropTarget && ((DropTarget) dtde.getSource()).getComponent().equals(this))
+            {
+                int absX = x + this.getLocationOnScreen().x;
+                int absY = x + this.getLocationOnScreen().y;
+                this.dispatchEvent(new MouseEvent(this, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 
+                        MouseEvent.BUTTON1_DOWN_MASK, x, y, absX, absY, 1, false, MouseEvent.BUTTON1));
+            }
+        }
+    }
+    
+    @Override
+    public void dropActionChanged(DropTargetDragEvent dtde) { }
 }

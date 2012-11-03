@@ -4,21 +4,17 @@ import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.*;
 import java.io.IOException;
 
 import javax.swing.JComponent;
 
-import de.engine.environment.Scene;
-import de.engineapp.windows.MessageWindow;
+import de.engineapp.PresentationModel;
+import de.engineapp.windows.InfoWindow;
 
 
 public class DragAndDropController extends DropTarget
 {
-    MessageWindow msgwin = null;
-    
     // interface to recognize drops
     public interface DropCallback
     {
@@ -27,14 +23,16 @@ public class DragAndDropController extends DropTarget
     
     private static final long serialVersionUID = 5L;
     
-    private Scene scene;
+    
+    PresentationModel pModel;
+    
     private DropCallback dropCallback;
     public boolean dontDrag = false;
 
     
-    public DragAndDropController(JComponent source, DropCallback dropCallback)
+    public DragAndDropController(PresentationModel model, JComponent source, DropCallback dropCallback)
     {
-        msgwin = MessageWindow.getInstance();
+        pModel = model;
         
         this.setComponent(source);
         
@@ -45,9 +43,7 @@ public class DragAndDropController extends DropTarget
     @Override
     public void dragOver(DropTargetDragEvent e)
     {
-        // TODO: Compare the Y-coordinate of the ball to the Y-coordinate of the drawn function
-        if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType())// ||
-           //( (scene.getPhysicsEngine2D()!=null)?(!scene.getPhysicsEngine2D().semaphore):false))
+        if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType() || pModel.getPhysicsState().isRunning())
         {
             e.rejectDrag();
         }
@@ -68,11 +64,12 @@ public class DragAndDropController extends DropTarget
                 {
                     String command = (String) tr.getTransferData(flavors[0]);
                     
-                    MessageWindow.setData( MessageWindow.DROPPING, "akzepiert" );
-//                    System.out.println("Drop accepted.");
+                    InfoWindow.setData( InfoWindow.DROPPING, "akzepiert" );
                     
                     if (command.equals("circle") || command.equals("square") || command.equals("ground"))
                     {
+                        e.getDropTargetContext().getComponent().requestFocusInWindow();
+                        
                         dropCallback.drop(command, new Point(e.getLocation().x, e.getLocation().y));
                         e.acceptDrop(e.getSourceActions());
                         
@@ -94,17 +91,5 @@ public class DragAndDropController extends DropTarget
         }
         System.err.println("Drop rejected. Foreign component.");
         e.rejectDrop();
-    }
-    
-    
-    public Scene getScene()
-    {
-        return scene;
-    }
-    
-    
-    public void setScene(Scene scene)
-    {
-        this.scene = scene;
     }
 }
