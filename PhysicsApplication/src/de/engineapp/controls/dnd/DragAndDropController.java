@@ -1,10 +1,13 @@
 package de.engineapp.controls.dnd;
 
+import java.awt.Component;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 import javax.swing.JComponent;
@@ -46,6 +49,18 @@ public class DragAndDropController extends DropTarget
         if (!e.getTransferable().getTransferDataFlavors()[0].isFlavorTextType() || pModel.getPhysicsState().isRunning())
         {
             e.rejectDrag();
+        }
+        else
+        {
+            // this is needed, to fire mouseMoved events to canvas
+            
+            int absX = MouseInfo.getPointerInfo().getLocation().x;
+            int absY = MouseInfo.getPointerInfo().getLocation().y;
+            Component target = e.getDropTargetContext().getComponent();
+            int x = absX - target.getLocationOnScreen().x;
+            int y = absY - target.getLocationOnScreen().y;
+            target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 
+                    MouseEvent.BUTTON1_DOWN_MASK, x, y, absX, absY, 1, false, MouseEvent.BUTTON1));
         }
     }
     

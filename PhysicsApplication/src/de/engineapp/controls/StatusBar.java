@@ -35,7 +35,12 @@ public class StatusBar extends JPanel implements MouseMotionListener
     
     
     @Override
-    public void mouseDragged(MouseEvent e) { }
+    public void mouseDragged(MouseEvent e)
+    {
+        Vector coordinates = pModel.toTransformedVector(e.getPoint());
+        
+        lblCoordinates.setText(String.format("(%s; %s) ", (int) coordinates.getX(), (int) coordinates.getY()));
+    }
     
     @Override
     public void mouseMoved(MouseEvent e)

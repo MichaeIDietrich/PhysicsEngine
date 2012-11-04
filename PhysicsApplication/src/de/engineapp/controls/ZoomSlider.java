@@ -67,7 +67,7 @@ public class ZoomSlider extends JPanel
         
         if (isGTK)
         {
-            slider.setLocation(0, -10);
+            slider.setLocation(0, -8);
         }
         else
         {
