@@ -42,10 +42,10 @@ public class InfoWindow
             list.setModel( model );
             list.setFont( new Font("Times New Roman", Font.PLAIN, 13) );
             
-            add( list );
+            this.add( list );
             
-            setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-            setSize( 250, 310 );
+            this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
+            this.setSize( 250, 310 );
         }
         
         

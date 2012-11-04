@@ -8,13 +8,9 @@ import javax.swing.*;
 
 import de.engineapp.controls.dnd.CommandHandler;
 
-public class DragButton extends JButton implements MouseListener, DropTargetListener
+public class DragButton extends JButton implements MouseListener, MouseMotionListener, DropTargetListener
 {
     private static final long serialVersionUID = 6946598301964868381L;
-    
-    
-    // this is needed to implement a click event
-    private Point clickPosition = null;
     
     
     public DragButton(ImageIcon buttonIcon, String command)
@@ -44,6 +40,7 @@ public class DragButton extends JButton implements MouseListener, DropTargetList
         this.setFocusable(false);
         
         this.addMouseListener(this);
+        this.addMouseMotionListener(this);
         new DropTarget(this, this);
         
         if (dragImage == null)
@@ -83,17 +80,7 @@ public class DragButton extends JButton implements MouseListener, DropTargetList
     public void mouseExited(MouseEvent e) { }
     
     @Override
-    public void mousePressed(MouseEvent e)
-    {
-        if (SwingUtilities.isLeftMouseButton(e))
-        {
-            clickPosition = e.getPoint();
-            
-            JComponent comp = (JComponent) e.getSource();
-            TransferHandler handler = comp.getTransferHandler();
-            handler.exportAsDrag(comp, e, TransferHandler.COPY);
-        }
-    }
+    public void mousePressed(MouseEvent e) { }
     
     @Override
     public void mouseReleased(MouseEvent e) { }
@@ -113,32 +100,30 @@ public class DragButton extends JButton implements MouseListener, DropTargetList
         int y = absY - dte.getDropTargetContext().getComponent().getLocationOnScreen().y;
         this.dispatchEvent(new MouseEvent(this, MouseEvent.MOUSE_EXITED, System.currentTimeMillis(), 
                 MouseEvent.BUTTON1_DOWN_MASK, x, y, absX, absY, 1, false, MouseEvent.BUTTON1));
+        this.dispatchEvent(new MouseEvent(this, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 
+                MouseEvent.BUTTON1_DOWN_MASK, x, y, absX, absY, 1, false, MouseEvent.BUTTON1));
     }
     
     @Override
     public void dragOver(DropTargetDragEvent dtde) { }
     
     @Override
-    public void drop(DropTargetDropEvent dtde)
-    {
-        // fire a mouseClicked event to the source component
-        
-        int x = dtde.getLocation().x;
-        int y = dtde.getLocation().y;
-        
-        if (clickPosition.x == x && clickPosition.y == y)
-        {
-            // check wether it's this component which dropped
-            if (dtde.getSource() instanceof DropTarget && ((DropTarget) dtde.getSource()).getComponent().equals(this))
-            {
-                int absX = x + this.getLocationOnScreen().x;
-                int absY = x + this.getLocationOnScreen().y;
-                this.dispatchEvent(new MouseEvent(this, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 
-                        MouseEvent.BUTTON1_DOWN_MASK, x, y, absX, absY, 1, false, MouseEvent.BUTTON1));
-            }
-        }
-    }
+    public void drop(DropTargetDropEvent dtde) { }
     
     @Override
     public void dropActionChanged(DropTargetDragEvent dtde) { }
+
+    @Override
+    public void mouseDragged(MouseEvent e)
+    {
+        if (SwingUtilities.isLeftMouseButton(e))
+        {
+            JComponent comp = (JComponent) e.getSource();
+            TransferHandler handler = comp.getTransferHandler();
+            handler.exportAsDrag(comp, e, TransferHandler.COPY);
+        }
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) { }
 }
