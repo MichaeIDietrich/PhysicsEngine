@@ -4,6 +4,7 @@ import de.engine.environment.EnvProps;
 import de.engine.math.Util;
 import de.engine.math.Vector;
 import de.engine.objects.Circle;
+import de.engine.objects.Polygon;
 
 public class PhysicsCalcer
 {
@@ -37,5 +38,13 @@ public class PhysicsCalcer
         }
         c1.update(afterCollTime);
         c2.update(afterCollTime);
+    }
+    
+    public static void calcCirclePolygon(Circle o1, Polygon o2, double collTime) {
+        
+    }
+
+    public static void calcPolygons(Polygon o1, Polygon o2, double collTime) {
+        
     }
 }
