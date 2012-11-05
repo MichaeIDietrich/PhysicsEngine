@@ -1,10 +1,12 @@
 package de.engine.colldetect;
 
+import java.util.Vector;
+
 import de.engine.environment.Scene;
 import de.engine.math.Util;
-import de.engine.math.Vector;
 import de.engine.objects.Circle;
 import de.engine.objects.ObjectProperties;
+import de.engine.objects.Polygon;
 import de.engine.physics.PhysicsCalcer;
 
 public class CollisionDetector
@@ -31,33 +33,29 @@ public class CollisionDetector
         return (distance <= min_distance) ? true : false;
     }
     
-    public void checkScene() {
-		grid.scanScene();
-		for (Integer[] ops : grid.getCollisionPairs()) {
-			//if (needCheck(grid.scene.getObject(ops[0]), grid.scene.getObject(ops[1]))) {
-				if (grid.scene.getObject(ops[0]) instanceof Circle
-						&& grid.scene.getObject(ops[1]) instanceof Circle) {
-				    Circle c1 = (Circle) grid.scene.getObject(ops[0]);
-				    Circle c2 = (Circle) grid.scene.getObject(ops[1]);
-				    double coll_time = CollisionTimer.getCirclesCollTime(c1, c2);
-				    if(-1 != coll_time)
-				        PhysicsCalcer.calcCicles(c1, c2, coll_time);
-				}
-			//}
-		}
-	}
-    
-    private CollisionData collCircles(Circle c1, Circle c2)
+    public void checkScene()
     {
-        Vector pos1 = c1.getNextPosition();
-        Vector pos2 = c2.getNextPosition();
-        Vector distance = Util.minus(pos1, pos2);
-        Vector normal = distance.scale(1.0d / distance.getLength());
-        CollisionData cd = new CollisionData();
-        cd.contacts = new CollisionData.Contact[1];
-        cd.contacts[0].normal = normal;
-        cd.contacts[0].point = Util.add(pos1, distance.scale((distance.getLength() - c2.getRadius()) / distance.getLength()));
-        cd.contacts[0].penetration = (c1.getRadius() + c2.getRadius() - distance.getLength()) / 2.0;
-        return cd;
+        grid.scanScene();
+        Vector<Integer[]> collPairs = grid.getCollisionPairs();
+        for (int i = 0; i < collPairs.size(); i++)
+        {
+            // if (needCheck(grid.scene.getObject(ops[0]), grid.scene.getObject(ops[1]))) {
+            ObjectProperties o1 = grid.scene.getObject(collPairs.get(i)[0]);
+            ObjectProperties o2 = grid.scene.getObject(collPairs.get(i)[1]);
+            double coll_time = CollisionTimer.getCollTime(o1, o2, grid.coll_times.get(i)[0], grid.coll_times.get(i)[1]);
+            if (-1 != coll_time)
+            {
+                if (o1 instanceof Circle && o2 instanceof Circle) {
+                    PhysicsCalcer.calcCicles((Circle) o1, (Circle) o2, coll_time);
+                } else if(o1 instanceof Circle && o2 instanceof Polygon) {
+                    PhysicsCalcer.calcCirclePolygon((Circle) o1, (Polygon) o2, coll_time);
+                } else if(o1 instanceof Polygon && o2 instanceof Circle) {
+                    PhysicsCalcer.calcCirclePolygon((Circle) o2, (Polygon) o1, coll_time);
+                } else if(o1 instanceof Polygon && o2 instanceof Polygon) {
+                    PhysicsCalcer.calcPolygons((Polygon) o2, (Polygon) o1, coll_time);
+                }
+            }
+            // }
+        }
     }
 }

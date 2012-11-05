@@ -77,21 +77,9 @@ public abstract class ObjectProperties {
 		return aabb;
 	}
 	
-	public Vector[] getAABB(double time) {
-        Vector aabb[] = new Vector[2];
-        Vector pos = getPosition(time);
-        aabb[0] = new Vector(pos.getX() - radius, pos.getY() - radius);
-        aabb[1] = new Vector(pos.getX() + radius, pos.getY() + radius);
-        return aabb;
-    }
+	public abstract Vector[] getAABB(double time);
 
-	public Vector[] getNextAABB() {
-		Vector aabb[] = new Vector[2];
-		Vector nextPos = getNextPosition();
-		aabb[0] = new Vector(nextPos.getX() - radius, nextPos.getY() - radius);
-		aabb[1] = new Vector(nextPos.getX() + radius, nextPos.getY() + radius);
-		return aabb;
-	}
+	public abstract Vector[] getNextAABB();
 
 	protected ObjectProperties() {
 		this.id = idCounter++;
