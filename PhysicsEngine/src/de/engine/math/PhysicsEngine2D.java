@@ -39,10 +39,10 @@ public class PhysicsEngine2D {
 		
 		for (ObjectProperties obj : scene.getObjects()) 
 		{
-			if (obj instanceof Circle) 
-			{
+			//if (obj instanceof Circle) 
+			//{
 				obj.update();
-			}
+			//}
 		}
 	}
 }
