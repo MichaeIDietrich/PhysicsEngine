@@ -8,6 +8,7 @@ public class Ground //extends ObjectProperties
     public final int DOWNHILL      = 2;
     public final int STAIRS        = 3;
     
+    public int ACTUAL_FUNCTION = 0;
     
     public Ground(int watermark)
     {
@@ -17,6 +18,8 @@ public class Ground //extends ObjectProperties
     
     public int function( int typ, int i )
     {
+        ACTUAL_FUNCTION = typ;
+        
         switch( typ ) 
         {
             case 1: return function_hill_valley(i);
@@ -48,13 +51,13 @@ public class Ground //extends ObjectProperties
 //        this.coreColor    = this.FREAKY_GREEN;
         
         // if positive, a hill will drawn; if negative the hill will be a valley
-        int phase = -1;
+        int phase = 1;
         // what height are you going to go?
         int hill_height = 100;
         // Grass heigth
         int grass_heigth = 4;
         
-        return (int) (Math.sin(phase * i * Math.PI / 300) * hill_height + hill_height + grass_heigth*Math.sin(i));
+        return (int) (Math.sin(phase * i * Math.PI / 360) * hill_height + hill_height + grass_heigth*Math.sin(i));
     }
     
     

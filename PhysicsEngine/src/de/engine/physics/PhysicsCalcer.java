@@ -8,7 +8,7 @@ import de.engine.objects.Circle;
 public class PhysicsCalcer
 {
     
-    public static void calcCicles(Circle c1, Circle c2, double collTime)
+    public static void calcCircles(Circle c1, Circle c2, double collTime)
     {
         Vector dist = Util.minus(c2.getPosition(), c1.getPosition());
         

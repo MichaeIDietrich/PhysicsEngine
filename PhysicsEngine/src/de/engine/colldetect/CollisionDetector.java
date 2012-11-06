@@ -10,11 +10,13 @@ import de.engine.physics.PhysicsCalcer;
 public class CollisionDetector
 {
     
-    private Grid grid;
+    private Grid   grid;
+    private Scene scene;
     
     public CollisionDetector(Scene scene)
     {
         grid = new Grid(scene);
+        this.scene = scene;
     }
     
     /**
@@ -41,10 +43,12 @@ public class CollisionDetector
 				    Circle c2 = (Circle) grid.scene.getObject(ops[1]);
 				    double coll_time = CollisionTimer.getCirclesCollTime(c1, c2);
 				    if(-1 != coll_time)
-				        PhysicsCalcer.calcCicles(c1, c2, coll_time);
+				        PhysicsCalcer.calcCircles(c1, c2, coll_time);
 				}
 			//}
 		}
+		
+		objectGroundCollision();
 	}
     
     private CollisionData collCircles(Circle c1, Circle c2)
@@ -59,5 +63,23 @@ public class CollisionDetector
         cd.contacts[0].point = Util.add(pos1, distance.scale((distance.getLength() - c2.getRadius()) / distance.getLength()));
         cd.contacts[0].penetration = (c1.getRadius() + c2.getRadius() - distance.getLength()) / 2.0;
         return cd;
+    }
+    
+    
+    public void objectGroundCollision() 
+    {
+        if (scene.getCount()>0 && scene.getObject(0)!=null && scene.getGround()!=null)
+        {
+            Vector v = null;
+            
+            long time = System.currentTimeMillis();
+
+            v = Util.solveNonLEQ( scene.getObject(0), scene.getGround() );
+            
+//            System.out.println( System.currentTimeMillis() - time );
+            
+//            System.out.println( "x = "+ v.get(0) +" | y = "+ v.get(1)  );
+        }
+        
     }
 }
