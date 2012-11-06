@@ -68,6 +68,11 @@ public class Polygon extends ObjectProperties{
 	
 	@Override
 	public void setRadius(double radius) {
+	    double scale = radius / getRadius();
+        for (Vector point : points) {
+            point.scale(scale);
+        }
+        this.radius = radius;
 	}
 
 	@Override
@@ -81,8 +86,34 @@ public class Polygon extends ObjectProperties{
     @Override
     public boolean contains(double x, double y)
     {
-        // TODO Auto-generated method stub
+        Vector pos = new Vector(x, y);
+        Vector[] aabb = getAABB();
+        if(pos.getX() > aabb[0].getX() && pos.getX() < aabb[1].getX() &&
+                pos.getY() > aabb[0].getY() && pos.getY() < aabb[1].getY())
+            return true;
         return false;
+    }
+    
+    @Override
+    public Vector[] getAABB() {
+        Vector aabb[] = new Vector[2];
+        aabb[0] = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
+        aabb[1] = new Vector(Double.MIN_VALUE, Double.MIN_VALUE);
+        for (int i = 0; i < points.length; i++)
+        {
+            Vector v = getWorldPointPos(i);
+            if(v.getX() > aabb[1].getX()) {
+                aabb[1].setX(v.getX());
+            } else if(v.getX() < aabb[0].getX()) {
+                aabb[0].setX(v.getX());
+            }
+            if(v.getY() > aabb[1].getY()) {
+                aabb[1].setY(v.getY());
+            } else if(v.getY() < aabb[0].getY()) {
+                aabb[0].setY(v.getY());
+            }
+        }
+        return aabb;
     }
     
     @Override

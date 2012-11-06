@@ -16,9 +16,23 @@ public class Grid
         int id;
         double min_time;
         double max_time;
+        
+        public Element(int id, double min_time, double max_time)
+        {
+            this.id = id;
+            this.min_time = min_time;
+            this.max_time = max_time;
+        }
+        
+        public Element(Element e)
+        {
+            this.id = e.id;
+            this.min_time = e.min_time;
+            this.max_time = e.max_time;
+        }
     }
     
-    private double cellSize = 5;
+    private double cellSize = 10;
     public Scene scene;
     private HashMap<Integer, HashMap<Integer, java.util.Vector<Element>>> objectFields;
     java.util.Vector<Double[]> coll_times;
@@ -70,7 +84,7 @@ public class Grid
                         }
                         if (!inserted)
                         {
-                            objectFields.get(i).get(j).add(element);
+                            objectFields.get(i).get(j).add(new Element(element));
                         }
                     }
                     else
@@ -99,32 +113,24 @@ public class Grid
         double d_step = Util.scale(op.velocity, EnvProps.deltaTime()).getLength() / (2 * op.getRadius());
         double d_time = EnvProps.deltaTime() / d_step;
         
-        Element element = new Element();
-        element.id = id;
-        element.min_time = 0.0;
+        Element element;
         if (1 > ((int) d_step))
-        {
-            element.max_time = EnvProps.deltaTime();
-        }
+            element = new Element(id, 0, EnvProps.deltaTime());
+        else
+            element = new Element(id, 0, d_time);
         Vector[] aabb = op.getAABB();
         scan(aabb, element);
         
         double help_time = 0;
         for (int i = 1; i <= (int) d_step; i++)
         {
-            element = new Element();
-            element.id = id;
-            element.min_time = d_time * (i - 1);
+            element = new Element(id, d_time * (i - 1), d_time * (i + 1));
             help_time = element.min_time;
-            element.max_time = d_time * (i + 1);
             aabb = op.getAABB(d_time * i);
             scan(aabb, element);
         }
         
-        element = new Element();
-        element.id = id;
-        element.min_time = help_time;
-        element.max_time = EnvProps.deltaTime();
+        element = new Element(id, help_time, EnvProps.deltaTime());
         aabb = op.getNextAABB();
         scan(aabb, element);
     }
