@@ -1,13 +1,20 @@
 package de.engine.math;
 
+import java.text.MessageFormat;
+
 public class Vector
 {
+    public static final Integer ZEILENSUMMENNORM = 10; 
+    public static final Integer EUKLIDISCHENORM  = 11;
+    
     private boolean calcLength;
     private double length;
     
     private double x;
     private double y;
     
+    private Double values[] = new Double[2];
+  
     public Vector()
     {
         x = 0.0;
@@ -15,7 +22,8 @@ public class Vector
         calcLength = true;
         length = 0.0;
     }
-        public Vector(double x, double y)
+    
+    public Vector(double x, double y)
     {
         this.x = x;
         this.y = y;
@@ -110,5 +118,113 @@ public class Vector
     {
         double scale = 1 / length;
         return Util.scale(this, scale);
+    }
+    
+    
+    
+    
+    // An other form calculating with vectors -- maybe rewrite the old variant?
+    // import from numeric project is major essential for jakobiMatrix calculation
+    public Double get(int index)
+    {
+        return values[index];
+    }
+    
+    public void set(int index, Double value)
+    {
+        values[index] = value;
+    }
+    
+    public Double norm( Integer n ) throws RuntimeException 
+    {
+        if( n==10 ) return zsnorm();
+        if( n==11 ) return eunorm();
+        
+        throw new RuntimeException( MessageFormat.format("'MathLib.getNorm()' liefert den Wert {0}, für welche es keine Normimplementierung für Vektoren gibt.", n ));
+    }
+    
+    private Double zsnorm() 
+    {
+        Double sum = 0d;
+        Double max = 0d;
+
+        for(int i=0; i < 2; i++) 
+        {
+            sum = Math.abs( get(i) );
+            if ( max.compareTo( sum ) == -1 ) max = sum;
+        }
+        return max;
+    }
+    
+    
+    private Double eunorm() 
+    {
+        Double euklidNorm = 0d;
+        Double        sum = 0d;
+        
+        for(int i=0; i < 2; i++) sum = sum + get(i)*get(i);
+        
+        euklidNorm = Math.sqrt( sum );
+        
+        return euklidNorm;
+    }
+    
+    
+    public Vector setUnitVector(Vector vector) 
+    {
+        for(int i=0; i < 2; i++) 
+        {
+            vector.set(i, 1d);
+        }
+        return vector;
+    }
+    
+    
+    @Override
+    public Vector clone()
+    {
+        Vector copy = new Vector();
+        
+        for (int i = 0; i < 2; i++)
+        {
+            copy.set(i, get(i));
+        }
+        return copy;
+    }
+    
+    
+    public Double[] toDoubleArray() 
+    {
+        Double x[] = new Double[2];
+        for(int i=0; i < 2; i++) x[i] = get(i).doubleValue();
+        
+        return x;
+    }
+    
+    
+    public Vector subtract(Vector vector)
+    {
+        return addit( vector.multi( -1d ));
+    }
+    
+    
+    public Vector multi( Double value)
+    {
+        Vector v = new Vector();
+        for (int i = 0; i < 2; i++)
+        {
+            v.set(i, values[i] * value);
+        }
+        return v;
+    }
+    
+    public Vector addit(Vector vector)
+    {
+        Vector v = new Vector();
+        for (int i = 0; i < 2; i++)
+        {
+            v.set(i, values[i] + vector.get(i));
+        }
+        return v;
     }
 }
