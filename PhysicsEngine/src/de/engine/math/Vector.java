@@ -116,7 +116,7 @@ public class Vector
     
     public Vector getUnitVector()
     {
-        double scale = 1 / length;
+        double scale = 1 / getLength();
         return Util.scale(this, scale);
     }
     

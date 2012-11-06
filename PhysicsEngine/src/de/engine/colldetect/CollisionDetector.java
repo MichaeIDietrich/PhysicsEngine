@@ -1,16 +1,18 @@
 package de.engine.colldetect;
 
+import java.util.Vector;
+
 import de.engine.environment.Scene;
 import de.engine.math.Util;
-import de.engine.math.Vector;
 import de.engine.objects.Circle;
 import de.engine.objects.ObjectProperties;
+import de.engine.objects.Polygon;
 import de.engine.physics.PhysicsCalcer;
 
 public class CollisionDetector
 {
     
-    private Grid   grid;
+    private Grid grid;
     private Scene scene;
     
     public CollisionDetector(Scene scene)
@@ -19,50 +21,37 @@ public class CollisionDetector
         this.scene = scene;
     }
     
-    /**
-     * Einfache Überprüfung ob Kollision zwischen zwei Objekten stattfinden könnte.
-     * 
-     * @param pp1
-     * @param pp2
-     * @return
-     */
-    public static boolean needCheck(ObjectProperties pp1, ObjectProperties pp2)
+    public void checkScene()
     {
-        double distance = Util.distance(pp1.getPosition(), pp2.getPosition());
-        double min_distance = pp1.getRadius() + pp2.getRadius();
-        return (distance <= min_distance) ? true : false;
-    }
-    
-    public void checkScene() {
-		grid.scanScene();
-		for (Integer[] ops : grid.getCollisionPairs()) {
-			//if (needCheck(grid.scene.getObject(ops[0]), grid.scene.getObject(ops[1]))) {
-				if (grid.scene.getObject(ops[0]) instanceof Circle
-						&& grid.scene.getObject(ops[1]) instanceof Circle) {
-				    Circle c1 = (Circle) grid.scene.getObject(ops[0]);
-				    Circle c2 = (Circle) grid.scene.getObject(ops[1]);
-				    double coll_time = CollisionTimer.getCirclesCollTime(c1, c2);
-				    if(-1 != coll_time)
-				        PhysicsCalcer.calcCircles(c1, c2, coll_time);
-				}
-			//}
-		}
-		
-		objectGroundCollision();
-	}
-    
-    private CollisionData collCircles(Circle c1, Circle c2)
-    {
-        Vector pos1 = c1.getNextPosition();
-        Vector pos2 = c2.getNextPosition();
-        Vector distance = Util.minus(pos1, pos2);
-        Vector normal = distance.scale(1.0d / distance.getLength());
-        CollisionData cd = new CollisionData();
-        cd.contacts = new CollisionData.Contact[1];
-        cd.contacts[0].normal = normal;
-        cd.contacts[0].point = Util.add(pos1, distance.scale((distance.getLength() - c2.getRadius()) / distance.getLength()));
-        cd.contacts[0].penetration = (c1.getRadius() + c2.getRadius() - distance.getLength()) / 2.0;
-        return cd;
+        grid.scanScene();
+        Vector<Integer[]> collPairs = grid.getCollisionPairs();
+        for (int i = 0; i < collPairs.size(); i++)
+        {
+            ObjectProperties o1 = grid.scene.getObject(collPairs.get(i)[0]);
+            ObjectProperties o2 = grid.scene.getObject(collPairs.get(i)[1]);
+            double coll_time = CollisionTimer.getCollTime(o1, o2, grid.coll_times.get(i)[0], grid.coll_times.get(i)[1]);
+            if (-1 != coll_time)
+            {
+                if (o1 instanceof Circle && o2 instanceof Circle)
+                {
+                    PhysicsCalcer.calcCircles((Circle) o1, (Circle) o2, coll_time);
+                }
+                else if (o1 instanceof Circle && o2 instanceof Polygon)
+                {
+                    PhysicsCalcer.calcCirclePolygon((Circle) o1, (Polygon) o2, coll_time);
+                }
+                else if (o1 instanceof Polygon && o2 instanceof Circle)
+                {
+                    PhysicsCalcer.calcCirclePolygon((Circle) o2, (Polygon) o1, coll_time);
+                }
+                else if (o1 instanceof Polygon && o2 instanceof Polygon)
+                {
+                    PhysicsCalcer.calcPolygons((Polygon) o2, (Polygon) o1, coll_time);
+                }
+            }
+        }
+        
+        objectGroundCollision();
     }
     
     
@@ -70,15 +59,16 @@ public class CollisionDetector
     {
         if (scene.getCount()>0 && scene.getObject(0)!=null && scene.getGround()!=null)
         {
-            Vector v = null;
+            de.engine.math.Vector v = null;
             
             long time = System.currentTimeMillis();
 
             v = Util.solveNonLEQ( scene.getObject(0), scene.getGround() );
+            scene.getObject(0).last_intersection = v.getX();
             
-//            System.out.println( System.currentTimeMillis() - time );
+            System.out.println( System.currentTimeMillis() - time );
             
-//            System.out.println( "x = "+ v.get(0) +" | y = "+ v.get(1)  );
+            System.out.println( "Schnittpunkt = "+ v.get(0).intValue());
         }
         
     }

@@ -10,9 +10,7 @@ public class Main
         Configuration.load();
         Configuration config = Configuration.getInstance();
         
-        
         Double doubleValue;
-        
         
         int index = -1;
         
