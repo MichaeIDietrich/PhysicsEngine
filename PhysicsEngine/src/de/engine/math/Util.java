@@ -50,8 +50,8 @@ public class Util
     public static Vector solveNonLEQ( ObjectProperties object, Ground ground )
     {
         Vector iterx = new Vector();
-        iterx.set(0, 3d);
-        iterx.set(1, 6d);
+        iterx.set(0, 0d);
+        iterx.set(1, 0d);
         Vector     x = new Vector();
         Matrix    jm = new Matrix();
         int        i = 1;
@@ -72,7 +72,7 @@ public class Util
             catch(ArithmeticException e) {}
 
             // Greater 50? Have a break! 
-            if (i>60) break;
+            if (i>50) break;
         }
 
         return iterx;
@@ -137,11 +137,15 @@ public class Util
     public static Vector getFunctionsValue(Vector vector, ObjectProperties object, Ground ground) 
     {
         Vector function = new Vector();
-        Double[]      x = vector.toDoubleArray();           // x[0] = x ; x[1] = y ; x[2] = z usw.
+        Double[]      x = vector.toDoubleArray();   // x[0] = x ; x[1] = y ; x[2] = z usw.
+        
+        //Anstieg
+        double m = object.velocity.getY()/object.velocity.getX();
+        double n = object.world_position.translation.getY();
         
         // Hier die >> Funktionen << eintragen:
-        function.set(   0,  -( -1d*x[0]+x[1] ) );                                                            //-( x[0]*x[0]+x[1]*x[1]     +0.6*x[1]-0.16 ));
-        function.set(   1,  -( (double) ground.function( ground.ACTUAL_FUNCTION, x[0].intValue())+x[1] ) );   //-( x[0]*x[0]-x[1]*x[1]+x[0]-1.6*x[1]-0.14 ));
+        function.set(   0,  -( m * (x[0]-object.world_position.translation.getX()) + n  +x[1])); 
+        function.set(   1,  -( (double) ground.function( ground.ACTUAL_FUNCTION, x[0].intValue()) +x[1]));
         
         return function;            
     }

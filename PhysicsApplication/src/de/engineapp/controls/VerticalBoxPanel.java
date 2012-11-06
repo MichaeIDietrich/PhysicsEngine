@@ -127,4 +127,13 @@ public class VerticalBoxPanel extends JPanel
     {
         box.add(new JSeparator());
     }
+
+
+    @Override
+    public void removeAll()
+    {
+        box.removeAll();
+    }
+    
+    
 }

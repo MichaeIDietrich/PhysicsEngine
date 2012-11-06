@@ -2,7 +2,7 @@ package de.engine.objects;
 
 public class Ground //extends ObjectProperties
 {
-    public int     watermark;
+    public int watermark;
     
     public final int HILLANDVALLEY = 1;
     public final int DOWNHILL      = 2;
@@ -41,7 +41,7 @@ public class Ground //extends ObjectProperties
         // what height are you going to go?
         int hill_height = 100;
         
-        return (int) (Math.sin(phase * i * Math.PI / 300) * hill_height + hill_height);
+        return (int) (Math.sin(phase * i * Math.PI / 300) * hill_height + hill_height) + this.watermark;
     }
     
     
@@ -57,7 +57,7 @@ public class Ground //extends ObjectProperties
         // Grass heigth
         int grass_heigth = 4;
         
-        return (int) (Math.sin(phase * i * Math.PI / 360) * hill_height + hill_height + grass_heigth*Math.sin(i));
+        return (int) (Math.sin(phase * i * Math.PI / 360) * hill_height + hill_height + grass_heigth*Math.sin(i)) + this.watermark;
     }
     
     
@@ -69,7 +69,7 @@ public class Ground //extends ObjectProperties
         // stairs 
         int stairs = 12;
         
-        return (int) (-0.3*i - (9*i*i + stairs*i*i*i - i)/(i-150*i*i + 200) + 50 + 4d*Math.sin(0.04*i) );
+        return (int) (-0.3*i - (9*i*i + stairs*i*i*i - i)/(i-150*i*i + 200) + 50 + 4d*Math.sin(0.04*i)) + this.watermark;
     }
     
     

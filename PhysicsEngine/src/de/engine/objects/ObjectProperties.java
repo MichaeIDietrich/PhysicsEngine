@@ -5,8 +5,10 @@ import de.engine.math.Transformation;
 import de.engine.math.Util;
 import de.engine.math.Vector;
 
-public abstract class ObjectProperties {
-    public enum Material {
+public abstract class ObjectProperties 
+{
+    public enum Material 
+    {
 		STEEL, ALUMINIUM, NACL, RUBBER
 	};
 
@@ -26,6 +28,8 @@ public abstract class ObjectProperties {
 
 	public Transformation world_position;
 
+	public double last_intersection;
+	
 	public Vector getPosition() {
 		return world_position.translation;
 	}
@@ -78,21 +82,9 @@ public abstract class ObjectProperties {
 		return aabb;
 	}
 	
-	public Vector[] getAABB(double time) {
-        Vector aabb[] = new Vector[2];
-        Vector pos = getPosition(time);
-        aabb[0] = new Vector(pos.getX() - radius, pos.getY() - radius);
-        aabb[1] = new Vector(pos.getX() + radius, pos.getY() + radius);
-        return aabb;
-    }
+	public abstract Vector[] getAABB(double time);
 
-	public Vector[] getNextAABB() {
-		Vector aabb[] = new Vector[2];
-		Vector nextPos = getNextPosition();
-		aabb[0] = new Vector(nextPos.getX() - radius, nextPos.getY() - radius);
-		aabb[1] = new Vector(nextPos.getX() + radius, nextPos.getY() + radius);
-		return aabb;
-	}
+	public abstract Vector[] getNextAABB();
 
 	protected ObjectProperties() {
 		this.id = idCounter++;
@@ -111,6 +103,11 @@ public abstract class ObjectProperties {
 			    //	-9.81 / 2d * deltaTime + obj.velocity.getY()
 			    //		* deltaTime + obj.getPosition().getY());
 			velocity.add(0, EnvProps.grav_acc() / 2d * EnvProps.deltaTime());
+			
+			// calc potential energy: Epot = m*g*h  (mass * grav_const * y-coordinate)
+			potential_energy = -mass * EnvProps.grav_acc() * world_position.translation.getY();
+			
+			// calc kinetic energy: Epot = m/2*v²  (mass * grav_const * y-coordinate)
 		}
 	}
 	

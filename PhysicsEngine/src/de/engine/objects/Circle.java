@@ -65,4 +65,22 @@ public class Circle extends ObjectProperties
     {
         return Util.distance(new Vector(x, y), this.getPosition()) <= radius;
     }
+
+    @Override
+    public Vector[] getAABB(double time) {
+        Vector aabb[] = new Vector[2];
+        Vector pos = getPosition(time);
+        aabb[0] = new Vector(pos.getX() - radius, pos.getY() - radius);
+        aabb[1] = new Vector(pos.getX() + radius, pos.getY() + radius);
+        return aabb;
+    }
+
+    @Override
+    public Vector[] getNextAABB() {
+        Vector aabb[] = new Vector[2];
+        Vector nextPos = getNextPosition();
+        aabb[0] = new Vector(nextPos.getX() - radius, nextPos.getY() - radius);
+        aabb[1] = new Vector(nextPos.getX() + radius, nextPos.getY() + radius);
+        return aabb;
+    }
 }
