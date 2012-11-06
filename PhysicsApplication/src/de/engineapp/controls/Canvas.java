@@ -187,7 +187,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     {
         Vector cursor = pModel.toTransformedVector(e.getPoint());
         
-        if (SwingUtilities.isLeftMouseButton(e) && pModel.getSelectedObject() != null)
+        if (SwingUtilities.isLeftMouseButton(e) && !e.isShiftDown() && pModel.getSelectedObject() != null)
         {
             if (e.isControlDown() && !e.isShiftDown() && !e.isAltDown())
             {
@@ -213,7 +213,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             InfoWindow.setData( InfoWindow.COORDINATES, pModel.toTransformedVector(e.getPoint()) );
             InfoWindow.refresh();
         }
-        else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
+        else if ((SwingUtilities.isMiddleMouseButton(e) || (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown())) && pModel.getSelectedObject() != null)
         {
             pModel.getSelectedObject().setRadius(Util.distance(pModel.getSelectedObject().getPosition(), cursor));
             pModel.fireRepaintEvents();

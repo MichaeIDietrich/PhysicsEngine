@@ -1,5 +1,6 @@
 package de.engine.colldetect;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.engine.environment.EnvProps;
@@ -47,7 +48,7 @@ public class CollisionTimer
         java.util.Vector<Double> times = new java.util.Vector<Double>();
         java.util.Vector<Integer> pre = new java.util.Vector<Integer>();
         java.util.Vector<Integer> past = new java.util.Vector<Integer>();
-        HashMap<Double, Boolean> coll = new HashMap<Double, Boolean>();
+        HashMap<Integer, Boolean> coll = new HashMap<Integer, Boolean>();
         times.add(begin);
         times.add(end);
         pre.add(0);
@@ -58,9 +59,9 @@ public class CollisionTimer
         int coll_id = -1;
         for (int i = 0; i < times.size(); i++)
         {
-            coll.put(times.get(i), collideCirclePolygon(o1, o2, times.get(i)));
+            coll.put(i, collideCirclePolygon(o1, o2, times.get(i)));
             
-            if (!coll.get(times.get(i)) && coll.get(times.get(pre.get(i))))
+            if (!coll.get(i) && coll.get(pre.get(i)))
             {
                 times.setSize(i + 1);
                 pre.setSize(i + 1);
@@ -76,20 +77,32 @@ public class CollisionTimer
             if (pre.get(i) != i)
             {
                 time_delta = (times.get(i) - times.get(pre.get(i))) / 2;
-                times.add(times.get(pre.get(i)) + time_delta);
-                pre.add(pre.get(i));
-                pre.set(i, times.size() - 1);
-                past.add(i);
+                Double time = times.get(pre.get(i)) + time_delta;
+                if (!times.contains(time))
+                {
+                    times.add(time);
+                    pre.add(pre.get(i));
+                    pre.set(i, times.size() - 1);
+                    past.add(i);
+                }
             }
             if (past.get(i) != i)
             {
                 time_delta = (times.get(past.get(i)) - times.get(i)) / 2;
-                times.add(times.get(i) + time_delta);
-                past.add(past.get(i));
-                past.set(i, times.size() - 1);
-                pre.add(i);
+                
+                Double time = times.get(i) + time_delta;
+                if (!times.contains(time))
+                {
+                    times.add(time);
+                    past.add(past.get(i));
+                    past.set(i, times.size() - 1);
+                    pre.add(i);
+                }
             }
-            if (time_delta < 0.00001)
+            if(!coll.containsValue(true) && time_delta < 0.005) {
+                return -1;
+            }
+            if (time_delta < 0.001)
             {
                 if (coll_id > 0)
                 {
