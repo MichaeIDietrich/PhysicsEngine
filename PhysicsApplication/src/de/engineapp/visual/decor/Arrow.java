@@ -1,4 +1,4 @@
-package de.engineapp.visual;
+package de.engineapp.visual.decor;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 
 import de.engine.math.*;
 import de.engine.objects.ObjectProperties;
+import de.engineapp.visual.IDrawable;
 
 public class Arrow implements IDrawable
 {
