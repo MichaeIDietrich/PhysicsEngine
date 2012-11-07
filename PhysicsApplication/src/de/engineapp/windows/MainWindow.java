@@ -81,7 +81,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
                     InfoWindow.setData(InfoWindow.POSITION, selObject.getPosition().getX() + ", " + selObject.getPosition().getY());
                     InfoWindow.refresh();
                 }
-                
+                pModel.fireSceneUpdateEvents();
                 pModel.fireRepaintEvents(true);
             }
         }));

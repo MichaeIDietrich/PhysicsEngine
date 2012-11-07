@@ -108,16 +108,19 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
     //////////////////////////
     
     private Shape cachedShape = null;
-    private Vector lastPosition = null;
+    private double lastX = 0.0;
+    private double lastY = 0.0;
     private double lastRadius = 0.0;
     
     
     private Shape getShape()
     {
-        if (cachedShape == null || lastPosition != this.getPosition() || lastRadius != this.getRadius())
+        if (cachedShape == null || lastX != this.getPosition().getX()
+                || lastY != this.getPosition().getY() || lastRadius != this.getRadius())
         {
             cachedShape = createNewShape();
-            lastPosition = this.getPosition();
+            lastX = this.getPosition().getX();
+            lastY = this.getPosition().getY();
             lastRadius = this.getRadius();
         }
         

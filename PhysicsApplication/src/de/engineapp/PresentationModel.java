@@ -23,6 +23,7 @@ public class PresentationModel
         public void groundRemoved(Ground ground);
         public void objectSelected(ObjectProperties object);
         public void objectUnselected(ObjectProperties object);
+        public void sceneUpdated(Scene scene);
     }
     
     public interface ViewBoxListener
@@ -455,6 +456,15 @@ public class PresentationModel
             {
                 listener.repaintCanvas();
             }
+        }
+    }
+    
+    
+    public void fireSceneUpdateEvents()
+    {
+        for (SceneListener listener : sceneListeners)
+        {
+            listener.sceneUpdated(scene);
         }
     }
     
