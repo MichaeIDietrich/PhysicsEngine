@@ -18,6 +18,7 @@ import de.engineapp.*;
 import de.engineapp.PresentationModel.SceneListener;
 import de.engineapp.visual.*;
 import de.engineapp.visual.Circle;
+import de.engineapp.visual.decor.*;
 import de.engineapp.windows.InfoWindow;
 
 
@@ -132,11 +133,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 Vector v = pModel.toTransformedVector(e.getPoint());
                 ObjectProperties object = pModel.getScene().getObjectFromPoint(v.getX(), v.getY());
                 
-                if (object != null)
-                {
-                    pModel.setSelectedObject(object);
-                }
-                else if (!pModel.getPhysicsState().isRunning() && pModel.getProperty("ObjectMode") != null)
+                if (object == null && !pModel.getPhysicsState().isRunning() && pModel.getProperty("ObjectMode") != null)
                 {
                     switch (pModel.getProperty("ObjectMode"))
                     {
@@ -149,6 +146,10 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                             
                             break;
                     }
+                }
+                else
+                {
+                    pModel.setSelectedObject(object);
                 }
             }
             
@@ -163,7 +164,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         }
         else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
         {
-            RangeIndicator range = new RangeIndicator(pModel.getSelectedObject(), "radius");
+            Range range = new Range(pModel.getSelectedObject(), "radius");
             ((IDecorable) pModel.getSelectedObject()).putDecor("RANGE", range);
             pModel.fireRepaintEvents();
         }
@@ -254,7 +255,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     }
     
     @Override
-    public void objectUnselected(ObjectProperties object)
+    public void objectDeselected(ObjectProperties object)
     {
         ((IDecorable) object).removeDecor("ARROW");
     }
@@ -308,11 +309,11 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         
         if (wheel < 10)
         {
-            pModel.setZoom(wheel / 10.0 + 1.0);
+            pModel.setZoom(wheel / 10.0 + 1.0, e.getPoint());
         }
         else
         {
-            pModel.setZoom(wheel - 8.0);
+            pModel.setZoom(wheel - 8.0, e.getPoint());
         }
         
         

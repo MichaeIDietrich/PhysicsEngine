@@ -134,6 +134,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         
         
         // set up right panel
+        panelProperties.setVisible(false);
         this.add(panelProperties, BorderLayout.LINE_END);
         
         
