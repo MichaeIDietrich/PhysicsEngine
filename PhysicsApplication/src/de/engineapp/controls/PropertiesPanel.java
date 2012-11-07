@@ -24,6 +24,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import de.engine.environment.Scene;
 import de.engine.math.Transformation;
 import de.engine.math.Vector;
 import de.engine.objects.Ground;
@@ -280,6 +281,11 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
 //        vx.setValue(vx.getValue());
 //        vy.setValue(vy.getValue());
 //        this.updateUI();
+    }
+
+    @Override
+    public void sceneUpdated(Scene scene)
+    {
     }
 
 }
