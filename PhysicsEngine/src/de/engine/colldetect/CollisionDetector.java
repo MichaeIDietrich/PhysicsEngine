@@ -5,6 +5,7 @@ import java.util.Vector;
 import de.engine.environment.Scene;
 import de.engine.math.Util;
 import de.engine.objects.Circle;
+import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engine.objects.Polygon;
 import de.engine.physics.PhysicsCalcer;
@@ -14,9 +15,13 @@ public class CollisionDetector
     
     private Grid grid;
     private Scene scene;
+    de.engine.math.Vector v = null;
     
     public CollisionDetector(Scene scene)
     {
+        v = new de.engine.math.Vector();
+        v = v.setUnitVector(v);
+        
         grid = new Grid(scene);
         this.scene = scene;
     }
@@ -59,17 +64,15 @@ public class CollisionDetector
     {
         if (scene.getCount()>0 && scene.getObject(0)!=null && scene.getGround()!=null)
         {
-            de.engine.math.Vector v = null;
+            Ground ground = scene.getGround();
             
             long time = System.currentTimeMillis();
 
-            v = Util.solveNonLEQ( scene.getObject(0), scene.getGround() );
-            scene.getObject(0).last_intersection = v.getX();
+            v = Util.solveNonLEQ( scene.getObject(0), ground );
+            scene.getObject(0).last_intersection.setX( v.get(0) );
+            scene.getObject(0).last_intersection.setY( ground.function( ground.ACTUAL_FUNCTION, v.get(0).intValue() ));
             
-            System.out.println( System.currentTimeMillis() - time );
-            
-            System.out.println( "Schnittpunkt = "+ v.get(0).intValue());
+            System.out.println( System.currentTimeMillis() - time +" ms / "+ "SP: = "+ scene.getObject(0).last_intersection.getX()+", "+scene.getObject(0).last_intersection.getY());
         }
-        
     }
 }

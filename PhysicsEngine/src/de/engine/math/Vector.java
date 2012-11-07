@@ -13,12 +13,16 @@ public class Vector
     private double x;
     private double y;
     
-    private Double values[] = new Double[2];
+    private Double value[] = new Double[2];
   
     public Vector()
     {
         x = 0.0;
         y = 0.0;
+        
+        this.value[0] = 0d;
+        this.value[1] = 0d;
+        
         calcLength = true;
         length = 0.0;
     }
@@ -27,6 +31,10 @@ public class Vector
     {
         this.x = x;
         this.y = y;
+        
+        this.value[0] = x;
+        this.value[1] = y;
+        
         calcLength = false;
     }
     
@@ -127,12 +135,12 @@ public class Vector
     // import from numeric project is major essential for jakobiMatrix calculation
     public Double get(int index)
     {
-        return values[index];
+        return value[index];
     }
     
     public void set(int index, Double value)
     {
-        values[index] = value;
+        this.value[index] = value;
     }
     
     public Double norm( Integer n ) throws RuntimeException 
@@ -213,7 +221,7 @@ public class Vector
         Vector v = new Vector();
         for (int i = 0; i < 2; i++)
         {
-            v.set(i, values[i] * value);
+            v.set(i, this.value[i] * value);
         }
         return v;
     }
@@ -223,7 +231,7 @@ public class Vector
         Vector v = new Vector();
         for (int i = 0; i < 2; i++)
         {
-            v.set(i, values[i] + vector.get(i));
+            v.set(i, this.value[i] + vector.get(i));
         }
         return v;
     }
