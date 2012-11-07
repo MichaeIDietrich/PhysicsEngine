@@ -7,12 +7,11 @@ import de.engine.objects.ObjectProperties;
 public class Util 
 {
     private Scene scene;
+    private static de.engine.math.Vector iterx = new de.engine.math.Vector();
+    private static de.engine.math.Vector     x = new de.engine.math.Vector();
+    private static de.engine.math.Matrix    jm = new de.engine.math.Matrix();
     
-    public void Util(Scene scene)
-    {
-        this.scene = scene;
-    }
-    
+
 	public static double distance(Vector p1, Vector p2) {
 		double x = p2.getX() - p1.getX();
 		double y = p2.getY() - p1.getY();
@@ -49,16 +48,14 @@ public class Util
     // Begin #### Test ####
     public static Vector solveNonLEQ( ObjectProperties object, Ground ground )
     {
-        Vector iterx = new Vector();
         iterx.set(0, 0d);
         iterx.set(1, 0d);
-        Vector     x = new Vector();
-        Matrix    jm = new Matrix();
-        int        i = 1;
-                   x = x.setUnitVector(x);
+        int i = 1;
+
+        x.setUnitVector(x);
                    
         // Abbruchbedingung 'obereschranke' bei x.norm() > 2^(-30) > eps
-        Double obereschranke = Double.MIN_VALUE;
+        Double obereschranke = 1d/Math.pow(2, 4);
 
         while (( x.norm( Vector.ZEILENSUMMENNORM )).compareTo( obereschranke )==1) 
         {
@@ -66,13 +63,13 @@ public class Util
 
             try
             {
-                x = jm.jakobiMatrix( derive(iterx, object, ground) ).solveX( getFunctionsValue(iterx, object, ground) );
+                x = jm.jakobiMatrix( derive(iterx, object, ground)).solveX( getFunctionsValue(iterx, object, ground));
                 iterx = iterx.addit( x );    
             } 
             catch(ArithmeticException e) {}
 
             // Greater 50? Have a break! 
-            if (i>50) break;
+            if (i>10) break;
         }
 
         return iterx;
@@ -139,12 +136,13 @@ public class Util
         Vector function = new Vector();
         Double[]      x = vector.toDoubleArray();   // x[0] = x ; x[1] = y ; x[2] = z usw.
         
-        //Anstieg
+        // m = slope, n = shift (in y), linear function 
         double m = object.velocity.getY()/object.velocity.getX();
-        double n = object.world_position.translation.getY();
+        double n = object.getPosition().getY();
         
-        // Hier die >> Funktionen << eintragen:
-        function.set(   0,  -( m * (x[0]-object.world_position.translation.getX()) + n  +x[1])); 
+//        System.out.println( m+" x + "+n);
+        
+        function.set(   0,  -( m * (x[0]-object.getPosition().getX()) + n  +x[1])); 
         function.set(   1,  -( (double) ground.function( ground.ACTUAL_FUNCTION, x[0].intValue()) +x[1]));
         
         return function;            

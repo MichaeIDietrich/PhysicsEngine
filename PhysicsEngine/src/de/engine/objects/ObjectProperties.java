@@ -28,7 +28,7 @@ public abstract class ObjectProperties
 
 	public Transformation world_position;
 
-	public double last_intersection;
+	public Vector last_intersection;
 	
 	public Vector getPosition() {
 		return world_position.translation;
@@ -86,8 +86,10 @@ public abstract class ObjectProperties
 
 	public abstract Vector[] getNextAABB();
 
-	protected ObjectProperties() {
+	protected ObjectProperties() 
+	{
 		this.id = idCounter++;
+		this.last_intersection = new Vector();
 	}
 
 	public int getId() {
