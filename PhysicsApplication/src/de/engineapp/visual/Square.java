@@ -101,17 +101,19 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     @Override
     public void putDecor(String key, IDrawable decor)
     {
+        decorMap.put(key, decor);
     }
     
     @Override
     public IDrawable getDecor(String key)
     {
-        return null;
+        return decorMap.get(key);
     }
     
     @Override
     public void removeDecor(String key)
     {
+        decorMap.remove(key);
     }
     
     @Override
