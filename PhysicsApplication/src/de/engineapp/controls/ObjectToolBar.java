@@ -78,7 +78,6 @@ public class ObjectToolBar extends JToolBar implements MouseListener
             {
                 circle.setPressed(false);
                 square.setPressed(false);
-                pModel.setProperty("ObjectMode", "ground");
                 if (ground.isPressed())
                 {
                     pModel.setProperty("ObjectMode", "ground");
