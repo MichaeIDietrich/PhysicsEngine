@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
+import de.engine.environment.Scene;
 import de.engine.math.*;
 import de.engine.math.Util;
 import de.engine.objects.*;
@@ -315,4 +316,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         
         pModel.fireRepaintEvents();
     }
+
+
+    @Override
+    public void sceneUpdated(Scene scene) { }
 }

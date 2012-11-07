@@ -25,7 +25,6 @@ public class PropertySpinner extends JSpinner
     //@Override
     public Double getValue()
     {
-        System.out.println("get");
         return (Double) this.getModel().getValue();
     }
 
