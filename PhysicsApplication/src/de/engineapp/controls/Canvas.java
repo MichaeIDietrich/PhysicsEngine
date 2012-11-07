@@ -129,7 +129,14 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             }
             else
             {
-                if (!pModel.getPhysicsState().isRunning() && pModel.getProperty("ObjectMode") != null)
+                Vector v = pModel.toTransformedVector(e.getPoint());
+                ObjectProperties object = pModel.getScene().getObjectFromPoint(v.getX(), v.getY());
+                
+                if (object != null)
+                {
+                    pModel.setSelectedObject(object);
+                }
+                else if (!pModel.getPhysicsState().isRunning() && pModel.getProperty("ObjectMode") != null)
                 {
                     switch (pModel.getProperty("ObjectMode"))
                     {
@@ -142,11 +149,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                             
                             break;
                     }
-                }
-                else
-                {
-                    Vector v = pModel.toTransformedVector(e.getPoint());
-                    pModel.setSelectedObject(pModel.getScene().getObjectFromPoint(v.getX(), v.getY()));
                 }
             }
             
