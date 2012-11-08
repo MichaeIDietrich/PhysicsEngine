@@ -51,8 +51,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     //Buttons erstellen
     private JButton del;
     private JButton close;
-    private ToolBarButton next;
-    private ToolBarButton previous;
+    private EasyButton next;
+    private EasyButton previous;
     
     //Namensfeld erstellen
     private JTextField name;
@@ -64,10 +64,10 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     
     //Spinner erstellen
     private PropertySpinner massInput;
-    private PropertySpinner xCord;    
-    private PropertySpinner yCord;    
-    private PropertySpinner vx;       
-    private PropertySpinner vy;       
+    private PropertySpinner xCord;
+    private PropertySpinner yCord;
+    private PropertySpinner vx;
+    private PropertySpinner vy;
     
     
     //Variablen
@@ -78,16 +78,16 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         pModel = model;
         
         //Labels
-        nameLabel         = new JLabel(LOCALIZER.getString("NAME_OF_OBJECT"));
-        materialLabel     = new JLabel(LOCALIZER.getString("MATERIAL"));
-        xCordinateLabel   = new JLabel(LOCALIZER.getString("X_COORDINATE"));
-        yCordinateLabel   = new JLabel(LOCALIZER.getString("Y_COORDINATE"));
-        xSpeedLabel       = new JLabel(LOCALIZER.getString("X_VELOCITY"));
-        ySpeedLabel       = new JLabel(LOCALIZER.getString("Y_VELOCITY"));
-        massLabel        = new JLabel(LOCALIZER.getString("MASS"));
+        nameLabel       = new JLabel(LOCALIZER.getString("NAME_OF_OBJECT"));
+        materialLabel   = new JLabel(LOCALIZER.getString("MATERIAL"));
+        xCordinateLabel = new JLabel(LOCALIZER.getString("X_COORDINATE"));
+        yCordinateLabel = new JLabel(LOCALIZER.getString("Y_COORDINATE"));
+        xSpeedLabel     = new JLabel(LOCALIZER.getString("X_VELOCITY"));
+        ySpeedLabel     = new JLabel(LOCALIZER.getString("Y_VELOCITY"));
+        massLabel       = new JLabel(LOCALIZER.getString("MASS"));
         
-        LabelPotE         = new JLabel(LOCALIZER.getString("POT_ENERGY"));
-        LabelKinE         = new JLabel(LOCALIZER.getString("KIN_ENERGY"));
+        LabelPotE       = new JLabel(LOCALIZER.getString("POT_ENERGY"));
+        LabelKinE       = new JLabel(LOCALIZER.getString("KIN_ENERGY"));
 
         //Buttons
         del          = new JButton(LOCALIZER.getString("REMOVE"));
@@ -157,8 +157,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         
         MaterialCombo = new JComboBox<Material>(Material.values());
 
-        next         = new ToolBarButton(Util.getIcon("next"),"next",this);
-        previous     = new ToolBarButton(Util.getIcon("previous"),"previous",this);
+        next         = new EasyButton(Util.getIcon("next"),"next",this);
+        previous     = new EasyButton(Util.getIcon("previous"),"previous",this);
         
         massInput.setValue(object.mass);
         xCord.setValue(object.getPosition().getX()); 

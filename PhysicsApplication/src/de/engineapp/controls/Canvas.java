@@ -254,13 +254,14 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         ((IDecorable) object).putDecor("ARROW", arrow);
         
         Coordinate coord = new Coordinate( object, "last_intersection" );
-        ((IDecorable) object).putDecor("Intersection", coord);
+        ((IDecorable) object).putDecor("INTERSECTION", coord);
     }
     
     @Override
     public void objectDeselected(ObjectProperties object)
     {
         ((IDecorable) object).removeDecor("ARROW");
+        ((IDecorable) object).removeDecor("INTERSECTION");
     }
     
     

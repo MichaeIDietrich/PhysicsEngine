@@ -26,7 +26,14 @@ public final class Localizer
     private Localizer()
     {
         stringTable = new HashMap<>();
-        currentLanguageCode = Locale.getDefault().toLanguageTag();
+        
+        currentLanguageCode = Configuration.getInstance().getLangCode();
+        if (currentLanguageCode == null)
+        {
+            currentLanguageCode = Locale.getDefault().toLanguageTag();
+            Configuration.getInstance().setLangCode(currentLanguageCode);
+        }
+        
         File file = getLanguage(currentLanguageCode);
         loadLanguageFile(file);
     }

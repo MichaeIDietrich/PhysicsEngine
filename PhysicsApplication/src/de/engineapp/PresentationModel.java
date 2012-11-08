@@ -92,6 +92,13 @@ public class PresentationModel
         
         stateMap = new HashMap<>();
         propertyMap = new HashMap<>();
+        
+        Configuration config = Configuration.getInstance();
+        
+        stateMap.put("grid", config.isShowGrid());
+        stateMap.put("maximized", config.isMaximized());
+        propertyMap.put("langCode", config.getLangCode());
+        setZoom(config.getZoom());
     }
     
     public void addViewBoxListener(ViewBoxListener listener)
