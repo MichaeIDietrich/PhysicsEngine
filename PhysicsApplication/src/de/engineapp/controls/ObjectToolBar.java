@@ -42,7 +42,7 @@ public class ObjectToolBar extends JToolBar implements MouseListener
         this.add(square);
         this.add(ground);
     }
-
+    
     @Override
     public void mouseClicked(MouseEvent e)
     {
@@ -50,9 +50,9 @@ public class ObjectToolBar extends JToolBar implements MouseListener
         {
             if (e.getComponent().equals(circle))
             {
-                square.setPressed(false);
-                ground.setPressed(false);
-                if (circle.isPressed())
+                square.setSelected(false);
+                ground.setSelected(false);
+                if (circle.isSelected())
                 {
                     pModel.setProperty("ObjectMode", "circle");
                 }
@@ -63,9 +63,9 @@ public class ObjectToolBar extends JToolBar implements MouseListener
             }
             else if (e.getComponent().equals(square))
             {
-                circle.setPressed(false);
-                ground.setPressed(false);
-                if (square.isPressed())
+                circle.setSelected(false);
+                ground.setSelected(false);
+                if (square.isSelected())
                 {
                     pModel.setProperty("ObjectMode", "aquare");
                 }
@@ -76,9 +76,9 @@ public class ObjectToolBar extends JToolBar implements MouseListener
             }
             else if (e.getComponent().equals(ground))
             {
-                circle.setPressed(false);
-                square.setPressed(false);
-                if (ground.isPressed())
+                circle.setSelected(false);
+                square.setSelected(false);
+                if (ground.isSelected())
                 {
                     pModel.setProperty("ObjectMode", "ground");
                 }
@@ -91,22 +91,14 @@ public class ObjectToolBar extends JToolBar implements MouseListener
     }
     
     @Override
-    public void mouseEntered(MouseEvent e)
-    {
-    }
+    public void mouseEntered(MouseEvent e) { }
     
     @Override
-    public void mouseExited(MouseEvent e)
-    {
-    }
+    public void mouseExited(MouseEvent e) { }
     
     @Override
-    public void mousePressed(MouseEvent e)
-    {
-    }
+    public void mousePressed(MouseEvent e) { }
     
     @Override
-    public void mouseReleased(MouseEvent e)
-    {
-    }
+    public void mouseReleased(MouseEvent e) { }
 }
