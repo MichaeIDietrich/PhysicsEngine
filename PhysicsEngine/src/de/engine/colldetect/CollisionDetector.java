@@ -67,10 +67,11 @@ public class CollisionDetector
             Ground ground = scene.getGround();
             
             long time = System.currentTimeMillis();
-
-            v = Util.solveNonLEQ( scene.getObject(0), ground );
-            scene.getObject(0).last_intersection.setX( v.get(0) );
-            scene.getObject(0).last_intersection.setY( ground.function( ground.ACTUAL_FUNCTION, v.get(0).intValue() ));
+            
+            Double xn = Util.newtonIteration( scene.getObject(0), ground );
+            
+            scene.getObject(0).last_intersection.setX( xn );
+            scene.getObject(0).last_intersection.setY( ground.function( ground.ACTUAL_FUNCTION, xn.intValue() ));
             
             System.out.println( System.currentTimeMillis() - time +" ms / "+ "SP: = "+ scene.getObject(0).last_intersection.getX()+", "+scene.getObject(0).last_intersection.getY());
         }

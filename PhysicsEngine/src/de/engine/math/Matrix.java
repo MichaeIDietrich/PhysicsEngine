@@ -280,4 +280,75 @@ public class Matrix
       
       return identity;
   }
+  
+  /**
+   * Anwenden der Zeilenpivotstrategie, bei welcher Zeilen vertauscht werden nach dem Kriterium,
+   * dass ein absoluter Wert aus einer Zeile der aktuellen Spalte ermittelt wird und die Zeile 
+   * mit dem höchsten Wert wird mit der aktuellen Reihe int row getauscht
+   * Zum Schluss wird die Zeile als int ausgegeben, die den maximalen Wert einer Zeile von der aktuellen
+   * Spalte besitzt.
+   * @param matrix Matrix, für die die Pivotstrategie angewendet werden soll
+   * @param vector Vektor, für die die Pivotstrategie angewendet werden soll
+   * @param row Anfangsreihe, bei welcher angefangen wird, die Zeilen zu vertauschen
+   */
+  public int pivotColumnStrategy( Matrix matrix, Vector b, int row ) throws ArithmeticException
+  {
+      if (matrix == null)
+      {
+          throw new ArithmeticException("Die Matrix als Input für die pivotColumnStrategy-Methode ist Null!");
+      }
+      
+      if (b != null)
+      {
+          if (this.getRows() != b.getLength())
+          {
+              throw new ArithmeticException("Die Inputmatrix und der Inputvektor sind nicht gleichlang für die Methode pivotColumnStrategy!");
+          }
+      }
+
+      if (row < 0 || row > (matrix.getRows() - 1))
+      {
+          throw new ArithmeticException("Der row-Input bei der Methode pivotColumnStrategy liegt ausserhalb des gültigen Bereiches!");
+      }
+      
+      Double maximum = 0d;
+      Double    temp = 0d;
+      int    rowposition = matrix.rows == (row + 1) ? row : 0;
+      boolean    rowswap = false;
+      
+      for(int t=0; t<matrix.getRows()-row; t++)
+      {                              
+          for(int i=row+t; i<matrix.getCols(); i++)
+          {           
+              matrix.values[i][row] = Math.abs(matrix.values[i][row]);
+              
+              if (matrix.values[i][row].compareTo( maximum ) == 1 )
+              {  
+                  rowposition = i;                                             // Markiere Zeile mit Maximum
+                  maximum     = matrix.values[i][row];
+                  rowswap     = true;
+              }
+          }
+          
+          if (rowswap && rowposition!=row )
+          {
+              for(int col=0; col<matrix.getCols(); col++)
+              { // Zeilenvertauschung der Matrix
+                  temp                            = matrix.values[row][col];
+                  matrix.values[row][col]         = matrix.values[rowposition][col];
+                  matrix.values[rowposition][col] = temp;
+              }
+              
+              if(b!=null) 
+              {
+                  temp = b.get(row);                                               // Zeilenvertauschung des Vektors
+                  b.set(row, b.get(rowposition));
+                  b.set(rowposition, temp);
+              }
+              
+              rowswap = false;
+          }
+      }
+      return rowposition;
+  }
 }
