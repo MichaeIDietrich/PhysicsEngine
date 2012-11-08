@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.Iterator;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -20,6 +22,7 @@ import de.engine.objects.ObjectProperties;
 import de.engine.objects.ObjectProperties.Material;
 import de.engineapp.PresentationModel;
 import de.engineapp.PresentationModel.SceneListener;
+import de.engineapp.Util;
 import de.engineapp.visual.ISelectable;
 
 public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, ActionListener, ChangeListener
@@ -46,6 +49,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     //Buttons erstellen
     private JButton del;
     private JButton close;
+    private ToolBarButton next;
+    private ToolBarButton previous;
     
     //Namensfeld erstellen
     private JTextField name;
@@ -145,12 +150,14 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         vx           = new PropertySpinner(object.velocity.getX(),-1000,1000,10,this);
         vy           = new PropertySpinner(object.velocity.getY(),-1000,1000,10,this);
         
-        
-        potLabel = new JLabel(this.formatDoubleValue(object.potential_energy));
-        kinLabel = new JLabel(this.formatDoubleValue(object.kinetic_energy));
+        potLabel     = new JLabel(this.formatDoubleValue(object.potential_energy));
+        kinLabel     = new JLabel(this.formatDoubleValue(object.kinetic_energy));
         
         MaterialCombo = new JComboBox<Material>(Material.values());
 
+        next         = new ToolBarButton(Util.getIcon("next"),"next",this);
+        previous     = new ToolBarButton(Util.getIcon("previous"),"previous",this);
+        
         massInput.setValue(object.mass);
         xCord.setValue(object.getPosition().getX()); 
         yCord.setValue(object.getPosition().getY());
@@ -158,35 +165,39 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         vy.setValue(object.velocity.getY());
 
         name.setText(((ISelectable)object).getName());
-        
-        
-//        Material sf = object.surface;
-        
-        
+
+
         //Hinzufügen
-        
+
+        this.addGap(10);
         this.add(nameLabel, CENTER_ALIGNMENT);
-        this.addGroup(5,name);
-        
+        this.addGap(5);
+        this.addGroup(3,previous,name,next);
+        this.addGap(25);
         this.add(del, RIGHT_ALIGNMENT);
-        
-        this.add(materialLabel);
-        this.add(MaterialCombo);
+        this.addGap(10);
+        this.addSeparator();
+        this.addGap(15);
+        this.addGroup(5, materialLabel);
+        this.addGap(5);
+        this.addGroup(5,MaterialCombo);
+        this.addGap(10);
         this.addGroup(5, xCordinateLabel, yCordinateLabel);
         this.addGroup(5, xCord, yCord);
-        
+        this.addGap(10);
         this.addGroup(5, xSpeedLabel,ySpeedLabel);
         this.addGroup(5, vx, vy);
-        
+        this.addGap(10);
         this.add(massLabel, LEFT_ALIGNMENT);
         this.add(massInput, LEFT_ALIGNMENT);
-        
+        this.addGap(20);
         this.add(fix, LEFT_ALIGNMENT);
-        
+        this.addGap(20);
         this.addGroup(5,LabelPotE, potLabel);
+        this.addGap(5);
         this.addGroup(5,LabelKinE, kinLabel);
-        
-        this.add(close, RIGHT_ALIGNMENT);
+        this.addGap(25);
+        this.add(close, LEFT_ALIGNMENT);
         
 
         this.updateUI();
@@ -214,10 +225,42 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                 break;
                 
             case "close":
-                
                 pModel.setSelectedObject(null);
                 pModel.fireRepaintEvents();
                 break;
+                
+            case "next":
+                Iterator<ObjectProperties> it = pModel.getScene().getObjects().iterator();
+                while(it.next() != pModel.getSelectedObject());
+                if(it.hasNext())
+                {
+                    pModel.setSelectedObject(it.next());
+                }
+                else
+                {
+                    pModel.setSelectedObject(pModel.getScene().getObject(0));
+                }
+                pModel.fireRepaintEvents();
+                break;
+                
+            case "previous":
+                if(pModel.getSelectedObject() == pModel.getScene().getObject(0))
+                {
+                    pModel.setSelectedObject(pModel.getScene().getObject(pModel.getScene().getCount()-1));
+                }
+                else
+                {
+                    for(int i = pModel.getScene().getCount()-1; i >= 0; i--)
+                    {
+                        if(pModel.getSelectedObject() == pModel.getScene().getObject(i)) 
+                        {
+                            pModel.setSelectedObject(pModel.getScene().getObject(i-1));
+                            break;
+                        }
+                    }
+                }
+                pModel.fireRepaintEvents();
+
         }
         
     }
