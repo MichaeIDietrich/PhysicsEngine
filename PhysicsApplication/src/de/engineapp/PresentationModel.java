@@ -22,7 +22,7 @@ public class PresentationModel
         public void groundAdded(Ground ground);
         public void groundRemoved(Ground ground);
         public void objectSelected(ObjectProperties object);
-        public void objectUnselected(ObjectProperties object);
+        public void objectDeselected(ObjectProperties object);
         public void sceneUpdated(Scene scene);
     }
     
@@ -216,7 +216,7 @@ public class PresentationModel
     }
     
     
-    public void setViewOffsetY(int viewOffsetX, int viewOffsetY)
+    public void setViewOffset(int viewOffsetX, int viewOffsetY)
     {
         this.viewOffsetX = viewOffsetX;
         this.viewOffsetY = viewOffsetY;
@@ -242,6 +242,23 @@ public class PresentationModel
     public void setZoom(double zoom)
     {
         this.zoom = zoom;
+        
+        for (ViewBoxListener listener : viewBoxListeners)
+        {
+            listener.zoomChanged(zoom);
+        }
+    }
+    
+    public void setZoom(double zoom, Point point)
+    {
+        
+        Vector center = toTransformedVector(point);
+        this.zoom = zoom;
+        this.setViewOffset((int) (-center.getX() * zoom -  canvasWidth / 2 + point.x), 
+                           (int) ( center.getY() * zoom - canvasHeight / 2 + point.y));
+        
+        
+//        this.setViewOffset((int) (-center.getX() * zoom + center.getX() + viewOffsetX * zoom), (int) (center.getY() * zoom - center.getY() - viewOffsetX / zoom));
         
         for (ViewBoxListener listener : viewBoxListeners)
         {
@@ -279,6 +296,7 @@ public class PresentationModel
     
     public void setScene(Scene scene)
     {
+        setSelectedObject(null);
         this.scene = scene;
         
         if (physicsEngine2D != null)
@@ -315,7 +333,7 @@ public class PresentationModel
         {
             for (SceneListener listener : sceneListeners)
             {
-                listener.objectUnselected(selectedObject);
+                listener.objectDeselected(selectedObject);
             }
         }
         
@@ -360,7 +378,7 @@ public class PresentationModel
             {
                 for (SceneListener listener : sceneListeners)
                 {
-                    listener.objectUnselected(object);
+                    listener.objectDeselected(object);
                 }
             }
             

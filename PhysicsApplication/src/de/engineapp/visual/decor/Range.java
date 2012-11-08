@@ -1,12 +1,13 @@
-package de.engineapp.visual;
+package de.engineapp.visual.decor;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.lang.reflect.Field;
 
 import de.engine.objects.ObjectProperties;
+import de.engineapp.visual.IDrawable;
 
-public class RangeIndicator implements IDrawable
+public class Range implements IDrawable
 {
     private Color color = null;
     private Color border = Color.CYAN;
@@ -15,7 +16,7 @@ public class RangeIndicator implements IDrawable
     private Field connectedField = null;
     
     
-    public RangeIndicator(ObjectProperties object, String fieldName)
+    public Range(ObjectProperties object, String fieldName)
     {
         if (object == null || fieldName == null)
         {

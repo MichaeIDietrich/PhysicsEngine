@@ -1,5 +1,6 @@
 package de.engineapp.controls;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -9,6 +10,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import de.engine.environment.Scene;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.PresentationModel.ViewBoxListener;
@@ -21,6 +23,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     
     private PresentationModel pModel;
     
+    private ToolBarButton new_;
     private ToolBarButton open;
     private ToolBarButton save;
     private ToolBarButton play;
@@ -43,6 +46,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         pModel.addViewBoxListener(this);
         pModel.addStorageListener(this);
         
+        new_  = new ToolBarButton(Util.getIcon("new"),    "new",   this);
         open  = new ToolBarButton(Util.getIcon("open5"),  "open",  this);
         save  = new ToolBarButton(Util.getIcon("save3"),  "save",  this);
         play  = new ToolBarButton(Util.getIcon("play2"),  "play",  this);
@@ -59,6 +63,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         slider.addChangeListener(this);
         
         
+        this.add(new_);
         this.add(open);
         this.add(save);
         this.addSeparator();
@@ -79,6 +84,20 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     {
         switch (e.getActionCommand())
         {
+            case "new":
+                pModel.setScene(new Scene());
+                pModel.setZoom(1.0);
+                pModel.setViewOffset(0, 0);
+                break;
+                
+            case "open":
+                
+                break;
+                
+            case "save":
+                
+                break;
+                
             case "play":
                 pModel.setState("runPhysics", true);
                 
@@ -108,7 +127,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 break;
                 
             case "focus":
-                pModel.setViewOffsetY(0, 0);
+                pModel.setViewOffset(0, 0);
                 pModel.fireRepaintEvents();
                 
                 break;
@@ -119,7 +138,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     @Override
     public void stateChanged(ChangeEvent e)
     {
-        pModel.setZoom(slider.getValue());
+        pModel.setZoom(slider.getValue(), new Point(pModel.getCanvasWidth() / 2, pModel.getCanvasHeight() / 2));
         pModel.fireRepaintEvents();
     }
     
