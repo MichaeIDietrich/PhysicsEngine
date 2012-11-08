@@ -10,6 +10,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import de.engine.environment.Scene;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.PresentationModel.ViewBoxListener;
@@ -83,6 +84,20 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     {
         switch (e.getActionCommand())
         {
+            case "new":
+                pModel.setScene(new Scene());
+                pModel.setZoom(1.0);
+                pModel.setViewOffset(0, 0);
+                break;
+                
+            case "open":
+                
+                break;
+                
+            case "save":
+                
+                break;
+                
             case "play":
                 pModel.setState("runPhysics", true);
                 

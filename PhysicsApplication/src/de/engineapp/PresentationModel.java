@@ -296,6 +296,7 @@ public class PresentationModel
     
     public void setScene(Scene scene)
     {
+        setSelectedObject(null);
         this.scene = scene;
         
         if (physicsEngine2D != null)
