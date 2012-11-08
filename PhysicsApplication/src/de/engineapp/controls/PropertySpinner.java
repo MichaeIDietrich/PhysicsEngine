@@ -12,12 +12,10 @@ public class PropertySpinner extends JSpinner
      */
     private static final long serialVersionUID = -7629422754400062262L;
     
-    //private SpinnerNumberModel spinnerModel = null;
     
     public PropertySpinner(double start, double min, double max, double step, ChangeListener cl)
     {
         super(new SpinnerNumberModel(start,min,max,step));
-        System.out.println("model: " + this.getModel());
         this.addChangeListener(cl);
     }
     
