@@ -1,6 +1,6 @@
 package de.engineapp.controls;
 
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -14,7 +14,7 @@ import de.engine.environment.Scene;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.PresentationModel.ViewBoxListener;
-import de.engineapp.windows.InfoWindow;
+import de.engineapp.windows.*;
 
 public class MainToolBar extends JToolBar implements ActionListener, ChangeListener, StorageListener, ViewBoxListener
 {
@@ -23,15 +23,16 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     
     private PresentationModel pModel;
     
-    private ToolBarButton new_;
-    private ToolBarButton open;
-    private ToolBarButton save;
-    private ToolBarButton play;
-    private ToolBarButton pause;
-    private ToolBarButton reset;
-    private ToolBarButton grid;
-    private ToolBarButton info;
-    private ToolBarButton focus;
+    private EasyButton new_;
+    private EasyButton open;
+    private EasyButton save;
+    private EasyButton play;
+    private EasyButton pause;
+    private EasyButton reset;
+    private EasyButton grid;
+    private EasyButton info;
+    private EasyButton focus;
+    private EasyButton settings;
     
     private ZoomSlider slider;
     
@@ -46,15 +47,16 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         pModel.addViewBoxListener(this);
         pModel.addStorageListener(this);
         
-        new_  = new ToolBarButton(Util.getIcon("new"),    "new",   this);
-        open  = new ToolBarButton(Util.getIcon("open5"),  "open",  this);
-        save  = new ToolBarButton(Util.getIcon("save3"),  "save",  this);
-        play  = new ToolBarButton(Util.getIcon("play2"),  "play",  this);
-        pause = new ToolBarButton(Util.getIcon("pause2"), "pause", this);
-        reset = new ToolBarButton(Util.getIcon("reset2"), "reset", this);
-        grid  = new ToolBarButton(Util.getIcon("grid2"),  "grid",  this);
-        info  = new ToolBarButton(Util.getIcon("loupe"),  "info",  this);
-        focus = new ToolBarButton(Util.getIcon("focus"),  "focus", this);
+        new_     = new EasyButton(Util.getIcon("new"),      "new",      this);
+        open     = new EasyButton(Util.getIcon("open5"),    "open",     this);
+        save     = new EasyButton(Util.getIcon("save3"),    "save",     this);
+        play     = new EasyButton(Util.getIcon("play2"),    "play",     this);
+        pause    = new EasyButton(Util.getIcon("pause2"),   "pause",    this);
+        reset    = new EasyButton(Util.getIcon("reset2"),   "reset",    this);
+        grid     = new EasyButton(Util.getIcon("grid2"),    "grid",     this);
+        info     = new EasyButton(Util.getIcon("loupe"),    "info",     this);
+        focus    = new EasyButton(Util.getIcon("focus"),    "focus",    this);
+        settings = new EasyButton(Util.getIcon("settings"), "settings", this);
         
         pause.setEnabled(false);
         reset.setEnabled(false);
@@ -76,6 +78,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         this.add(focus);
         this.addSeparator();
         this.add(slider);
+        this.add(settings);
     }
     
     
@@ -130,6 +133,10 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 pModel.setViewOffset(0, 0);
                 pModel.fireRepaintEvents();
                 
+                break;
+                
+            case "settings":
+                new SettingsDialog((Window) this.getTopLevelAncestor());
                 break;
         }
     }
@@ -190,7 +197,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     
     @Override
     public void propertyChanged(String id, String value) { }
-    
     
     @Override
     public void offsetChanged(int offsetX, int offsetY) { }

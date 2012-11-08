@@ -24,7 +24,7 @@ public class Util
         
         if (icon == null)
         {
-            icon = new ImageIcon("images/" + id + ".png");
+            icon = new ImageIcon("data/images/" + id + ".png");
             
             if (icon != null)
             {

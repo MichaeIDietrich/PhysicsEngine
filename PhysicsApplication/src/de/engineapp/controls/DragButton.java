@@ -8,7 +8,7 @@ import javax.swing.*;
 
 import de.engineapp.controls.dnd.CommandHandler;
 
-public class DragButton extends JButton implements MouseListener, MouseMotionListener, DropTargetListener
+public class DragButton extends JToggleButton implements MouseMotionListener, DropTargetListener
 {
     private static final long serialVersionUID = 6946598301964868381L;
     
@@ -39,7 +39,6 @@ public class DragButton extends JButton implements MouseListener, MouseMotionLis
         
         this.setFocusable(false);
         
-        this.addMouseListener(this);
         this.addMouseMotionListener(this);
         new DropTarget(this, this);
         
@@ -52,38 +51,6 @@ public class DragButton extends JButton implements MouseListener, MouseMotionLis
             this.setTransferHandler(new CommandHandler(command, dragImage, dragImageOffset));
         }
     }
-    
-    
-    public boolean isPressed()
-    {
-        return this.isSelected();
-    }
-    
-    public void setPressed(boolean pressed)
-    {
-        this.setSelected(pressed);
-    }
-    
-    @Override
-    public void mouseClicked(MouseEvent e)
-    {
-        if (SwingUtilities.isLeftMouseButton(e))
-        {
-            this.setPressed(!this.isPressed());
-        }
-    }
-    
-    @Override
-    public void mouseEntered(MouseEvent e) { }
-    
-    @Override
-    public void mouseExited(MouseEvent e) { }
-    
-    @Override
-    public void mousePressed(MouseEvent e) { }
-    
-    @Override
-    public void mouseReleased(MouseEvent e) { }
     
     
     @Override
@@ -112,7 +79,7 @@ public class DragButton extends JButton implements MouseListener, MouseMotionLis
     
     @Override
     public void dropActionChanged(DropTargetDragEvent dtde) { }
-
+    
     @Override
     public void mouseDragged(MouseEvent e)
     {
@@ -123,7 +90,7 @@ public class DragButton extends JButton implements MouseListener, MouseMotionLis
             handler.exportAsDrag(comp, e, TransferHandler.COPY);
         }
     }
-
+    
     @Override
     public void mouseMoved(MouseEvent e) { }
 }

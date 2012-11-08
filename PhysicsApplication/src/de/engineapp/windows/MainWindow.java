@@ -28,6 +28,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
     
     
 //    private Configuration config = Configuration.getInstance();
+    private final static Localizer LOCALIZER = Localizer.getInstance();
     
     private final static RenderingHints ANTIALIAS = new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
      
@@ -40,7 +41,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
     
     public MainWindow()
     {
-        super("Physics Engine");
+        super(LOCALIZER.getString("APP_NAME"));
         
         pModel = new PresentationModel();
         
