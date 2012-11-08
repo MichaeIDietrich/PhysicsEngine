@@ -1,4 +1,4 @@
-package de.engineapp.visual;
+package de.engineapp.visual.decor;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -6,8 +6,9 @@ import java.lang.reflect.Field;
 
 import de.engine.math.*;
 import de.engine.objects.ObjectProperties;
+import de.engineapp.visual.IDrawable;
 
-public class CoordinateIndicator implements IDrawable
+public class Coordinate implements IDrawable
 {
     private Color color = Color.BLACK;
     private Color border = Color.WHITE;
@@ -18,13 +19,13 @@ public class CoordinateIndicator implements IDrawable
     private Field connectedField = null;
     
     
-    public CoordinateIndicator(Vector location)
+    public Coordinate(Vector location)
     {
         coordinate = location;
     }
     
     
-    public CoordinateIndicator(ObjectProperties object, String fieldName)
+    public Coordinate(ObjectProperties object, String fieldName)
     {
         if (object == null || fieldName == null)
         {

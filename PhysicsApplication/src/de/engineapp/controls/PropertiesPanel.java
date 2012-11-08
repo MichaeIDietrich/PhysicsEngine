@@ -196,7 +196,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
 
 
     @Override
-    public void objectUnselected(ObjectProperties object)
+    public void objectDeselected(ObjectProperties object)
     {
         System.out.println("Objekt abgewählt");
         this.setVisible(false);
