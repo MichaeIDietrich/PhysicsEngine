@@ -1,16 +1,17 @@
 package de.engine.math;
 
-import de.engine.environment.Scene;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 
 public class Util 
 {
-    // needed for derive
-    private static final Double h = Math.pow( 10d, 12d );
+    // needed for derivation
+    private static final Double h = Math.pow( 10d, 10d );
     private static Vector function = new Vector();
     private static double m = 0;
     private static double n = 0;
+    private static Double[] radius = new Double[3];
+    
     
 	public static double distance(Vector p1, Vector p2) 
 	{
@@ -56,7 +57,6 @@ public class Util
         
         Double xn = object.getPosition().getX();
         
-        Double[] radius = new Double[3];
         radius[0] = -object.getRadius();
         radius[1] = 0d;
         radius[2] = +object.getRadius();
@@ -70,9 +70,9 @@ public class Util
         {
             old_distance = distance;
             
-            for(int i=0; i < 10; i++) 
+            for(int i=0; i < 20; i++) 
             {
-                xn = xn - getFunctionsValue( xn, object, ground) / derive1D( xn, object, ground);
+                xn = xn - getFunctionsValue( xn, radius[n], object, ground) / derive1D( xn, radius[n], object, ground);
             }
             
             int y    = ground.function( ground.ACTUAL_FUNCTION, xn.intValue());
@@ -91,14 +91,14 @@ public class Util
      * @param ground
      * @return
      */
-    public static Double derive1D( Double x, ObjectProperties object, Ground ground )
+    public static Double derive1D( Double x, Double radius, ObjectProperties object, Ground ground )
     {
         // df(x) = ( f(x + 1/h ) - f(x - 1/h) ) * h/2
-        return (getFunctionsValue( x+h, object, ground) - getFunctionsValue( x-h, object, ground)) * 2d/h;
+        return (getFunctionsValue( x+h, radius, object, ground) - getFunctionsValue( x-h, radius, object, ground)) * 2d/h;
     }
     
     
-    public static Double getFunctionsValue( Double x, ObjectProperties object, Ground ground ) 
+    public static Double getFunctionsValue( Double x, Double radius, ObjectProperties object, Ground ground ) 
     {
         // m = slope, n = shift in y, linear function 
         m = object.velocity.getY()/object.velocity.getX();
@@ -106,8 +106,8 @@ public class Util
 
         // for calculating a pair of tangents right and left beside the main vector of the sphere
         double alpha = Math.atan( m );
-        double diff_x =  object.getRadius() * Math.sin( alpha );
-        double diff_y = -object.getRadius() * Math.cos( alpha );
+        double diff_x =  radius * Math.sin( alpha );
+        double diff_y = -radius * Math.cos( alpha );
         
         function.set(   0,           m * (x-object.getPosition().getX()-diff_x) + n + diff_y); 
         function.set(   1,  (double) ground.function( ground.ACTUAL_FUNCTION, x.intValue()) );
