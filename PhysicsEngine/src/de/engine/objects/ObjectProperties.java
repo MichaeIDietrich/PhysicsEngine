@@ -89,7 +89,7 @@ public abstract class ObjectProperties
 	protected ObjectProperties() 
 	{
 		this.id = idCounter++;
-		this.last_intersection = new Vector();
+		this.last_intersection = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
 	}
 
 	public int getId() {

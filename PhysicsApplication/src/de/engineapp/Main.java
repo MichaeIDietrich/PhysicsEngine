@@ -22,10 +22,6 @@ public class Main
                     config.setShowGrid(true);
                     break;
                     
-                case "-snaptogrid":
-                    config.setSnapToGrid(true);
-                    break;
-                    
                 case "-zoom":
                     if (++index < args.length)
                     {
@@ -46,12 +42,20 @@ public class Main
                     }
                     break;
                     
+                case "-lang":
+                    if (++index < args.length)
+                    {
+                        config.setLangCode(args[index]);
+                    }
+                    else
+                    {
+                        System.out.println("The Parameter next to '-lang' is missing");
+                    }
+                    break;
+                    
                 case "-info":
                     config.setShowInfo(true);
                     break;
-                    
-                default:
-                    System.out.println("Unknown Parameter: " + args[index]);
             }
         }
         
