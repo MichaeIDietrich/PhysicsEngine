@@ -1,32 +1,20 @@
 package de.engineapp.controls;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import de.engine.environment.Scene;
-import de.engine.math.Transformation;
-import de.engine.math.Vector;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engine.objects.ObjectProperties.Material;
@@ -49,8 +37,11 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     private JLabel ySpeedLabel;
     private JLabel massLabel;
     
-    private JLabel LabelPotE;
-    private JLabel LabelKinE;
+    private JLabel LabelPotE; //Schriftzug
+    private JLabel LabelKinE; //Schriftzug
+    
+    private JLabel potLabel;  //Werte
+    private JLabel kinLabel;  //Werte
     
     //Buttons erstellen
     private JButton del;
@@ -65,22 +56,15 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     private javax.swing.JComboBox<Material> MaterialCombo;
     
     //Spinner erstellen
-    private SpinnerNumberModel snmMasse;
-    private SpinnerNumberModel snmX;
-    private SpinnerNumberModel snmY;
-    private SpinnerNumberModel snmVx;
-    private SpinnerNumberModel snmVy;
-    
     private PropertySpinner massInput;
     private PropertySpinner xCord;    
     private PropertySpinner yCord;    
     private PropertySpinner vx;       
     private PropertySpinner vy;       
     
-    private JPanel lp;
     
     //Variablen
-    private String objectName;
+    private int avoidUpdate;
     
     public PropertiesPanel(PresentationModel model)
     {
@@ -132,9 +116,6 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             }
         );
         
-        String objectName   = new String(name.getText());
-        
-        
         this.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         
 
@@ -143,35 +124,15 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     }
 
     @Override
-    public void objectAdded(ObjectProperties object)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
+    public void objectAdded(ObjectProperties object) {}
+    @Override
+    public void objectRemoved(ObjectProperties object) {}
 
     @Override
-    public void objectRemoved(ObjectProperties object)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
+    public void groundAdded(Ground ground) {}
 
     @Override
-    public void groundAdded(Ground ground)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-
-    @Override
-    public void groundRemoved(Ground ground)
-    {
-        // TODO Auto-generated method stub
-        
-    }
+    public void groundRemoved(Ground ground) {}
 
 
     @Override
@@ -184,13 +145,11 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         vx           = new PropertySpinner(object.velocity.getX(),-1000,1000,10,this);
         vy           = new PropertySpinner(object.velocity.getY(),-1000,1000,10,this);
         
-        System.out.println("---MINUS");
         
-        double pot = object.potential_energy;
-        double kin = object.kinetic_energy;
+        potLabel = new JLabel(this.formatDoubleValue(object.potential_energy));
+        kinLabel = new JLabel(this.formatDoubleValue(object.kinetic_energy));
         
         MaterialCombo = new JComboBox<Material>(Material.values());
-//        MaterialCombo - mit Objektoberfläche initiieren??
 
         massInput.setValue(object.mass);
         xCord.setValue(object.getPosition().getX()); 
@@ -224,15 +183,14 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         
         this.add(fix, LEFT_ALIGNMENT);
         
-        this.addGroup(5,LabelPotE, new JLabel(String.valueOf(pot)));
-        this.addGroup(5,LabelKinE, new JLabel(String.valueOf(kin)));
+        this.addGroup(5,LabelPotE, potLabel);
+        this.addGroup(5,LabelKinE, kinLabel);
         
         this.add(close, RIGHT_ALIGNMENT);
         
 
         this.updateUI();
         this.setVisible(true);
-        System.out.println();
         
     }
 
@@ -256,36 +214,68 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                 break;
                 
             case "close":
-                this.setVisible(false);
-                this.removeAll();
+                
+                pModel.setSelectedObject(null);
+                pModel.fireRepaintEvents();
                 break;
         }
         
     }
 
+    //Werte der Controls auf die Eigenschaften des Objekts übertragen
     @Override
     public void stateChanged(ChangeEvent e)
     {
-        System.out.println("Grüner Adler, flieg!");
-        System.out.println(xCord.getValue().getClass());
-        pModel.getSelectedObject().world_position.translation.setX(xCord.getValue());
-        pModel.getSelectedObject().world_position.translation.setY(yCord.getValue());
-        pModel.getSelectedObject().velocity.setX(vx.getValue());
-        pModel.getSelectedObject().velocity.setY(vy.getValue());
-        pModel.getSelectedObject().mass = massInput.getValue();
-        
-        pModel.fireRepaintEvents();
-//        massInput.setValue(massInput.getValue());
-//        xCord.setValue(xCord.getValue());
-//        yCord.setValue(yCord.getValue());
-//        vx.setValue(vx.getValue());
-//        vy.setValue(vy.getValue());
-//        this.updateUI();
-    }
+        if(avoidUpdate != 1)
+        {
+            pModel.getSelectedObject().world_position.translation.setX(xCord.getValue());
+            pModel.getSelectedObject().world_position.translation.setY(yCord.getValue());
+            pModel.getSelectedObject().velocity.setX(vx.getValue());
+            pModel.getSelectedObject().velocity.setY(vy.getValue());
+            pModel.getSelectedObject().mass = massInput.getValue();
+            pModel.getSelectedObject().surface = (Material) MaterialCombo.getSelectedItem();
 
+            pModel.fireRepaintEvents();
+        }
+        
+    }
+    
+    //Werte der Controls zur Laufzeit der Szene anpassen
     @Override
     public void sceneUpdated(Scene scene)
     {
+        if(pModel.getSelectedObject() != null) //vermeidet ungewollten Aufruf des ChangeListeners
+        {
+            avoidUpdate = 1;
+            massInput.setValue(pModel.getSelectedObject().mass);
+            xCord.setValue(pModel.getSelectedObject().getPosition().getX()); 
+            yCord.setValue(pModel.getSelectedObject().getPosition().getY());
+            vx.setValue(pModel.getSelectedObject().velocity.getX());
+            vy.setValue(pModel.getSelectedObject().velocity.getY());
+    
+            name.setText(((ISelectable)pModel.getSelectedObject()).getName());
+            
+            potLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().potential_energy));
+            kinLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().kinetic_energy));
+            avoidUpdate = 0;
+        }
+        
     }
 
+    //Formatvorlage für die Labels Epot & Ekin
+    private String formatDoubleValue(double d)
+    {
+        String s;
+        if(Math.abs(d) > 1000)
+        {
+            s = " kJ";
+            d = d/1000;
+        }
+        else
+        {
+            s = " J";
+        }
+        s = String.format("%.2f", d) + s;
+        return s;
+    }
 }
