@@ -6,12 +6,12 @@ import de.engine.objects.ObjectProperties;
 
 public class Util 
 {
-    private Scene scene;
-    private static de.engine.math.Vector iterx = new de.engine.math.Vector();
-    private static de.engine.math.Vector     x = new de.engine.math.Vector();
-    private static de.engine.math.Matrix    jm = new de.engine.math.Matrix();
+    // needed for derive
+    private static final Double h = Math.pow( 10d, 12d );
+    private static Vector function = new Vector();
+    private static double m = 0;
+    private static double n = 0;
     
-
 	public static double distance(Vector p1, Vector p2) 
 	{
 		double x = p2.getX() - p1.getX();
@@ -51,36 +51,65 @@ public class Util
     
     public static Double newtonIteration( ObjectProperties object, Ground ground )
     {
-        double xn = object.getPosition().getX();
+        // If the object has no velocity in x direction, return the objects coordinate.
+        if (object.velocity.getX()==0) return object.getPosition().getX();
         
-        for(int i=0; i < 10; i++) 
+        Double xn = object.getPosition().getX();
+        
+        Double[] radius = new Double[3];
+        radius[0] = -object.getRadius();
+        radius[1] = 0d;
+        radius[2] = +object.getRadius();
+
+        Double distance = Double.MAX_VALUE;
+        Double old_distance;
+        
+        Double result = 0d;
+        
+        for(int n=0; n < 3; n++) 
         {
-            xn = xn - getFunctionsValue( xn, object, ground) / derive1D( xn, object, ground);
-        } 
-        return xn;
+            old_distance = distance;
+            
+            for(int i=0; i < 10; i++) 
+            {
+                xn = xn - getFunctionsValue( xn, object, ground) / derive1D( xn, object, ground);
+            }
+            
+            int y    = ground.function( ground.ACTUAL_FUNCTION, xn.intValue());
+            distance = Math.sqrt( Math.pow(xn-object.getPosition().getX(), 2d) + Math.pow(y-object.getPosition().getY(), 2d));
+            
+            // returns the intersection coordinate with the shortest distance between circle an ground
+            if (distance < old_distance) result = xn;
+        }
+        return result;
     }
     
-    
+    /**
+     * Calculates the 1st derivation of the function given in <i>getFunctionsValue</i>.
+     * @param x - determines the point of which the derivation is wanted
+     * @param object - 
+     * @param ground
+     * @return
+     */
     public static Double derive1D( Double x, ObjectProperties object, Ground ground )
     {
-        Double h = Math.pow(10d, 12d);
-
-        // Berechne df(x) = ( f(x + 1/h ) - f(x - 1/h) ) * h/2
-        Double storevalue = (getFunctionsValue( x+h, object, ground) - getFunctionsValue( x-h, object, ground)) * 2d/h;
-
-        return storevalue;
+        // df(x) = ( f(x + 1/h ) - f(x - 1/h) ) * h/2
+        return (getFunctionsValue( x+h, object, ground) - getFunctionsValue( x-h, object, ground)) * 2d/h;
     }
     
     
     public static Double getFunctionsValue( Double x, ObjectProperties object, Ground ground ) 
     {
-        Vector function = new Vector();
-        
-        // m = slope, n = shift (in y), linear function 
-        double m = object.velocity.getY()/object.velocity.getX();
-        double n = object.getPosition().getY();
+        // m = slope, n = shift in y, linear function 
+        m = object.velocity.getY()/object.velocity.getX();
+        n = object.getPosition().getY();
 
-        function.set(   0,           m * (x-object.getPosition().getX()) + n                ); 
+        // for calculating a pair of tangents right and left beside the main vector of the sphere
+        double alpha = Math.atan( m );
+        double diff_x =  object.getRadius() * Math.sin( alpha );
+        double diff_y = -object.getRadius() * Math.cos( alpha );
+        
+        function.set(   0,           m * (x-object.getPosition().getX()-diff_x) + n + diff_y); 
         function.set(   1,  (double) ground.function( ground.ACTUAL_FUNCTION, x.intValue()) );
         
         return function.get(1) - function.get(0);            
