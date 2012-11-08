@@ -53,7 +53,7 @@ public class Util
     {
         double xn = object.getPosition().getX();
         
-        for(int i=0; i < 3; i++) 
+        for(int i=0; i < 10; i++) 
         {
             xn = xn - getFunctionsValue( xn, object, ground) / derive1D( xn, object, ground);
         } 
