@@ -21,6 +21,7 @@ public class Configuration implements Serializable, Cloneable
     private boolean showInfo = false;
     private boolean maximized = false;
     private boolean dblClickShowProperties = false;
+    private String lookAndFeel = null;
     
     
     public static Configuration getInstance()
@@ -134,6 +135,17 @@ public class Configuration implements Serializable, Cloneable
     public void setDblClickShowProperties(boolean dblClickShowProperties)
     {
         this.dblClickShowProperties = dblClickShowProperties;
+    }
+    
+    
+    public String getLookAndFeel()
+    {
+        return lookAndFeel;
+    }
+    
+    public void setLookAndFeel(String lookAndFeel)
+    {
+        this.lookAndFeel = lookAndFeel;
     }
     
     

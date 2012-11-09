@@ -22,6 +22,7 @@
   <String id="SHOWPROPERTIES">Show object properties:</String>
   <String id="OBJECT_SELECTED">On selection</String>
   <String id="DBLCLICK_OBJECT">On doubleclick</String>
+  <String id="LOOKANDFEEL">Look and Feel (restart):</String>
   <String id="ALUMINIUM">Aluminium</String>
   <String id="RUBBER">Rubber</String>
   <String id="STEEL">Steel</String>
