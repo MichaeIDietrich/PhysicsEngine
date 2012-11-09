@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-public class Configuration implements Serializable
+public class Configuration implements Serializable, Cloneable
 {
     private static final long serialVersionUID = -5115836553640371734L;
     
@@ -17,8 +17,9 @@ public class Configuration implements Serializable
     
     private double zoom = 1.0;
     private boolean showGrid = false;
-    private boolean snapToGrid = false; // not yet implemented
+    private String langCode = null;
     private boolean showInfo = false;
+    private boolean maximized = false;
     
     
     public static Configuration getInstance()
@@ -53,17 +54,6 @@ public class Configuration implements Serializable
     public void setShowGrid(boolean showGrid)
     {
         this.showGrid = showGrid;
-    }
-    
-    
-    public boolean isSnapToGrid()
-    {
-        return snapToGrid;
-    }
-    
-    public void setSnapToGrid(boolean snapToGrid)
-    {
-        this.snapToGrid = snapToGrid;
     }
     
     
@@ -110,5 +100,48 @@ public class Configuration implements Serializable
         {
             ex.printStackTrace();
         }
+    }
+    
+    
+    public String getLangCode()
+    {
+        return langCode;
+    }
+    
+    public void setLangCode(String langCode)
+    {
+        this.langCode = langCode;
+    }
+    
+    
+    public boolean isMaximized()
+    {
+        return maximized;
+    }
+    
+    public void setMaximized(boolean maximized)
+    {
+        this.maximized = maximized;
+    }
+    
+    
+    @Override
+    public Configuration clone()
+    {
+        try
+        {
+            return (Configuration) super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    
+    public static void overrideInstance(Configuration newInstance)
+    {
+        instance = newInstance;
     }
 }

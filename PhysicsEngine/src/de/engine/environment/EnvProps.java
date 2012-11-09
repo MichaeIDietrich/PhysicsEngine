@@ -34,7 +34,6 @@ public class EnvProps
     private EnvProps()
     {
         deltaTime = 0.5;
-        gravitational_acceleration = -9.80665;
     }
     
     public static EnvProps getInstance()

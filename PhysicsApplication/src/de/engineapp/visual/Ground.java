@@ -77,7 +77,7 @@ public class Ground extends de.engine.objects.Ground implements IDrawable
         {
             int x = i - (int) ((pModel.getViewOffsetX() + halfWidth) / pModel.getZoom());
             
-            polygon.lineTo(x, this.function( this.HILLANDVALLEY, x));
+            polygon.lineTo(x, this.function( this.DOWNHILL, x));
         }
         
         polygon.lineTo((-pModel.getViewOffsetX() + halfWidth) / pModel.getZoom(), (pModel.getViewOffsetY() - halfHeight) / pModel.getZoom());

@@ -92,6 +92,13 @@ public class PresentationModel
         
         stateMap = new HashMap<>();
         propertyMap = new HashMap<>();
+        
+        Configuration config = Configuration.getInstance();
+        
+        stateMap.put("grid", config.isShowGrid());
+        stateMap.put("maximized", config.isMaximized());
+        propertyMap.put("langCode", config.getLangCode());
+        setZoom(config.getZoom());
     }
     
     public void addViewBoxListener(ViewBoxListener listener)
@@ -242,6 +249,7 @@ public class PresentationModel
     public void setZoom(double zoom)
     {
         this.zoom = zoom;
+        Configuration.getInstance().setZoom(zoom);
         
         for (ViewBoxListener listener : viewBoxListeners)
         {
@@ -251,6 +259,7 @@ public class PresentationModel
     
     public void setZoom(double zoom, Point point)
     {
+        Configuration.getInstance().setZoom(zoom);
         
         Vector center = toTransformedVector(point);
         this.zoom = zoom;
@@ -494,6 +503,15 @@ public class PresentationModel
     
     public void setState(String id, boolean value)
     {
+        if (id.equals("grid"))
+        {
+            Configuration.getInstance().setShowGrid(value);
+        }
+        else if (id.equals("maximized"))
+        {
+            Configuration.getInstance().setMaximized(value);
+        }
+        
         stateMap.put(id, value);
         
         fireStateListeners(id);
@@ -501,9 +519,7 @@ public class PresentationModel
     
     public void toggleState(String id)
     {
-        stateMap.put(id, !isState(id));
-        
-        fireStateListeners(id);
+        setState(id, !isState(id));
     }
     
     
@@ -514,6 +530,11 @@ public class PresentationModel
     
     public void setProperty(String id, String value)
     {
+        if (id.equals("langCode"))
+        {
+            Configuration.getInstance().setLangCode(value);
+        }
+        
         propertyMap.put(id, value);
         
         firePropertyListeners(id);
