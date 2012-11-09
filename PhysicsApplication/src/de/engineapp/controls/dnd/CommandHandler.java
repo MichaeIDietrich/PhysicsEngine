@@ -13,35 +13,44 @@ public class CommandHandler extends TransferHandler implements Transferable
     private static final long serialVersionUID = -4596146228196882904L;
     
     
-    private static final DataFlavor flavors[] = { DataFlavor.stringFlavor };
+    private static final DataFlavor flavors[] = { DataFlavor.stringFlavor, new DataFlavor(JComponent.class, "comp")};
     
     private String command;
+    private JComponent component;
     
-    public CommandHandler(String command)
+    public CommandHandler(JComponent source, String command)
     {
         this.command = command;
+        this.component = source;
+        source.setTransferHandler(this);
     }
     
-    public CommandHandler(String command, Image dragImage)
+    public CommandHandler(JComponent source, String command, Image dragImage)
     {
         this.command = command;
+        this.component = source;
         
         if (dragImage != null)
         {
             this.setDragImage(dragImage);
             this.setDragImageOffset(new Point(dragImage.getWidth(null) / 2, dragImage.getHeight(null) / 2));
         }
+        
+        source.setTransferHandler(this);
     }
     
-    public CommandHandler(String command, Image dragImage, Point dragImageOffset)
+    public CommandHandler(JComponent source, String command, Image dragImage, Point dragImageOffset)
     {
         this.command = command;
+        this.component = source;
         
         if (dragImage != null)
         {
             this.setDragImage(dragImage);
             this.setDragImageOffset(dragImageOffset);
         }
+        
+        source.setTransferHandler(this);
     }
     
     public int getSourceActions(JComponent c)
@@ -75,9 +84,13 @@ public class CommandHandler extends TransferHandler implements Transferable
     @Override
     public Object getTransferData(DataFlavor flavor)
     {
-        if (isDataFlavorSupported(flavor))
+        if (flavors[0].equals(flavor))
         {
             return command;
+        }
+        else if (flavors[1].equals(flavor))
+        {
+            return component;
         }
         return null;
     }
@@ -91,6 +104,18 @@ public class CommandHandler extends TransferHandler implements Transferable
     @Override
     public boolean isDataFlavorSupported(DataFlavor flavor)
     {
-        return flavors[0].equals(flavor);
+        for (DataFlavor flavor_ : flavors)
+        {
+            if (flavor_.equals(flavor))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public JComponent getComponent()
+    {
+        return component;
     }
 }

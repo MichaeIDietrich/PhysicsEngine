@@ -9,6 +9,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 import javax.swing.JComponent;
 
@@ -75,7 +76,7 @@ public class DragAndDropController extends DropTarget
             
             try
             {
-                if (flavors != null && flavors.length == 1 && tr.getTransferData(flavors[0]) instanceof String)
+                if (flavors != null && flavors.length > 0 && tr.getTransferData(flavors[0]) instanceof String)
                 {
                     String command = (String) tr.getTransferData(flavors[0]);
                     
@@ -86,8 +87,11 @@ public class DragAndDropController extends DropTarget
                         e.getDropTargetContext().getComponent().requestFocusInWindow();
                         
                         dropCallback.drop(command, new Point(e.getLocation().x, e.getLocation().y));
+                        
+                        fireMouseExitedToSource(e);
                         e.acceptDrop(e.getSourceActions());
                         
+                        e.dropComplete(true);
                         return;
                     }
                     else
@@ -105,6 +109,46 @@ public class DragAndDropController extends DropTarget
             
         }
         System.err.println("Drop rejected. Foreign component.");
+        fireMouseExitedToSource(e);
         e.rejectDrop();
+        e.dropComplete(false);
+    }
+    
+    // this is needed, because the swing gui does not recognize mouseExited sometimes
+    private void fireMouseExitedToSource(DropTargetDropEvent e)
+    {
+        try
+        {
+            Transferable transferableProxy = e.getTransferable();
+            Class<?> proxyClass = transferableProxy.getClass();
+            
+            Field dropTargetContextPeerField = proxyClass.getDeclaredField("transferable");
+            dropTargetContextPeerField.setAccessible(true);
+            Object dropTargetContextPeer = dropTargetContextPeerField.get(transferableProxy);
+            Class<?> dropTargetContextPeerClass = dropTargetContextPeer.getClass();
+            Class<?> sunDropTargetContextPeerClass = dropTargetContextPeerClass.getSuperclass();
+            
+            Field transferableField = sunDropTargetContextPeerClass.getDeclaredField("local");
+            transferableField.setAccessible(true);
+            Object transferable = transferableField.get(dropTargetContextPeer);
+            
+            if (transferable instanceof CommandHandler)
+            {
+                CommandHandler handler = (CommandHandler) transferable;
+                JComponent component = handler.getComponent();
+                
+                int absX = MouseInfo.getPointerInfo().getLocation().x;
+                int absY = MouseInfo.getPointerInfo().getLocation().y;
+                int x = absX - component.getLocationOnScreen().x;
+                int y = absY - component.getLocationOnScreen().y;
+                
+                component.dispatchEvent(new MouseEvent(component, MouseEvent.MOUSE_EXITED, System.currentTimeMillis(), 
+                        MouseEvent.BUTTON1_DOWN_MASK, x, y, absX, absY, 1, false, MouseEvent.BUTTON1));
+            }
+        }
+        catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex)
+        {
+            ex.printStackTrace();
+        }
     }
 }

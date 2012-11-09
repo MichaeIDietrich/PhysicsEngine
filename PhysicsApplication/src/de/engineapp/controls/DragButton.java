@@ -3,12 +3,13 @@ package de.engineapp.controls;
 import java.awt.*;
 import java.awt.dnd.*;
 import java.awt.event.*;
+import java.io.Serializable;
 
 import javax.swing.*;
 
 import de.engineapp.controls.dnd.CommandHandler;
 
-public class DragButton extends JToggleButton implements MouseMotionListener, DropTargetListener
+public class DragButton extends JToggleButton implements MouseMotionListener, DropTargetListener, Serializable
 {
     private static final long serialVersionUID = 6946598301964868381L;
     
@@ -44,11 +45,11 @@ public class DragButton extends JToggleButton implements MouseMotionListener, Dr
         
         if (dragImage == null)
         {
-            this.setTransferHandler(new CommandHandler(command));
+            new CommandHandler(this, command);
         }
         else
         {
-            this.setTransferHandler(new CommandHandler(command, dragImage, dragImageOffset));
+            new CommandHandler(this, command, dragImage, dragImageOffset);
         }
     }
     
