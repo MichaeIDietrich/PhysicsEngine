@@ -160,4 +160,11 @@ public class Polygon extends ObjectProperties{
         return aabb;
     }
 
+    @Override
+    public void setMass(double mass)
+    {
+        moment_of_inertia *= (mass / this.mass);
+        this.mass = mass;
+    }
+
 }
