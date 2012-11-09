@@ -15,6 +15,7 @@ public class Square extends Polygon {
 		this.radius = Util.distanceToOrigin(corner);
 		
 		this.velocity = new Vector();
+		this.moment_of_inertia = this.getMass() * (Math.pow((corner.getX() * 2), 2) + Math.pow((corner.getY() * 2), 2)) / 12;
 	}
 
 	@Override

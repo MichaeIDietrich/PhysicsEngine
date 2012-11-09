@@ -55,6 +55,7 @@ public class Grid
     public void reset()
     {
         objectFields = new HashMap<>();
+        coll_times = new java.util.Vector<>();
     }
     
     private void scan(Vector[] aabb, Element element)

@@ -9,7 +9,6 @@ import java.util.Iterator;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
@@ -60,7 +59,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     //ComboBox und CheckBox erstellen
     private JCheckBox fix;
     
-    private javax.swing.JComboBox<Material> MaterialCombo;
+    private IconComboBox<Material> MaterialCombo;
     
     //Spinner erstellen
     private PropertySpinner massInput;
@@ -145,8 +144,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     @Override
     public void objectSelected(ObjectProperties object)
     {
-        System.out.println("Objekt ausgewählt" + " " + this);
-        massInput    = new PropertySpinner(object.mass,1,1000,1,this);
+        //Instanzieren
+        massInput    = new PropertySpinner(object.getMass(),1,1000,1,this);
         xCord        = new PropertySpinner(object.getPosition().getX(),-100000.0,100000,10,this);
         yCord        = new PropertySpinner(object.getPosition().getY(),-100000,100000,10,this);
         vx           = new PropertySpinner(object.velocity.getX(),-1000,1000,10,this);
@@ -155,12 +154,14 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         potLabel     = new JLabel(this.formatDoubleValue(object.potential_energy));
         kinLabel     = new JLabel(this.formatDoubleValue(object.kinetic_energy));
         
-        MaterialCombo = new JComboBox<Material>(Material.values());
+        MaterialCombo = new IconComboBox<Material>(Material.values(), "materials");
 
         next         = new EasyButton(Util.getIcon("next"),"next",this);
         previous     = new EasyButton(Util.getIcon("previous"),"previous",this);
         
-        massInput.setValue(object.mass);
+        massInput.setValue(object.getMass());
+        //Konfigurieren
+        massInput.setValue(object.getMass());
         xCord.setValue(object.getPosition().getX()); 
         yCord.setValue(object.getPosition().getY());
         vx.setValue(object.velocity.getX());
@@ -169,6 +170,12 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         name.setText(((ISelectable)object).getName());
 
 
+        
+        MaterialCombo.setSelectedItem(pModel.getSelectedObject().surface);
+        MaterialCombo.addActionListener(this);
+        
+        fix.addActionListener(this);
+        
         //Hinzufügen
 
         this.addGap(10);
@@ -200,18 +207,16 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         this.addGroup(5,LabelKinE, kinLabel);
         this.addGap(25);
         this.add(close, LEFT_ALIGNMENT);
-        
 
         this.updateUI();
         this.setVisible(true);
-        
+
     }
 
 
     @Override
     public void objectDeselected(ObjectProperties object)
     {
-        System.out.println("Objekt abgewählt");
         this.setVisible(false);
         this.removeAll();
     }
@@ -262,8 +267,19 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                     }
                 }
                 pModel.fireRepaintEvents();
-
+                break;
         }
+
+        if(e.getSource() == MaterialCombo)
+        {
+            pModel.getSelectedObject().surface = (Material) MaterialCombo.getSelectedItem();
+        }
+        if(e.getSource() == fix)
+        {
+            pModel.getSelectedObject().isPinned = fix.isSelected();
+            System.out.println(pModel.getSelectedObject().isPinned);
+        }
+        
         
     }
 
@@ -277,8 +293,9 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             pModel.getSelectedObject().world_position.translation.setY(yCord.getValue());
             pModel.getSelectedObject().velocity.setX(vx.getValue());
             pModel.getSelectedObject().velocity.setY(vy.getValue());
-            pModel.getSelectedObject().mass = massInput.getValue();
+            pModel.getSelectedObject().setMass(massInput.getValue());
             pModel.getSelectedObject().surface = (Material) MaterialCombo.getSelectedItem();
+            pModel.getSelectedObject().isPinned = fix.isSelected();
 
             pModel.fireRepaintEvents();
         }
@@ -292,7 +309,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         if(pModel.getSelectedObject() != null) //vermeidet ungewollten Aufruf des ChangeListeners
         {
             avoidUpdate = 1;
-            massInput.setValue(pModel.getSelectedObject().mass);
+            massInput.setValue(pModel.getSelectedObject().getMass());
             xCord.setValue(pModel.getSelectedObject().getPosition().getX()); 
             yCord.setValue(pModel.getSelectedObject().getPosition().getY());
             vx.setValue(pModel.getSelectedObject().velocity.getX());
