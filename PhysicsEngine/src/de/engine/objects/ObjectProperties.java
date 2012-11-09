@@ -9,7 +9,7 @@ public abstract class ObjectProperties
 {
     public enum Material
     {
-        STEEL(1), ALUMINIUM(1), NACL(1), RUBBER(1);
+        STEEL(1), ALUMINIUM(1), NACL(1), RUBBER(1), Water(1);
         
         private final double elasticity;
         
@@ -25,6 +25,8 @@ public abstract class ObjectProperties
     };
     
     private boolean updated;
+    
+    public boolean isPinned = false;
     
     // will get incremented every time it's used, to apply unique id's to each
     // of the new objects

@@ -55,6 +55,7 @@ public final class Localizer
         File langFile = new File("data/i18n/" + langCode + ".xml");
         if (langFile.exists())
         {
+            //System.out.println("loaded '" + langCode + "'");
             return langFile;
         }
         else
@@ -88,6 +89,7 @@ public final class Localizer
                 
                 stringTable.put(id, entry.getValue());
             }
+            System.out.println("loaded: " + file.getName());
         }
     }
     
@@ -127,17 +129,11 @@ public final class Localizer
         return currentLanguageCode;
     }
     
-    public String getName(String languageCode)
+    
+    public void setCurrentLanguage(String langCode)
     {
-        File file = getLanguage(languageCode);
-        if (languageCode.equals(currentLanguageCode))
-        {
-            System.out.println(new XMLReader(file).getString("Localization/@name"));
-            return new XMLReader(file).getString("Localization/@name");
-        }
-        else
-        {
-            return new XMLReader(file).getString("Localization/@englishName");
-        }
+        currentLanguageCode = langCode;
+        File file = getLanguage(currentLanguageCode);
+        loadLanguageFile(file);
     }
 }
