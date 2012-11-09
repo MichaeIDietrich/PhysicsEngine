@@ -13,10 +13,12 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
     private static final long serialVersionUID = 7034070996690341136L;
     private final static Localizer LOCALIZER = Localizer.getInstance();
     
+//    private Font fontCombo;
     
     private JPanel rootPane;
     private IconComboBox<String> cboLang;
     private JComboBox<String> cboShowProperties;
+    private JComboBox<String> cboLookAndFeels;
     
     private boolean successful = false;
     
@@ -32,6 +34,8 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
     private SettingsDialog(Window parent)
     {
         super(parent, LOCALIZER.getString("SETTINGS"));
+        
+//        fontCombo = this.getFont().deriveFont(12f);
         
         config = Configuration.getInstance().clone();
         
@@ -65,13 +69,14 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         
         container.add(cboLang, Component.RIGHT_ALIGNMENT);
         
+        
         container.addGap(15);
         container.add(new JLabel(LOCALIZER.getString("SHOWPROPERTIES")));
         container.addGap(3);
         
-        
         cboShowProperties = new JComboBox<String>(new String[] { LOCALIZER.getString("OBJECT_SELECTED"),
                                                                  LOCALIZER.getString("DBLCLICK_OBJECT") });
+//        cboShowProperties.setFont(fontCombo);
         cboShowProperties.setFocusable(false);
         cboShowProperties.setSelectedIndex(config.isDblClickShowProperties() ? 1 : 0);
         cboShowProperties.setPreferredSize(new Dimension(120, cboShowProperties.getPreferredSize().height));
@@ -79,6 +84,30 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         
         container.add(cboShowProperties, Component.RIGHT_ALIGNMENT);
         
+        
+        container.addGap(15);
+        container.add(new JLabel(LOCALIZER.getString("LOOKANDFEEL")));
+        container.addGap(3);
+        
+        String[] lookAndFeels = new String[UIManager.getInstalledLookAndFeels().length];
+        for (int i = 0; i < lookAndFeels.length; i++)
+        {
+            lookAndFeels[i] = UIManager.getInstalledLookAndFeels()[i].getName();
+        }
+        
+        
+        cboLookAndFeels = new JComboBox<String>(lookAndFeels);
+//        cboLookAndFeels.setFont(fontCombo);
+        cboLookAndFeels.setFocusable(false);
+        cboLookAndFeels.setSelectedItem(UIManager.getLookAndFeel().getName());
+        cboLookAndFeels.setPreferredSize(new Dimension(120, cboShowProperties.getPreferredSize().height));
+        cboLookAndFeels.addItemListener(this);
+        
+        container.add(cboLookAndFeels, Component.RIGHT_ALIGNMENT);
+        
+        
+        container.addGap(20);
+        container.addSeparator();
         
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         
@@ -123,6 +152,10 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
             else if (e.getSource().equals(cboShowProperties))
             {
                 config.setDblClickShowProperties(cboShowProperties.getSelectedIndex() == 1);
+            }
+            else if (e.getSource().equals(cboLookAndFeels))
+            {
+                config.setLookAndFeel(cboLookAndFeels.getSelectedItem().toString());
             }
         }
     }

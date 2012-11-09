@@ -8,16 +8,17 @@ import java.text.DecimalFormat;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import de.engineapp.Configuration;
 
 public class ZoomSlider extends JPanel
 {
     private static final long serialVersionUID = -8005150860316824860L;
     
-    private static boolean isGTK = UIManager.getSystemLookAndFeelClassName().equals(
-            "com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+    private static boolean isGTK = Configuration.getInstance().getLookAndFeel().equals("GTK+");
+    private static boolean isNimbus = Configuration.getInstance().getLookAndFeel().equals("Nimbus");
     
     
     private JSlider slider = null;
@@ -51,15 +52,30 @@ public class ZoomSlider extends JPanel
                 // do not show ticks on GTK-LAF
                 if (!isGTK)
                 {
-                    g.setColor(Color.BLACK);
-                    // 0.1
-                    g.drawLine(7, 20, 7, 24);
-                    // 1.0
-                    g.drawLine(69, 20, 69, 24);
-                    // 2.0
-                    g.drawLine(138, 20, 138, 24);
-                    // 10.0
-                    g.drawLine(192, 20, 192, 24);
+                    if (isNimbus)
+                    {
+                        g.setColor(Color.BLACK);
+                        // 0.1
+                        g.drawLine(8, 20, 8, 26);
+                        // 1.0
+                        g.drawLine(69, 20, 69, 26);
+                        // 2.0
+                        g.drawLine(137, 20, 137, 26);
+                        // 10.0
+                        g.drawLine(192, 20, 192, 26);
+                    }
+                    else
+                    {
+                        g.setColor(Color.BLACK);
+                        // 0.1
+                        g.drawLine(7, 20, 7, 24);
+                        // 1.0
+                        g.drawLine(69, 20, 69, 24);
+                        // 2.0
+                        g.drawLine(138, 20, 138, 24);
+                        // 10.0
+                        g.drawLine(192, 20, 192, 24);
+                    }
                 }
             }
         };
