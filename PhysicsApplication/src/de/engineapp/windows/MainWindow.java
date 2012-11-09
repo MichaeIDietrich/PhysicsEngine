@@ -118,7 +118,31 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
     {
         try
         {
+            if (Configuration.getInstance().getLookAndFeel() != null)
+            {
+                for (int i = 0; i < UIManager.getInstalledLookAndFeels().length; i++)
+                {
+                    if (Configuration.getInstance().getLookAndFeel().equals(
+                            UIManager.getInstalledLookAndFeels()[i].getName()))
+                    {
+                        UIManager.setLookAndFeel(UIManager.getInstalledLookAndFeels()[i].getClassName());
+                        return;
+                    }
+                }
+            }
+            
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            
+            for (int i = 0; i < UIManager.getInstalledLookAndFeels().length; i++)
+            {
+                if (UIManager.getSystemLookAndFeelClassName().equals(
+                        UIManager.getInstalledLookAndFeels()[i].getClassName()))
+                {
+                    Configuration.getInstance().setLookAndFeel(
+                            UIManager.getInstalledLookAndFeels()[i].getName());
+                    return;
+                }
+            }
         }
         catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e)
         {
