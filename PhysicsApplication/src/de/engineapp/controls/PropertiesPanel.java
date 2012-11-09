@@ -20,7 +20,7 @@ import de.engine.environment.Scene;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engine.objects.ObjectProperties.Material;
-import de.engineapp.PresentationModel;
+import de.engineapp.*;
 import de.engineapp.PresentationModel.SceneListener;
 import de.engineapp.Util;
 import de.engineapp.visual.ISelectable;
@@ -28,6 +28,8 @@ import de.engineapp.visual.ISelectable;
 public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, ActionListener, ChangeListener
 {
     private static final long serialVersionUID = 8656904964293251249L;
+    
+    private final static Localizer LOCALIZER = Localizer.getInstance();
     
     private PresentationModel pModel;
     
@@ -49,8 +51,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     //Buttons erstellen
     private JButton del;
     private JButton close;
-    private ToolBarButton next;
-    private ToolBarButton previous;
+    private EasyButton next;
+    private EasyButton previous;
     
     //Namensfeld erstellen
     private JTextField name;
@@ -62,10 +64,10 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     
     //Spinner erstellen
     private PropertySpinner massInput;
-    private PropertySpinner xCord;    
-    private PropertySpinner yCord;    
-    private PropertySpinner vx;       
-    private PropertySpinner vy;       
+    private PropertySpinner xCord;
+    private PropertySpinner yCord;
+    private PropertySpinner vx;
+    private PropertySpinner vy;
     
     
     //Variablen
@@ -76,26 +78,26 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         pModel = model;
         
         //Labels
-        nameLabel         = new JLabel("Name des Objektes");
-        materialLabel     = new JLabel("Objektmaterial");
-        xCordinateLabel   = new JLabel("x-Koordinate");
-        yCordinateLabel   = new JLabel("y-Koordinate");
-        xSpeedLabel       = new JLabel("vx in m/s");
-        ySpeedLabel       = new JLabel("vy in m/s");
-        massLabel        = new JLabel("Masse in kg");
+        nameLabel       = new JLabel(LOCALIZER.getString("NAME_OF_OBJECT"));
+        materialLabel   = new JLabel(LOCALIZER.getString("MATERIAL"));
+        xCordinateLabel = new JLabel(LOCALIZER.getString("X_COORDINATE"));
+        yCordinateLabel = new JLabel(LOCALIZER.getString("Y_COORDINATE"));
+        xSpeedLabel     = new JLabel(LOCALIZER.getString("X_VELOCITY"));
+        ySpeedLabel     = new JLabel(LOCALIZER.getString("Y_VELOCITY"));
+        massLabel       = new JLabel(LOCALIZER.getString("MASS"));
         
-        LabelPotE         = new JLabel("Potentielle Energie: ");
-        LabelKinE         = new JLabel("kinetische Energie: ");
+        LabelPotE       = new JLabel(LOCALIZER.getString("POT_ENERGY"));
+        LabelKinE       = new JLabel(LOCALIZER.getString("KIN_ENERGY"));
 
         //Buttons
-        del          = new JButton("Entfernen");
-        close        = new JButton("Schließen");
+        del          = new JButton(LOCALIZER.getString("REMOVE"));
+        close        = new JButton(LOCALIZER.getString("CLOSE"));
         
         //Namensfeld
         name         = new JTextField();
         
         //Combobox + CheckBox
-        fix          = new JCheckBox("fixiert");
+        fix          = new JCheckBox(LOCALIZER.getString("PINNED"));
 
 
          //+++++++++++++++++++++++++++++++++++++++++++++++++//
@@ -155,8 +157,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         
         MaterialCombo = new JComboBox<Material>(Material.values());
 
-        next         = new ToolBarButton(Util.getIcon("next"),"next",this);
-        previous     = new ToolBarButton(Util.getIcon("previous"),"previous",this);
+        next         = new EasyButton(Util.getIcon("next"),"next",this);
+        previous     = new EasyButton(Util.getIcon("previous"),"previous",this);
         
         massInput.setValue(object.mass);
         xCord.setValue(object.getPosition().getX()); 
