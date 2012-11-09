@@ -9,7 +9,6 @@ import java.util.Iterator;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
@@ -60,7 +59,6 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     //ComboBox und CheckBox erstellen
     private JCheckBox fix;
     
-    private javax.swing.JComboBox<Material> MaterialCombo;
     private IconComboBox<Material> MaterialCombo;
     
     //Spinner erstellen
@@ -161,9 +159,9 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         next         = new EasyButton(Util.getIcon("next"),"next",this);
         previous     = new EasyButton(Util.getIcon("previous"),"previous",this);
         
-        massInput.setValue(object.mass);
+        massInput.setValue(object.getMass());
         //Konfigurieren
-        massInput.setValue(object.mass);
+        massInput.setValue(object.getMass());
         xCord.setValue(object.getPosition().getX()); 
         yCord.setValue(object.getPosition().getY());
         vx.setValue(object.velocity.getX());
@@ -295,10 +293,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             pModel.getSelectedObject().world_position.translation.setY(yCord.getValue());
             pModel.getSelectedObject().velocity.setX(vx.getValue());
             pModel.getSelectedObject().velocity.setY(vy.getValue());
-            pModel.getSelectedObject().mass = massInput.getValue();
+            pModel.getSelectedObject().setMass(massInput.getValue());
             pModel.getSelectedObject().surface = (Material) MaterialCombo.getSelectedItem();
-            pModel.getSelectedObject().mass     = massInput.getValue();
-            pModel.getSelectedObject().surface  = (Material) MaterialCombo.getSelectedItem();
             pModel.getSelectedObject().isPinned = fix.isSelected();
 
             pModel.fireRepaintEvents();
