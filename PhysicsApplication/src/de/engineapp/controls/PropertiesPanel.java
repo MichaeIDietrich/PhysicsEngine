@@ -369,7 +369,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             {
                 this.setVisible(false);
                 this.removeAll();
-                objectSelected(pModel.getSelectedObject());
+                showPanel(pModel.getSelectedObject());
             }
         }
     }
