@@ -60,6 +60,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     //ComboBox und CheckBox erstellen
     private JCheckBox fix;
     
+    private javax.swing.JComboBox<Material> MaterialCombo;
     private IconComboBox<Material> MaterialCombo;
     
     //Spinner erstellen
@@ -146,7 +147,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     public void objectSelected(ObjectProperties object)
     {
         //Instanzieren
-        massInput    = new PropertySpinner(object.mass,1,1000,1,this);
+        massInput    = new PropertySpinner(object.getMass(),1,1000,1,this);
         xCord        = new PropertySpinner(object.getPosition().getX(),-100000.0,100000,10,this);
         yCord        = new PropertySpinner(object.getPosition().getY(),-100000,100000,10,this);
         vx           = new PropertySpinner(object.velocity.getX(),-1000,1000,10,this);
@@ -160,6 +161,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         next         = new EasyButton(Util.getIcon("next"),"next",this);
         previous     = new EasyButton(Util.getIcon("previous"),"previous",this);
         
+        massInput.setValue(object.mass);
         //Konfigurieren
         massInput.setValue(object.mass);
         xCord.setValue(object.getPosition().getX()); 
@@ -168,6 +170,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         vy.setValue(object.velocity.getY());
 
         name.setText(((ISelectable)object).getName());
+
+
         
         MaterialCombo.setSelectedItem(pModel.getSelectedObject().surface);
         MaterialCombo.addActionListener(this);
@@ -175,6 +179,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         fix.addActionListener(this);
         
         //Hinzufügen
+
         this.addGap(10);
         this.add(nameLabel, CENTER_ALIGNMENT);
         this.addGap(5);
@@ -290,6 +295,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             pModel.getSelectedObject().world_position.translation.setY(yCord.getValue());
             pModel.getSelectedObject().velocity.setX(vx.getValue());
             pModel.getSelectedObject().velocity.setY(vy.getValue());
+            pModel.getSelectedObject().mass = massInput.getValue();
+            pModel.getSelectedObject().surface = (Material) MaterialCombo.getSelectedItem();
             pModel.getSelectedObject().mass     = massInput.getValue();
             pModel.getSelectedObject().surface  = (Material) MaterialCombo.getSelectedItem();
             pModel.getSelectedObject().isPinned = fix.isSelected();
@@ -306,7 +313,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         if(pModel.getSelectedObject() != null) //vermeidet ungewollten Aufruf des ChangeListeners
         {
             avoidUpdate = 1;
-            massInput.setValue(pModel.getSelectedObject().mass);
+            massInput.setValue(pModel.getSelectedObject().getMass());
             xCord.setValue(pModel.getSelectedObject().getPosition().getX()); 
             yCord.setValue(pModel.getSelectedObject().getPosition().getY());
             vx.setValue(pModel.getSelectedObject().velocity.getX());
