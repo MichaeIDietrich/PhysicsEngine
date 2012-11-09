@@ -91,7 +91,7 @@ public final class IconComboBox<T> extends JComboBox<T>
         
         for (T entry : data)
         {
-            entries.add(LOCALIZER.getName(entry.toString()));
+            entries.add(LOCALIZER.getString(entry.toString()));
             icons.add(Util.getIcon(iconFolder + "/" + entry));
         }
         

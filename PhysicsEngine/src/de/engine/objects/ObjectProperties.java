@@ -9,11 +9,12 @@ public abstract class ObjectProperties
 {
     public enum Material 
     {
-		STEEL, ALUMINIUM, NACL, RUBBER
+		STEEL, ALUMINIUM, NACL, RUBBER, WATER
 	};
 
 	private boolean updated;
 	
+	public boolean isPinned = false;
 	// will get incremented every time it's used, to apply unique id's to each
 	// of the new objects
 	public static int idCounter = 0;
