@@ -1,7 +1,11 @@
 package de.engine.math;
 
+import de.engine.colldetect.Helper;
+import de.engine.objects.Circle;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
+import de.engine.objects.Polygon;
+import de.engine.objects.Square;
 
 public class Util 
 {
@@ -113,5 +117,62 @@ public class Util
         function.set(   1,  (double) ground.function( ground.ACTUAL_FUNCTION, x.intValue()) );
         
         return function.get(1) - function.get(0);            
+    }
+    
+    public static Vector[] getAxis(Circle c, Polygon p, double time) {
+        Vector[] axis;
+        int firstaxis = 0;
+        if(p instanceof Square) {
+            axis = new Vector[2 + p.points.length];
+            axis[0] = Util.minus(p.getWorldPointPos(0, time), p.getWorldPointPos(1, time)).getNormalVector().getUnitVector();
+            axis[1] = Util.minus(p.getWorldPointPos(1, time), p.getWorldPointPos(2, time)).getNormalVector().getUnitVector();
+            firstaxis = 2;
+        } else {
+            axis = new Vector[p.points.length * 2];
+            for (int i = 0; i < p.points.length; i++)
+            {
+                int j = (i == p.points.length - 1) ? 0 : i + 1;
+                axis[i] = Util.minus(p.getWorldPointPos(i, time), p.getWorldPointPos(j, time)).getNormalVector().getUnitVector();
+                firstaxis = i + 1;
+            }
+        }
+        for (int i = 0; i < p.points.length; i++)
+        {
+            axis[firstaxis + i] = Util.minus(c.getPosition(time), p.getWorldPointPos(i, time)).getUnitVector();
+        }
+        return axis;
+    }
+    
+    public static Vector[] getAxis(Polygon p1, Polygon p2, double time) {
+        Vector[] axis;
+        Vector[] a_p1 = getAxis(p1, time);
+        Vector[] a_p2 = getAxis(p2, time);
+        axis = new Vector[a_p1.length + a_p2.length];
+        for (int i = 0; i < axis.length; i++)
+        {
+            if(i < a_p1.length)
+                axis[i] = a_p1[i];
+            else {
+                axis[i] = a_p2[i - a_p1.length];
+            }
+        }
+        return axis;
+    }
+    
+    private static Vector[] getAxis(Polygon p, double time) {
+        Vector[] axis;
+        if(p instanceof Square) {
+            axis = new Vector[2 + p.points.length];
+            axis[0] = Util.minus(p.getWorldPointPos(0, time), p.getWorldPointPos(1, time)).getNormalVector().getUnitVector();
+            axis[1] = Util.minus(p.getWorldPointPos(1, time), p.getWorldPointPos(2, time)).getNormalVector().getUnitVector();
+        } else {
+            axis = new Vector[p.points.length * 2];
+            for (int i = 0; i < p.points.length; i++)
+            {
+                int j = (i == p.points.length - 1) ? 0 : i + 1;
+                axis[i] = Util.minus(p.getWorldPointPos(i, time), p.getWorldPointPos(j, time)).getNormalVector().getUnitVector();
+            }
+        }
+        return axis;
     }
 }
