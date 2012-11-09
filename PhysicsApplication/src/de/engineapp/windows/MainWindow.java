@@ -1,8 +1,7 @@
 package de.engineapp.windows;
 
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.util.*;
 
 import javax.swing.JFrame;
@@ -28,6 +27,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
     
     
 //    private Configuration config = Configuration.getInstance();
+    private final static Localizer LOCALIZER = Localizer.getInstance();
     
     private final static RenderingHints ANTIALIAS = new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
      
@@ -40,7 +40,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
     
     public MainWindow()
     {
-        super("Physics Engine");
+        super(LOCALIZER.getString("APP_NAME"));
         
         pModel = new PresentationModel();
         
@@ -57,6 +57,22 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
                 MainWindow.this.dispose();
                 InfoWindow.dispose();
                 Configuration.save();
+            }
+        });
+        this.addWindowStateListener(new WindowStateListener()
+        {
+            @Override
+            public void windowStateChanged(WindowEvent e)
+            {
+                if ((MainWindow.this.getExtendedState() & MAXIMIZED_BOTH) != 0)
+                {
+                    System.out.println("max");
+                    pModel.setState("maximized", true);
+                }
+                else
+                {
+                    pModel.setState("maximized", false);
+                }
             }
         });
         
@@ -207,6 +223,15 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         iconList.add(Util.getImage("main/16"));
         
         this.setIconImages(iconList);
+        
+        if (pModel.isState("grid"))
+        {
+            grid = new Grid(pModel);
+        }
+        if (pModel.isState("maximized"))
+        {
+            this.setExtendedState(this.getExtendedState() | MAXIMIZED_BOTH);
+        }
     }
     
     

@@ -143,7 +143,7 @@ public class Arrow implements IDrawable
         
         if (arrow_length <= 6.0)
         {
-            return new Ellipse2D.Double( from.getX() - 5.0, from.getY() - 5.0 , 10.0, 10.0 );
+            return new Ellipse2D.Double( from.getX() - 4.0, from.getY() - 4.0 , 8.0, 8.0 );
         }
         else
         {
