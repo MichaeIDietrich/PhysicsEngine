@@ -64,34 +64,39 @@ public class CollisionDetector
     
     public void objectGroundCollision() 
     {
-        if (scene.getCount()>0 && scene.getObject(0)!=null && scene.getGround()!=null)
+        long time = System.currentTimeMillis();
+        
+        for( ObjectProperties object : scene.getObjects())
         {
-            Ground           ground = scene.getGround();
-            ObjectProperties object = scene.getObject(0);
-            
-            long time = System.currentTimeMillis();
-            
-            Double xn = Util.newtonIteration( object, ground );
-            
-            object.last_intersection.setX( xn );
-            object.last_intersection.setY( ground.function( ground.ACTUAL_FUNCTION, xn.intValue() ));
-//            
-//            System.out.println( System.currentTimeMillis() - time +" ms / "+ 
-//                                "SP: = "+ 
-//                                (int) scene.getObject(0).last_intersection.getX() +", "+ 
-//                                (int) scene.getObject(0).last_intersection.getY());
-            
-            int x = (int) object.last_intersection.getX();
-            int y = (int) object.last_intersection.getY();
-            
-            // calc distance by pythagoras
-            int c = (int) Math.sqrt( Math.pow( x-object.getPosition().getX(), 2d) + Math.pow( y-object.getPosition().getY(), 2d));
-            
-            if (c < object.getRadius()) 
+            if (scene.getCount()>0 && object!=null && scene.getGround()!=null)
             {
-                object.velocity.setX(0);
-                object.velocity.setY(0);
+                Ground           ground = scene.getGround();
+    //            ObjectProperties object = scene.getObject(0);
+                
+                
+                
+                Double xn = Util.newtonIteration( object, ground );
+                
+                object.last_intersection.setX( xn );
+                object.last_intersection.setY( ground.function( ground.ACTUAL_FUNCTION, xn.intValue() ));
+                
+                int x = (int) object.last_intersection.getX();
+                int y = (int) object.last_intersection.getY();
+                
+                // calc distance by pythagoras
+                int c = (int) Math.sqrt( Math.pow( x-object.getPosition().getX(), 2d) + Math.pow( y-object.getPosition().getY(), 2d));
+                
+                if (c < object.getRadius()) 
+                {
+                    object.velocity.setX(0);
+                    object.velocity.setY(0);
+                }      
             }
         }
+        
+        System.out.println( System.currentTimeMillis() - time +" ms / "+ 
+                "SP: = "+ 
+                (int) scene.getObject(0).last_intersection.getX() +", "+ 
+                (int) scene.getObject(0).last_intersection.getY());
     }
 }
