@@ -5,18 +5,24 @@ import java.util.Vector;
 import de.engine.environment.Scene;
 import de.engine.math.Util;
 import de.engine.objects.Circle;
+import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engine.objects.Polygon;
 import de.engine.physics.PhysicsCalcer;
+
 
 public class CollisionDetector
 {
     
     private Grid grid;
     private Scene scene;
+    de.engine.math.Vector v = null;
     
     public CollisionDetector(Scene scene)
     {
+        v = new de.engine.math.Vector();
+        v = v.setUnitVector(v);
+        
         grid = new Grid(scene);
         this.scene = scene;
     }
@@ -51,25 +57,46 @@ public class CollisionDetector
             }
         }
         
+        // Tests the collision between object and ground 
         objectGroundCollision();
     }
     
     
     public void objectGroundCollision() 
     {
-        if (scene.getCount()>0 && scene.getObject(0)!=null && scene.getGround()!=null)
+        long time = System.currentTimeMillis();
+        
+        for( ObjectProperties object : scene.getObjects())
         {
-            de.engine.math.Vector v = null;
-            
-            long time = System.currentTimeMillis();
-
-            v = Util.solveNonLEQ( scene.getObject(0), scene.getGround() );
-            scene.getObject(0).last_intersection = v.getX();
-            
-            System.out.println( System.currentTimeMillis() - time );
-            
-            System.out.println( "Schnittpunkt = "+ v.get(0).intValue());
+            if (scene.getCount()>0 && object!=null && scene.getGround()!=null)
+            {
+                Ground           ground = scene.getGround();
+    //            ObjectProperties object = scene.getObject(0);
+                
+                
+                
+                Double xn = Util.newtonIteration( object, ground );
+                
+                object.last_intersection.setX( xn );
+                object.last_intersection.setY( ground.function( ground.ACTUAL_FUNCTION, xn.intValue() ));
+                
+                int x = (int) object.last_intersection.getX();
+                int y = (int) object.last_intersection.getY();
+                
+                // calc distance by pythagoras
+                int c = (int) Math.sqrt( Math.pow( x-object.getPosition().getX(), 2d) + Math.pow( y-object.getPosition().getY(), 2d));
+                
+                if (c < object.getRadius()) 
+                {
+                    object.velocity.setX(0);
+                    object.velocity.setY(0);
+                }      
+            }
         }
         
+        System.out.println( System.currentTimeMillis() - time +" ms / "+ 
+                "SP: = "+ 
+                (int) scene.getObject(0).last_intersection.getX() +", "+ 
+                (int) scene.getObject(0).last_intersection.getY());
     }
 }
