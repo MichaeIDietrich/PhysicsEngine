@@ -198,7 +198,6 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         this.addGroup(5,LabelKinE, kinLabel);
         this.addGap(25);
         this.add(close, LEFT_ALIGNMENT);
-        
 
         this.updateUI();
         this.setVisible(true);
