@@ -139,7 +139,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                     {
                         case "circle":
                             Circle circle = new Circle(pModel, pModel.toTransformedVector(e.getPoint()), 8);
-                            circle.mass = 10;
+                            circle.setMass(10);
                             
                             pModel.addObject(circle);
                             pModel.fireRepaintEvents();

@@ -8,10 +8,10 @@ import de.engine.objects.ObjectProperties;
 public class CollisionData
 {
     
-    ObjectProperties o1, o2;
+    public ObjectProperties o1, o2;
     
-    ArrayList<Contact> contacts;
-    double time;
+    public ArrayList<Contact> contacts;
+    public double time;
     
     public CollisionData(ObjectProperties o1, ObjectProperties o2, double time)
     {
@@ -23,8 +23,8 @@ public class CollisionData
     
     public static class Contact
     {
-        Vector point;
-        Vector normal;
+        public Vector point;
+        public Vector normal;
         
         // double penetration;
         
