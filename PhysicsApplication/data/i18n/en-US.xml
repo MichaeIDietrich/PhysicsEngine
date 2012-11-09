@@ -17,4 +17,9 @@
   <String id="LANGUAGE">Language:</String>
   <String id="OK">OK</String>
   <String id="CANCEL">Cancel</String>
+  <String id="ALUMINIUM">Aluminium</String>
+  <String id="RUBBER">Rubber</String>
+  <String id="STEEL">Steel</String>
+  <String id="WATER">Water</String>
+  <String id="NACL">Orange</String>
 </Localization>
