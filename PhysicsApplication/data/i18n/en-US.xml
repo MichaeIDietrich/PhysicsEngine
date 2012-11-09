@@ -22,4 +22,9 @@
   <String id="SHOWPROPERTIES">Show object properties:</String>
   <String id="OBJECT_SELECTED">On object selected</String>
   <String id="DBLCLICK_OBJECT">On object doubleclicked</String>
+  <String id="ALUMINIUM">Aluminium</String>
+  <String id="RUBBER">Rubber</String>
+  <String id="STEEL">Steel</String>
+  <String id="WATER">Water</String>
+  <String id="NACL">Orange</String>
 </Localization>

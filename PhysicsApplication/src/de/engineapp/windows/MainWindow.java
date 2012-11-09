@@ -170,7 +170,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
                         InfoWindow.setData( InfoWindow.ACTION, "Kreis erstellt [" + location.x + ", " + location.y + "]" );
                         
                         Circle circle = new Circle(pModel, sceneLocation, 8);
-                        circle.mass = 10;
+                        circle.setMass(10);
                         
                         pModel.addObject( circle );
                         
@@ -181,7 +181,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
                         InfoWindow.setData( InfoWindow.ACTION, "Quadrat erstellt [" + location.x + ", " + location.y + "]" );
                         
                         Square square = new Square(pModel, sceneLocation, 8);
-                        square.mass = 10;
+                        square.setMass(10);
                         
                         pModel.addObject( square );
                         
