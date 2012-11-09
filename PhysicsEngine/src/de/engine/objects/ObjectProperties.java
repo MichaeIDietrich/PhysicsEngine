@@ -124,6 +124,7 @@ public abstract class ObjectProperties
         else
         {
             world_position.translation = getNextPosition();
+            world_position.rotation.setAngle(world_position.rotation.getAngle() + angular_velocity / EnvProps.deltaTime());
             // obj.getPosition().setY(
             // -9.81 / 2d * deltaTime + obj.velocity.getY()
             // * deltaTime + obj.getPosition().getY());
@@ -141,6 +142,7 @@ public abstract class ObjectProperties
         updated = true;
         world_position.translation = getPosition(time);
         velocity.add(0, EnvProps.grav_acc() / 2d * time);
+        world_position.rotation.setAngle(world_position.rotation.getAngle() + angular_velocity / time);
     }
     
     public abstract ObjectProperties copy();
