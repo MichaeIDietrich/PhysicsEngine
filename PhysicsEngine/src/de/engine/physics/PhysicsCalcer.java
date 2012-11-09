@@ -1,5 +1,7 @@
 package de.engine.physics;
 
+import de.engine.colldetect.CollisionData;
+import de.engine.colldetect.ContactCreator;
 import de.engine.environment.EnvProps;
 import de.engine.math.Util;
 import de.engine.math.Vector;
@@ -41,6 +43,7 @@ public class PhysicsCalcer
     }
     
     public static void calcCirclePolygon(Circle o1, Polygon o2, double collTime) {
+        CollisionData cd = ContactCreator.getCirclePolygonContact(o1, o2, collTime);
         
     }
 
