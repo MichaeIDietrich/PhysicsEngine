@@ -16,6 +16,9 @@ import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.PresentationModel.ViewBoxListener;
 import de.engineapp.windows.*;
 
+import static de.engineapp.Constants.*;
+
+
 public class MainToolBar extends JToolBar implements ActionListener, ChangeListener, StorageListener, ViewBoxListener
 {
     private static final long serialVersionUID = 4164673212238397915L;
@@ -48,12 +51,12 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         pModel.addStorageListener(this);
         
         new_     = new EasyButton(Util.getIcon("new"),      "new",      this);
-        open     = new EasyButton(Util.getIcon("open5"),    "open",     this);
-        save     = new EasyButton(Util.getIcon("save3"),    "save",     this);
-        play     = new EasyButton(Util.getIcon("play2"),    "play",     this);
-        pause    = new EasyButton(Util.getIcon("pause2"),   "pause",    this);
-        reset    = new EasyButton(Util.getIcon("reset2"),   "reset",    this);
-        grid     = new EasyButton(Util.getIcon("grid2"),    "grid",     this);
+        open     = new EasyButton(Util.getIcon("open"),     "open",     this);
+        save     = new EasyButton(Util.getIcon("save"),     "save",     this);
+        play     = new EasyButton(Util.getIcon("play"),     "play",     this);
+        pause    = new EasyButton(Util.getIcon("pause"),    "pause",    this);
+        reset    = new EasyButton(Util.getIcon("reset"),    "reset",    this);
+        grid     = new EasyButton(Util.getIcon("grid"),     "grid",     this);
         info     = new EasyButton(Util.getIcon("loupe"),    "info",     this);
         focus    = new EasyButton(Util.getIcon("focus"),    "focus",    this);
         settings = new EasyButton(Util.getIcon("settings"), "settings", this);
@@ -141,8 +144,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             case "settings":
                 if (SettingsDialog.showDialog((Window) this.getTopLevelAncestor()))
                 {
-                    pModel.setProperty("langCode", Configuration.getInstance().getLangCode());
-                    pModel.setState("dblClickshowProperties", Configuration.getInstance().isDblClickShowProperties());
+                    pModel.setProperty(LANGUAGE_CODE, Configuration.getInstance().getLangCode());
+                    pModel.setState(DBLCLICK_SHOW_PROPERTIES, Configuration.getInstance().isDblClickShowProperties());
                 }
                 break;
         }
@@ -162,7 +165,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     {
         switch (id)
         {
-            case "runPhysics":
+            case RUN_PHYSICS:
                 if (value)
                 {
                     play.setEnabled( false );
@@ -190,11 +193,11 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 
                 break;
                 
-            case "grid":
+            case GRID:
                 grid.setSelected(value);
                 break;
                 
-            case "info":
+            case INFO:
                 info.setSelected(value);
                 InfoWindow.showWindow(value);
                 

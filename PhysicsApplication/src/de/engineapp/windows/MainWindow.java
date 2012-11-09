@@ -20,6 +20,8 @@ import de.engineapp.controls.Canvas;
 import de.engineapp.controls.dnd.DragAndDropController;
 import de.engineapp.visual.*;
 
+import static de.engineapp.Constants.*;
+
 
 public class MainWindow extends JFrame implements PaintListener, StorageListener
 {
@@ -66,12 +68,11 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
             {
                 if ((MainWindow.this.getExtendedState() & MAXIMIZED_BOTH) != 0)
                 {
-                    System.out.println("max");
-                    pModel.setState("maximized", true);
+                    pModel.setState(MAXIMIZED, true);
                 }
                 else
                 {
-                    pModel.setState("maximized", false);
+                    pModel.setState(MAXIMIZED, false);
                 }
             }
         });
@@ -224,11 +225,11 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         
         this.setIconImages(iconList);
         
-        if (pModel.isState("grid"))
+        if (pModel.isState(GRID))
         {
             grid = new Grid(pModel);
         }
-        if (pModel.isState("maximized"))
+        if (pModel.isState(MAXIMIZED))
         {
             this.setExtendedState(this.getExtendedState() | MAXIMIZED_BOTH);
         }
@@ -319,7 +320,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         System.out.println(id + ": " + value);
         switch (id)
         {
-            case "grid":
+            case GRID:
                 if (value)
                 {
                     grid = new Grid(pModel);

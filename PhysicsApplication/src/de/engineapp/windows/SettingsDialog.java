@@ -60,12 +60,12 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         
         cboLang = new IconComboBox<String>(LOCALIZER.getAvailableLanguages(), "flags");
         cboLang.setSelectedItem(config.getLangCode());
-        cboLang.setPreferredSize(new Dimension(150, cboLang.getPreferredSize().height));
+        cboLang.setPreferredSize(new Dimension(120, cboLang.getPreferredSize().height));
         cboLang.addItemListener(this);
         
         container.add(cboLang, Component.RIGHT_ALIGNMENT);
         
-        container.addGap(10);
+        container.addGap(15);
         container.add(new JLabel(LOCALIZER.getString("SHOWPROPERTIES")));
         container.addGap(3);
         
@@ -74,7 +74,7 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
                                                                  LOCALIZER.getString("DBLCLICK_OBJECT") });
         cboShowProperties.setFocusable(false);
         cboShowProperties.setSelectedIndex(config.isDblClickShowProperties() ? 1 : 0);
-        cboShowProperties.setPreferredSize(new Dimension(150, cboShowProperties.getPreferredSize().height));
+        cboShowProperties.setPreferredSize(new Dimension(120, cboShowProperties.getPreferredSize().height));
         cboShowProperties.addItemListener(this);
         
         container.add(cboShowProperties, Component.RIGHT_ALIGNMENT);

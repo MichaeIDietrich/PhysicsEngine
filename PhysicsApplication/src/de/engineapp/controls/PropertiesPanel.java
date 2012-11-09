@@ -1,16 +1,10 @@
 package de.engineapp.controls;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.BorderLayout;
+import java.awt.event.*;
 import java.util.Iterator;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -20,11 +14,10 @@ import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engine.objects.ObjectProperties.Material;
 import de.engineapp.*;
-import de.engineapp.PresentationModel.SceneListener;
-import de.engineapp.Util;
+import de.engineapp.PresentationModel.*;
 import de.engineapp.visual.ISelectable;
 
-public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, ActionListener, ChangeListener
+public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, ActionListener, ChangeListener, StorageListener, MouseListener
 {
     private static final long serialVersionUID = 8656904964293251249L;
     
@@ -55,6 +48,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     
     //Namensfeld erstellen
     private JTextField name;
+    private JPanel groupName;
     
     //ComboBox und CheckBox erstellen
     private JCheckBox fix;
@@ -76,6 +70,43 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     {
         pModel = model;
         
+        createControls();
+        
+         //+++++++++++++++++++++++++++++++++++++++++++++++++//
+        //================= Konfiguration =================//
+       //+++++++++++++++++++++++++++++++++++++++++++++++++//
+        
+        //Buttons
+          del.addActionListener(this);
+        close.addActionListener(this);
+          del.setActionCommand("del");
+        close.setActionCommand("close");
+        
+        //Namensfeld konfigurieren
+        name.setEditable(isEnabled());
+        name.addFocusListener(new FocusAdapter()
+            {
+                @Override
+                public void focusGained(FocusEvent e)
+                {
+                    name.selectAll();
+                }
+            }
+        );
+        
+        
+        
+        
+        this.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
+        
+
+        pModel.addSceneListener(this);
+        pModel.addStorageListener(this);
+        pModel.addMouseListenerToCanvas(this);
+    }
+    
+    private void createControls()
+    {
         //Labels
         nameLabel       = new JLabel(LOCALIZER.getString("NAME_OF_OBJECT"));
         materialLabel   = new JLabel(LOCALIZER.getString("MATERIAL"));
@@ -94,39 +125,11 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         
         //Namensfeld
         name         = new JTextField();
+        groupName = new JPanel(new BorderLayout(3, 0));
+        groupName.setOpaque(true);
         
         //Combobox + CheckBox
         fix          = new JCheckBox(LOCALIZER.getString("PINNED"));
-
-
-         //+++++++++++++++++++++++++++++++++++++++++++++++++//
-        //================= Konfiguration =================//
-       //+++++++++++++++++++++++++++++++++++++++++++++++++//
-        
-        //Buttons
-          del.addActionListener(this);
-        close.addActionListener(this);
-          del.setActionCommand("del");
-        close.setActionCommand("close");
-        
-        //Namensfeld konfigurieren
-        name.setEditable(isEnabled());
-        name.setToolTipText("Objektname");
-        name.addFocusListener(new FocusAdapter()
-            {
-                @Override
-                public void focusGained(FocusEvent e)
-                {
-                    name.selectAll();
-                }
-            }
-        );
-        
-        this.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
-        
-
-        pModel.addSceneListener(this);
-        
     }
 
     @Override
@@ -144,6 +147,15 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     @Override
     public void objectSelected(ObjectProperties object)
     {
+        if (!pModel.isState("dblClickshowProperties"))
+        {
+            showPanel(object);
+        }
+    }
+    
+    
+    private void showPanel(ObjectProperties object)
+    {
         //Instanzieren
         massInput    = new PropertySpinner(object.getMass(),1,1000,1,this);
         xCord        = new PropertySpinner(object.getPosition().getX(),-100000.0,100000,10,this);
@@ -155,9 +167,12 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         kinLabel     = new JLabel(this.formatDoubleValue(object.kinetic_energy));
         
         MaterialCombo = new IconComboBox<Material>(Material.values(), "materials");
-
+        
         next         = new EasyButton(Util.getIcon("next"),"next",this);
         previous     = new EasyButton(Util.getIcon("previous"),"previous",this);
+        groupName.add(previous, BorderLayout.LINE_START);
+        groupName.add(next, BorderLayout.LINE_END);
+        groupName.add(name);
         
         massInput.setValue(object.getMass());
         //Konfigurieren
@@ -166,10 +181,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         yCord.setValue(object.getPosition().getY());
         vx.setValue(object.velocity.getX());
         vy.setValue(object.velocity.getY());
-
+        
         name.setText(((ISelectable)object).getName());
-
-
         
         MaterialCombo.setSelectedItem(pModel.getSelectedObject().surface);
         MaterialCombo.addActionListener(this);
@@ -177,11 +190,12 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         fix.addActionListener(this);
         
         //Hinzufügen
-
+        
         this.addGap(10);
         this.add(nameLabel, CENTER_ALIGNMENT);
         this.addGap(5);
-        this.addGroup(3,previous,name,next);
+//        this.addGroup(3,previous,name,next);
+        this.addGroup(3, groupName);
         this.addGap(25);
         this.add(del, RIGHT_ALIGNMENT);
         this.addGap(10);
@@ -207,20 +221,20 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         this.addGroup(5,LabelKinE, kinLabel);
         this.addGap(25);
         this.add(close, LEFT_ALIGNMENT);
-
+        
         this.updateUI();
         this.setVisible(true);
-
     }
-
-
+    
+    
     @Override
     public void objectDeselected(ObjectProperties object)
     {
         this.setVisible(false);
         this.removeAll();
     }
-
+    
+    
     @Override
     public void actionPerformed(ActionEvent e)
     {
@@ -272,7 +286,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
 
         if(e.getSource() == MaterialCombo)
         {
-            pModel.getSelectedObject().surface = (Material) MaterialCombo.getSelectedItem();
+            pModel.getSelectedObject().surface = MaterialCombo.getSelectedItem();
         }
         if(e.getSource() == fix)
         {
@@ -340,4 +354,45 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         s = String.format("%.2f", d) + s;
         return s;
     }
+    
+    @Override
+    public void stateChanged(String id, boolean value) { }
+    
+    @Override
+    public void propertyChanged(String id, String value)
+    {
+        if (id.equals("langCode"))
+        {
+            createControls();
+            
+            if (this.isVisible())
+            {
+                this.setVisible(false);
+                this.removeAll();
+                objectSelected(pModel.getSelectedObject());
+            }
+        }
+    }
+    
+    @Override
+    public void mouseClicked(MouseEvent e)
+    {
+        if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2 && 
+                pModel.isState("dblClickshowProperties") && pModel.getSelectedObject() != null)
+        {
+            showPanel(pModel.getSelectedObject());
+        }
+    }
+    
+    @Override
+    public void mouseEntered(MouseEvent e) { }
+    
+    @Override
+    public void mouseExited(MouseEvent e) { }
+    
+    @Override
+    public void mousePressed(MouseEvent e) { }
+    
+    @Override
+    public void mouseReleased(MouseEvent e) { }
 }

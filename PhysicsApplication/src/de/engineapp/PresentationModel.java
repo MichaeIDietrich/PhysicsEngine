@@ -13,6 +13,8 @@ import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.controls.Canvas;
 
+import static de.engineapp.Constants.*;
+
 public class PresentationModel
 {
     public interface SceneListener
@@ -95,10 +97,10 @@ public class PresentationModel
         
         Configuration config = Configuration.getInstance();
         
-        stateMap.put("grid", config.isShowGrid());
-        stateMap.put("maximized", config.isMaximized());
-        stateMap.put("dblClickshowProperties", config.isDblClickShowProperties());
-        propertyMap.put("langCode", config.getLangCode());
+        stateMap.put(GRID, config.isShowGrid());
+        stateMap.put(MAXIMIZED, config.isMaximized());
+        stateMap.put(DBLCLICK_SHOW_PROPERTIES, config.isDblClickShowProperties());
+        propertyMap.put(LANGUAGE_CODE, config.getLangCode());
         setZoom(config.getZoom());
     }
     
@@ -504,11 +506,11 @@ public class PresentationModel
     
     public void setState(String id, boolean value)
     {
-        if (id.equals("grid"))
+        if (id.equals(GRID))
         {
             Configuration.getInstance().setShowGrid(value);
         }
-        else if (id.equals("maximized"))
+        else if (id.equals(MAXIMIZED))
         {
             Configuration.getInstance().setMaximized(value);
         }
@@ -531,7 +533,7 @@ public class PresentationModel
     
     public void setProperty(String id, String value)
     {
-        if (id.equals("langCode"))
+        if (id.equals(LANGUAGE_CODE))
         {
             Configuration.getInstance().setLangCode(value);
         }

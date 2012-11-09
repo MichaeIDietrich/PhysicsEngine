@@ -21,7 +21,7 @@
   <String id="CANCEL">Abbrechen</String>
   <String id="SHOWPROPERTIES">Objekteigenschaften anzeigen:</String>
   <String id="OBJECT_SELECTED">Bei Objektanwahl</String>
-  <String id="DBLCLICK_OBJECT">Bei Doppelklick auf Objekt</String>
+  <String id="DBLCLICK_OBJECT">Bei Doppelklick</String>
   <String id="ALUMINIUM">Aluminium</String>
   <String id="RUBBER">Gummi</String>
   <String id="STEEL">Stahl</String>

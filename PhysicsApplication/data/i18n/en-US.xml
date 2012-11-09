@@ -20,8 +20,8 @@
   <String id="OK">OK</String>
   <String id="CANCEL">Cancel</String>
   <String id="SHOWPROPERTIES">Show object properties:</String>
-  <String id="OBJECT_SELECTED">On object selected</String>
-  <String id="DBLCLICK_OBJECT">On object doubleclicked</String>
+  <String id="OBJECT_SELECTED">On selection</String>
+  <String id="DBLCLICK_OBJECT">On doubleclick</String>
   <String id="ALUMINIUM">Aluminium</String>
   <String id="RUBBER">Rubber</String>
   <String id="STEEL">Steel</String>
