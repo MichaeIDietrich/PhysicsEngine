@@ -39,7 +39,7 @@ public class Polygon extends ObjectProperties{
 	}
 	
 	public Vector getWorldPointPos(int i, double time) {
-	    Transformation tr = new Transformation(Util.add(world_position.translation, Util.scale(velocity, time)), new Rotation(world_position.rotation.getAngle() + angular_momentum * time));
+	    Transformation tr = new Transformation(Util.add(world_position.translation, Util.scale(velocity, time)), new Rotation(world_position.rotation.getAngle() + angular_velocity * time));
         return tr.getPostion(points[i]);
     }
 
