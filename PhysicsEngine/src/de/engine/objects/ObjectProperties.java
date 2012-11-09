@@ -52,6 +52,7 @@ public abstract class ObjectProperties
 	// direction
 	public double mass = Float.MAX_VALUE;
 	public Vector velocity = null;
+	public double angular_velocity;
 	public Vector momentum = null;
 	public Vector normal_force = null;
 	public Vector downhill_force = null;
