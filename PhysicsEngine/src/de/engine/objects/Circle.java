@@ -13,6 +13,7 @@ public class Circle extends ObjectProperties
         this.radius = radius;
         
         this.velocity = new Vector();
+        this.moment_of_inertia = Math.PI * Math.pow(radius, 4) / 4;
     }
     
     @Override
@@ -41,7 +42,7 @@ public class Circle extends ObjectProperties
     {
         // TODO - add all properties, that need to be copied
         Circle newCircle = new Circle(this.getPosition(), this.radius);
-        newCircle.mass = this.mass;
+        newCircle.setMass(getMass());
         // ...
         
         return newCircle;
@@ -56,6 +57,7 @@ public class Circle extends ObjectProperties
     @Override
     public void setRadius(double radius)
     {
+        this.moment_of_inertia *= Math.pow(radius / this.radius, 4);
         this.radius = radius;
     }
     
@@ -82,5 +84,11 @@ public class Circle extends ObjectProperties
         aabb[0] = new Vector(nextPos.getX() - radius, nextPos.getY() - radius);
         aabb[1] = new Vector(nextPos.getX() + radius, nextPos.getY() + radius);
         return aabb;
+    }
+
+    @Override
+    public void setMass(double mass)
+    {
+        this.mass = mass;
     }
 }
