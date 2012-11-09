@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Localization name="English" englishName="English">
+<Localization>
   <String id="APP_NAME">Oizys Physics Engine</String>
+  <String id="en-US">English</String>
+  <String id="de-DE">German</String>
   <String id="NAME_OF_OBJECT">Name of Object</String>
   <String id="MATERIAL">Object Material</String>
   <String id="X_COORDINATE">x-Coordinate</String>
@@ -17,4 +19,7 @@
   <String id="LANGUAGE">Language:</String>
   <String id="OK">OK</String>
   <String id="CANCEL">Cancel</String>
+  <String id="SHOWPROPERTIES">Show object properties:</String>
+  <String id="OBJECT_SELECTED">On object selected</String>
+  <String id="DBLCLICK_OBJECT">On object doubleclicked</String>
 </Localization>

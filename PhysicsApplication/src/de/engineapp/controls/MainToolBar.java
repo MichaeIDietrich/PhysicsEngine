@@ -139,7 +139,11 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 break;
                 
             case "settings":
-                new SettingsDialog((Window) this.getTopLevelAncestor());
+                if (SettingsDialog.showDialog((Window) this.getTopLevelAncestor()))
+                {
+                    pModel.setProperty("langCode", Configuration.getInstance().getLangCode());
+                    pModel.setState("dblClickshowProperties", Configuration.getInstance().isDblClickShowProperties());
+                }
                 break;
         }
     }

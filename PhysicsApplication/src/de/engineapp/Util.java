@@ -26,9 +26,13 @@ public class Util
         {
             icon = new ImageIcon("data/images/" + id + ".png");
             
-            if (icon != null)
+            if (icon.getImageLoadStatus() == 8)
             {
                 iconMap.put(id, icon);
+            }
+            else if (!id.equals("not_available"))
+            {
+                icon = getIcon("not_available");
             }
         }
         

@@ -97,6 +97,7 @@ public class PresentationModel
         
         stateMap.put("grid", config.isShowGrid());
         stateMap.put("maximized", config.isMaximized());
+        stateMap.put("dblClickshowProperties", config.isDblClickShowProperties());
         propertyMap.put("langCode", config.getLangCode());
         setZoom(config.getZoom());
     }

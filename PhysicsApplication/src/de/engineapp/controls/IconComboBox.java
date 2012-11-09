@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import de.engineapp.*;
 
@@ -18,6 +19,9 @@ public final class IconComboBox<T> extends JComboBox<T>
     
     private class ItemRenderer implements ListCellRenderer<T>
     {
+        private Border MARGIN = BorderFactory.createEmptyBorder(0, 2, 0, 0);
+        
+        
         private List<Icon> icons;
         private List<String> entries;
         
@@ -33,6 +37,8 @@ public final class IconComboBox<T> extends JComboBox<T>
             int i = getIndexFromData(list.getModel(), value);
             
             JLabel cell = new JLabel(entries.get(i), icons.get(i), SwingConstants.LEFT);
+            
+            if (index > -1) cell.setBorder(MARGIN);
             
             if (index > -1 && (isSelected || cellHasFocus))
             {
@@ -65,12 +71,14 @@ public final class IconComboBox<T> extends JComboBox<T>
     public IconComboBox(T[] data, List<String> entries, List<Icon> icons)
     {
         super(data);
+        this.setFocusable(false);
         this.setRenderer(new ItemRenderer(entries, icons));
     }
     
     public IconComboBox(T[] data, List<String> entries, String iconFolder)
     {
         super(data);
+        this.setFocusable(false);
         
         List<Icon> icons = new ArrayList<>();
         
@@ -85,13 +93,14 @@ public final class IconComboBox<T> extends JComboBox<T>
     public IconComboBox(T[] data, String iconFolder)
     {
         super(data);
+        this.setFocusable(false);
         
         List<String> entries = new ArrayList<>();
         List<Icon> icons = new ArrayList<>();
         
         for (T entry : data)
         {
-            entries.add(LOCALIZER.getName(entry.toString()));
+            entries.add(LOCALIZER.getString(entry.toString()));
             icons.add(Util.getIcon(iconFolder + "/" + entry));
         }
         
