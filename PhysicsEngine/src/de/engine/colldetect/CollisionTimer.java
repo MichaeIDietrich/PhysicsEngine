@@ -121,17 +121,10 @@ public class CollisionTimer
     
     private static boolean collideCirclePolygon(Circle o1, Polygon o2, double time)
     {
-        for (int i = 0; i < o2.points.length; i++)
+        Vector axis[] = Util.getAxis(o1, o2, time);
+        for (Vector a : axis)
         {
-            int j = (i == o2.points.length - 1) ? 0 : i + 1;
-            Vector axis = Util.minus(o2.getWorldPointPos(j, time), o2.getWorldPointPos(i, time)).getNormalVector().getUnitVector();
-            if (!Helper.collideCirclePolygonAxis(axis, o1, o2, time))
-                return false;
-        }
-        for (int i = 0; i < o2.points.length; i++)
-        {
-            Vector axis = Util.minus(o1.getPosition(), o2.getWorldPointPos(i, time));
-            if (!Helper.collideCirclePolygonAxis(axis, o1, o2, time))
+            if (!Helper.collideCirclePolygonAxis(a, o1, o2, time))
                 return false;
         }
         return true;
@@ -139,18 +132,10 @@ public class CollisionTimer
     
     private static boolean collidePolygons(Polygon o1, Polygon o2, double time)
     {
-        for (int i = 0; i < o1.points.length; i++)
+        Vector[] axis = Util.getAxis(o1, o2, time);
+        for (Vector a : axis)
         {
-            int j = (i == o1.points.length - 1) ? 0 : i + 1;
-            Vector axis = Util.minus(o1.getWorldPointPos(j, time), o1.getWorldPointPos(i, time)).getNormalVector().getUnitVector();
-            if (!Helper.collidePolygonPolygonAxis(axis, o1, o2, time))
-                return false;
-        }
-        for (int i = 0; i < o2.points.length; i++)
-        {
-            int j = (i == o2.points.length - 1) ? 0 : i + 1;
-            Vector axis = Util.minus(o2.getWorldPointPos(j, time), o2.getWorldPointPos(i, time)).getNormalVector().getUnitVector();
-            if (!Helper.collidePolygonPolygonAxis(axis, o1, o2, time))
+            if (!Helper.collidePolygonPolygonAxis(a, o1, o2, time))
                 return false;
         }
         return true;
