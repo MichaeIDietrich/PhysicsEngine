@@ -9,7 +9,7 @@ public abstract class ObjectProperties
 {
     public enum Material
     {
-        STEEL(1), ALUMINIUM(1), NACL(1), RUBBER(1), Water(1);
+        STEEL(1), ALUMINIUM(1), NACL(1), RUBBER(1), WATER(1);
         
         private final double elasticity;
         
