@@ -20,6 +20,7 @@ public class Configuration implements Serializable, Cloneable
     private String langCode = null;
     private boolean showInfo = false;
     private boolean maximized = false;
+    private boolean dblClickShowProperties = false;
     
     
     public static Configuration getInstance()
@@ -122,6 +123,17 @@ public class Configuration implements Serializable, Cloneable
     public void setMaximized(boolean maximized)
     {
         this.maximized = maximized;
+    }
+    
+    
+    public boolean isDblClickShowProperties()
+    {
+        return dblClickShowProperties;
+    }
+    
+    public void setDblClickShowProperties(boolean dblClickShowProperties)
+    {
+        this.dblClickShowProperties = dblClickShowProperties;
     }
     
     
