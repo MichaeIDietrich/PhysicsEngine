@@ -12,7 +12,10 @@ import de.engineapp.*;
 public final class IconComboBox<T> extends JComboBox<T>
 {
     private final static Localizer LOCALIZER = Localizer.getInstance();
+    private static boolean isGTK = Configuration.getInstance().getLookAndFeel().equals("GTK+");
     
+//    private final static Color FOREGROUND = UIManager.getColor("List.foreground");
+//    private final static Color BACKGROUND = UIManager.getColor("List.background");
     private final static Color SELECTION_FOREGROUND = UIManager.getColor("List.selectionForeground");
     private final static Color SELECTION_BACKGROUND = UIManager.getColor("List.selectionBackground");
     
@@ -20,16 +23,19 @@ public final class IconComboBox<T> extends JComboBox<T>
     private class ItemRenderer implements ListCellRenderer<T>
     {
         private Border MARGIN = BorderFactory.createEmptyBorder(0, 2, 0, 0);
+        private Border GTK_BORDER = BorderFactory.createLineBorder(new Color(170, 170, 170));
         
         
         private List<Icon> icons;
         private List<String> entries;
+        
         
         public ItemRenderer(List<String> entries, List<Icon> icons)
         {
             this.entries = entries;
             this.icons = icons;
         }
+        
         
         @Override
         public Component getListCellRendererComponent(JList<? extends T> list, T value, int index, boolean isSelected, boolean cellHasFocus)
@@ -42,9 +48,19 @@ public final class IconComboBox<T> extends JComboBox<T>
             
             if (index > -1 && (isSelected || cellHasFocus))
             {
+                cell.setOpaque(true);
                 cell.setForeground(SELECTION_FOREGROUND);
                 cell.setBackground(SELECTION_BACKGROUND);
-                cell.setOpaque(true);
+            }
+//            else
+//            {
+//                cell.setForeground(FOREGROUND);
+//                cell.setBackground(BACKGROUND);
+//            }
+            
+            if (isGTK && index == -1)
+            {
+                cell.setBorder(GTK_BORDER);
             }
             
             return cell;
@@ -75,6 +91,7 @@ public final class IconComboBox<T> extends JComboBox<T>
         this.setRenderer(new ItemRenderer(entries, icons));
     }
     
+    
     public IconComboBox(T[] data, List<String> entries, String iconFolder)
     {
         super(data);
@@ -89,6 +106,7 @@ public final class IconComboBox<T> extends JComboBox<T>
         
         this.setRenderer(new ItemRenderer(entries, icons));
     }
+    
     
     public IconComboBox(T[] data, String iconFolder)
     {
@@ -106,6 +124,7 @@ public final class IconComboBox<T> extends JComboBox<T>
         
         this.setRenderer(new ItemRenderer(entries, icons));
     }
+    
     
     @Override
     public T getSelectedItem()
