@@ -17,8 +17,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 package de.engine.environment;
 
-import de.engine.objects.Ground;
-
 public class EnvProps
 {
     
@@ -28,8 +26,6 @@ public class EnvProps
     
     public double gravitational_acceleration = -9.80665; // m/s²
     
-    // ground is unique thats why it has it's own property
-    protected Ground ground;
     
     private EnvProps()
     {

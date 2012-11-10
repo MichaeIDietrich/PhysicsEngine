@@ -7,7 +7,7 @@ import java.util.*;
 import de.engine.math.Vector;
 import de.engineapp.PresentationModel;
 
-public class Circle extends de.engine.objects.Circle implements IDrawable, ISelectable, IDecorable
+public class Circle extends de.engine.objects.Circle implements IDrawable, ISelectable, IDecorable, Cloneable
 {
     private String name;
     private Color color = Color.RED;
@@ -137,5 +137,19 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
         Ellipse2D.Double circle = new Ellipse2D.Double(x, y, r2, r2);
         
         return circle;
+    }
+    
+    
+    @Override
+    public Circle clone()
+    {
+        Circle newCircle = new Circle(null, this.getPosition(), this.getRadius());
+        newCircle.name = this.name;
+        newCircle.color = this.color;
+        newCircle.border = this.border;
+        
+        super.clone(newCircle);
+        
+        return newCircle;
     }
 }

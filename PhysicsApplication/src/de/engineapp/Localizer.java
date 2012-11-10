@@ -103,7 +103,7 @@ public final class Localizer
             return entry;
         }
         
-        return id;
+        return "@" + id;
     }
     
     

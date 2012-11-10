@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 
-public class Scene
+public class Scene implements Cloneable
 {
     
     protected ArrayList<ObjectProperties> objects;
     
-    // HINT - isn't the right place for this, belongs to the application window
-    // How much pixels are one meter? The ratio could be pixel/meter:
-    double ratio = 2d / 1d;
+    // ground is unique thats why it has it's own property
+    protected Ground ground;
+    
     
     public Scene()
     {
@@ -46,35 +46,37 @@ public class Scene
     
     public void setGround(Ground ground)
     {
-        EnvProps.getInstance().ground = ground;
+        this.ground = ground;
     }
     
     public Ground getGround()
     {
-        return EnvProps.getInstance().ground;
+        return ground;
     }
     
     public void removeGround()
     {
-        EnvProps.getInstance().ground = null;
+       ground = null;
     }
     
     public void removeAll()
     {
         this.objects.clear();
-        EnvProps.getInstance().ground = null;
+        ground = null;
     }
     
-    public Scene copy()
+    
+    @Override
+    public Scene clone()
     {
         // TODO - add all properties, that need to be copied
         Scene newScene = new Scene();
         
-        newScene.setGround(this.getGround() != null ? this.getGround().copy() : null);
+        newScene.setGround(this.getGround() != null ? this.getGround().clone() : null);
         
         for (ObjectProperties object : this.getObjects())
         {
-            newScene.add(object.copy());
+            newScene.add(object.clone());
         }
         
         return newScene;

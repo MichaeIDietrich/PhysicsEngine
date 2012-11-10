@@ -14,7 +14,6 @@ import java.lang.reflect.Field;
 import javax.swing.JComponent;
 
 import de.engineapp.PresentationModel;
-import de.engineapp.windows.InfoWindow;
 
 
 public class DragAndDropController extends DropTarget
@@ -80,8 +79,6 @@ public class DragAndDropController extends DropTarget
                 {
                     String command = (String) tr.getTransferData(flavors[0]);
                     
-                    InfoWindow.setData( InfoWindow.DROPPING, "akzepiert" );
-                    
                     if (command.equals("circle") || command.equals("square") || command.equals("ground"))
                     {
                         e.getDropTargetContext().getComponent().requestFocusInWindow();
@@ -143,6 +140,8 @@ public class DragAndDropController extends DropTarget
                 int y = absY - component.getLocationOnScreen().y;
                 
                 component.dispatchEvent(new MouseEvent(component, MouseEvent.MOUSE_EXITED, System.currentTimeMillis(), 
+                        MouseEvent.BUTTON1_DOWN_MASK, x, y, absX, absY, 1, false, MouseEvent.BUTTON1));
+                component.dispatchEvent(new MouseEvent(component, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 
                         MouseEvent.BUTTON1_DOWN_MASK, x, y, absX, absY, 1, false, MouseEvent.BUTTON1));
             }
         }

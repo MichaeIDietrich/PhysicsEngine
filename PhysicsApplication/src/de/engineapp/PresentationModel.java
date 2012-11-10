@@ -100,6 +100,7 @@ public class PresentationModel
         stateMap.put(GRID, config.isShowGrid());
         stateMap.put(MAXIMIZED, config.isMaximized());
         stateMap.put(DBLCLICK_SHOW_PROPERTIES, config.isDblClickShowProperties());
+        stateMap.put(DEBUG, config.isDebug());
         propertyMap.put(LANGUAGE_CODE, config.getLangCode());
         setZoom(config.getZoom());
     }
@@ -320,12 +321,14 @@ public class PresentationModel
     
     public void storeScene()
     {
-        storedScene = scene.copy();
+        storedScene = scene.clone();
     }
     
     public void restoreScene()
     {
+        setSelectedObject(null);
         scene = storedScene;
+        physicsEngine2D.setScene(scene);
     }
     
     public boolean hasStoredScene()
@@ -513,6 +516,10 @@ public class PresentationModel
         else if (id.equals(MAXIMIZED))
         {
             Configuration.getInstance().setMaximized(value);
+        }
+        else if (id.equals(DEBUG))
+        {
+            Configuration.getInstance().setDebug(value);
         }
         
         stateMap.put(id, value);

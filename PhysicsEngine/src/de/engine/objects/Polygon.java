@@ -6,7 +6,7 @@ import de.engine.math.Transformation;
 import de.engine.math.Util;
 import de.engine.math.Vector;
 
-public class Polygon extends ObjectProperties{
+public class Polygon extends ObjectProperties implements Cloneable {
 
 	public Vector[] points;
 	
@@ -73,16 +73,28 @@ public class Polygon extends ObjectProperties{
             point.scale(scale);
         }
         this.radius = radius;
-	}
-
-	@Override
-	public ObjectProperties copy() {
-		// TODO
-		Polygon newPolygon = new Polygon(getPosition());
-		return newPolygon;
-	}
-
-	
+    }
+    
+    
+    @Override
+    public Polygon clone() {
+        Polygon newPolygon = new Polygon(getPosition());
+        clone(newPolygon);
+        
+        return newPolygon;
+    }
+    
+    
+    public void clone(Polygon newPolygon)
+    {
+        // TODO
+        newPolygon.setMass(getMass());
+        newPolygon.velocity = this.velocity.clone();
+        newPolygon.id = this.id;
+        newPolygon.surface = this.surface;
+    }
+    
+    
     @Override
     public boolean contains(double x, double y)
     {

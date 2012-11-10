@@ -1,7 +1,6 @@
 package de.engineapp;
 
-import de.engine.math.PhysicsEngine2D;
-import de.engineapp.windows.InfoWindow;
+import static de.engineapp.Constants.*;
 
 public class Physics
 {
@@ -12,16 +11,16 @@ public class Physics
     }
     
     
-    private PhysicsEngine2D engine = null;
+    private PresentationModel pModel;
     private long deltaTime;
     private FinishedCallback finishedCallback;
     
     private Thread worker = null;
     
     
-    public Physics(PhysicsEngine2D engine, long deltaTime, FinishedCallback finishedCallback)
+    public Physics(PresentationModel model, long deltaTime, FinishedCallback finishedCallback)
     {
-        this.engine = engine;
+        pModel = model;
         this.deltaTime = deltaTime;
         this.finishedCallback = finishedCallback;
     }
@@ -45,11 +44,12 @@ public class Physics
                 {
                     long t = System.currentTimeMillis();
                     
-                    engine.calculateNextFrame( deltaTime/1000d );
+                    pModel.getPhysicsEngine2D().calculateNextFrame( deltaTime/1000d );
                     finishedCallback.done();
                     
                     
                     t = System.currentTimeMillis() - t;
+                    pModel.setProperty(CALCULATE_TIME, "" + t);
                     
                     try
                     {
@@ -71,14 +71,12 @@ public class Physics
                     if (System.currentTimeMillis() >= timeCounter)
                     {
                         timeCounter = System.currentTimeMillis() + 1000;
-                        InfoWindow.setData(InfoWindow.FPS, "" + fpsCounter);
-                        InfoWindow.refresh();
+                        pModel.setProperty(FPS, "" + fpsCounter);
                         fpsCounter = 0;
                     }
                 }
                 
-                InfoWindow.setData(InfoWindow.FPS, "0");
-                InfoWindow.refresh();
+                pModel.setProperty(FPS, "0");
             }
         };
         

@@ -3,6 +3,7 @@ package de.engineapp.controls;
 import java.awt.*;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 /**
  * An easy-to-use Panel, which organizes its contained components into rows, depending
@@ -10,7 +11,7 @@ import javax.swing.*;
  * 
  * @author Micha
  */
-public class VerticalBoxPanel extends JPanel
+public class VerticalBoxPanel extends JScrollPane
 {
     private static final long serialVersionUID = -4990424757171113810L;
     
@@ -22,9 +23,25 @@ public class VerticalBoxPanel extends JPanel
      */
     public VerticalBoxPanel()
     {
+        this(true);
+    }
+    
+    
+    /**
+     * Create a new <code>VerticalBoxPanel</code>, which will align components in row.
+     */
+    public VerticalBoxPanel(boolean showScrollBarsAsNeeded)
+    {
         box = Box.createVerticalBox();
         box.setOpaque(false);
-        super.add(box);
+        box.setBorder(new EmptyBorder(5, 5, 5, 5));
+        super.setViewportView(box);
+        this.setBorder(null);
+        if (!showScrollBarsAsNeeded)
+        {
+            this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+            this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        }
     }
     
     
@@ -46,8 +63,15 @@ public class VerticalBoxPanel extends JPanel
      * LEFT_ALIGNMENT is default.
      */
     @Override
-    public void add(Component comp, Object contraints)
+    public void add(Component comp, Object constraints)
     {
+        // special case for JScrollPane
+        if (constraints != null && constraints instanceof String)
+        {
+            super.add(comp, constraints);
+            return;
+        }
+        
         float alignment;
         
         if (comp == null)
@@ -55,13 +79,13 @@ public class VerticalBoxPanel extends JPanel
             throw new NullPointerException("component can't be null");
         }
         
-        if (contraints == null)
+        if (constraints == null)
         {
             alignment = comp.getAlignmentX();
         }
-        else if (contraints instanceof Float)
+        else if (constraints instanceof Float)
         {
-            alignment = (float) contraints;
+            alignment = (float) constraints;
         }
         else
         {
