@@ -22,7 +22,7 @@ public class CollisionTimer
         {
             return getCirclePolygonsCollTime(o2, o1, begin, end);
         }
-        //return -1;
+        // return -1;
     }
     
     public static double getCirclesCollTime(Circle o1, Circle o2)
@@ -53,19 +53,24 @@ public class CollisionTimer
         int coll_id = -1;
         for (int i = 0; i < times.size(); i++)
         {
-            if (o1 instanceof Circle && o2 instanceof Polygon) {
+            if (o1 instanceof Circle && o2 instanceof Polygon)
+            {
                 coll.put(i, collideCirclePolygon((Circle) o1, (Polygon) o2, times.get(i)));
             }
-            else if (o1 instanceof Polygon && o2 instanceof Circle) {
+            else if (o1 instanceof Polygon && o2 instanceof Circle)
+            {
                 coll.put(i, collideCirclePolygon((Circle) o2, (Polygon) o1, times.get(i)));
             }
-            else if (o1 instanceof Polygon && o2 instanceof Polygon) {
+            else if (o1 instanceof Polygon && o2 instanceof Polygon)
+            {
                 coll.put(i, collidePolygons((Polygon) o1, (Polygon) o2, times.get(i)));
-            } else {
+            }
+            else
+            {
                 return -1;
             }
             
-            if (!coll.get(i) && coll.get(pre.get(i)))
+            if (coll.get(i) && !coll.get(pre.get(i)))
             {
                 times.setSize(i + 1);
                 pre.setSize(i + 1);
@@ -73,10 +78,6 @@ public class CollisionTimer
                 past.set(i, i);
                 coll_id = i;
             }
-            
-            /*
-             * if(coll.get(times.get(i)) && !coll.get(times.get(past.get(i)))) { pre.set(i, i); coll_id = past.get(i); }
-             */
             
             if (pre.get(i) != i)
             {

@@ -23,7 +23,7 @@ public class Helper
         MinMax mm = new MinMax();
         for (int i = 0; i < p.points.length; i++)
         {
-            double d = Util.scalarProduct(p.getWorldPointPos(i, time), axis);
+            double d = Util.scalarProduct(axis, p.getWorldPointPos(i, time));
             if (d < mm.min)
                 mm.min = d;
             else if (d > mm.max)
