@@ -1,6 +1,5 @@
 package de.engine.math;
 
-import de.engine.colldetect.Helper;
 import de.engine.objects.Circle;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
@@ -124,21 +123,21 @@ public class Util
         int firstaxis = 0;
         if(p instanceof Square) {
             axis = new Vector[2 + p.points.length];
-            axis[0] = Util.minus(p.getWorldPointPos(0, time), p.getWorldPointPos(1, time)).getNormalVector().getUnitVector();
-            axis[1] = Util.minus(p.getWorldPointPos(1, time), p.getWorldPointPos(2, time)).getNormalVector().getUnitVector();
+            axis[0] = Util.minus(p.getWorldPointPos(1, time), p.getWorldPointPos(0, time)).getNormalVector().getUnitVector();
+            axis[1] = Util.minus(p.getWorldPointPos(2, time), p.getWorldPointPos(1, time)).getNormalVector().getUnitVector();
             firstaxis = 2;
         } else {
             axis = new Vector[p.points.length * 2];
             for (int i = 0; i < p.points.length; i++)
             {
                 int j = (i == p.points.length - 1) ? 0 : i + 1;
-                axis[i] = Util.minus(p.getWorldPointPos(i, time), p.getWorldPointPos(j, time)).getNormalVector().getUnitVector();
+                axis[i] = Util.minus(p.getWorldPointPos(j, time), p.getWorldPointPos(i, time)).getNormalVector().getUnitVector();
                 firstaxis = i + 1;
             }
         }
         for (int i = 0; i < p.points.length; i++)
         {
-            axis[firstaxis + i] = Util.minus(c.getPosition(time), p.getWorldPointPos(i, time)).getUnitVector();
+            axis[firstaxis + i] = Util.minus(p.getWorldPointPos(i, time), c.getPosition(time)).getUnitVector();
         }
         return axis;
     }
