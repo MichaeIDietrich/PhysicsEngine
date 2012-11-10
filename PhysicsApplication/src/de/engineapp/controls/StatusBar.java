@@ -94,7 +94,10 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
         switch (id)
         {
             case FPS:
-                lblFPS.setText(" " + value + " FPS ");
+                if (lblFPS != null)
+                {
+                    lblFPS.setText(" " + value + " FPS ");
+                }
                 break;
                 
             case CALCULATE_TIME:
