@@ -3,18 +3,27 @@ package de.engineapp.controls;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
-import javax.swing.BorderFactory;
-import javax.swing.JToolBar;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
 
 import de.engine.environment.Scene;
+import de.engine.math.Vector;
+import de.engine.objects.*;
+import de.engine.objects.ObjectProperties.Material;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.PresentationModel.ViewBoxListener;
+import de.engineapp.visual.*;
+import de.engineapp.visual.Circle;
+import de.engineapp.visual.Square;
+import de.engineapp.visual.Ground;
 import de.engineapp.windows.*;
+import de.engineapp.xml.*;
 
 import static de.engineapp.Constants.*;
 
@@ -22,6 +31,24 @@ import static de.engineapp.Constants.*;
 public class MainToolBar extends JToolBar implements ActionListener, ChangeListener, StorageListener, ViewBoxListener
 {
     private static final long serialVersionUID = 4164673212238397915L;
+    
+    private final static Localizer LOCALIZER = Localizer.getInstance();
+    
+    private static final FileFilter SCENE_FILTER = new FileFilter()
+    {
+
+        @Override
+        public boolean accept(File f)
+        {
+            return f.getName().endsWith(".scnx");
+        }
+        
+        @Override
+        public String getDescription()
+        {
+            return "Scene Files (*.scnx)";
+        }
+    };
     
     
     private PresentationModel pModel;
@@ -33,7 +60,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     private EasyButton pause;
     private EasyButton reset;
     private EasyButton grid;
-    private EasyButton info;
     private EasyButton focus;
     private EasyButton settings;
     
@@ -50,16 +76,15 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         pModel.addViewBoxListener(this);
         pModel.addStorageListener(this);
         
-        new_     = new EasyButton(Util.getIcon("new"),      "new",      this);
-        open     = new EasyButton(Util.getIcon("open"),     "open",     this);
-        save     = new EasyButton(Util.getIcon("save"),     "save",     this);
-        play     = new EasyButton(Util.getIcon("play"),     "play",     this);
-        pause    = new EasyButton(Util.getIcon("pause"),    "pause",    this);
-        reset    = new EasyButton(Util.getIcon("reset"),    "reset",    this);
-        grid     = new EasyButton(Util.getIcon("grid"),     "grid",     this);
-        info     = new EasyButton(Util.getIcon("loupe"),    "info",     this);
-        focus    = new EasyButton(Util.getIcon("focus"),    "focus",    this);
-        settings = new EasyButton(Util.getIcon("settings"), "settings", this);
+        new_     = new EasyButton(Util.getIcon("new"),      CMD_NEW,      this);
+        open     = new EasyButton(Util.getIcon("open"),     CMD_OPEN,     this);
+        save     = new EasyButton(Util.getIcon("save"),     CMD_SAVE,     this);
+        play     = new EasyButton(Util.getIcon("play"),     CMD_PLAY,     this);
+        pause    = new EasyButton(Util.getIcon("pause"),    CMD_PAUSE,    this);
+        reset    = new EasyButton(Util.getIcon("reset"),    CMD_RESET,    this);
+        grid     = new EasyButton(Util.getIcon("grid"),     CMD_GRID,     this);
+        focus    = new EasyButton(Util.getIcon("focus"),    CMD_FOCUS,    this);
+        settings = new EasyButton(Util.getIcon("settings2"), CMD_SETTINGS, this);
         
         pause.setEnabled(false);
         reset.setEnabled(false);
@@ -77,14 +102,13 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         this.add(reset);
         this.addSeparator();
         this.add(grid);
-        this.add(info);
         this.add(focus);
         this.addSeparator();
         this.add(slider);
         this.add(settings);
         
         slider.setValue(pModel.getZoom());
-        grid.setSelected(pModel.isState("grid"));
+        grid.setSelected(pModel.isState(GRID));
     }
     
     
@@ -93,55 +117,51 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     {
         switch (e.getActionCommand())
         {
-            case "new":
+            case CMD_NEW:
                 pModel.setScene(new Scene());
                 pModel.setZoom(1.0);
                 pModel.setViewOffset(0, 0);
+                pModel.fireRepaintEvents();
                 break;
                 
-            case "open":
+            case CMD_OPEN:
+                loadScene();
+                break;
+                
+            case CMD_SAVE:
+                saveScene();
+                break;
+                
+            case CMD_PLAY:
+                pModel.setState(RUN_PHYSICS, true);
                 
                 break;
                 
-            case "save":
-                
+            case CMD_PAUSE:
+                pModel.setState(RUN_PHYSICS, false);
                 break;
                 
-            case "play":
-                pModel.setState("runPhysics", true);
-                
-                break;
-                
-            case "pause":
-                pModel.setState("runPhysics", false);
-                break;
-                
-            case "reset":
+            case CMD_RESET:
                 // TODO - disabled, because it does not work
-                //pModel.restoreScene();
+                pModel.restoreScene();
+                reset.setEnabled(false);
+                pModel.fireRepaintEvents();
                 break;
                 
-            case "grid":
-                pModel.toggleState("grid");
-                grid.setSelected(pModel.isState("grid"));
+            case CMD_GRID:
+                pModel.toggleState(GRID);
+                grid.setSelected(pModel.isState(GRID));
                 pModel.fireRepaintEvents();
                 
                 break;
                 
-            case "info":
-                pModel.toggleState("info");
-                info.setSelected(pModel.isState("info"));
-                InfoWindow.showWindow(pModel.isState("info"));
-                
-                break;
-                
-            case "focus":
+            case CMD_FOCUS:
                 pModel.setViewOffset(0, 0);
                 pModel.fireRepaintEvents();
                 
                 break;
                 
-            case "settings":
+            case CMD_SETTINGS:
                 if (SettingsDialog.showDialog((Window) this.getTopLevelAncestor()))
                 {
                     pModel.setProperty(LANGUAGE_CODE, Configuration.getInstance().getLangCode());
@@ -168,6 +188,10 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             case RUN_PHYSICS:
                 if (value)
                 {
+                    new_.setEnabled(false);
+                    open.setEnabled(false);
+                    save.setEnabled(false);
+                    
                     play.setEnabled( false );
                     pause.setEnabled( true );
                     
@@ -175,12 +199,16 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                     
                     // store scene copy, to enable reset function
                     // TODO - disabled, because it does not work
-                    //pModel.storeScene();
+                    pModel.storeScene();
                     
                     pModel.getPhysicsState().start();
                 }
                 else
                 {
+                    new_.setEnabled(true);
+                    open.setEnabled(true);
+                    save.setEnabled(true);
+                    
                     pause.setEnabled( false );
                     play.setEnabled(   true );
                     pModel.getPhysicsState().pause();
@@ -195,12 +223,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 
             case GRID:
                 grid.setSelected(value);
-                break;
-                
-            case INFO:
-                info.setSelected(value);
-                InfoWindow.showWindow(value);
-                
                 break;
         }
     }
@@ -218,5 +240,175 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     public void zoomChanged(double zoom)
     {
         slider.setValue(pModel.getZoom());
+    }
+    
+    
+    private void saveScene()
+    {
+        File stdSceneDir = new File("scenes");
+        
+        if (!stdSceneDir.exists())
+        {
+            stdSceneDir.mkdir();
+        }
+        
+        UIManager.put("FileChooser.cancelButtonText", LOCALIZER.getString("CANCEL"));
+        UIManager.put("FileChooser.cancelButtonToolTipText", LOCALIZER.getString("CANCEL"));
+        UIManager.put("FileChooser.saveButtonText", LOCALIZER.getString("SAVE"));
+        UIManager.put("FileChooser.saveButtonToolTipText", LOCALIZER.getString("SAVE"));
+        
+        JFileChooser dlgSave = new JFileChooser("scene");
+        dlgSave.setCurrentDirectory(stdSceneDir);
+        dlgSave.setSelectedFile(new File("scene.scnx"));
+        dlgSave.setFileFilter(SCENE_FILTER);
+        dlgSave.setDialogTitle(LOCALIZER.getString("TITLE_SAVE"));
+        
+        if (dlgSave.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
+        {
+            XMLWriter writer = new XMLWriter(dlgSave.getSelectedFile());
+            
+            Scene scene = pModel.getScene();
+            
+            writer.writeDeclaration();
+            writer.writeStartElement("Scene");
+            writer.writeAttribute("gravitation", "9.81"); // missing property
+            
+            if (scene.getGround() != null)
+            {
+                writer.writeStartElement("Ground");
+                writer.writeAttribute("watermark", "" + scene.getGround().watermark);
+                writer.writeEndElement();
+            }
+            
+            for (ObjectProperties object : scene.getObjects())
+            {
+                if (object instanceof Circle)
+                {
+                    writer.writeStartElement("Circle");
+                }
+                else if (object instanceof Square)
+                {
+                    writer.writeStartElement("Square");
+                }
+                
+//            writer.writeAttribute("id", "" + object.getId()); // not possible to set, if a file is loaded
+                writer.writeAttribute("name", ((ISelectable) object).getName());
+                writer.writeAttribute("material", "" + object.surface);
+                writer.writeAttribute("x", "" + object.getPosition().getX());
+                writer.writeAttribute("y", "" + object.getPosition().getY());
+                writer.writeAttribute("vx", "" + object.velocity.getX());
+                writer.writeAttribute("vy", "" + object.velocity.getY());
+                writer.writeAttribute("mass", "" + object.getMass());
+                writer.writeAttribute("radius", "" + object.getRadius());
+                writer.writeAttribute("pinned", object.isPinned ? "true" : "false");
+                
+                writer.writeEndElement();
+            }
+            
+            writer.writeEndElement();
+            writer.close();
+        }
+    }
+    
+    
+    private void loadScene()
+    {
+        File stdSceneDir = new File("scenes");
+        
+        if (!stdSceneDir.exists())
+        {
+            stdSceneDir.mkdir();
+        }
+        
+        UIManager.put("FileChooser.cancelButtonText", LOCALIZER.getString("CANCEL"));
+        UIManager.put("FileChooser.cancelButtonToolTipText", LOCALIZER.getString("CANCEL"));
+        UIManager.put("FileChooser.openButtonText", LOCALIZER.getString("OPEN"));
+        UIManager.put("FileChooser.openButtonToolTipText", LOCALIZER.getString("OPEN"));
+        
+        JFileChooser dlgOpen = new JFileChooser("scene");
+        dlgOpen.setCurrentDirectory(stdSceneDir);
+        dlgOpen.setSelectedFile(new File("scene.scnx"));
+        dlgOpen.setFileFilter(SCENE_FILTER);
+        dlgOpen.setDialogTitle(LOCALIZER.getString("TITLE_OPEN"));
+        
+        if (dlgOpen.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
+        {
+            XMLReader reader = new XMLReader(dlgOpen.getSelectedFile());
+            
+            if (reader.getNode("Scene") != null)
+            {
+                Scene scene = new Scene();
+                
+                ObjectProperties object = null;
+                Element node = reader.getNode("Scene/Ground");
+                
+                if (node != null)
+                {
+                    scene.setGround(new Ground(pModel, getInt(node.getAttribute("watermark"))));
+                }
+                
+                for (Element obj : reader.getNodes("Scene/Circle | Scene/Square"))
+                {
+                    switch (obj.getName())
+                    {
+                        case "Circle":
+                            object = new Circle(pModel, new Vector(getDouble(obj.getAttribute("x")), getDouble(obj.getAttribute("y"))), 
+                                    getDouble(obj.getAttribute("radius")));
+                            break;
+                            
+                        case "Square":
+                            object = new Square(pModel, new Vector(getDouble(obj.getAttribute("x")), getDouble(obj.getAttribute("y"))), 
+                                    getDouble(obj.getAttribute("radius")));
+                            break;
+                            
+                        default:
+                            continue;
+                    }
+                    
+                    ((ISelectable) object).setName(obj.getAttribute("name"));
+                    object.setMass(getDouble(obj.getAttribute("mass")));
+                    object.velocity = new Vector(getDouble(obj.getAttribute("vx")), getDouble(obj.getAttribute("vy")));
+                    
+                    String strMat = obj.getAttribute("material");
+                    for (Material mat : Material.values())
+                    {
+                        if (mat.toString().equals(strMat))
+                        {
+                            object.surface = mat;
+                            break;
+                        }
+                    }
+                    
+                    object.isPinned = "true".equals(obj.getAttribute("pinned"));
+                    
+                    scene.add(object);
+                }
+                
+                pModel.setScene(scene);
+                pModel.fireRepaintEvents();
+            }
+        }
+    }
+    
+    
+    private double getDouble(String value)
+    {
+        if (value == null)
+        {
+            return 0.0;
+        }
+        
+        return Double.parseDouble(value);
+    }
+    
+    
+    private int getInt(String value)
+    {
+        if (value == null)
+        {
+            return 0;
+        }
+        
+        return Integer.parseInt(value);
     }
 }

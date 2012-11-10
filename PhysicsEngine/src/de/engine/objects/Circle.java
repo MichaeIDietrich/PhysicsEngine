@@ -5,7 +5,7 @@ import de.engine.math.Transformation;
 import de.engine.math.Util;
 import de.engine.math.Vector;
 
-public class Circle extends ObjectProperties
+public class Circle extends ObjectProperties implements Cloneable
 {
     public Circle(Vector position, double radius)
     {
@@ -38,14 +38,22 @@ public class Circle extends ObjectProperties
     }
     
     @Override
-    public Circle copy()
+    public Circle clone()
     {
-        // TODO - add all properties, that need to be copied
-        Circle newCircle = new Circle(this.getPosition(), this.radius);
-        newCircle.setMass(getMass());
-        // ...
+        Circle newCircle = new Circle(this.getPosition().clone(), this.radius);
+        clone(newCircle);
         
         return newCircle;
+    }
+    
+    public void clone(Circle newCircle)
+    {
+        // TODO - add all properties, that need to be copied
+        newCircle.setMass(getMass());
+        newCircle.velocity = this.velocity.clone();
+        newCircle.id = this.id;
+        newCircle.surface = this.surface;
+        // ...
     }
     
     @Override

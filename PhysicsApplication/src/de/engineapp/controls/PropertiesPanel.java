@@ -320,7 +320,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     @Override
     public void sceneUpdated(Scene scene)
     {
-        if(pModel.getSelectedObject() != null) //vermeidet ungewollten Aufruf des ChangeListeners
+        if(this.isVisible()) //vermeidet ungewollten Aufruf des ChangeListeners
         {
             avoidUpdate = 1;
             massInput.setValue(pModel.getSelectedObject().getMass());
@@ -395,4 +395,20 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     
     @Override
     public void mouseReleased(MouseEvent e) { }
+    
+    
+//    @Override
+//    public void setVisible(boolean aFlag)
+//    {
+//        // connect this property to the JScrollPane
+//        this.getParent().getParent().setVisible(aFlag);
+//    }
+//    
+//    @Override
+//    @Transient
+//    public boolean isVisible()
+//    {
+//        // connect this property to the JScrollPane
+//        return this.getParent().getParent().isVisible();
+//    }
 }

@@ -73,9 +73,10 @@ public class Ground //extends ObjectProperties
     }
     
     
-    public Ground copy()
+    @Override
+    public Ground clone()
     {
-     // TODO - add all properties, that need to be copied
+        // TODO - add all properties, that need to be copied
         Ground newGround = new Ground(this.watermark);
         // ...
         

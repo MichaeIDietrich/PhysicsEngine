@@ -53,8 +53,12 @@ public class Main
                     }
                     break;
                     
-                case "-info":
-                    config.setShowInfo(true);
+                case "-debug":
+                    config.setDebug(true);
+                    break;
+                    
+                case "-nodebug":
+                    config.setDebug(false);
                     break;
             }
         }

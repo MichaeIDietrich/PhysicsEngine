@@ -8,7 +8,7 @@ import java.util.*;
 import de.engine.math.Vector;
 import de.engineapp.PresentationModel;
 
-public class Square extends de.engine.objects.Square implements IDrawable, ISelectable, IDecorable
+public class Square extends de.engine.objects.Square implements IDrawable, ISelectable, IDecorable, Cloneable
 {
     private String name;
     private Color color = Color.GREEN;
@@ -19,15 +19,15 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     public Square(PresentationModel model, Vector position, Vector corner)
     {
         super(position, corner);
-        name = "Objekt " + this.id;
+        name = "Object " + this.id;
         decorMap = new HashMap<>();
     }
     
     
     public Square(PresentationModel model, Vector position, double radius)
     {
-        super(position, new Vector(radius, radius));
-        name = "Objekt " + this.id;
+        super(position, new Vector(radius * Math.cos(Math.PI / 4), radius * Math.sin(Math.PI / 4)));
+        name = "Object " + this.id;
         decorMap = new HashMap<>();
     }
     
@@ -127,5 +127,19 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     public Collection<IDrawable> getDecorSet()
     {
         return decorMap.values();
+    }
+    
+    
+    @Override
+    public Square clone()
+    {
+        Square newSquare = new Square(null, this.getPosition(), this.getRadius());
+        newSquare.name = this.name;
+        newSquare.color = this.color;
+        newSquare.border = this.border;
+        
+        super.clone(newSquare);
+        
+        return newSquare;
     }
 }

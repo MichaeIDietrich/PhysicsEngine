@@ -2,7 +2,7 @@ package de.engine.math;
 
 import java.text.MessageFormat;
 
-public class Vector
+public class Vector implements Cloneable
 {
     public static final Integer ZEILENSUMMENNORM = 10; 
     public static final Integer EUKLIDISCHENORM  = 11;
@@ -36,6 +36,11 @@ public class Vector
         this.value[1] = y;
         
         calcLength = false;
+    }
+    
+    public Vector(Vector vector)
+    {
+        this(vector.getX(), vector.getY());
     }
     
     public double getX()

@@ -19,7 +19,6 @@ import de.engineapp.PresentationModel.SceneListener;
 import de.engineapp.visual.*;
 import de.engineapp.visual.Circle;
 import de.engineapp.visual.decor.*;
-import de.engineapp.windows.InfoWindow;
 
 
 public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener, KeyListener, MouseWheelListener
@@ -157,9 +156,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         }
         else if (SwingUtilities.isRightMouseButton(e))
         {
-            InfoWindow.setData( InfoWindow.ACTION, "Rechte Maustaste gedrückt" );
-            InfoWindow.refresh();
-            
             mouseOffset = new Point(e.getPoint());
         }
         else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
@@ -213,9 +209,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             
             // refresh canvas
             pModel.fireRepaintEvents();
-            
-            InfoWindow.setData( InfoWindow.COORDINATES, pModel.toTransformedVector(e.getPoint()) );
-            InfoWindow.refresh();
         }
         else if ((SwingUtilities.isMiddleMouseButton(e) || (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown())) && pModel.getSelectedObject() != null)
         {
@@ -226,11 +219,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     
     
     @Override
-    public void mouseMoved(MouseEvent e)
-    {
-        InfoWindow.setData( InfoWindow.COORDINATES, pModel.toTransformedVector(e.getPoint()) );
-        InfoWindow.refresh();
-    }
+    public void mouseMoved(MouseEvent e) { }
     
     
     @Override

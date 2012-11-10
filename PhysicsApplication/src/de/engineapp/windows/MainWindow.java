@@ -4,9 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-import javax.swing.JFrame;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import de.engine.environment.Scene;
 import de.engine.math.PhysicsEngine2D;
@@ -57,7 +55,6 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
             {
                 pModel.getPhysicsState().pause();
                 MainWindow.this.dispose();
-                InfoWindow.dispose();
                 Configuration.save();
             }
         });
@@ -84,20 +81,12 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         pModel.setPhysicsEngine2D(new PhysicsEngine2D());
         pModel.setScene(new Scene());
         
-        pModel.setPhysicsState(new Physics(pModel.getPhysicsEngine2D(), 1000L / 30L, new Physics.FinishedCallback()
+        pModel.setPhysicsState(new Physics(pModel, 1000L / 30L, new Physics.FinishedCallback()
         {
             
             @Override
             public void done()
             {
-                ObjectProperties selObject = pModel.getSelectedObject();
-                
-                if (selObject != null)
-                {
-                    InfoWindow.setData(InfoWindow.VELOCITY, selObject.velocity.getX() + ", " + selObject.velocity.getY());
-                    InfoWindow.setData(InfoWindow.POSITION, selObject.getPosition().getX() + ", " + selObject.getPosition().getY());
-                    InfoWindow.refresh();
-                }
                 pModel.fireSceneUpdateEvents();
                 pModel.fireRepaintEvents(true);
             }
@@ -109,8 +98,6 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         
         
         this.setVisible(true);
-        
-        InfoWindow.attachToFrame(this);
     }
     
     
@@ -175,8 +162,9 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         
         
         // set up right panel
-        panelProperties.setVisible(false);
+//        this.add(new JScrollPane(panelProperties), BorderLayout.LINE_END);
         this.add(panelProperties, BorderLayout.LINE_END);
+        panelProperties.setVisible(false);
         
         
         // this one is handling all the drag'n'drop stuff
@@ -192,8 +180,6 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
                 switch (command)
                 {
                     case "circle":
-                        InfoWindow.setData( InfoWindow.ACTION, "Kreis erstellt [" + location.x + ", " + location.y + "]" );
-                        
                         Circle circle = new Circle(pModel, sceneLocation, 8);
                         circle.setMass(10);
                         
@@ -203,9 +189,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
                         break;
                         
                     case "square":
-                        InfoWindow.setData( InfoWindow.ACTION, "Quadrat erstellt [" + location.x + ", " + location.y + "]" );
-                        
-                        Square square = new Square(pModel, sceneLocation, 8);
+                        Square square = new Square(pModel, sceneLocation, 12);
                         square.setMass(10);
                         
                         pModel.addObject( square );
@@ -214,8 +198,6 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
                         break;
                         
                     case "ground":
-                        InfoWindow.setData( InfoWindow.ACTION, "Boden erstellt [" + location.x + ", " + location.y + "]" );
-                        
                         pModel.setGround(new Ground(pModel, (int) sceneLocation.getY()));
                         
                         pModel.fireRepaintEvents();
@@ -327,7 +309,8 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         
         canvas.repaint();
         
-        InfoWindow.setData( InfoWindow.TIMEFORDRAWING, "" + (System.currentTimeMillis() - t) );
+        
+        pModel.setProperty(REPAINT_TIME, "" + (System.currentTimeMillis() - t));
     }
     
     

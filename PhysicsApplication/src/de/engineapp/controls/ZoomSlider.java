@@ -36,6 +36,7 @@ public class ZoomSlider extends JPanel
     public ZoomSlider(double initValue)
     {
         this.setLayout(null);
+        this.setOpaque(false);
         this.setMaximumSize(new Dimension(240, 30));
         this.setMinimumSize(new Dimension(240, 30));
         this.setPreferredSize(new Dimension(240, 30));

@@ -18,10 +18,10 @@ public class Configuration implements Serializable, Cloneable
     private double zoom = 1.0;
     private boolean showGrid = false;
     private String langCode = null;
-    private boolean showInfo = false;
     private boolean maximized = false;
     private boolean dblClickShowProperties = false;
     private String lookAndFeel = null;
+    private boolean debug = false;
     
     
     public static Configuration getInstance()
@@ -56,17 +56,6 @@ public class Configuration implements Serializable, Cloneable
     public void setShowGrid(boolean showGrid)
     {
         this.showGrid = showGrid;
-    }
-    
-    
-    public boolean isShowInfo()
-    {
-        return showInfo;
-    }
-    
-    public void setShowInfo(boolean showInfo)
-    {
-        this.showInfo = showInfo;
     }
     
     
@@ -146,6 +135,17 @@ public class Configuration implements Serializable, Cloneable
     public void setLookAndFeel(String lookAndFeel)
     {
         this.lookAndFeel = lookAndFeel;
+    }
+    
+    
+    public boolean isDebug()
+    {
+        return debug;
+    }
+    
+    public void setDebug(boolean debug)
+    {
+        this.debug = debug;
     }
     
     

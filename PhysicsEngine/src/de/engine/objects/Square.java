@@ -3,7 +3,7 @@ package de.engine.objects;
 import de.engine.math.Util;
 import de.engine.math.Vector;
 
-public class Square extends Polygon {
+public class Square extends Polygon implements Cloneable {
 	
 	public Square(Vector position, Vector corner) {
 		super(position);
@@ -35,4 +35,14 @@ public class Square extends Polygon {
 		// TODO Auto-generated method stub
 
 	}
+    
+    
+    @Override
+    public Square clone()
+    {
+        Square newSquare = new Square(this.getPosition().clone(), this.points[0].clone());
+        super.clone(newSquare);
+        
+        return newSquare;
+    }
 }

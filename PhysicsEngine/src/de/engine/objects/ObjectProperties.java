@@ -5,7 +5,7 @@ import de.engine.math.Transformation;
 import de.engine.math.Util;
 import de.engine.math.Vector;
 
-public abstract class ObjectProperties
+public abstract class ObjectProperties implements Cloneable
 {
     public enum Material
     {
@@ -47,6 +47,11 @@ public abstract class ObjectProperties
     public Vector getPosition()
     {
         return world_position.translation;
+    }
+    
+    public void setPosition(double x, double y)
+    {
+        world_position.translation = new Vector(x, y);
     }
     
     public Vector getPosition(double time)
@@ -145,7 +150,8 @@ public abstract class ObjectProperties
         world_position.rotation.setAngle(world_position.rotation.getAngle() + angular_velocity / time);
     }
     
-    public abstract ObjectProperties copy();
+    @Override
+    public abstract ObjectProperties clone();
     
     public abstract boolean contains(double x, double y);
 }
