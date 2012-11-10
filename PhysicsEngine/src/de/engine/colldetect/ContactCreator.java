@@ -36,15 +36,10 @@ public class ContactCreator
             Vector edge_ray = Util.minus(o2.getWorldPointPos(j, time), point_pos);
             Vector pos_ray = edge_ray.getNormalVector().getUnitVector();
             
-            double d1xd2y = pos_ray.getX() * edge_ray.getY();
-            double d1yd2x = pos_ray.getY() * edge_ray.getX();
-            double s2 = (point_pos.getX() - circle_pos.getX()) / (pos_ray.getX() - (d1xd2y / d1yd2x)) + ((circle_pos.getY() - point_pos.getY()) * edge_ray.getX()) / (d1xd2y - d1yd2x);
-            double s1 = (circle_pos.getY() - point_pos.getY() + s2 * pos_ray.getY()) / edge_ray.getY();
-            if (s2 >= 0 && s2 <= 1 && s1 > -1)
+            Vector coll_point = Util.crossEdges(circle_pos, Util.scale(pos_ray, -1 * o1.getRadius()), point_pos, edge_ray);
+            if (coll_point != null)
             {
-                Vector coll_point = new Vector(point_pos.getX() + s2 * edge_ray.getX(), point_pos.getY() + s2 * edge_ray.getY());
-                Vector normal = pos_ray.getNormalVector().getUnitVector();
-                cd.contacts.add(new Contact(coll_point, normal));
+                cd.contacts.add(new Contact(coll_point, pos_ray));
             }
         }
         
