@@ -15,7 +15,6 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     private Color border = null;
     private HashMap<String, IDrawable> decorMap;
     
-    
     public Square(PresentationModel model, Vector position, Vector corner)
     {
         super(position, corner);
@@ -23,14 +22,12 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
         decorMap = new HashMap<>();
     }
     
-    
     public Square(PresentationModel model, Vector position, double radius)
     {
         super(position, new Vector(radius * Math.cos(Math.PI / 4), radius * Math.sin(Math.PI / 4)));
         name = "Object " + this.id;
         decorMap = new HashMap<>();
     }
-    
     
     @Override
     public String getName()
@@ -43,7 +40,6 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     {
         this.name = name;
     }
-    
     
     @Override
     public Color getColor()
@@ -60,7 +56,6 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
         }
     }
     
-    
     @Override
     public Color getBorder()
     {
@@ -73,26 +68,25 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
         this.border = color;
     }
     
-    
     @Override
     public void render(Graphics2D g)
     {
         Path2D.Double square = new Path2D.Double();
         square.moveTo(this.getPosition().getX() + this.points[3].getX(), this.getPosition().getY() + this.points[3].getY());
         
-        for (int i = 0; i < this.points.length; i++)
-        {
-            Vector p = getWorldPointPos(i);
-            square.lineTo(p.getX(), p.getY());
-        }
+        /*
+         * for (int i = 0; i < this.points.length; i++) { Vector p = getWorldPointPos(i); square.lineTo(p.getX(), p.getY()); }
+         */
         
-        /*for (Vector point : this.points)
+        for (Vector point : this.points)
         {
             square.lineTo(point.getX(), point.getY());
-        }*/
+        }
+        if (0 < this.points.length)
+            square.lineTo(this.points[0].getX(), this.points[0].getY());
         
-        //square.transform(AffineTransform.getRotateInstance(this.world_position.rotation.getAngle()));
-        //square.transform(AffineTransform.getTranslateInstance(this.getPosition().getX(), this.getPosition().getY()));
+        square.transform(AffineTransform.getRotateInstance(this.world_position.rotation.getAngle()));
+        square.transform(AffineTransform.getTranslateInstance(this.getPosition().getX(), this.getPosition().getY()));
         
         g.setColor(color);
         g.fill(square);
@@ -103,7 +97,6 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
             g.draw(square);
         }
     }
-    
     
     @Override
     public void putDecor(String key, IDrawable decor)
