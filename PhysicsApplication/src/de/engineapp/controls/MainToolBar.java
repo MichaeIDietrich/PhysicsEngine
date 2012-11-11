@@ -165,6 +165,10 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             case CMD_RESET:
                 pModel.restoreScene();
                 reset.setEnabled(false);
+                if (pModel.isState(SHOW_ARROWS_ALWAYS))
+                {
+                    pModel.setState(SHOW_ARROWS_ALWAYS, true);
+                }
                 pModel.fireRepaintEvents();
                 break;
                 

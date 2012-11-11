@@ -287,6 +287,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                 {
                     pModel.setSelectedObject(pModel.getScene().getObject(0));
                 }
+                showPanel(pModel.getSelectedObject());
                 pModel.fireRepaintEvents();
                 break;
                 
@@ -306,6 +307,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                         }
                     }
                 }
+                showPanel(pModel.getSelectedObject());
                 pModel.fireRepaintEvents();
                 break;
         }
