@@ -1,6 +1,7 @@
 package de.engine.physics;
 
 import de.engine.colldetect.CollisionData;
+import de.engine.colldetect.CollisionData.Contact;
 import de.engine.colldetect.ContactCreator;
 import de.engine.environment.EnvProps;
 import de.engine.math.Util;
@@ -37,6 +38,22 @@ public class PhysicsCalcer
     
     public static void calcPolygons(Polygon o1, Polygon o2, double collTime)
     {
+        CollisionData cd = new CollisionData(o1, o2, collTime);
+        ContactCreator.getPolygonsContact(cd);
+        
+        if(cd.contacts.size() == 1)
+        {
+            resolveContact(o1, o2, collTime, cd.contacts.get(0));
+        }
+        else if(cd.contacts.size() == 2)
+        {
+            if(cd.contacts.get(0).normal.getX() == cd.contacts.get(1).normal.getX() && cd.contacts.get(0).normal.getY() == cd.contacts.get(1).normal.getY())
+            {
+                Contact c = new Contact(Util.add(cd.contacts.get(0).point, cd.contacts.get(1).point).scale(0.5), cd.contacts.get(0).normal);
+                resolveContact(o1, o2, collTime, c);
+            }
+            
+        }
     }
     
     public static void resolveContact(ObjectProperties o1, ObjectProperties o2, double collTime, CollisionData.Contact contact)

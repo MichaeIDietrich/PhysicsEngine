@@ -14,7 +14,7 @@ public class Helper
         public MinMax()
         {
             min = Double.MAX_VALUE;
-            max = Double.MIN_VALUE;
+            max = -1 * Double.MAX_VALUE;
         }
     }
     
@@ -26,7 +26,7 @@ public class Helper
             double d = Util.scalarProduct(axis, p.getWorldPointPos(i, time));
             if (d < mm.min)
                 mm.min = d;
-            else if (d > mm.max)
+            if (d > mm.max)
                 mm.max = d;
         }
         return mm;
