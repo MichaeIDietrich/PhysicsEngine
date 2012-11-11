@@ -13,8 +13,6 @@ import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.controls.Canvas;
 
-import static de.engineapp.Constants.*;
-
 public class PresentationModel
 {
     public interface SceneListener
@@ -95,14 +93,7 @@ public class PresentationModel
         stateMap = new HashMap<>();
         propertyMap = new HashMap<>();
         
-        Configuration config = Configuration.getInstance();
-        
-        stateMap.put(GRID, config.isShowGrid());
-        stateMap.put(MAXIMIZED, config.isMaximized());
-        stateMap.put(DBLCLICK_SHOW_PROPERTIES, config.isDblClickShowProperties());
-        stateMap.put(DEBUG, config.isDebug());
-        propertyMap.put(LANGUAGE_CODE, config.getLangCode());
-        setZoom(config.getZoom());
+        Configuration.getInstance().attackPresentationModel(this);
     }
     
     public void addViewBoxListener(ViewBoxListener listener)
@@ -194,6 +185,12 @@ public class PresentationModel
     public void addMouseMotionListenerToCanvas(MouseMotionListener listener)
     {
         canvas.addMouseMotionListener(listener);
+    }
+    
+    
+    public void createObjectOnCanvas(String id, Point location)
+    {
+        canvas.createObject(id, location);
     }
     
     
@@ -512,19 +509,6 @@ public class PresentationModel
     
     public void setState(String id, boolean value)
     {
-        if (id.equals(GRID))
-        {
-            Configuration.getInstance().setShowGrid(value);
-        }
-        else if (id.equals(MAXIMIZED))
-        {
-            Configuration.getInstance().setMaximized(value);
-        }
-        else if (id.equals(DEBUG))
-        {
-            Configuration.getInstance().setDebug(value);
-        }
-        
         stateMap.put(id, value);
         
         fireStateListeners(id);
@@ -543,11 +527,6 @@ public class PresentationModel
     
     public void setProperty(String id, String value)
     {
-        if (id.equals(LANGUAGE_CODE))
-        {
-            Configuration.getInstance().setLangCode(value);
-        }
-        
         propertyMap.put(id, value);
         
         firePropertyListeners(id);

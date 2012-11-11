@@ -33,4 +33,21 @@
   <String id="STEEL">Steel</String>
   <String id="WATER">Water</String>
   <String id="NACL">Orange</String>
+  
+  <!--  Tooltips -->
+  <String id="TT_NEW">Creates a new scene</String>
+  <String id="TT_OPEN">Open a scene from file</String>
+  <String id="TT_SAVE">Saves the current scene to file</String>
+  <String id="TT_PLAY">Runs the PhysicsEngine</String>
+  <String id="TT_PAUSE">Pauses the PhysicsEngine</String>
+  <String id="TT_RESET">Resets the scene to the last state</String>
+  <String id="TT_GRID">Shows a grid</String>
+  <String id="TT_SHOW_ARROWS">Shows velocity arrows for each object in the scene</String>
+  <String id="TT_FOCUS">Moves the view back to origin</String>
+  <String id="TT_ZOOM">Changes the zoom</String>
+  <String id="TT_SETTINGS">Opens the settings dialog</String>
+  <String id="TT_CIRCLE">Places a circle at any location in the scene</String>
+  <String id="TT_SQUARE">Places a square at any location in the scene</String>
+  <String id="TT_GROUND">Places a function bordering the ground in the scene</String>
+  
 </Localization>

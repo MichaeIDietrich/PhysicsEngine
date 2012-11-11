@@ -2,9 +2,9 @@ package de.engineapp.visual.decor;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.lang.reflect.Field;
 
 import de.engine.objects.ObjectProperties;
+import de.engineapp.PropertyConnector;
 import de.engineapp.visual.IDrawable;
 
 public class Range implements IDrawable
@@ -12,32 +12,14 @@ public class Range implements IDrawable
     private Color color = null;
     private Color border = Color.CYAN;
     
-    private ObjectProperties connectedObject = null;
-    private Field connectedField = null;
+    private ObjectProperties connectedObject;
+    private PropertyConnector<Double> pConnector;
     
     
-    public Range(ObjectProperties object, String fieldName)
+    public Range(ObjectProperties object, String propertyName)
     {
-        if (object == null || fieldName == null)
-        {
-            throw new RuntimeException("The arguments must not be null!");
-        }
-        
-        try
-        {
-            connectedObject = object;
-            // should be dynamic
-            connectedField = ObjectProperties.class.getDeclaredField(fieldName);
-            connectedField.setAccessible(true);
-            if (!(connectedField.getType().equals(double.class)))
-            {
-                throw new RuntimeException("Field must be double!");
-            }
-        }
-        catch (NoSuchFieldException | SecurityException e)
-        {
-            e.printStackTrace();
-        }
+        connectedObject = object;
+        pConnector = new PropertyConnector<>(object, propertyName);
     }
     
     
@@ -70,15 +52,7 @@ public class Range implements IDrawable
     @Override
     public void render(Graphics2D g)
     {
-        double r = 0.0;
-        try
-        {
-            r = connectedField.getDouble(connectedObject);
-        }
-        catch (IllegalArgumentException | IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
+        double r = (Double) pConnector.getObject();
         double r2 = r * 2;
         double x = connectedObject.getPosition().getX() - r;
         double y = connectedObject.getPosition().getY() - r;

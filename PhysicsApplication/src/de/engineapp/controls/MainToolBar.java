@@ -60,6 +60,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     private EasyButton pause;
     private EasyButton reset;
     private EasyButton grid;
+    private EasyButton showArrows;
     private EasyButton focus;
     private EasyButton settings;
     
@@ -76,15 +77,16 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         pModel.addViewBoxListener(this);
         pModel.addStorageListener(this);
         
-        new_     = new EasyButton(Util.getIcon("new"),      CMD_NEW,      this);
-        open     = new EasyButton(Util.getIcon("open"),     CMD_OPEN,     this);
-        save     = new EasyButton(Util.getIcon("save"),     CMD_SAVE,     this);
-        play     = new EasyButton(Util.getIcon("play"),     CMD_PLAY,     this);
-        pause    = new EasyButton(Util.getIcon("pause"),    CMD_PAUSE,    this);
-        reset    = new EasyButton(Util.getIcon("reset"),    CMD_RESET,    this);
-        grid     = new EasyButton(Util.getIcon("grid"),     CMD_GRID,     this);
-        focus    = new EasyButton(Util.getIcon("focus"),    CMD_FOCUS,    this);
-        settings = new EasyButton(Util.getIcon("settings2"), CMD_SETTINGS, this);
+        new_       = new EasyButton(Util.getIcon("new"),           CMD_NEW,         this);
+        open       = new EasyButton(Util.getIcon("open"),          CMD_OPEN,        this);
+        save       = new EasyButton(Util.getIcon("save"),          CMD_SAVE,        this);
+        play       = new EasyButton(Util.getIcon("play"),          CMD_PLAY,        this);
+        pause      = new EasyButton(Util.getIcon("pause"),         CMD_PAUSE,       this);
+        reset      = new EasyButton(Util.getIcon("reset"),         CMD_RESET,       this);
+        grid       = new EasyButton(Util.getIcon("grid"),          CMD_GRID,        this);
+        showArrows = new EasyButton(Util.getIcon("object_arrows"), CMD_SHOW_ARROWS, this);
+        focus      = new EasyButton(Util.getIcon("focus"),         CMD_FOCUS,       this);
+        settings   = new EasyButton(Util.getIcon("settings2"),     CMD_SETTINGS,    this);
         
         pause.setEnabled(false);
         reset.setEnabled(false);
@@ -92,6 +94,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         slider = new ZoomSlider(pModel.getZoom());
         slider.addChangeListener(this);
         
+        setToolTips();
         
         this.add(new_);
         this.add(open);
@@ -102,6 +105,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         this.add(reset);
         this.addSeparator();
         this.add(grid);
+        this.add(showArrows);
+        this.addSeparator();
         this.add(focus);
         this.addSeparator();
         this.add(slider);
@@ -109,6 +114,22 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         
         slider.setValue(pModel.getZoom());
         grid.setSelected(pModel.isState(GRID));
+    }
+    
+    
+    private void setToolTips()
+    {
+        new_.setToolTipText(LOCALIZER.getString("TT_NEW"));
+        open.setToolTipText(LOCALIZER.getString("TT_OPEN"));
+        save.setToolTipText(LOCALIZER.getString("TT_SAVE"));
+        play.setToolTipText(LOCALIZER.getString("TT_PLAY"));
+        pause.setToolTipText(LOCALIZER.getString("TT_PAUSE"));
+        reset.setToolTipText(LOCALIZER.getString("TT_RESET"));
+        grid.setToolTipText(LOCALIZER.getString("TT_GRID"));
+        showArrows.setToolTipText(LOCALIZER.getString("TT_SHOW_ARROWS"));
+        focus.setToolTipText(LOCALIZER.getString("TT_FOCUS"));
+        slider.setToolTipText(LOCALIZER.getString("TT_ZOOM"));
+        settings.setToolTipText(LOCALIZER.getString("TT_SETTINGS"));
     }
     
     
@@ -134,7 +155,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 
             case CMD_PLAY:
                 pModel.setState(RUN_PHYSICS, true);
-                
                 break;
                 
             case CMD_PAUSE:
@@ -142,7 +162,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 break;
                 
             case CMD_RESET:
-                // TODO - disabled, because it does not work
                 pModel.restoreScene();
                 reset.setEnabled(false);
                 pModel.fireRepaintEvents();
@@ -152,20 +171,23 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 pModel.toggleState(GRID);
                 grid.setSelected(pModel.isState(GRID));
                 pModel.fireRepaintEvents();
+                break;
                 
+            case CMD_SHOW_ARROWS:
+                pModel.toggleState(SHOW_ARROWS_ALWAYS);
+                showArrows.setSelected(pModel.isState(SHOW_ARROWS_ALWAYS));
                 break;
                 
             case CMD_FOCUS:
                 pModel.setViewOffset(0, 0);
                 pModel.fireRepaintEvents();
-                
                 break;
                 
             case CMD_SETTINGS:
                 if (SettingsDialog.showDialog((Window) this.getTopLevelAncestor()))
                 {
-                    pModel.setProperty(LANGUAGE_CODE, Configuration.getInstance().getLangCode());
-                    pModel.setState(DBLCLICK_SHOW_PROPERTIES, Configuration.getInstance().isDblClickShowProperties());
+                    pModel.setProperty(LANGUAGE_CODE, Configuration.getInstance().getProperty(LANGUAGE_CODE));
+                    pModel.setState(DBLCLICK_SHOW_PROPERTIES, Configuration.getInstance().isState(DBLCLICK_SHOW_PROPERTIES));
                 }
                 break;
         }
@@ -228,7 +250,14 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     }
     
     @Override
-    public void propertyChanged(String id, String value) { }
+    public void propertyChanged(String id, String value)
+    {
+        if (id.equals(LANGUAGE_CODE))
+        {
+            setToolTips();
+        }
+    }
+    
     
     @Override
     public void offsetChanged(int offsetX, int offsetY) { }

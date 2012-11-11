@@ -2,10 +2,10 @@ package de.engineapp.visual.decor;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.lang.reflect.Field;
 
 import de.engine.math.*;
 import de.engine.objects.ObjectProperties;
+import de.engineapp.PropertyConnector;
 import de.engineapp.visual.IDrawable;
 
 public class Arrow implements IDrawable
@@ -16,8 +16,8 @@ public class Arrow implements IDrawable
     private Vector from;
     private Vector to;
     
-    private ObjectProperties connectedObject = null;
-    private Field connectedField = null;
+    private ObjectProperties connectedObject;
+    private PropertyConnector<Vector> pConnector;
     
     
     public Arrow(Vector location)
@@ -32,27 +32,10 @@ public class Arrow implements IDrawable
     }
     
     
-    public Arrow(ObjectProperties object, String fieldName)
+    public Arrow(ObjectProperties object, String propertyName)
     {
-        if (object == null || fieldName == null)
-        {
-            throw new RuntimeException("The arguments must not be null!");
-        }
-        
-        try
-        {
-            connectedObject = object;
-            // should be dynamic
-            connectedField = ObjectProperties.class.getDeclaredField(fieldName);
-            if (!(connectedField.getType().equals(Vector.class)))
-            {
-                throw new RuntimeException("Field must be a Vector!");
-            }
-        }
-        catch (NoSuchFieldException | SecurityException e)
-        {
-            e.printStackTrace();
-        }
+        connectedObject = object;
+        pConnector = new PropertyConnector<>(object, propertyName);
     }
     
     
@@ -88,17 +71,10 @@ public class Arrow implements IDrawable
     @Override
     public void render(Graphics2D g)
     {
-        if (connectedObject != null)
+        if (pConnector != null)
         {
             from = connectedObject.getPosition();
-            try
-            {
-                to = Util.add(from, (Vector) connectedField.get(connectedObject));
-            }
-            catch (IllegalArgumentException | IllegalAccessException e)
-            {
-                e.printStackTrace();
-            }
+            to = Util.add(from, pConnector.get());
         }
         
         Shape polygon = createArrowShape();

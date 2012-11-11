@@ -13,12 +13,14 @@ import javax.swing.event.ChangeListener;
 
 import de.engineapp.Configuration;
 
+import static de.engineapp.Constants.*;
+
 public class ZoomSlider extends JPanel
 {
     private static final long serialVersionUID = -8005150860316824860L;
     
-    private static boolean isGTK = Configuration.getInstance().getLookAndFeel().equals("GTK+");
-    private static boolean isNimbus = Configuration.getInstance().getLookAndFeel().equals("Nimbus");
+    private static boolean isGTK = Configuration.getInstance().getProperty(LOOK_AND_FEEL).equals("GTK+");
+    private static boolean isNimbus = Configuration.getInstance().getProperty(LOOK_AND_FEEL).equals("Nimbus");
     
     
     private JSlider slider = null;
@@ -141,5 +143,14 @@ public class ZoomSlider extends JPanel
     public void addChangeListener(ChangeListener listener)
     {
         slider.addChangeListener(listener);
+    }
+    
+    
+    @Override
+    public void setToolTipText(String text)
+    {
+        super.setToolTipText(text);
+        slider.setToolTipText(text);
+        label.setToolTipText(text);
     }
 }

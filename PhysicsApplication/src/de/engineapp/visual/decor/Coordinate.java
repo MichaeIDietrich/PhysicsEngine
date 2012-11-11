@@ -2,10 +2,10 @@ package de.engineapp.visual.decor;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.lang.reflect.Field;
 
 import de.engine.math.*;
 import de.engine.objects.ObjectProperties;
+import de.engineapp.PropertyConnector;
 import de.engineapp.visual.IDrawable;
 
 public class Coordinate implements IDrawable
@@ -15,8 +15,7 @@ public class Coordinate implements IDrawable
     
     private Vector coordinate;
     
-    private ObjectProperties connectedObject = null;
-    private Field connectedField = null;
+    private PropertyConnector<Vector> pConnector;
     
     
     public Coordinate(Vector location)
@@ -25,27 +24,9 @@ public class Coordinate implements IDrawable
     }
     
     
-    public Coordinate(ObjectProperties object, String fieldName)
+    public Coordinate(ObjectProperties object, String propertyName)
     {
-        if (object == null || fieldName == null)
-        {
-            throw new RuntimeException("The arguments must not be null!");
-        }
-        
-        try
-        {
-            connectedObject = object;
-            // should be dynamic
-            connectedField = ObjectProperties.class.getDeclaredField(fieldName);
-            if (!(connectedField.getType().equals(Vector.class)))
-            {
-                throw new RuntimeException("Field must be a Vector!");
-            }
-        }
-        catch (NoSuchFieldException | SecurityException e)
-        {
-            e.printStackTrace();
-        }
+        pConnector = new PropertyConnector<>(object, propertyName);
     }
     
     
@@ -78,16 +59,9 @@ public class Coordinate implements IDrawable
     @Override
     public void render(Graphics2D g)
     {
-        if (connectedObject != null)
+        if (pConnector != null)
         {
-            try
-            {
-                coordinate = (Vector) connectedField.get(connectedObject);
-            }
-            catch (IllegalArgumentException | IllegalAccessException e)
-            {
-                e.printStackTrace();
-            }
+            coordinate = pConnector.get();
         }
         
         Path2D.Double indicator = new Path2D.Double();
