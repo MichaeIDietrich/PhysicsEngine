@@ -11,7 +11,7 @@ import javax.swing.border.EmptyBorder;
  * 
  * @author Micha
  */
-public class VerticalBoxPanel extends JScrollPane
+public class VerticalBoxPanel extends JPanel
 {
     private static final long serialVersionUID = -4990424757171113810L;
     
@@ -23,25 +23,10 @@ public class VerticalBoxPanel extends JScrollPane
      */
     public VerticalBoxPanel()
     {
-        this(true);
-    }
-    
-    
-    /**
-     * Create a new <code>VerticalBoxPanel</code>, which will align components in row.
-     */
-    public VerticalBoxPanel(boolean showScrollBarsAsNeeded)
-    {
         box = Box.createVerticalBox();
         box.setOpaque(false);
         box.setBorder(new EmptyBorder(5, 5, 5, 5));
-        super.setViewportView(box);
-        this.setBorder(null);
-        if (!showScrollBarsAsNeeded)
-        {
-            this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-            this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        }
+        super.add(box);
     }
     
     
@@ -66,11 +51,11 @@ public class VerticalBoxPanel extends JScrollPane
     public void add(Component comp, Object constraints)
     {
         // special case for JScrollPane
-        if (constraints != null && constraints instanceof String)
-        {
-            super.add(comp, constraints);
-            return;
-        }
+//        if (constraints != null && constraints instanceof String)
+//        {
+//            super.add(comp, constraints);
+//            return;
+//        }
         
         float alignment;
         
@@ -89,7 +74,7 @@ public class VerticalBoxPanel extends JScrollPane
         }
         else
         {
-            throw new RuntimeException("contraints must be either LEFT_ALIGNMENT, CENTER_ALIGNMENT or RIGHT_ALIGNMENT");
+            throw new RuntimeException("constraints must be either LEFT_ALIGNMENT, CENTER_ALIGNMENT or RIGHT_ALIGNMENT");
         }
         
         JPanel panel;
@@ -151,13 +136,11 @@ public class VerticalBoxPanel extends JScrollPane
     {
         box.add(new JSeparator());
     }
-
-
+    
+    
     @Override
     public void removeAll()
     {
         box.removeAll();
     }
-    
-    
 }

@@ -55,7 +55,7 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
     
     private void initializeComponents()
     {
-        VerticalBoxPanel container = new VerticalBoxPanel(false);
+        VerticalBoxPanel container = new VerticalBoxPanel();
         container.add(Box.createHorizontalStrut(220));
         
         container.addGap(15);
