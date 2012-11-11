@@ -24,6 +24,7 @@ public class Polygon extends ObjectProperties implements Cloneable {
 		this(position);
 		this.points = points;
 		calcRadius();
+        calcMomentOfInertia();
 	}
 	
 	protected void calcRadius() {
@@ -32,6 +33,24 @@ public class Polygon extends ObjectProperties implements Cloneable {
 			double corner_dist = point.getLength();
 			radius = (corner_dist > radius) ? corner_dist : radius;
 		}
+	}
+	
+	protected void calcMomentOfInertia() {
+	    double zaehler = 0;
+	    double nenner = 0;
+	    
+	    for (int j = points.length - 1, i = 0; i < points.length; j = i, i++)
+        {
+            Vector p0 = points[j];
+            Vector p1 = points[i];
+            
+            double a = Util.crossProduct(p0, p1);
+            double b = Util.scalarProduct(p1, p1) + Util.scalarProduct(p0, p1) + Util.scalarProduct(p0, p0);
+            
+            zaehler += (a * b);
+            nenner += a;
+        }
+	    moment_of_inertia = (mass / 6.0) * (zaehler / nenner);
 	}
 	
 	public Vector getWorldPointPos(int i) {
@@ -73,6 +92,7 @@ public class Polygon extends ObjectProperties implements Cloneable {
             point.scale(scale);
         }
         this.radius = radius;
+        calcMomentOfInertia();
     }
     
     
