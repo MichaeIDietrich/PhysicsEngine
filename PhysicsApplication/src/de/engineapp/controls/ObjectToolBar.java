@@ -6,12 +6,16 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
-import de.engineapp.PresentationModel;
-import de.engineapp.Util;
+import de.engineapp.*;
+import de.engineapp.PresentationModel.StorageListener;
 
-public class ObjectToolBar extends JToolBar implements MouseListener
+import static de.engineapp.Constants.*;
+
+public class ObjectToolBar extends JToolBar implements MouseListener, StorageListener
 {
     private static final long serialVersionUID = -5441109476332523959L;
+    
+    private Localizer LOCALIZER = Localizer.getInstance();
     
     
     PresentationModel pModel;
@@ -29,19 +33,31 @@ public class ObjectToolBar extends JToolBar implements MouseListener
         this.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         this.setFloatable(false);
         
-        circle = new DragButton(Util.getIcon("circle"), "circle", true);
-        square = new DragButton(Util.getIcon("square"), "square", true);
-        ground = new DragButton(Util.getIcon("ground"), "ground", Util.getImage("ruler"), new Point(16, 14));
+        circle = new DragButton(Util.getIcon("circle"), OBJ_CIRCLE, true);
+        square = new DragButton(Util.getIcon("square"), OBJ_SQUARE, true);
+        ground = new DragButton(Util.getIcon("ground"), OBJ_GROUND, Util.getImage("ruler"), new Point(16, 14));
         
         circle.addMouseListener(this);
         square.addMouseListener(this);
         ground.addMouseListener(this);
         
+        setToolTips();
         
         this.add(circle);
         this.add(square);
         this.add(ground);
+        
+        pModel.addStorageListener(this);
     }
+    
+    
+    private void setToolTips()
+    {
+        circle.setToolTipText(LOCALIZER.getString("TT_CIRCLE"));
+        square.setToolTipText(LOCALIZER.getString("TT_SQUARE"));
+        ground.setToolTipText(LOCALIZER.getString("TT_GROUND"));
+    }
+    
     
     @Override
     public void mouseClicked(MouseEvent e)
@@ -54,11 +70,11 @@ public class ObjectToolBar extends JToolBar implements MouseListener
                 ground.setSelected(false);
                 if (circle.isSelected())
                 {
-                    pModel.setProperty("ObjectMode", "circle");
+                    pModel.setProperty(OBJECT_MODE, OBJ_CIRCLE);
                 }
                 else
                 {
-                    pModel.setProperty("ObjectMode", null);
+                    pModel.setProperty(OBJECT_MODE, null);
                 }
             }
             else if (e.getComponent().equals(square))
@@ -67,11 +83,11 @@ public class ObjectToolBar extends JToolBar implements MouseListener
                 ground.setSelected(false);
                 if (square.isSelected())
                 {
-                    pModel.setProperty("ObjectMode", "aquare");
+                    pModel.setProperty(OBJECT_MODE, OBJ_SQUARE);
                 }
                 else
                 {
-                    pModel.setProperty("ObjectMode", null);
+                    pModel.setProperty(OBJECT_MODE, null);
                 }
             }
             else if (e.getComponent().equals(ground))
@@ -80,11 +96,11 @@ public class ObjectToolBar extends JToolBar implements MouseListener
                 square.setSelected(false);
                 if (ground.isSelected())
                 {
-                    pModel.setProperty("ObjectMode", "ground");
+                    pModel.setProperty(OBJECT_MODE, OBJ_GROUND);
                 }
                 else
                 {
-                    pModel.setProperty("ObjectMode", null);
+                    pModel.setProperty(OBJECT_MODE, null);
                 }
             }
         }
@@ -101,4 +117,17 @@ public class ObjectToolBar extends JToolBar implements MouseListener
     
     @Override
     public void mouseReleased(MouseEvent e) { }
+    
+    
+    @Override
+    public void stateChanged(String id, boolean value) { }
+    
+    @Override
+    public void propertyChanged(String id, String value)
+    {
+        if (id.equals(LANGUAGE_CODE))
+        {
+            setToolTips();
+        }
+    }
 }

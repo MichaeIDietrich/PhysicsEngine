@@ -33,4 +33,21 @@
   <String id="STEEL">Stahl</String>
   <String id="WATER">Wasser</String>
   <String id="NACL">Orange</String>
+  
+  <!--  Tooltips -->
+  <String id="TT_NEW">Erstellt eine neue Szene</String>
+  <String id="TT_OPEN">Öffnet eine Szene aus einer Datei</String>
+  <String id="TT_SAVE">Speichert die aktuelle Szene in eine Datei</String>
+  <String id="TT_PLAY">Startet die Physik</String>
+  <String id="TT_PAUSE">Pausiert die Physik</String>
+  <String id="TT_RESET">Setzt die Szene zum letzten Zustand zurück</String>
+  <String id="TT_GRID">Zeigt ein Raster an</String>
+  <String id="TT_SHOW_ARROWS">Zeigt zu jedem Objekt in die Szene den Richtungspfeil an</String>
+  <String id="TT_FOCUS">Bewegt die Ansicht zurück zum Urpsrung</String>
+  <String id="TT_ZOOM">Ändert den Zoom</String>
+  <String id="TT_SETTINGS">Öffnet den Einstellungsdialog</String>
+  <String id="TT_CIRCLE">Platziert einen Kreis an einer beliebigen Stelle in der Szene</String>
+  <String id="TT_SQUARE">Platziert ein Viereck an einer beliebigen Stelle in der Szene</String>
+  <String id="TT_GROUND">Platziert eine Funktion als Begrenzungsboden in der Szene</String>
+  
 </Localization>

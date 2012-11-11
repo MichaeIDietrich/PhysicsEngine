@@ -9,10 +9,12 @@ import javax.swing.border.Border;
 
 import de.engineapp.*;
 
+import static de.engineapp.Constants.*;
+
 public final class IconComboBox<T> extends JComboBox<T>
 {
     private final static Localizer LOCALIZER = Localizer.getInstance();
-    private static boolean isGTK = Configuration.getInstance().getLookAndFeel().equals("GTK+");
+    private static boolean isGTK = Configuration.getInstance().getProperty(LOOK_AND_FEEL).equals("GTK+");
     
 //    private final static Color FOREGROUND = UIManager.getColor("List.foreground");
 //    private final static Color BACKGROUND = UIManager.getColor("List.background");

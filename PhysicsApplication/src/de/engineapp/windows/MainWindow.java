@@ -8,7 +8,6 @@ import javax.swing.*;
 
 import de.engine.environment.Scene;
 import de.engine.math.PhysicsEngine2D;
-import de.engine.math.Vector;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.PaintListener;
@@ -105,11 +104,11 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
     {
         try
         {
-            if (Configuration.getInstance().getLookAndFeel() != null)
+            if (Configuration.getInstance().getProperty(LOOK_AND_FEEL) != null)
             {
                 for (int i = 0; i < UIManager.getInstalledLookAndFeels().length; i++)
                 {
-                    if (Configuration.getInstance().getLookAndFeel().equals(
+                    if (Configuration.getInstance().getProperty(LOOK_AND_FEEL).equals(
                             UIManager.getInstalledLookAndFeels()[i].getName()))
                     {
                         UIManager.setLookAndFeel(UIManager.getInstalledLookAndFeels()[i].getClassName());
@@ -125,7 +124,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
                 if (UIManager.getSystemLookAndFeelClassName().equals(
                         UIManager.getInstalledLookAndFeels()[i].getClassName()))
                 {
-                    Configuration.getInstance().setLookAndFeel(
+                    Configuration.getInstance().setProperty(LOOK_AND_FEEL, 
                             UIManager.getInstalledLookAndFeels()[i].getName());
                     return;
                 }
@@ -168,43 +167,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         
         
         // this one is handling all the drag'n'drop stuff
-        new DragAndDropController(pModel, canvas, new DragAndDropController.DropCallback()
-        {
-            // this method is necessary to recognize object drops from the left toolbar
-            @Override
-            public void drop(String command, Point location)
-            {
-                // transformed location
-                Vector sceneLocation = pModel.toTransformedVector(location);
-                
-                switch (command)
-                {
-                    case "circle":
-                        Circle circle = new Circle(pModel, sceneLocation, 8);
-                        circle.setMass(10);
-                        
-                        pModel.addObject( circle );
-                        
-                        pModel.fireRepaintEvents();
-                        break;
-                        
-                    case "square":
-                        Square square = new Square(pModel, sceneLocation, 12);
-                        square.setMass(10);
-                        
-                        pModel.addObject( square );
-                        
-                        pModel.fireRepaintEvents();
-                        break;
-                        
-                    case "ground":
-                        pModel.setGround(new Ground(pModel, (int) sceneLocation.getY()));
-                        
-                        pModel.fireRepaintEvents();
-                        break;
-                }
-            }
-        });
+        new DragAndDropController(pModel, canvas);
         
         
         canvas.setBackground(new Color(250, 250, 250, 255));

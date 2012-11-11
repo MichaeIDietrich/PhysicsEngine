@@ -1,8 +1,6 @@
 package de.engineapp.controls;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -13,15 +11,18 @@ import de.engine.environment.Scene;
 import de.engine.math.*;
 import de.engine.math.Util;
 import de.engine.objects.*;
-import de.engine.objects.Ground;
 import de.engineapp.*;
-import de.engineapp.PresentationModel.SceneListener;
+import de.engineapp.PresentationModel.*;
 import de.engineapp.visual.*;
 import de.engineapp.visual.Circle;
+import de.engineapp.visual.Ground;
+import de.engineapp.visual.Square;
 import de.engineapp.visual.decor.*;
 
+import static de.engineapp.Constants.*;
 
-public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener, KeyListener, MouseWheelListener
+
+public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener, KeyListener, MouseWheelListener, StorageListener
 {
     private static final long serialVersionUID = -5320479580417617983L;
     
@@ -68,6 +69,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         this.addKeyListener(this);
         this.addMouseWheelListener(this);
         pModel.addSceneListener(this);
+        pModel.addStorageListener(this);
     }
     
     
@@ -117,7 +119,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         if (e.isShiftDown() && pModel.getSelectedObject() != null)
         {
             Range range = new Range(pModel.getSelectedObject(), "radius");
-            ((IDecorable) pModel.getSelectedObject()).putDecor("RANGE", range);
+            ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
             pModel.fireRepaintEvents();
         }
         
@@ -139,19 +141,9 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 Vector v = pModel.toTransformedVector(e.getPoint());
                 ObjectProperties object = pModel.getScene().getObjectFromPoint(v.getX(), v.getY());
                 
-                if (object == null && !pModel.getPhysicsState().isRunning() && pModel.getProperty("ObjectMode") != null)
+                if (object == null && !pModel.getPhysicsState().isRunning() && pModel.getProperty(OBJECT_MODE) != null)
                 {
-                    switch (pModel.getProperty("ObjectMode"))
-                    {
-                        case "circle":
-                            Circle circle = new Circle(pModel, pModel.toTransformedVector(e.getPoint()), 8);
-                            circle.setMass(10);
-                            
-                            pModel.addObject(circle);
-                            pModel.fireRepaintEvents();
-                            
-                            break;
-                    }
+                    createObject(pModel.getProperty(OBJECT_MODE), e.getPoint());
                 }
                 else
                 {
@@ -161,7 +153,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             else if (!e.isControlDown() && e.isShiftDown() && !e.isAltDown() && pModel.getSelectedObject() != null)
             {
                 Range range = new Range(pModel.getSelectedObject(), "radius");
-                ((IDecorable) pModel.getSelectedObject()).putDecor("RANGE", range);
+                ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
             }
             
             pModel.fireRepaintEvents();
@@ -173,7 +165,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
         {
             Range range = new Range(pModel.getSelectedObject(), "radius");
-            ((IDecorable) pModel.getSelectedObject()).putDecor("RANGE", range);
+            ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
             pModel.fireRepaintEvents();
         }
     }
@@ -188,13 +180,13 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             
             if (pModel.getSelectedObject() != null)
             {
-                ((IDecorable) pModel.getSelectedObject()).removeDecor("RANGE");
+                ((IDecorable) pModel.getSelectedObject()).removeDecor(DECOR_RANGE);
                 pModel.fireRepaintEvents();
             }
         }
         else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
         {
-            ((IDecorable) pModel.getSelectedObject()).removeDecor("RANGE");
+            ((IDecorable) pModel.getSelectedObject()).removeDecor(DECOR_RANGE);
             pModel.fireRepaintEvents();
         }
     }
@@ -248,27 +240,37 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     
     
     @Override
-    public void groundAdded(Ground ground) { }
+    public void groundAdded(de.engine.objects.Ground ground) { }
     
     @Override
-    public void groundRemoved(Ground ground) { }
+    public void groundRemoved(de.engine.objects.Ground ground) { }
     
     
     @Override
     public void objectSelected(ObjectProperties object)
     {
         Arrow arrow = new Arrow(object, "velocity");
-        ((IDecorable) object).putDecor("ARROW", arrow);
+        ((IDecorable) object).putDecor(DECOR_ARROW, arrow);
         
         Coordinate coord = new Coordinate( object, "last_intersection" );
-        ((IDecorable) object).putDecor("INTERSECTION", coord);
+        ((IDecorable) object).putDecor(DECOR_COORDINATE, coord);
+        
+        if (pModel.isState(SHOW_ARROWS_ALWAYS))
+        {
+            ((IDecorable) object).removeDecor(DECOR_MULTIPLE_ARROW);
+        }
     }
     
     @Override
     public void objectDeselected(ObjectProperties object)
     {
-        ((IDecorable) object).removeDecor("ARROW");
-        ((IDecorable) object).removeDecor("INTERSECTION");
+        ((IDecorable) object).removeDecor(DECOR_ARROW);
+        ((IDecorable) object).removeDecor(DECOR_COORDINATE);
+        
+        if (pModel.isState(SHOW_ARROWS_ALWAYS))
+        {
+            attachVelocityArrow(object);
+        }
     }
     
     
@@ -331,8 +333,84 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         
         pModel.fireRepaintEvents();
     }
-
-
+    
+    
     @Override
     public void sceneUpdated(Scene scene) { }
+    
+    
+    public void createObject(String id, Point location)
+    {
+        Vector sceneLocation = pModel.toTransformedVector(location);
+        
+        switch (id)
+        {
+            case OBJ_CIRCLE:
+                Circle circle = new Circle(pModel, sceneLocation, 8);
+                circle.setMass(10);
+                pModel.addObject( circle );
+                
+                if (pModel.isState(SHOW_ARROWS_ALWAYS))
+                {
+                    attachVelocityArrow(circle);
+                }
+                break;
+                
+            case OBJ_SQUARE:
+                Square square = new Square(pModel, sceneLocation, 12);
+                square.setMass(10);
+                pModel.addObject( square );
+                
+                if (pModel.isState(SHOW_ARROWS_ALWAYS))
+                {
+                    attachVelocityArrow(square);
+                }
+                break;
+                
+            case OBJ_GROUND:
+                pModel.setGround(new Ground(pModel, (int) sceneLocation.getY()));
+                break;
+                
+            default:
+                return;
+        }
+        
+        pModel.fireRepaintEvents();
+    }
+    
+    
+    private void attachVelocityArrow(ObjectProperties object)
+    {
+        Arrow arrow = new Arrow(object, "velocity");
+        arrow.setColor(new Color(128, 128, 255));
+        arrow.setBorder(new Color(0, 0, 255));
+        ((IDecorable) object).putDecor(DECOR_MULTIPLE_ARROW, arrow);
+    }
+    
+    
+    @Override
+    public void stateChanged(String id, boolean value)
+    {
+        if (id.equals(SHOW_ARROWS_ALWAYS))
+        {
+            for (ObjectProperties object : pModel.getScene().getObjects())
+            {
+                if (value)
+                {
+                    if (object != pModel.getSelectedObject())
+                    {
+                        attachVelocityArrow(object);
+                    }
+                }
+                else
+                {
+                    ((IDecorable) object).removeDecor(DECOR_MULTIPLE_ARROW);
+                }
+            }
+            pModel.fireRepaintEvents();
+        }
+    }
+    
+    @Override
+    public void propertyChanged(String id, String value) { }
 }

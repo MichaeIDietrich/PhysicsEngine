@@ -2,6 +2,8 @@ package de.engineapp;
 
 import de.engineapp.windows.MainWindow;
 
+import static de.engineapp.Constants.*;
+
 public class Main
 {
     
@@ -19,7 +21,7 @@ public class Main
             switch (args[index].toLowerCase())
             {
                 case "-grid":
-                    config.setShowGrid(true);
+                    config.setState(SHOW_ARROWS_ALWAYS, true);
                     break;
                     
                 case "-zoom":
@@ -27,7 +29,7 @@ public class Main
                     {
                         doubleValue = extractDouble(args[index]);
                         
-                        if (doubleValue != null && doubleValue >= 0.1 && doubleValue <= 5.0)
+                        if (doubleValue != null && doubleValue >= 0.1 && doubleValue <= 10.0)
                         {
                             config.setZoom(doubleValue);
                         }
@@ -45,7 +47,7 @@ public class Main
                 case "-lang":
                     if (++index < args.length)
                     {
-                        config.setLangCode(args[index]);
+                        config.setProperty(LANGUAGE_CODE, args[index]);
                     }
                     else
                     {
@@ -54,11 +56,11 @@ public class Main
                     break;
                     
                 case "-debug":
-                    config.setDebug(true);
+                    config.setState(DEBUG, true);
                     break;
                     
                 case "-nodebug":
-                    config.setDebug(false);
+                    config.setState(DEBUG, false);
                     break;
             }
         }

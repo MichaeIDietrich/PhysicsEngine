@@ -5,6 +5,8 @@ import java.util.*;
 
 import de.engineapp.xml.*;
 
+import static de.engineapp.Constants.*;
+
 public final class Localizer
 {
     private static class XMLFilter implements FilenameFilter
@@ -27,11 +29,11 @@ public final class Localizer
     {
         stringTable = new HashMap<>();
         
-        currentLanguageCode = Configuration.getInstance().getLangCode();
+        currentLanguageCode = Configuration.getInstance().getProperty(LANGUAGE_CODE);
         if (currentLanguageCode == null)
         {
             currentLanguageCode = Locale.getDefault().toLanguageTag();
-            Configuration.getInstance().setLangCode(currentLanguageCode);
+            Configuration.getInstance().setProperty(LANGUAGE_CODE, currentLanguageCode);
         }
         
         File file = getLanguage(currentLanguageCode);

@@ -7,21 +7,40 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.*;
+import java.util.Map.Entry;
 
-public class Configuration implements Serializable, Cloneable
+import de.engineapp.PresentationModel.*;
+
+import static de.engineapp.Constants.*;
+
+public class Configuration implements Serializable, Cloneable, StorageListener, ViewBoxListener
 {
-    private static final long serialVersionUID = -5115836553640371734L;
+    private static final long serialVersionUID = 6847314270730904825L;
     
     
     private static Configuration instance = null;
     
-    private double zoom = 1.0;
-    private boolean showGrid = false;
-    private String langCode = null;
-    private boolean maximized = false;
-    private boolean dblClickShowProperties = false;
-    private String lookAndFeel = null;
-    private boolean debug = false;
+    private double zoom;
+    private Map<String, Boolean> states;
+    private Map<String, String> properties;
+    
+    
+    private Configuration()
+    {
+        states = new HashMap<>();
+        properties = new HashMap<>();
+        
+        // set default values
+        zoom = 1.0;
+        states.put(GRID, false);
+        states.put(MAXIMIZED, false);
+        states.put(DBLCLICK_SHOW_PROPERTIES, false);
+        states.put(DEBUG, false);
+        states.put(SHOW_ARROWS_ALWAYS, false);
+        properties.put(LANGUAGE_CODE, null);
+        properties.put(LOOK_AND_FEEL, null);
+    }
     
     
     public static Configuration getInstance()
@@ -32,30 +51,6 @@ public class Configuration implements Serializable, Cloneable
         }
         
         return instance;
-    }
-    
-    
-    /** do not change - not yet fully implemented */
-    public double getZoom()
-    {
-        return zoom;
-    }
-    
-    public void setZoom(double zoom)
-    {
-        this.zoom = zoom;
-    }
-    
-    
-    /** weather a grid is drawn on the canvas */
-    public boolean isShowGrid()
-    {
-        return showGrid;
-    }
-    
-    public void setShowGrid(boolean showGrid)
-    {
-        this.showGrid = showGrid;
     }
     
     
@@ -94,61 +89,6 @@ public class Configuration implements Serializable, Cloneable
     }
     
     
-    public String getLangCode()
-    {
-        return langCode;
-    }
-    
-    public void setLangCode(String langCode)
-    {
-        this.langCode = langCode;
-    }
-    
-    
-    public boolean isMaximized()
-    {
-        return maximized;
-    }
-    
-    public void setMaximized(boolean maximized)
-    {
-        this.maximized = maximized;
-    }
-    
-    
-    public boolean isDblClickShowProperties()
-    {
-        return dblClickShowProperties;
-    }
-    
-    public void setDblClickShowProperties(boolean dblClickShowProperties)
-    {
-        this.dblClickShowProperties = dblClickShowProperties;
-    }
-    
-    
-    public String getLookAndFeel()
-    {
-        return lookAndFeel;
-    }
-    
-    public void setLookAndFeel(String lookAndFeel)
-    {
-        this.lookAndFeel = lookAndFeel;
-    }
-    
-    
-    public boolean isDebug()
-    {
-        return debug;
-    }
-    
-    public void setDebug(boolean debug)
-    {
-        this.debug = debug;
-    }
-    
-    
     @Override
     public Configuration clone()
     {
@@ -167,5 +107,88 @@ public class Configuration implements Serializable, Cloneable
     public static void overrideInstance(Configuration newInstance)
     {
         instance = newInstance;
+    }
+    
+    
+    public void attackPresentationModel(PresentationModel model)
+    {
+        model.addViewBoxListener(this);
+        model.addStorageListener(this);
+        
+        model.setZoom(zoom);
+        
+        for (Entry<String, Boolean> entry : states.entrySet())
+        {
+            model.setState(entry.getKey(), entry.getValue());
+        }
+        for (Entry<String, String> entry : properties.entrySet())
+        {
+            model.setProperty(entry.getKey(), entry.getValue());
+        }
+    }
+    
+    
+    public boolean isState(String id)
+    {
+        return Boolean.FALSE.equals(states.get(id));
+    }
+    
+    public void setState(String id, boolean value)
+    {
+        states.put(id, value);
+    }
+    
+    
+    public String getProperty(String id)
+    {
+        return properties.get(id);
+    }
+    
+    public void setProperty(String id, String value)
+    {
+        properties.put(id, value);
+    }
+    
+    
+    public double getZoom()
+    {
+        return zoom;
+    }
+    
+    public void setZoom(double zoom)
+    {
+        this.zoom = zoom;
+    }
+    
+    
+    @Override
+    public void offsetChanged(int offsetX, int offsetY) { }
+    
+    @Override
+    public void sizeChanged(int width, int height) { }
+    
+    @Override
+    public void zoomChanged(double zoom)
+    {
+        this.zoom = zoom;
+    }
+    
+    
+    @Override
+    public void stateChanged(String id, boolean value)
+    {
+        if (states.containsKey(id))
+        {
+            states.put(id, value);
+        }
+    }
+    
+    @Override
+    public void propertyChanged(String id, String value)
+    {
+        if (properties.containsKey(id))
+        {
+            properties.put(id, value);
+        }
     }
 }
