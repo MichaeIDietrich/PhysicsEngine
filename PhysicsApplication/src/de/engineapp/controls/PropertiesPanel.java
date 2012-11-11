@@ -102,9 +102,10 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         
         
         colorBox = new ColorBox();
+        
+        colorBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         colorBox.addMouseListener(new MouseAdapter()
         {
-
             @Override
             public void mouseClicked(MouseEvent e)
             {
@@ -113,7 +114,6 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                     colorPicker.setVisible(true);
                 }
             }
-            
         });
         
         

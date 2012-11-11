@@ -42,17 +42,17 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
         if (pModel.isState(DEBUG))
         {
             lblCalcTime = new JLabel(" ");
-            lblCalcTime.setBorder(BorderFactory.createLoweredBevelBorder());
+            lblCalcTime.setBorder(BorderFactory.createLoweredSoftBevelBorder());
             
             lblRepaintTime = new JLabel(" ");
-            lblRepaintTime.setBorder(BorderFactory.createLoweredBevelBorder());
+            lblRepaintTime.setBorder(BorderFactory.createLoweredSoftBevelBorder());
             
             lblFPS = new JLabel(" 0 FPS ");
-            lblFPS.setBorder(BorderFactory.createLoweredBevelBorder());
+            lblFPS.setBorder(BorderFactory.createLoweredSoftBevelBorder());
         }
         
         lblCoordinates = new JLabel(" (0; 0) ");
-        lblCoordinates.setBorder(BorderFactory.createLoweredBevelBorder());
+        lblCoordinates.setBorder(BorderFactory.createLoweredSoftBevelBorder());
         
         
         if (pModel.isState(DEBUG))
