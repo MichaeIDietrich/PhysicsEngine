@@ -114,6 +114,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         
         slider.setValue(pModel.getZoom());
         grid.setSelected(pModel.isState(GRID));
+        showArrows.setSelected(pModel.isState(SHOW_ARROWS_ALWAYS));
     }
     
     
