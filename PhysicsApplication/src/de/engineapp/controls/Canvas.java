@@ -114,12 +114,19 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     {
         this.requestFocusInWindow();
         
+        if (e.isShiftDown() && pModel.getSelectedObject() != null)
+        {
+            Range range = new Range(pModel.getSelectedObject(), "radius");
+            ((IDecorable) pModel.getSelectedObject()).putDecor("RANGE", range);
+            pModel.fireRepaintEvents();
+        }
+        
         if (SwingUtilities.isLeftMouseButton(e))
         {
             dragDelay = new Task(200);
             dragDelay.start();
             
-            if ((e.getModifiers() & InputEvent.CTRL_MASK) != 0 && pModel.getSelectedObject() != null)
+            if (e.isControlDown() && !e.isShiftDown() && !e.isAltDown() && pModel.getSelectedObject() != null)
             {
                 Vector cursor = pModel.toTransformedVector(e.getPoint());
                 // set new velocity
@@ -127,7 +134,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 
                 pModel.fireRepaintEvents();
             }
-            else
+            else if (!e.isControlDown() && !e.isShiftDown() && !e.isAltDown())
             {
                 Vector v = pModel.toTransformedVector(e.getPoint());
                 ObjectProperties object = pModel.getScene().getObjectFromPoint(v.getX(), v.getY());
@@ -151,6 +158,11 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                     pModel.setSelectedObject(object);
                 }
             }
+            else if (!e.isControlDown() && e.isShiftDown() && !e.isAltDown() && pModel.getSelectedObject() != null)
+            {
+                Range range = new Range(pModel.getSelectedObject(), "radius");
+                ((IDecorable) pModel.getSelectedObject()).putDecor("RANGE", range);
+            }
             
             pModel.fireRepaintEvents();
         }
@@ -173,6 +185,12 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         if (SwingUtilities.isLeftMouseButton(e))
         {
             dragDelay = null;
+            
+            if (pModel.getSelectedObject() != null)
+            {
+                ((IDecorable) pModel.getSelectedObject()).removeDecor("RANGE");
+                pModel.fireRepaintEvents();
+            }
         }
         else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
         {
@@ -263,7 +281,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void keyTyped(KeyEvent e)
     {
-        if (pModel.getSelectedObject() != null)
+        // 127 = Delete Key
+        if (e.getKeyChar() == 127 && pModel.getSelectedObject() != null)
         {
             pModel.removedObject(pModel.getSelectedObject());
             pModel.fireRepaintEvents();
