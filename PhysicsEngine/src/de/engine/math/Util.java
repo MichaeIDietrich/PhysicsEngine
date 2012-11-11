@@ -47,6 +47,11 @@ public class Util
         return vec1.getX() * vec2.getX() + vec1.getY() * vec2.getY();
     }
     
+    public static double crossProduct(Vector vec1, Vector vec2)
+    {
+        return vec1.getX() * vec2.getY() - vec1.getY() * vec2.getX();
+    }
+    
     public static double getAngle(Vector vec1, Vector vec2)
     {
         return Math.atan2(vec2.getY() - vec1.getY(), vec2.getX() - vec1.getX());
@@ -121,48 +126,28 @@ public class Util
         return function.get(1) - function.get(0);
     }
     
+    /**
+     * returns all axis between a Polygon and a Circle for the seperating axis theorem
+     */
     public static Vector[] getAxis(Circle c, Polygon p, double time)
     {
-        Vector[] axis;
-        int firstaxis = 0;
-        if (p instanceof Square)
-        {
-            axis = new Vector[2 + p.points.length];
-            axis[0] = Util.minus(p.getWorldPointPos(1, time), p.getWorldPointPos(0, time)).getNormalVector().getUnitVector();
-            axis[1] = Util.minus(p.getWorldPointPos(2, time), p.getWorldPointPos(1, time)).getNormalVector().getUnitVector();
-            firstaxis = 2;
-        }
-        else
-        {
-            axis = new Vector[p.points.length * 2];
-            for (int i = 0; i < p.points.length; i++)
-            {
-                int j = (i == p.points.length - 1) ? 0 : i + 1;
-                axis[i] = Util.minus(p.getWorldPointPos(j, time), p.getWorldPointPos(i, time)).getNormalVector().getUnitVector();
-                firstaxis = i + 1;
-            }
-        }
-        for (int i = 0; i < p.points.length; i++)
-        {
-            axis[firstaxis + i] = Util.minus(p.getWorldPointPos(i, time), c.getPosition(time)).getUnitVector();
-        }
-        return axis;
+        return mergeArrays(getAxis(p, time), getAxisToPoint(p, c.getPosition(time), time));
     }
     
+    /**
+     * returns all axis between two Polygons  for the seperating axis theorem
+     */
     public static Vector[] getAxis(Polygon p1, Polygon p2, double time)
     {
-        Vector[] axis;
-        Vector[] a_p1 = getAxis(p1, time);
-        Vector[] a_p2 = getAxis(p2, time);
-        axis = new Vector[a_p1.length + a_p2.length];
-        for (int i = 0; i < axis.length; i++)
+        return mergeArrays(getAxis(p1, time), getAxis(p2, time));
+    }
+    
+    private static Vector[] getAxisToPoint(Polygon p, Vector point, double time)
+    {
+        Vector[] axis = new Vector[p.points.length];
+        for (int i = 0; i < p.points.length; i++)
         {
-            if (i < a_p1.length)
-                axis[i] = a_p1[i];
-            else
-            {
-                axis[i] = a_p2[i - a_p1.length];
-            }
+            axis[i] = Util.minus(p.getWorldPointPos(i, time), point).getUnitVector();
         }
         return axis;
     }
@@ -172,13 +157,13 @@ public class Util
         Vector[] axis;
         if (p instanceof Square)
         {
-            axis = new Vector[2 + p.points.length];
-            axis[0] = Util.minus(p.getWorldPointPos(0, time), p.getWorldPointPos(1, time)).getNormalVector().getUnitVector();
-            axis[1] = Util.minus(p.getWorldPointPos(1, time), p.getWorldPointPos(2, time)).getNormalVector().getUnitVector();
+            axis = new Vector[2];
+            axis[0] = Util.minus(p.getWorldPointPos(1, time), p.getWorldPointPos(0, time)).getNormalVector().getUnitVector();
+            axis[1] = Util.minus(p.getWorldPointPos(2, time), p.getWorldPointPos(1, time)).getNormalVector().getUnitVector();
         }
         else
         {
-            axis = new Vector[p.points.length * 2];
+            axis = new Vector[p.points.length];
             for (int i = 0; i < p.points.length; i++)
             {
                 int j = (i == p.points.length - 1) ? 0 : i + 1;
@@ -186,6 +171,22 @@ public class Util
             }
         }
         return axis;
+    }
+    
+    private static Vector[] mergeArrays(Vector[] v1, Vector[] v2)
+    {
+        Vector[] array;
+        array = new Vector[v1.length + v2.length];
+        for (int i = 0; i < array.length; i++)
+        {
+            if (i < v1.length)
+                array[i] = v1[i];
+            else
+            {
+                array[i] = v2[i - v1.length];
+            }
+        }
+        return array;
     }
     
     public static Vector crossEdges(Vector pos1, Vector edge1, Vector pos2, Vector edge2)
