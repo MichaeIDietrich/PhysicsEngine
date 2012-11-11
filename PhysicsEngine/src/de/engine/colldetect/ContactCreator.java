@@ -5,28 +5,23 @@ import java.util.ArrayList;
 import de.engine.colldetect.CollisionData.Contact;
 import de.engine.math.Util;
 import de.engine.math.Vector;
-import de.engine.objects.Circle;
 import de.engine.objects.Polygon;
 
 public class ContactCreator
 {
     public static void getCirclesContact(CollisionData cd)
     {
-        //CollisionData cd = new CollisionData(o1, o2, time);
-        
         Vector pos_o2 = cd.o2.getPosition(cd.time);
         Vector pos_o1 = cd.o1.getPosition(cd.time);
-        Vector dist = Util.minus(pos_o2, pos_o1);
-        Vector normal = dist.getNormalVector().getUnitVector();
-        Vector coll_point = Util.add(pos_o1, dist.scale(cd.o1.getRadius() / dist.getLength()));
+        Vector dist = Util.minus(pos_o1, pos_o2);
+        Vector normal = dist.getUnitVector();
+        Vector coll_point = Util.add(pos_o2, dist.scale(cd.o2.getRadius() / dist.getLength()));
         cd.contacts.add(new Contact(coll_point, normal));
         
     }
     
     public static void getCirclePolygonContact(CollisionData cd)
     {
-        //CollisionData cd = new CollisionData(o1, o2, time);
-        
         Vector circle_pos = cd.o1.getPosition(cd.time);
         for (int i = 0; i < ((Polygon)cd.o2).points.length; i++)
         {
@@ -45,8 +40,6 @@ public class ContactCreator
     
     public static void getPolygonsContact(CollisionData cd)
     {
-        //CollisionData cd = new CollisionData(o1, o2, time);
-        
         ArrayList<Contact> contacts = searchContact((Polygon)cd.o1, (Polygon)cd.o2, cd.time);
         for (Contact contact : contacts)
         {
