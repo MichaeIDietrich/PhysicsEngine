@@ -344,21 +344,24 @@ public class PresentationModel
     
     public void setSelectedObject(ObjectProperties object)
     {
-        if (selectedObject != null)
+        if (selectedObject != object)
         {
-            for (SceneListener listener : sceneListeners)
+            if (selectedObject != null)
             {
-                listener.objectDeselected(selectedObject);
+                for (SceneListener listener : sceneListeners)
+                {
+                    listener.objectDeselected(selectedObject);
+                }
             }
-        }
-        
-        this.selectedObject = object;
-        
-        if (object != null)
-        {
-            for (SceneListener listener : sceneListeners)
+            
+            this.selectedObject = object;
+            
+            if (object != null)
             {
-                listener.objectSelected(selectedObject);
+                for (SceneListener listener : sceneListeners)
+                {
+                    listener.objectSelected(selectedObject);
+                }
             }
         }
     }
