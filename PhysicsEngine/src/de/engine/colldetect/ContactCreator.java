@@ -5,28 +5,23 @@ import java.util.ArrayList;
 import de.engine.colldetect.CollisionData.Contact;
 import de.engine.math.Util;
 import de.engine.math.Vector;
-import de.engine.objects.Circle;
 import de.engine.objects.Polygon;
 
 public class ContactCreator
 {
     public static void getCirclesContact(CollisionData cd)
     {
-        //CollisionData cd = new CollisionData(o1, o2, time);
-        
         Vector pos_o2 = cd.o2.getPosition(cd.time);
         Vector pos_o1 = cd.o1.getPosition(cd.time);
-        Vector dist = Util.minus(pos_o2, pos_o1);
-        Vector normal = dist.getNormalVector().getUnitVector();
-        Vector coll_point = Util.add(pos_o1, dist.scale(cd.o1.getRadius() / dist.getLength()));
+        Vector dist = Util.minus(pos_o1, pos_o2);
+        Vector normal = dist.getUnitVector();
+        Vector coll_point = Util.add(pos_o2, dist.scale(cd.o2.getRadius() / dist.getLength()));
         cd.contacts.add(new Contact(coll_point, normal));
         
     }
     
     public static void getCirclePolygonContact(CollisionData cd)
     {
-        //CollisionData cd = new CollisionData(o1, o2, time);
-        
         Vector circle_pos = cd.o1.getPosition(cd.time);
         for (int i = 0; i < ((Polygon)cd.o2).points.length; i++)
         {
@@ -45,8 +40,6 @@ public class ContactCreator
     
     public static void getPolygonsContact(CollisionData cd)
     {
-        //CollisionData cd = new CollisionData(o1, o2, time);
-        
         ArrayList<Contact> contacts = searchContact((Polygon)cd.o1, (Polygon)cd.o2, cd.time);
         for (Contact contact : contacts)
         {
@@ -64,17 +57,19 @@ public class ContactCreator
         ArrayList<Contact> contacts = new ArrayList<>();
         for (int i = 0; i < o1.points.length; i++)
         {
-            for (int j = 0; j < o2.points.length; j++)
+            for (int k = 0; k < o2.points.length; k++)
             {
-                int k = (j == (o2.points.length - 1)) ? 0 : j + 1;
+                int l = (k == (o2.points.length - 1)) ? 0 : k + 1;
                 Vector corner_o1 = o1.getWorldPointPos(i, time);
-                Vector corner_o2 = o2.getWorldPointPos(j, time);
-                Vector dist = Util.minus(corner_o1, corner_o2);
-                Vector ray_normal = o2.getWorldPointPos(k, time).minus(corner_o2).getNormalVector().getUnitVector();
-                double distance = Util.scalarProduct(dist, ray_normal);
-                if (distance < 0)
+                Vector corner_o2 = o2.getWorldPointPos(k, time);
+                //Vector dist = Util.minus(corner_o1, corner_o2);
+                Vector edge = o2.getWorldPointPos(l, time).minus(corner_o2);
+                Vector edge_normal = edge.getNormalVector().getUnitVector();
+                //double distance = Util.scalarProduct(dist, ray_normal);
+                Vector cross_point = Util.crossEdges(corner_o1, edge_normal, corner_o2, edge);
+                if(cross_point != null && Util.scalarProduct(edge_normal, Util.minus(o1.getPosition(time), corner_o1)) > 0)
                 {
-                    contacts.add(new Contact(corner_o1, ray_normal));
+                    contacts.add(new Contact(cross_point, edge_normal));
                 }
             }
         }

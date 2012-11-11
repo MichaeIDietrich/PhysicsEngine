@@ -124,6 +124,8 @@ public abstract class ObjectProperties implements Cloneable
     
     public void update()
     {
+        if(isPinned)
+            return;
         if (updated)
             updated = false;
         else
@@ -144,6 +146,8 @@ public abstract class ObjectProperties implements Cloneable
     
     public void update(double time)
     {
+        if(isPinned)
+            return;
         updated = true;
         world_position.translation = getPosition(time);
         velocity.add(0, EnvProps.grav_acc() / 2d * time);
