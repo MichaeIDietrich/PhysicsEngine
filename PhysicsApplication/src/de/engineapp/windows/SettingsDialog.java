@@ -15,7 +15,6 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
     private static final long serialVersionUID = 7034070996690341136L;
     private final static Localizer LOCALIZER = Localizer.getInstance();
     
-//    private Font fontCombo;
     
     private JPanel rootPane;
     private IconComboBox<String> cboLang;
@@ -36,8 +35,6 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
     private SettingsDialog(Window parent)
     {
         super(parent, LOCALIZER.getString("SETTINGS"));
-        
-//        fontCombo = this.getFont().deriveFont(12f);
         
         config = Configuration.getInstance().clone();
         
@@ -78,7 +75,6 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         
         cboShowProperties = new JComboBox<String>(new String[] { LOCALIZER.getString("OBJECT_SELECTED"),
                                                                  LOCALIZER.getString("DBLCLICK_OBJECT") });
-//        cboShowProperties.setFont(fontCombo);
         cboShowProperties.setFocusable(false);
         cboShowProperties.setSelectedIndex(config.isState(DBLCLICK_SHOW_PROPERTIES) ? 1 : 0);
         cboShowProperties.setPreferredSize(new Dimension(120, cboShowProperties.getPreferredSize().height));
@@ -99,7 +95,6 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         
         
         cboLookAndFeels = new JComboBox<String>(lookAndFeels);
-//        cboLookAndFeels.setFont(fontCombo);
         cboLookAndFeels.setFocusable(false);
         cboLookAndFeels.setSelectedItem(UIManager.getLookAndFeel().getName());
         cboLookAndFeels.setPreferredSize(new Dimension(120, cboShowProperties.getPreferredSize().height));
