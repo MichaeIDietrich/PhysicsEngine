@@ -21,7 +21,7 @@ public class Main
             switch (args[index].toLowerCase())
             {
                 case "-grid":
-                    config.setState(SHOW_ARROWS_ALWAYS, true);
+                    config.setState(GRID, true);
                     break;
                     
                 case "-zoom":
