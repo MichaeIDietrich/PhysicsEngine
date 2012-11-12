@@ -130,7 +130,7 @@ public class Configuration implements Serializable, Cloneable, StorageListener, 
     
     public boolean isState(String id)
     {
-        return Boolean.FALSE.equals(states.get(id));
+        return Boolean.TRUE.equals(states.get(id));
     }
     
     public void setState(String id, boolean value)

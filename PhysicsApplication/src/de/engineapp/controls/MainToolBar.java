@@ -84,7 +84,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         pause      = new EasyButton(Util.getIcon("pause"),         CMD_PAUSE,       this);
         reset      = new EasyButton(Util.getIcon("reset"),         CMD_RESET,       this);
         grid       = new EasyButton(Util.getIcon("grid"),          CMD_GRID,        this);
-        showArrows = new EasyButton(Util.getIcon("object_arrows"), CMD_SHOW_ARROWS, this);
+        showArrows = new EasyButton(Util.getIcon("object_arrows3"), CMD_SHOW_ARROWS, this);
         focus      = new EasyButton(Util.getIcon("focus"),         CMD_FOCUS,       this);
         settings   = new EasyButton(Util.getIcon("settings2"),     CMD_SETTINGS,    this);
         
@@ -225,7 +225,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                     reset.setEnabled(false);
                     
                     // store scene copy, to enable reset function
-                    // TODO - disabled, because it does not work
                     pModel.storeScene();
                     
                     pModel.getPhysicsState().start();
