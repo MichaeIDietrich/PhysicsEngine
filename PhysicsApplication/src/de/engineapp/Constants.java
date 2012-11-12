@@ -16,6 +16,7 @@ public interface Constants
     public final static String FPS = "fps";
     public final static String CALCULATE_TIME = "calcTime";
     public final static String REPAINT_TIME = "repaintTime";
+    public final static String MODE = "mode";
     
     // localization
     // TODO - add all string constants for localization
@@ -31,6 +32,10 @@ public interface Constants
     public final static String CMD_GRID = "grid";
     public final static String CMD_SHOW_ARROWS = "showArrows";
     public final static String CMD_FOCUS = "focus";
+    public final static String CMD_NEXT_MODE = "nextMode";
+    public final static String CMD_PHYSICS_MODE = "physicsMode";
+    public final static String CMD_RECORDING_MODE = "recordingMode";
+    public final static String CMD_PLAYBACK_MODE = "playBackMode";
     public final static String CMD_SETTINGS = "settings";
     
     // decor ID's

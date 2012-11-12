@@ -108,8 +108,8 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         
-        pnlButtons.add(new EasyButton(LOCALIZER.getString("OK"), "ok", this));
-        pnlButtons.add(new EasyButton(LOCALIZER.getString("CANCEL"), "cancel", this));
+        pnlButtons.add(new QuickButton(LOCALIZER.getString("OK"), "ok", this));
+        pnlButtons.add(new QuickButton(LOCALIZER.getString("CANCEL"), "cancel", this));
         
         rootPane.add(pnlButtons, BorderLayout.PAGE_END);
         rootPane.add(container);

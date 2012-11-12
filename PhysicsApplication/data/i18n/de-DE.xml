@@ -34,6 +34,9 @@
   <String id="STEEL">Stahl</String>
   <String id="WATER">Wasser</String>
   <String id="NACL">Orange</String>
+  <String id="PHYSICS_MODE">Physik-Modus</String>
+  <String id="RECORDING_MODE">Physik-Aufnahme-Modus</String>
+  <String id="PLAYBACK_MODE">Wiedergabe-Modus</String>
   
   <!--  Tooltips -->
   <String id="TT_NEW">Erstellt eine neue Szene</String>

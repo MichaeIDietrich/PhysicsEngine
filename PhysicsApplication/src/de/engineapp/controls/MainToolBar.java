@@ -53,18 +53,20 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     
     private PresentationModel pModel;
     
-    private EasyButton new_;
-    private EasyButton open;
-    private EasyButton save;
-    private EasyButton play;
-    private EasyButton pause;
-    private EasyButton reset;
-    private EasyButton grid;
-    private EasyButton showArrows;
-    private EasyButton focus;
-    private EasyButton settings;
+    private QuickButton new_;
+    private QuickButton open;
+    private QuickButton save;
+    private QuickButton play;
+    private QuickButton pause;
+    private QuickButton reset;
+    private QuickButton grid;
+    private QuickButton showArrows;
+    private QuickButton focus;
+    private QuickButton settings;
     
     private ZoomSlider slider;
+    
+    private DropDownButton mode;
     
     
     public MainToolBar(PresentationModel model)
@@ -77,22 +79,27 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         pModel.addViewBoxListener(this);
         pModel.addStorageListener(this);
         
-        new_       = new EasyButton(Util.getIcon("new"),           CMD_NEW,         this);
-        open       = new EasyButton(Util.getIcon("open"),          CMD_OPEN,        this);
-        save       = new EasyButton(Util.getIcon("save"),          CMD_SAVE,        this);
-        play       = new EasyButton(Util.getIcon("play"),          CMD_PLAY,        this);
-        pause      = new EasyButton(Util.getIcon("pause"),         CMD_PAUSE,       this);
-        reset      = new EasyButton(Util.getIcon("reset"),         CMD_RESET,       this);
-        grid       = new EasyButton(Util.getIcon("grid"),          CMD_GRID,        this);
-        showArrows = new EasyButton(Util.getIcon("object_arrows3"), CMD_SHOW_ARROWS, this);
-        focus      = new EasyButton(Util.getIcon("focus"),         CMD_FOCUS,       this);
-        settings   = new EasyButton(Util.getIcon("settings2"),     CMD_SETTINGS,    this);
+        new_       = new QuickButton(Util.getIcon("new"),           CMD_NEW,         this);
+        open       = new QuickButton(Util.getIcon("open"),          CMD_OPEN,        this);
+        save       = new QuickButton(Util.getIcon("save"),          CMD_SAVE,        this);
+        play       = new QuickButton(Util.getIcon("play"),          CMD_PLAY,        this);
+        pause      = new QuickButton(Util.getIcon("pause"),         CMD_PAUSE,       this);
+        reset      = new QuickButton(Util.getIcon("reset"),         CMD_RESET,       this);
+        grid       = new QuickButton(Util.getIcon("grid"),          CMD_GRID,        this);
+        showArrows = new QuickButton(Util.getIcon("object_arrows3"), CMD_SHOW_ARROWS, this);
+        focus      = new QuickButton(Util.getIcon("focus"),         CMD_FOCUS,       this);
+        settings   = new QuickButton(Util.getIcon("settings2"),     CMD_SETTINGS,    this);
         
         pause.setEnabled(false);
         reset.setEnabled(false);
         
         slider = new ZoomSlider(pModel.getZoom());
         slider.addChangeListener(this);
+        
+        mode = new DropDownButton(Util.getIcon("physics"), CMD_NEXT_MODE, this);
+        mode.addAction(LOCALIZER.getString("PHYSICS_MODE"), Util.getIcon("physics"), CMD_PHYSICS_MODE);
+        mode.addAction(LOCALIZER.getString("RECORDING_MODE"), Util.getIcon("record2"), CMD_RECORDING_MODE);
+        mode.addAction(LOCALIZER.getString("PLAYBACK_MODE"), Util.getIcon("playback"), CMD_PLAYBACK_MODE);
         
         setToolTips();
         
@@ -110,6 +117,9 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         this.add(focus);
         this.addSeparator();
         this.add(slider);
+        this.addSeparator();
+        this.add(mode);
+        this.addSeparator();
         this.add(settings);
         
         slider.setValue(pModel.getZoom());
@@ -131,6 +141,21 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         focus.setToolTipText(LOCALIZER.getString("TT_FOCUS"));
         slider.setToolTipText(LOCALIZER.getString("TT_ZOOM"));
         settings.setToolTipText(LOCALIZER.getString("TT_SETTINGS"));
+        
+        switch (pModel.getProperty(MODE))
+        {
+            case CMD_PHYSICS_MODE:
+                mode.setToolTipText(LOCALIZER.getString("PHYSICS_MODE"));
+                break;
+                
+            case CMD_RECORDING_MODE:
+                mode.setToolTipText(LOCALIZER.getString("RECORDING_MODE"));
+                break;
+                
+            case CMD_PLAYBACK_MODE:
+                mode.setToolTipText(LOCALIZER.getString("PLAYBACK_MODE"));
+                break;
+        }
     }
     
     
@@ -174,7 +199,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 
             case CMD_GRID:
                 pModel.toggleState(GRID);
-                grid.setSelected(pModel.isState(GRID));
                 pModel.fireRepaintEvents();
                 break;
                 
@@ -186,6 +210,36 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             case CMD_FOCUS:
                 pModel.setViewOffset(0, 0);
                 pModel.fireRepaintEvents();
+                break;
+                
+            case CMD_NEXT_MODE:
+                switch (pModel.getProperty(MODE))
+                {
+                    case CMD_PHYSICS_MODE:
+                        pModel.setProperty(MODE, CMD_RECORDING_MODE);
+                        break;
+                        
+                    case CMD_RECORDING_MODE:
+                        pModel.setProperty(MODE, CMD_PLAYBACK_MODE);
+                        break;
+                        
+                    case CMD_PLAYBACK_MODE:
+                        pModel.setProperty(MODE, CMD_PHYSICS_MODE);
+                        break;
+                        
+                }
+                break;
+                
+            case CMD_PHYSICS_MODE:
+                pModel.setProperty(MODE, CMD_PHYSICS_MODE);
+                break;
+                
+            case CMD_RECORDING_MODE:
+                pModel.setProperty(MODE, CMD_RECORDING_MODE);
+                break;
+                
+            case CMD_PLAYBACK_MODE:
+                pModel.setProperty(MODE, CMD_PLAYBACK_MODE);
                 break;
                 
             case CMD_SETTINGS:
@@ -256,9 +310,31 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     @Override
     public void propertyChanged(String id, String value)
     {
-        if (id.equals(LANGUAGE_CODE))
+        switch (id)
         {
-            setToolTips();
+            case LANGUAGE_CODE:
+                setToolTips();
+                break;
+                
+            case MODE:
+                switch (value)
+                {
+                    case CMD_PHYSICS_MODE:
+                        mode.setIcon(Util.getIcon("physics"));
+                        mode.setToolTipText(LOCALIZER.getString("PHYSICS_MODE"));
+                        break;
+                        
+                    case CMD_RECORDING_MODE:
+                        mode.setIcon(Util.getIcon("record2"));
+                        mode.setToolTipText(LOCALIZER.getString("RECORDING_MODE"));
+                        break;
+                        
+                    case CMD_PLAYBACK_MODE:
+                        mode.setIcon(Util.getIcon("playback"));
+                        mode.setToolTipText(LOCALIZER.getString("PLAYBACK_MODE"));
+                        break;
+                }
+                break;
         }
     }
     

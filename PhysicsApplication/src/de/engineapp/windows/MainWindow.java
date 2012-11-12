@@ -42,6 +42,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         super(LOCALIZER.getString("APP_NAME"));
         
         pModel = new PresentationModel();
+        pModel.setProperty(MODE, CMD_PHYSICS_MODE);
         
         pModel.addPaintListener(this);
         pModel.addStorageListener(this);

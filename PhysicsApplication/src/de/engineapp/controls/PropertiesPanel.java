@@ -47,8 +47,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     //Buttons erstellen
     private JButton del;
     private JButton close;
-    private EasyButton next;
-    private EasyButton previous;
+    private QuickButton next;
+    private QuickButton previous;
     
     //Namensfeld erstellen
     private JTextField name;
@@ -193,8 +193,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         
         MaterialCombo = new IconComboBox<Material>(Material.values(), "materials");
         
-        next         = new EasyButton(Util.getIcon("next"),"next",this);
-        previous     = new EasyButton(Util.getIcon("previous"),"previous",this);
+        next         = new QuickButton(Util.getIcon("next"),"next",this);
+        previous     = new QuickButton(Util.getIcon("previous"),"previous",this);
         groupName.add(previous, BorderLayout.LINE_START);
         groupName.add(next, BorderLayout.LINE_END);
         groupName.add(name);
