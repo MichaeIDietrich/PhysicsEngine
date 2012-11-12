@@ -57,7 +57,7 @@ public class CollisionDetector
             }
         }
         
-        // Tests the collision between object and ground 
+        // Tests the collision between objects and ground 
         objectGroundCollision();
     }
     
@@ -70,12 +70,8 @@ public class CollisionDetector
         {
             if (scene.getCount()>0 && object!=null && scene.getGround()!=null)
             {
-                Ground           ground = scene.getGround();
-    //            ObjectProperties object = scene.getObject(0);
-                
-                
-                
-                Double xn = Util.newtonIteration( object, ground );
+                Ground ground = scene.getGround();
+                Double     xn = Util.newtonIteration( object, ground );
                 
                 object.last_intersection.setX( xn );
                 object.last_intersection.setY( ground.function( ground.ACTUAL_FUNCTION, xn.intValue() ));
@@ -95,8 +91,8 @@ public class CollisionDetector
         }
         
         System.out.println( System.currentTimeMillis() - time +" ms / "+ 
-                "SP: = "+ 
+                "SP: [ "+ 
                 (int) scene.getObject(0).last_intersection.getX() +", "+ 
-                (int) scene.getObject(0).last_intersection.getY());
+                (int) scene.getObject(0).last_intersection.getY() +" ]");
     }
 }
