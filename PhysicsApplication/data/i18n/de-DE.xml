@@ -11,6 +11,7 @@
   <String id="X_VELOCITY">&lt;html&gt;v&lt;sub&gt;x&lt;/sub&gt; in m/s&lt;/html&gt;</String>
   <String id="Y_VELOCITY">&lt;html&gt;v&lt;sub&gt;y&lt;/sub&gt; in m/s&lt;/html&gt;</String>
   <String id="MASS">Masse in kg</String>
+  <String id="RADIUS">Radius</String>
   <String id="POT_ENERGY">Potenzielle Energie: </String>
   <String id="KIN_ENERGY">Kinetische Energie: </String>
   <String id="REMOVE">Entfernen</String>
