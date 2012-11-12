@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene gravitation="9.81">
+  <Ground watermark="-302" />
+  <Circle name="Object 0" material="STEEL" x="-150.0" y="-50.0" vx="0.0" vy="-50.0" mass="10.0" radius="8.0" pinned="false" />
+  <Circle name="Object 1" material="STEEL" x="-200.0" y="-50.0" vx="50.0" vy="-50.0" mass="10.0" radius="8.0" pinned="false" />
+  <Circle name="Object 2" material="STEEL" x="-100.0" y="-50.0" vx="-50.0" vy="-50.0" mass="10.0" radius="8.0" pinned="false" />
+</Scene>
