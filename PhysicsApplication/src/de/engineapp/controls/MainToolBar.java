@@ -173,6 +173,10 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 
             case CMD_OPEN:
                 loadScene();
+                if (pModel.isState(SHOW_ARROWS_ALWAYS))
+                {
+                    pModel.setState(SHOW_ARROWS_ALWAYS, true);
+                }
                 break;
                 
             case CMD_SAVE:

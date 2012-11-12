@@ -202,6 +202,10 @@ public class Vector implements Cloneable
         {
             copy.set(i, get(i));
         }
+        
+        copy.x = this.x;
+        copy.y = this.y;
+        
         return copy;
     }
     
