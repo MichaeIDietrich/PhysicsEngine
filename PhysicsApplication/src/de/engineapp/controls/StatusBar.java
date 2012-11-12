@@ -4,14 +4,17 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
+import javax.swing.event.*;
 
+import de.engine.environment.Scene;
 import de.engine.math.Vector;
-import de.engineapp.PresentationModel;
-import de.engineapp.PresentationModel.StorageListener;
+import de.engine.objects.*;
+import de.engineapp.*;
+import de.engineapp.PresentationModel.*;
 
 import static de.engineapp.Constants.*;
 
-public class StatusBar extends JPanel implements MouseMotionListener, StorageListener
+public class StatusBar extends JPanel implements MouseMotionListener, StorageListener, SceneListener, ChangeListener
 {
     private static final long serialVersionUID = 8107903887585331982L;
     
@@ -24,6 +27,10 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     private JLabel lblCoordinates;
     
     
+    // this control will represent all the recorded frames
+    private JSlider frames;
+    
+    
     public StatusBar(PresentationModel model)
     {
         pModel = model;
@@ -33,6 +40,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
         
         model.addMouseMotionListenerToCanvas(this);
         model.addStorageListener(this);
+        model.addSceneListener(this);
         
         this.setPreferredSize(new Dimension(0, 30));
         
@@ -64,6 +72,12 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
         boxRight.add(lblCoordinates);
         
         this.add(boxRight, BorderLayout.LINE_END);
+        
+        
+        frames = new JSlider(1, 1);
+        frames.setMinorTickSpacing(30);
+        frames.setPaintTicks(true);
+        frames.addChangeListener(this);
     }
     
     
@@ -113,6 +127,67 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
                     lblRepaintTime.setText(" repaint: " + value + "ms ");
                 }
                 break;
+                
+            case MODE:
+                if (value.equals(CMD_PHYSICS_MODE))
+                {
+                    this.remove(frames);
+                    this.updateUI();
+                }
+                else if (value.equals(CMD_RECORDING_MODE))
+                {
+                    frames.setEnabled(false);
+                    this.add(frames);
+                    this.updateUI();
+                }
+                else if (value.equals(CMD_PLAYBACK_MODE))
+                {
+                    frames.setEnabled(true);
+                    this.add(frames);
+                    this.updateUI();
+                }
+        }
+    }
+    
+    
+    @Override
+    public void objectAdded(ObjectProperties object) { }
+    
+    @Override
+    public void objectRemoved(ObjectProperties object) { }
+    
+    @Override
+    public void groundAdded(Ground ground) { }
+    
+    @Override
+    public void groundRemoved(Ground ground) { }
+    
+    @Override
+    public void objectSelected(ObjectProperties object) { }
+    
+    @Override
+    public void objectDeselected(ObjectProperties object) { }
+    
+    @Override
+    public void sceneUpdated(Scene scene)
+    {
+        if (pModel.getProperty(MODE).equals(CMD_RECORDING_MODE))
+        {
+            Recorder recorder = Recorder.getInstance();
+            recorder.addFrame(scene);
+            frames.setMaximum(recorder.getFrameCount());
+            frames.setValue(recorder.getFrameCount());
+        }
+    }
+    
+    
+    @Override
+    public void stateChanged(ChangeEvent e)
+    {
+        if (pModel.getProperty(MODE).equals(CMD_PLAYBACK_MODE))
+        {
+            pModel.setScene(Recorder.getInstance().getFrame(frames.getValue() - 1));
+            pModel.fireRepaintEvents();
         }
     }
 }
