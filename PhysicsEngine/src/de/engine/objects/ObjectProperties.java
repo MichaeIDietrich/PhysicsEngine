@@ -49,6 +49,7 @@ public abstract class ObjectProperties implements Cloneable
     public Transformation world_position;
     
     public Vector last_intersection;
+    public Vector closest_point;
     
     public Vector getPosition()
     {
@@ -128,6 +129,7 @@ public abstract class ObjectProperties implements Cloneable
     {
         this.id = idCounter++;
         this.last_intersection = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
+        this.closest_point = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
     }
     
     public int getId()

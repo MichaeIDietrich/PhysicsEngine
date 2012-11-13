@@ -83,7 +83,7 @@ public class Util
                 xn = xn - getFunctionsValue(xn, radius[n], object, ground) / derive1D(xn, radius[n], object, ground);
             }
             
-            int y = ground.function(ground.ACTUAL_FUNCTION, xn.intValue());
+            int y = ground.function(xn.intValue());
             distance = Math.sqrt(Math.pow(xn - object.getPosition().getX(), 2d) + Math.pow(y - object.getPosition().getY(), 2d));
             
             // returns the intersection coordinate with the shortest distance between circle an ground
@@ -121,7 +121,7 @@ public class Util
         double diff_y = -radius * Math.cos(alpha);
         
         function.set(0, m * (x - object.getPosition().getX() - diff_x) + n + diff_y);
-        function.set(1, (double) ground.function(ground.ACTUAL_FUNCTION, x.intValue()));
+        function.set(1, (double) ground.function(x.intValue()));
         
         return function.get(1) - function.get(0);
     }

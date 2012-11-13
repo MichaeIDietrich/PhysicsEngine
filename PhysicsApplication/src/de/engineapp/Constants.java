@@ -42,6 +42,7 @@ public interface Constants
     public final static String DECOR_ARROW = "arrow";
     public final static String DECOR_RANGE = "range";
     public final static String DECOR_COORDINATE = "coordinate";
+    public final static String DECOR_CLOSEST_POINT = "closestPoint";
     public final static String DECOR_MULTIPLE_ARROW = "multipleArrow";
     
     // objects

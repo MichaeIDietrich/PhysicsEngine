@@ -2,25 +2,24 @@ package de.engine.objects;
 
 public class Ground //extends ObjectProperties
 {
-    public int watermark;
+    public static final int HILLANDVALLEY = 1;
+    public static final int DOWNHILL      = 2;
+    public static final int STAIRS        = 3;
     
-    public final int HILLANDVALLEY = 1;
-    public final int DOWNHILL      = 2;
-    public final int STAIRS        = 3;
     
-    public int ACTUAL_FUNCTION = 0;
+    protected int watermark;
+    protected int type;
     
-    public Ground(int watermark)
+    public Ground(int type, int watermark)
     {
+        this.type = type;
         this.watermark = watermark;
     }
     
     
-    public int function( int typ, int i )
+    public int function( int i )
     {
-        ACTUAL_FUNCTION = typ;
-        
-        switch( typ ) 
+        switch( type ) 
         {
             case 1: return function_hill_valley(i);
             case 2: return function_downhill(i);
@@ -77,9 +76,31 @@ public class Ground //extends ObjectProperties
     public Ground clone()
     {
         // TODO - add all properties, that need to be copied
-        Ground newGround = new Ground(this.watermark);
+        Ground newGround = new Ground(this.type, this.watermark);
         // ...
         
         return newGround;
+    }
+    
+    
+    public int getType()
+    {
+        return type;
+    }
+    
+    public void setType(int type)
+    {
+        this.type = type;
+    }
+    
+    
+    public int getWatermark()
+    {
+        return watermark;
+    }
+    
+    public void setWatermark(int watermark)
+    {
+        this.watermark = watermark;
     }
 }
