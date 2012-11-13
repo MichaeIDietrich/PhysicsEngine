@@ -18,25 +18,6 @@ public class Square extends Polygon implements Cloneable {
 		calcMomentOfInertia();
 		//this.moment_of_inertia = this.getMass() * (Math.pow((corner.getX() * 2), 2) + Math.pow((corner.getY() * 2), 2)) / 12;
 	}
-
-	@Override
-	public void translation() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void rotation() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-
-	}
-    
     
     @Override
     public Square clone()

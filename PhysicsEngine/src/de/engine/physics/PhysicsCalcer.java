@@ -3,7 +3,6 @@ package de.engine.physics;
 import de.engine.colldetect.CollisionData;
 import de.engine.colldetect.CollisionData.Contact;
 import de.engine.colldetect.ContactCreator;
-import de.engine.environment.EnvProps;
 import de.engine.math.Util;
 import de.engine.math.Vector;
 import de.engine.objects.Circle;
@@ -56,6 +55,7 @@ public class PhysicsCalcer
         }
     }
     
+    //Quelle: http://www.myphysicslab.com/collision.html
     public static void resolveContact(ObjectProperties o1, ObjectProperties o2, double collTime, CollisionData.Contact contact)
     {
         Vector coll_point = contact.point;
@@ -93,18 +93,23 @@ public class PhysicsCalcer
         double ang_v_o1_n = o1.angular_velocity + Util.crossProduct(r_o1, j_normal) / o1.moment_of_inertia;
         double ang_v_o2_n = o2.angular_velocity - Util.crossProduct(r_o2, j_normal) / o2.moment_of_inertia;
         
-        o1.update(collTime);
-        o2.update(collTime);
+        if(!o1.isPinned) {
+            o1.next_velocity = v_o1_n;
+            o1.next_angular_velocity = ang_v_o1_n;
+            o1.next_time = collTime;
+            //o1.update(collTime);
+        }
         
-        if(!o1.isPinned) o1.velocity = v_o1_n;
-        if(!o2.isPinned) o2.velocity = v_o2_n;
+        if(!o2.isPinned) {
+            o2.next_velocity = v_o2_n;
+            o2.next_angular_velocity = ang_v_o2_n;
+            o2.next_time = collTime;
+            //o2.update(collTime);
+        }
         
-        if(!o1.isPinned) o1.angular_velocity = ang_v_o1_n;
-        if(!o2.isPinned) o2.angular_velocity = ang_v_o2_n;
-        
-        double afterCollTime = EnvProps.deltaTime() - collTime;
+        //double afterCollTime = EnvProps.deltaTime() - collTime;
 
-        o1.update(afterCollTime);
-        o2.update(afterCollTime);
+        //o1.update(afterCollTime);
+        //o2.update(afterCollTime);
     }
 }
