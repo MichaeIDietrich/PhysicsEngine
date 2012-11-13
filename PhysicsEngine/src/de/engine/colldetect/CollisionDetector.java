@@ -2,6 +2,7 @@ package de.engine.colldetect;
 
 import java.util.Vector;
 
+import de.engine.DebugMonitor;
 import de.engine.environment.Scene;
 import de.engine.math.*;
 import de.engine.math.DistanceCalcer.Function;
@@ -87,7 +88,7 @@ public class CollisionDetector
     
     public void objectGroundCollision()
     {
-//        long time = System.currentTimeMillis();
+        long time = System.currentTimeMillis();
         
         for (ObjectProperties object : scene.getObjects())
         {
@@ -113,12 +114,14 @@ public class CollisionDetector
             }
         }
         
+        DebugMonitor.getInstance().updateMessage("groundColl", "" + (System.currentTimeMillis() - time));
 //        System.out.println(System.currentTimeMillis() - time + " ms / " + "SP: [ " + (int) scene.getObject(0).last_intersection.getX() + ", " + (int) scene.getObject(0).last_intersection.getY() + " ]");
     }
     
     
     public void objectGroundCollision2()
     {
+        long t = System.currentTimeMillis();
         Function func = new Function()
         {
             @Override
@@ -147,5 +150,6 @@ public class CollisionDetector
                 object.isPinned = true; // ^^
             }
         }
+        DebugMonitor.getInstance().updateMessage("distCalc", "" + (System.currentTimeMillis() - t));
     }
 }

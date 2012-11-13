@@ -13,9 +13,6 @@ public interface Constants
     public final static String LOOK_AND_FEEL = "lookAndFeel";
     public final static String LANGUAGE_CODE = "langCode";
     public final static String OBJECT_MODE = "ObjectMode";
-    public final static String FPS = "fps";
-    public final static String CALCULATE_TIME = "calcTime";
-    public final static String REPAINT_TIME = "repaintTime";
     public final static String MODE = "mode";
     
     // localization

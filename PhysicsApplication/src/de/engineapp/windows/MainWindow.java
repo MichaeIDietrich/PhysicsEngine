@@ -6,7 +6,7 @@ import java.util.*;
 
 import javax.swing.*;
 
-import de.engine.PhysicsEngine2D;
+import de.engine.*;
 import de.engine.environment.Scene;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.*;
@@ -274,7 +274,7 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         canvas.repaint();
         
         
-        pModel.setProperty(REPAINT_TIME, "" + (System.currentTimeMillis() - t));
+        DebugMonitor.getInstance().updateMessage("repaint", "" + (System.currentTimeMillis() - t));
     }
     
     

@@ -2,10 +2,14 @@ package de.engineapp.controls;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.*;
 
+import de.engine.*;
+import de.engine.DebugMonitor.MessageListener;
 import de.engine.environment.Scene;
 import de.engine.math.Vector;
 import de.engine.objects.*;
@@ -14,17 +18,21 @@ import de.engineapp.PresentationModel.*;
 
 import static de.engineapp.Constants.*;
 
-public class StatusBar extends JPanel implements MouseMotionListener, StorageListener, SceneListener, ChangeListener
+public class StatusBar extends JPanel implements MouseMotionListener, StorageListener, SceneListener, ChangeListener, MessageListener
 {
     private static final long serialVersionUID = 8107903887585331982L;
+    
+    private static final Border STATUS_BORDER = BorderFactory.createCompoundBorder(
+            BorderFactory.createLoweredSoftBevelBorder(), BorderFactory.createEmptyBorder(0, 5, 0, 5));
     
     
     private PresentationModel pModel;
     
-    private JLabel lblCalcTime;
-    private JLabel lblRepaintTime;
-    private JLabel lblFPS;
+    private Box boxRight;
+    private JLabel lblObjectCount;
     private JLabel lblCoordinates;
+    
+    private Map<String, JLabel> debugMessages = null;
     
     
     // this control will represent all the recorded frames
@@ -44,31 +52,21 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
         
         this.setPreferredSize(new Dimension(0, 30));
         
-        Box boxRight = Box.createHorizontalBox();
+        boxRight = Box.createHorizontalBox();
         boxRight.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         
         if (pModel.isState(DEBUG))
         {
-            lblCalcTime = new JLabel(" ");
-            lblCalcTime.setBorder(BorderFactory.createLoweredSoftBevelBorder());
-            
-            lblRepaintTime = new JLabel(" ");
-            lblRepaintTime.setBorder(BorderFactory.createLoweredSoftBevelBorder());
-            
-            lblFPS = new JLabel(" 0 FPS ");
-            lblFPS.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+            debugMessages = new HashMap<>();
         }
         
-        lblCoordinates = new JLabel(" (0; 0) ");
-        lblCoordinates.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+        lblObjectCount = new JLabel("0 Objects");
+        lblObjectCount.setBorder(STATUS_BORDER);
         
+        lblCoordinates = new JLabel("(0; 0)");
+        lblCoordinates.setBorder(STATUS_BORDER);
         
-        if (pModel.isState(DEBUG))
-        {
-            boxRight.add(lblCalcTime);
-            boxRight.add(lblRepaintTime);
-            boxRight.add(lblFPS);
-        }
+        boxRight.add(lblObjectCount);
         boxRight.add(lblCoordinates);
         
         this.add(boxRight, BorderLayout.LINE_END);
@@ -78,6 +76,8 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
         frames.setMinorTickSpacing(30);
         frames.setPaintTicks(true);
         frames.addChangeListener(this);
+        
+        DebugMonitor.getInstance().addMessageListener(this);
     }
     
     
@@ -86,7 +86,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     {
         Vector coordinates = pModel.toTransformedVector(e.getPoint());
         
-        lblCoordinates.setText(String.format( "(%s; %s) ", (int) coordinates.getX(), (int) coordinates.getY()));
+        lblCoordinates.setText(String.format("(%s; %s)", (int) coordinates.getX(), (int) coordinates.getY()));
     }
     
     @Override
@@ -94,7 +94,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     {
         Vector coordinates = pModel.toTransformedVector(e.getPoint());
         
-        lblCoordinates.setText(String.format(" (%s; %s) ", (int) coordinates.getX(), (int) coordinates.getY()));
+        lblCoordinates.setText(String.format("(%s; %s)", (int) coordinates.getX(), (int) coordinates.getY()));
     }
     
     
@@ -107,27 +107,6 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     {
         switch (id)
         {
-            case FPS:
-                if (lblFPS != null)
-                {
-                    lblFPS.setText(" " + value + " FPS ");
-                }
-                break;
-                
-            case CALCULATE_TIME:
-                if (lblCalcTime != null)
-                {
-                    lblCalcTime.setText(" calculation: " + value + "ms ");
-                }
-                break;
-                
-            case REPAINT_TIME:
-                if (lblRepaintTime != null)
-                {
-                    lblRepaintTime.setText(" repaint: " + value + "ms ");
-                }
-                break;
-                
             case MODE:
                 if (value.equals(CMD_PHYSICS_MODE))
                 {
@@ -151,10 +130,16 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     
     
     @Override
-    public void objectAdded(ObjectProperties object) { }
+    public void objectAdded(ObjectProperties object)
+    {
+        lblObjectCount.setText(" " + pModel.getScene().getCount() + " Objects ");
+    }
     
     @Override
-    public void objectRemoved(ObjectProperties object) { }
+    public void objectRemoved(ObjectProperties object)
+    {
+        lblObjectCount.setText(" " + pModel.getScene().getCount() + " Objects ");
+    }
     
     @Override
     public void groundAdded(Ground ground) { }
@@ -188,6 +173,39 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
         {
             pModel.setScene(Recorder.getInstance().getFrame(frames.getValue() - 1));
             pModel.fireRepaintEvents();
+        }
+    }
+    
+    
+    @Override
+    public void messageUpdated(String name, String message)
+    {
+        if (debugMessages != null)
+        {
+            JLabel label = debugMessages.get(name);
+            
+            if (message == null)
+            {
+                if (label != null)
+                {
+                    boxRight.remove(label);
+                    boxRight.updateUI();
+                    debugMessages.remove(name);
+                }
+            }
+            else
+            {
+                if (label == null)
+                {
+                    label = new JLabel();
+                    label.setBorder(STATUS_BORDER);
+                    boxRight.add(label, 0);
+                    boxRight.updateUI();
+                    debugMessages.put(name, label);
+                }
+                
+                label.setText(name + ": " + message);
+            }
         }
     }
 }
