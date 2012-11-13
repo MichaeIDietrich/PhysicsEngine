@@ -58,27 +58,10 @@ public class Polygon extends ObjectProperties implements Cloneable {
 	}
 	
 	public Vector getWorldPointPos(int i, double time) {
-	    Transformation tr = new Transformation(Util.add(world_position.translation, Util.scale(velocity, time)), new Rotation(world_position.rotation.getAngle() + angular_velocity * time));
+	    double localtime = getTime(time);
+	    Transformation tr = new Transformation(Util.add(world_position.translation, Util.scale(velocity, localtime)), new Rotation(world_position.rotation.getAngle() + angular_velocity * localtime));
         return tr.getPostion(points[i]);
     }
-
-	@Override
-	public void translation() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void rotation() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public double getRadius() {

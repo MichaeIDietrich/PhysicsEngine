@@ -24,21 +24,27 @@ public abstract class ObjectProperties implements Cloneable
         }
     };
     
-    private boolean updated;
+    public double frametime = 0;
+    
+    public double next_time = 0;
+    
+    public double getTime()
+    {
+        return EnvProps.deltaTime() - frametime;
+        
+    }
+    
+    public double getTime(double time)
+    {
+        return time - frametime;
+        
+    }
     
     public boolean isPinned = false;
     
     // will get incremented every time it's used, to apply unique id's to each
     // of the new objects
     public static int idCounter = 0;
-    
-    // translate up to which vector?
-    public abstract void translation();
-    
-    // which fulcrum, about what angle?
-    public abstract void rotation();
-    
-    public abstract void destroy();
     
     public Transformation world_position;
     
@@ -56,19 +62,25 @@ public abstract class ObjectProperties implements Cloneable
     
     public Vector getPosition(double time)
     {
-        return Util.add(world_position.translation, new Vector((velocity.getX() * time), ((EnvProps.grav_acc() / 2d * time + velocity.getY()) * time)));
+        double localtime = getTime(time);
+        return Util.add(world_position.translation, new Vector((velocity.getX() * localtime), ((EnvProps.grav_acc() / 2d * localtime + velocity.getY()) * localtime)));
     }
     
     public Vector getNextPosition()
     {
-        return Util.add(world_position.translation, new Vector((velocity.getX() * EnvProps.deltaTime()), ((EnvProps.grav_acc() / 2d * EnvProps.deltaTime() + velocity.getY()) * EnvProps.deltaTime())));
+        return getPosition(EnvProps.deltaTime());
     }
     
     // TODO forces, velocity, momentum should be a vector, because of their
     // direction
     protected double mass = 1;
+    
     public Vector velocity = null;
     public double angular_velocity;
+    
+    public Vector next_velocity = new Vector();
+    public double next_angular_velocity;
+    
     public Vector momentum = null;
     public Vector normal_force = null;
     public Vector downhill_force = null;
@@ -93,7 +105,8 @@ public abstract class ObjectProperties implements Cloneable
     
     public abstract void setRadius(double radius);
     
-    public double getMass() {
+    public double getMass()
+    {
         return mass;
     }
     
@@ -124,34 +137,37 @@ public abstract class ObjectProperties implements Cloneable
     
     public void update()
     {
-        if(isPinned)
+        if (isPinned)
             return;
-        if (updated)
-            updated = false;
-        else
-        {
-            world_position.translation = getNextPosition();
-            world_position.rotation.setAngle(world_position.rotation.getAngle() + angular_velocity * EnvProps.deltaTime());
-            // obj.getPosition().setY(
-            // -9.81 / 2d * deltaTime + obj.velocity.getY()
-            // * deltaTime + obj.getPosition().getY());
-            velocity.add(0, EnvProps.grav_acc() / 2d * EnvProps.deltaTime());
-            
-            // calc potential energy: Epot = m*g*h (mass * grav_const * y-coordinate)
-            potential_energy = -mass * EnvProps.grav_acc() * world_position.translation.getY();
-            
-            // calc kinetic energy: Epot = m/2*v² (mass * grav_const * y-coordinate)
-        }
+        world_position.translation = getNextPosition();
+        world_position.rotation.setAngle(world_position.rotation.getAngle() + angular_velocity * getTime());
+        // obj.getPosition().setY(
+        // -9.81 / 2d * deltaTime + obj.velocity.getY()
+        // * deltaTime + obj.getPosition().getY());
+        velocity.add(0, EnvProps.grav_acc() / 2d * getTime());
+        
+        // calc potential energy: Epot = m*g*h (mass * grav_const * y-coordinate)
+        potential_energy = -mass * EnvProps.grav_acc() * world_position.translation.getY();
+        
+        // calc kinetic energy: Epot = m/2*v² (mass * grav_const * y-coordinate)
+        frametime = 0;
+        
+        next_velocity = velocity;
+        next_angular_velocity = angular_velocity;
     }
     
     public void update(double time)
     {
-        if(isPinned)
+        if (isPinned)
             return;
-        updated = true;
+        double localtime = getTime(time);
         world_position.translation = getPosition(time);
-        velocity.add(0, EnvProps.grav_acc() / 2d * time);
-        world_position.rotation.setAngle(world_position.rotation.getAngle() + angular_velocity * time);
+        velocity.add(0, EnvProps.grav_acc() / 2d * localtime);
+        world_position.rotation.setAngle(world_position.rotation.getAngle() + angular_velocity * localtime);
+        frametime = time;
+        
+        velocity = next_velocity;
+        angular_velocity = next_angular_velocity;
     }
     
     @Override
