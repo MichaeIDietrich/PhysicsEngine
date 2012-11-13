@@ -249,23 +249,32 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void objectSelected(ObjectProperties object)
     {
+        IDecorable decorableObject = (IDecorable) object;
+        
         Arrow arrow = new Arrow(object, "velocity");
-        ((IDecorable) object).putDecor(DECOR_ARROW, arrow);
+        decorableObject.putDecor(DECOR_ARROW, arrow);
         
         Coordinate coord = new Coordinate( object, "last_intersection" );
-        ((IDecorable) object).putDecor(DECOR_COORDINATE, coord);
+        decorableObject.putDecor(DECOR_COORDINATE, coord);
+        
+        Coordinate closestPoint = new Coordinate( object, "closest_point" );
+        closestPoint.setColor(Color.BLUE);
+        decorableObject.putDecor(DECOR_CLOSEST_POINT, closestPoint);
         
         if (pModel.isState(SHOW_ARROWS_ALWAYS))
         {
-            ((IDecorable) object).removeDecor(DECOR_MULTIPLE_ARROW);
+            decorableObject.removeDecor(DECOR_MULTIPLE_ARROW);
         }
     }
     
     @Override
     public void objectDeselected(ObjectProperties object)
     {
-        ((IDecorable) object).removeDecor(DECOR_ARROW);
-        ((IDecorable) object).removeDecor(DECOR_COORDINATE);
+        IDecorable decorableObject = (IDecorable) object;
+        
+        decorableObject.removeDecor(DECOR_ARROW);
+        decorableObject.removeDecor(DECOR_COORDINATE);
+        decorableObject.removeDecor(DECOR_CLOSEST_POINT);
         
         if (pModel.isState(SHOW_ARROWS_ALWAYS))
         {
@@ -368,7 +377,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 break;
                 
             case OBJ_GROUND:
-                pModel.setGround(new Ground(pModel, (int) sceneLocation.getY()));
+                pModel.setGround(new Ground(pModel, Ground.DOWNHILL, (int) sceneLocation.getY()));
                 break;
                 
             default:

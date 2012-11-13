@@ -6,8 +6,8 @@ import java.util.*;
 
 import javax.swing.*;
 
+import de.engine.PhysicsEngine2D;
 import de.engine.environment.Scene;
-import de.engine.math.PhysicsEngine2D;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.PaintListener;

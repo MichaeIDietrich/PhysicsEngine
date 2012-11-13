@@ -3,7 +3,8 @@ package de.engine.colldetect;
 import java.util.Vector;
 
 import de.engine.environment.Scene;
-import de.engine.math.Util;
+import de.engine.math.*;
+import de.engine.math.DistanceCalcer.Function;
 import de.engine.objects.Circle;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
@@ -15,7 +16,9 @@ public class CollisionDetector
     
     private Grid grid;
     private Scene scene;
-    de.engine.math.Vector v = null;
+    private de.engine.math.Vector v = null;
+    
+    private DistanceCalcer distCalcer;
     
     public CollisionDetector(Scene scene)
     {
@@ -24,6 +27,8 @@ public class CollisionDetector
         
         grid = new Grid(scene);
         this.scene = scene;
+        
+        distCalcer = new DistanceCalcer(0.1);
     }
     
     public void checkScene()
@@ -74,12 +79,15 @@ public class CollisionDetector
         
         // Tests the collision between objects and ground
         if (scene.existGround())
+        {
             objectGroundCollision();
+            objectGroundCollision2();
+        }
     }
     
     public void objectGroundCollision()
     {
-        long time = System.currentTimeMillis();
+//        long time = System.currentTimeMillis();
         
         for (ObjectProperties object : scene.getObjects())
         {
@@ -89,7 +97,7 @@ public class CollisionDetector
                 Double xn = Util.newtonIteration(object, ground);
                 
                 object.last_intersection.setX(xn);
-                object.last_intersection.setY(ground.function(ground.ACTUAL_FUNCTION, xn.intValue()));
+                object.last_intersection.setY(ground.function(xn.intValue()));
                 
                 int x = (int) object.last_intersection.getX();
                 int y = (int) object.last_intersection.getY();
@@ -105,6 +113,39 @@ public class CollisionDetector
             }
         }
         
-        System.out.println(System.currentTimeMillis() - time + " ms / " + "SP: [ " + (int) scene.getObject(0).last_intersection.getX() + ", " + (int) scene.getObject(0).last_intersection.getY() + " ]");
+//        System.out.println(System.currentTimeMillis() - time + " ms / " + "SP: [ " + (int) scene.getObject(0).last_intersection.getX() + ", " + (int) scene.getObject(0).last_intersection.getY() + " ]");
+    }
+    
+    
+    public void objectGroundCollision2()
+    {
+        Function func = new Function()
+        {
+            @Override
+            public double function(double x)
+            {
+                return scene.getGround().function((int) x);
+            }
+        };
+        
+        for (ObjectProperties object : scene.getObjects())
+        {
+            // this helps to define an interval
+//            double range = object.velocity.getX() * 2;
+            double range = object.getRadius() * 5;
+            de.engine.math.Vector nextPos = object.getNextPosition();
+            
+            distCalcer.setPoint(nextPos);
+            distCalcer.setFunction(func);
+            double dist = distCalcer.calculateDistanceBetweenFunctionPoint(nextPos.getX() - range, nextPos.getX() + range);
+            
+            object.closest_point = new de.engine.math.Vector(distCalcer.getLastSolvedX(), 
+                    scene.getGround().function((int) distCalcer.getLastSolvedX()));
+            
+            if (dist < object.getRadius())
+            {
+                object.isPinned = true; // ^^
+            }
+        }
     }
 }
