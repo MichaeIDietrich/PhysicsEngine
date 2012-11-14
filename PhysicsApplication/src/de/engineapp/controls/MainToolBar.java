@@ -32,6 +32,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
 {
     private static final long serialVersionUID = 4164673212238397915L;
     
+    private static final String SCENE_VERSION = "1.0";
+    
     private final static Localizer LOCALIZER = Localizer.getInstance();
     
     private static final FileFilter SCENE_FILTER = new FileFilter()
@@ -384,7 +386,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             
             writer.writeDeclaration();
             writer.writeStartElement("Scene");
-            writer.writeAttribute("version", "1.0");
+            writer.writeAttribute("version", SCENE_VERSION);
             writer.writeAttribute("gravitation", "9.81"); // missing property
             
             if (scene.getGround() != null)
@@ -450,12 +452,29 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         {
             XMLReader reader = new XMLReader(dlgOpen.getSelectedFile());
             
-            if (reader.getNode("Scene") != null)
+            Element node = reader.getNode("Scene");
+            
+            if (node != null)
             {
+                String version = node.getAttribute("version");
+                
+                if (!SCENE_VERSION.equals(version))
+                {
+                    String[] options = new String[] { LOCALIZER.getString("OK"), LOCALIZER.getString("CANCEL") };
+                    
+                    if (JOptionPane.showOptionDialog(this.getTopLevelAncestor(), 
+                            LOCALIZER.getString("WRONG_VERSION"), LOCALIZER.getString("TITLE_IMPORT"),
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0])
+                            != 0)
+                    {
+                        return;
+                    }
+                }
+                
                 Scene scene = new Scene();
                 
                 ObjectProperties object = null;
-                Element node = reader.getNode("Scene/Ground");
+                node = reader.getNode("Scene/Ground");
                 
                 if (node != null)
                 {
