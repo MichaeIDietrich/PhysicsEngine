@@ -384,11 +384,13 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             
             writer.writeDeclaration();
             writer.writeStartElement("Scene");
+            writer.writeAttribute("version", "1.0");
             writer.writeAttribute("gravitation", "9.81"); // missing property
             
             if (scene.getGround() != null)
             {
                 writer.writeStartElement("Ground");
+                writer.writeAttribute("type", "" + scene.getGround().getType());
                 writer.writeAttribute("watermark", "" + scene.getGround().getWatermark());
                 writer.writeEndElement();
             }

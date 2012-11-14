@@ -265,6 +265,10 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         closestPoint.setColor(Color.BLUE);
         decorableObject.putDecor(DECOR_CLOSEST_POINT, closestPoint);
         
+        Range selection = new Range(object, "radius");
+        selection.setBorder(new Color(180, 120, 20));
+        decorableObject.putDecor(DECOR_SELECTION, selection);
+        
         if (pModel.isState(SHOW_ARROWS_ALWAYS))
         {
             decorableObject.removeDecor(DECOR_MULTIPLE_ARROW);
@@ -279,6 +283,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         decorableObject.removeDecor(DECOR_ARROW);
         decorableObject.removeDecor(DECOR_COORDINATE);
         decorableObject.removeDecor(DECOR_CLOSEST_POINT);
+        decorableObject.removeDecor(DECOR_SELECTION);
         
         if (pModel.isState(SHOW_ARROWS_ALWAYS))
         {

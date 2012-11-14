@@ -1,5 +1,7 @@
 package de.engine.math;
 
+import de.engine.DebugMonitor;
+
 public final class DistanceCalcer
 {
     public interface IFunction
@@ -8,7 +10,7 @@ public final class DistanceCalcer
     }
     
     
-    public class StraightLine implements IFunction
+    public static class StraightLine implements IFunction
     {
         private double m;
         private double n;
@@ -19,8 +21,16 @@ public final class DistanceCalcer
         
         public StraightLine(Vector p1, Vector p2)
         {
+            if (p2.getX() > p1.getX())
+            {
+                Vector p = p2;
+                p2 = p1;
+                p1 = p;
+            }
+            
             m = (p2.getY() - p1.getY()) / (p2.getX() - p1.getX());
             n = p2.getY() - m * p2.getX();
+            DebugMonitor.getInstance().updateMessage("m n", m + " " + n);
             
             a = p1.getX();
             b = p2.getX();
@@ -60,6 +70,7 @@ public final class DistanceCalcer
     private double tolerance;
     private Vector point;
     private IFunction function;
+    private StraightLine straightLine;
     
     private double lastSolvedX;
     
@@ -110,6 +121,42 @@ public final class DistanceCalcer
         };
         
         lastSolvedX = calculateMinimum(intervalStart, intervalEnd, tolerance, distFunc);
+        return distFunc.function(lastSolvedX);
+    }
+    
+    
+    public double calculateDistanceBetweenFunctionLine()
+    {
+        IFunction distFunc = new IFunction()
+        {
+            @Override
+            public double function(double x)
+            {
+                double v = straightLine.function(x) - function.function(x);
+                
+                return v;
+            }
+        };
+        
+        lastSolvedX = calculateMinimum(straightLine.getA(), straightLine.getB(), tolerance, distFunc);
+        return distFunc.function(lastSolvedX);
+    }
+    
+    
+    public double findRootBetweenFunctionLine()
+    {
+        IFunction distFunc = new IFunction()
+        {
+            @Override
+            public double function(double x)
+            {
+                double v = straightLine.function(x) - function.function(x);
+                
+                return v;
+            }
+        };
+        
+        lastSolvedX = BrentsMethodSolve(straightLine.getA(), straightLine.getB(), tolerance, distFunc);
         return distFunc.function(lastSolvedX);
     }
     
@@ -405,6 +452,83 @@ public final class DistanceCalcer
     }
     
     
+    public static double BrentsMethodSolve(double lowerLimit, double upperLimit, double tolerance, IFunction f)
+    {
+        double a = lowerLimit;
+        double b = upperLimit;
+        double c = 0;
+        double d = Double.MAX_VALUE;
+
+        double fa = f.function(a);
+        double fb = f.function(b);
+
+        double fc = 0;
+        double s = 0;
+        double fs = 0;
+
+        // if f(a) f(b) >= 0 then error-exit
+//        if (fa * fb >= 0)
+//        {
+//            System.out.println("error");
+//            if (fa < fb)
+//                return a;
+//            else
+//                return b;
+//        }
+
+        // if |f(a)| < |f(b)| then swap (a,b) end if
+        if (Math.abs(fa) < Math.abs(fb))
+        { double tmp = a; a = b; b = tmp; tmp = fa; fa = fb; fb = tmp; }
+
+        c = a;
+        fc = fa;
+        boolean mflag = true;
+        int i = 0;
+
+        while (!(fb==0) && (Math.abs(a-b) > tolerance))
+        {
+            if ((fa != fc) && (fb != fc))
+                // Inverse quadratic interpolation
+                s = a * fb * fc / (fa - fb) / (fa - fc) + b * fa * fc / (fb - fa) / (fb - fc) + c * fa * fb / (fc - fa) / (fc - fb);
+            else
+                // Secant Rule
+                s = b - fb * (b - a) / (fb - fa);
+
+            double tmp2 = (3 * a + b) / 4;
+            if ((!(((s > tmp2) && (s < b)) || ((s < tmp2) && (s > b)))) || (mflag && (Math.abs(s - b) >= (Math.abs(b - c) / 2))) || (!mflag && (Math.abs(s - b) >= (Math.abs(c - d) / 2))))
+            {
+                s = (a + b) / 2;
+                mflag = true;
+            }
+            else
+            {
+                if ((mflag && (Math.abs(b - c) < tolerance)) || (!mflag && (Math.abs(c - d) < tolerance)))
+                {
+                    s = (a + b) / 2;
+                    mflag = true;
+                }
+                else
+                    mflag = false;
+            }
+            fs = f.function(s);
+            d = c;
+            c = b;
+            fc = fb;
+            if (fa * fs < 0) { b = s; fb = fs; }
+            else { a = s; fa = fs; }
+
+            // if |f(a)| < |f(b)| then swap (a,b) end if
+            if (Math.abs(fa) < Math.abs(fb))
+            { double tmp = a; a = b; b = tmp; tmp = fa; fa = fb; fb = tmp; }
+            i++;
+            if (i > 100)
+                throw new RuntimeException(String.format("Error is {0}", fb));
+        }
+        return b;
+    }
+
+    
+    
     public double getTolerance()
     {
         return tolerance;
@@ -441,5 +565,16 @@ public final class DistanceCalcer
     public double getLastSolvedX()
     {
         return lastSolvedX;
+    }
+    
+    
+    public StraightLine getStraightLine()
+    {
+        return straightLine;
+    }
+    
+    public void setStraightLine(StraightLine straightLine)
+    {
+        this.straightLine = straightLine;
     }
 }

@@ -83,7 +83,7 @@ public class Util
                 xn = xn - getFunctionsValue(xn, radius[n], object, ground) / derive1D(xn, radius[n], object, ground);
             }
             
-            int y = ground.function(xn.intValue());
+            int y = (int) ground.function(xn);
             distance = Math.sqrt(Math.pow(xn - object.getPosition().getX(), 2d) + Math.pow(y - object.getPosition().getY(), 2d));
             
             // returns the intersection coordinate with the shortest distance between circle an ground

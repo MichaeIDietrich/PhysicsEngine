@@ -7,6 +7,8 @@ public class Vector implements Cloneable
     public static final Integer ZEILENSUMMENNORM = 10; 
     public static final Integer EUKLIDISCHENORM  = 11;
     
+    public static final Vector UNDEFINED = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
+    
     private boolean calcLength;
     private double length;
     
