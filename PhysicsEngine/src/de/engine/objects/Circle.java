@@ -17,27 +17,6 @@ public class Circle extends ObjectProperties implements Cloneable
     }
     
     @Override
-    public void translation()
-    {
-        // TODO Auto-generated method stub
-        
-    }
-    
-    @Override
-    public void rotation()
-    {
-        // TODO Auto-generated method stub
-        
-    }
-    
-    @Override
-    public void destroy()
-    {
-        // TODO Auto-generated method stub
-        
-    }
-    
-    @Override
     public Circle clone()
     {
         Circle newCircle = new Circle(this.getPosition().clone(), this.radius);

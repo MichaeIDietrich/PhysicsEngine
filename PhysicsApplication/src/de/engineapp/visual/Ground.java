@@ -23,9 +23,9 @@ public class Ground extends de.engine.objects.Ground implements IDrawable, Clone
     private Color border = GRASS_GREEN;
     
     
-    public Ground(PresentationModel model, int watermark)
+    public Ground(PresentationModel model, int type, int watermark)
     {
-        super(watermark);
+        super(type, watermark);
         
         pModel = model;
     }
@@ -77,7 +77,7 @@ public class Ground extends de.engine.objects.Ground implements IDrawable, Clone
         {
             int x = i - (int) ((pModel.getViewOffsetX() + halfWidth) / pModel.getZoom());
             
-            polygon.lineTo(x, this.function( this.DOWNHILL, x));
+            polygon.lineTo(x, this.function(x));
         }
         
         polygon.lineTo((-pModel.getViewOffsetX() + halfWidth) / pModel.getZoom(), (pModel.getViewOffsetY() - halfHeight) / pModel.getZoom());
@@ -120,7 +120,7 @@ public class Ground extends de.engine.objects.Ground implements IDrawable, Clone
     @Override
     public Ground clone()
     {
-        Ground newGround = new Ground(pModel, this.watermark);
+        Ground newGround = new Ground(pModel, this.type, this.watermark);
         
         return newGround;
     }

@@ -54,6 +54,11 @@ public class Scene implements Cloneable
         return ground;
     }
     
+    public boolean existGround()
+    {
+        return (ground != null);
+    }
+    
     public void removeGround()
     {
        ground = null;

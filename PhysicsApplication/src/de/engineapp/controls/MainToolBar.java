@@ -389,7 +389,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             if (scene.getGround() != null)
             {
                 writer.writeStartElement("Ground");
-                writer.writeAttribute("watermark", "" + scene.getGround().watermark);
+                writer.writeAttribute("watermark", "" + scene.getGround().getWatermark());
                 writer.writeEndElement();
             }
             
@@ -457,7 +457,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 
                 if (node != null)
                 {
-                    scene.setGround(new Ground(pModel, getInt(node.getAttribute("watermark"))));
+                    scene.setGround(new Ground(pModel, getInt(node.getAttribute("type")), getInt(node.getAttribute("watermark"))));
                 }
                 
                 for (Element obj : reader.getNodes("Scene/Circle | Scene/Square"))

@@ -1,4 +1,4 @@
-package de.engine.math;
+package de.engine;
 
 import de.engine.colldetect.CollisionDetector;
 import de.engine.environment.EnvProps;
