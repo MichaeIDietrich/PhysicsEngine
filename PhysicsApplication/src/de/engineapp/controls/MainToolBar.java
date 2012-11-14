@@ -168,7 +168,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 pModel.setScene(new Scene());
                 pModel.setZoom(1.0);
                 pModel.setViewOffset(0, 0);
-                pModel.fireRepaintEvents();
+                pModel.fireRepaint();
                 break;
                 
             case CMD_OPEN:
@@ -198,12 +198,12 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 {
                     pModel.setState(SHOW_ARROWS_ALWAYS, true);
                 }
-                pModel.fireRepaintEvents();
+                pModel.fireRepaint();
                 break;
                 
             case CMD_GRID:
                 pModel.toggleState(GRID);
-                pModel.fireRepaintEvents();
+                pModel.fireRepaint();
                 break;
                 
             case CMD_SHOW_ARROWS:
@@ -213,7 +213,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 
             case CMD_FOCUS:
                 pModel.setViewOffset(0, 0);
-                pModel.fireRepaintEvents();
+                pModel.fireRepaint();
                 break;
                 
             case CMD_NEXT_MODE:
@@ -261,7 +261,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     public void stateChanged(ChangeEvent e)
     {
         pModel.setZoom(slider.getValue(), new Point(pModel.getCanvasWidth() / 2, pModel.getCanvasHeight() / 2));
-        pModel.fireRepaintEvents();
+        pModel.fireRepaint();
     }
     
     
@@ -498,7 +498,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 }
                 
                 pModel.setScene(scene);
-                pModel.fireRepaintEvents();
+                pModel.fireRepaint();
             }
         }
     }
