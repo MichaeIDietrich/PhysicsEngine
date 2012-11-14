@@ -208,6 +208,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         MaterialCombo.setSelectedItem(pModel.getSelectedObject().surface);
         MaterialCombo.addActionListener(this);
         
+        fix.setSelected(pModel.getSelectedObject().isPinned);
         fix.addActionListener(this);
 
         colorBox.setForeground(((IDrawable) object).getColor());
@@ -318,7 +319,6 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         if(e.getSource() == fix)
         {
             pModel.getSelectedObject().isPinned = fix.isSelected();
-            System.out.println(pModel.getSelectedObject().isPinned);
         }
         
         
