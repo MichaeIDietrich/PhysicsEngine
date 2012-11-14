@@ -1,15 +1,12 @@
 package de.engine.colldetect;
 
-import java.util.Vector;
-
 import de.engine.DebugMonitor;
 import de.engine.environment.Scene;
-import de.engine.math.*;
+import de.engine.math.DistanceCalcer;
 import de.engine.math.DistanceCalcer.Function;
-import de.engine.objects.Circle;
+import de.engine.math.Util;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
-import de.engine.objects.Polygon;
 import de.engine.physics.PhysicsCalcer;
 
 public class CollisionDetector
@@ -36,46 +33,19 @@ public class CollisionDetector
     {
         grid.scanScene();
         grid.calcCollisionPairs();
-        Vector<Integer> collisions = grid.getNextCollisions();
-        while (collisions != null)
+        Integer collision = grid.getNextCollision();
+        while (collision != null)
         {
-            Vector<Integer> ids = new Vector<>();
-            for (int i = 0; i < collisions.size(); i++)
+            ObjectProperties o1 = grid.scene.getObject(grid.collisionPairs.get(collision)[0]);
+            ObjectProperties o2 = grid.scene.getObject(grid.collisionPairs.get(collision)[1]);
+            Double coll_time = grid.coll_time.get(collision);
+            if (null != coll_time)
             {
-                ObjectProperties o1 = grid.scene.getObject(grid.collisionPairs.get(i)[0]);
-                ObjectProperties o2 = grid.scene.getObject(grid.collisionPairs.get(i)[1]);
-                double coll_time = CollisionTimer.getCollTime(o1, o2, grid.coll_times.get(i)[0], grid.coll_times.get(i)[1]);
-                if (-1 != coll_time)
-                {
-                    if (o1 instanceof Circle && o2 instanceof Circle)
-                    {
-                        PhysicsCalcer.calcCircles((Circle) o1, (Circle) o2, coll_time);
-                    }
-                    else if (o1 instanceof Circle && o2 instanceof Polygon)
-                    {
-                        PhysicsCalcer.calcCirclePolygon((Circle) o1, (Polygon) o2, coll_time);
-                    }
-                    else if (o1 instanceof Polygon && o2 instanceof Circle)
-                    {
-                        PhysicsCalcer.calcCirclePolygon((Circle) o2, (Polygon) o1, coll_time);
-                    }
-                    else if (o1 instanceof Polygon && o2 instanceof Polygon)
-                    {
-                        PhysicsCalcer.calcPolygons((Polygon) o2, (Polygon) o1, coll_time);
-                    }
-                }
-                if (!ids.contains(o1.getId()))
-                    ids.add(o1.getId());
-                if (!ids.contains(o2.getId()))
-                    ids.add(o2.getId());
+                PhysicsCalcer.run(o1, o2, coll_time);
+                grid.update(o1);
+                grid.update(o2);
             }
-            for (Integer id : ids)
-            {
-                ObjectProperties op = scene.getObject(id);
-                op.update(op.next_time);
-                grid.update(id);
-            }
-            collisions = grid.getNextCollisions();
+            collision = grid.getNextCollision();
         }
         
         // Tests the collision between objects and ground
@@ -115,9 +85,8 @@ public class CollisionDetector
         }
         
         DebugMonitor.getInstance().updateMessage("groundColl", "" + (System.currentTimeMillis() - time));
-//        System.out.println(System.currentTimeMillis() - time + " ms / " + "SP: [ " + (int) scene.getObject(0).last_intersection.getX() + ", " + (int) scene.getObject(0).last_intersection.getY() + " ]");
+        // System.out.println(System.currentTimeMillis() - time + " ms / " + "SP: [ " + (int) scene.getObject(0).last_intersection.getX() + ", " + (int) scene.getObject(0).last_intersection.getY() + " ]");
     }
-    
     
     public void objectGroundCollision2()
     {
@@ -134,7 +103,7 @@ public class CollisionDetector
         for (ObjectProperties object : scene.getObjects())
         {
             // this helps to define an interval
-//            double range = object.velocity.getX() * 2;
+            // double range = object.velocity.getX() * 2;
             double range = object.getRadius() * 5;
             de.engine.math.Vector nextPos = object.getNextPosition();
             
@@ -142,8 +111,7 @@ public class CollisionDetector
             distCalcer.setFunction(func);
             double dist = distCalcer.calculateDistanceBetweenFunctionPoint(nextPos.getX() - range, nextPos.getX() + range);
             
-            object.closest_point = new de.engine.math.Vector(distCalcer.getLastSolvedX(), 
-                    scene.getGround().function((int) distCalcer.getLastSolvedX()));
+            object.closest_point = new de.engine.math.Vector(distCalcer.getLastSolvedX(), scene.getGround().function((int) distCalcer.getLastSolvedX()));
             
             if (dist < object.getRadius())
             {
