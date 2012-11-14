@@ -40,8 +40,8 @@ public class CollisionDetector
         Integer collision = grid.getNextCollision();
         while (collision != null)
         {
-            ObjectProperties o1 = grid.scene.getObject(grid.collisionPairs.get(collision)[0]);
-            ObjectProperties o2 = grid.scene.getObject(grid.collisionPairs.get(collision)[1]);
+            ObjectProperties o1 = grid.collisionPairs.get(collision)[0];
+            ObjectProperties o2 = grid.collisionPairs.get(collision)[1];
             Double coll_time = grid.coll_time.get(collision);
             if (null != coll_time)
             {
