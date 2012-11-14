@@ -87,8 +87,8 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
             @Override
             public void done()
             {
-                pModel.fireSceneUpdateEvents();
-                pModel.fireRepaintEvents(true);
+                pModel.fireSceneUpdated();
+                pModel.fireRepaint(true);
             }
         }));
         
