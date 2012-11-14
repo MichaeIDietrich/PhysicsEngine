@@ -58,7 +58,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 pModel.resizeCanvas(Canvas.this.getWidth(), Canvas.this.getHeight());
                 
                 // fire repaint
-                pModel.fireRepaintEvents();
+                pModel.fireRepaint();
             }
         });
         
@@ -120,7 +120,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         {
             Range range = new Range(pModel.getSelectedObject(), "radius");
             ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
-            pModel.fireRepaintEvents();
+            pModel.fireRepaint();
         }
         
         if (SwingUtilities.isLeftMouseButton(e))
@@ -134,7 +134,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 // set new velocity
                 pModel.getSelectedObject().velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
                 
-                pModel.fireRepaintEvents();
+                pModel.fireObjectUpdated(pModel.getSelectedObject());
+                pModel.fireRepaint();
             }
             else if (!e.isControlDown() && !e.isShiftDown() && !e.isAltDown())
             {
@@ -156,7 +157,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
             }
             
-            pModel.fireRepaintEvents();
+            pModel.fireRepaint();
         }
         else if (SwingUtilities.isRightMouseButton(e))
         {
@@ -166,7 +167,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         {
             Range range = new Range(pModel.getSelectedObject(), "radius");
             ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
-            pModel.fireRepaintEvents();
+            pModel.fireRepaint();
         }
     }
     
@@ -181,13 +182,13 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             if (pModel.getSelectedObject() != null)
             {
                 ((IDecorable) pModel.getSelectedObject()).removeDecor(DECOR_RANGE);
-                pModel.fireRepaintEvents();
+                pModel.fireRepaint();
             }
         }
         else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
         {
             ((IDecorable) pModel.getSelectedObject()).removeDecor(DECOR_RANGE);
-            pModel.fireRepaintEvents();
+            pModel.fireRepaint();
         }
     }
     
@@ -203,12 +204,14 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             {
                 // set new velocity
                 pModel.getSelectedObject().velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
-                pModel.fireRepaintEvents();
+                pModel.fireObjectUpdated(pModel.getSelectedObject());
+                pModel.fireRepaint();
             }
             else if (dragDelay != null && dragDelay.isDone() && !e.isControlDown() && !e.isShiftDown() && !e.isAltDown())
             {
                 pModel.getSelectedObject().world_position.translation = cursor;
-                pModel.fireRepaintEvents();
+                pModel.fireObjectUpdated(pModel.getSelectedObject());
+                pModel.fireRepaint();
             }
         }
         else if (SwingUtilities.isRightMouseButton(e))
@@ -218,12 +221,13 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             mouseOffset.y = e.getPoint().y;
             
             // refresh canvas
-            pModel.fireRepaintEvents();
+            pModel.fireRepaint();
         }
         else if ((SwingUtilities.isMiddleMouseButton(e) || (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown())) && pModel.getSelectedObject() != null)
         {
             pModel.getSelectedObject().setRadius(Util.distance(pModel.getSelectedObject().getPosition(), cursor));
-            pModel.fireRepaintEvents();
+            pModel.fireObjectUpdated(pModel.getSelectedObject());
+            pModel.fireRepaint();
         }
     }
     
@@ -296,7 +300,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         if (e.getKeyChar() == 127 && pModel.getSelectedObject() != null)
         {
             pModel.removedObject(pModel.getSelectedObject());
-            pModel.fireRepaintEvents();
+            pModel.fireRepaint();
         }
     }
     
@@ -340,9 +344,12 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         }
         
         
-        pModel.fireRepaintEvents();
+        pModel.fireRepaint();
     }
     
+    
+    @Override
+    public void objectUpdated(ObjectProperties object) { }
     
     @Override
     public void sceneUpdated(Scene scene) { }
@@ -384,7 +391,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 return;
         }
         
-        pModel.fireRepaintEvents();
+        pModel.fireRepaint();
     }
     
     
@@ -416,7 +423,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                     ((IDecorable) object).removeDecor(DECOR_MULTIPLE_ARROW);
                 }
             }
-            pModel.fireRepaintEvents();
+            pModel.fireRepaint();
         }
     }
     
