@@ -184,12 +184,12 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         potLabel     = new JLabel(this.formatDoubleValue(object.potential_energy));
         kinLabel     = new JLabel(this.formatDoubleValue(object.kinetic_energy));
 
-        massInput    = new PropertySpinner(object.getMass(),1,1000,1,this);
-        radiusInput  = new PropertySpinner(object.getRadius(), 1, 1000, 1, this);
+        massInput    = new PropertySpinner(object.getMass(),1,10000,10,this);
+        radiusInput  = new PropertySpinner(object.getRadius(), 1, 1000000, 10, this);
         xCord        = new PropertySpinner(object.getPosition().getX(),-100000.0,100000,10,this);
         yCord        = new PropertySpinner(object.getPosition().getY(),-100000,100000,10,this);
-        vx           = new PropertySpinner(object.velocity.getX(),-1000,1000,10,this);
-        vy           = new PropertySpinner(object.velocity.getY(),-1000,1000,10,this);
+        vx           = new PropertySpinner(object.velocity.getX(),-10000,10000,10,this);
+        vy           = new PropertySpinner(object.velocity.getY(),-10000,10000,10,this);
         
         MaterialCombo = new IconComboBox<Material>(Material.values(), "materials");
         
@@ -350,6 +350,21 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     @Override
     public void objectUpdated(ObjectProperties object)
     {
+        if(this.isVisible())
+        {
+            avoidUpdate = 1;    //vermeidet ungewollten Aufruf des ChangeListeners (Endlosschleife)
+            xCord.setValue(pModel.getSelectedObject().world_position.translation.getX());
+            yCord.setValue(pModel.getSelectedObject().world_position.translation.getY());
+            vx.setValue(pModel.getSelectedObject().velocity.getX());
+            vy.setValue(pModel.getSelectedObject().velocity.getY());
+            massInput.setValue(pModel.getSelectedObject().getMass());
+            radiusInput.setValue(pModel.getSelectedObject().getRadius());
+            MaterialCombo.setSelectedItem(pModel.getSelectedObject().surface);
+            fix.setSelected(pModel.getSelectedObject().isPinned);
+            potLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().potential_energy));
+            kinLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().kinetic_energy));
+            avoidUpdate = 0;
+        }
     }
     
     
@@ -357,9 +372,9 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     @Override
     public void sceneUpdated(Scene scene)
     {
-        if(this.isVisible()) //vermeidet ungewollten Aufruf des ChangeListeners
+        if(this.isVisible())
         {
-            avoidUpdate = 1;
+            avoidUpdate = 1;    //vermeidet ungewollten Aufruf des ChangeListeners (Endlosschleife)
             massInput.setValue(pModel.getSelectedObject().getMass());
             radiusInput.setValue(pModel.getSelectedObject().getRadius());
             xCord.setValue(pModel.getSelectedObject().getPosition().getX()); 
