@@ -5,7 +5,7 @@ import java.util.Vector;
 import de.engine.DebugMonitor;
 import de.engine.environment.Scene;
 import de.engine.math.*;
-import de.engine.math.DistanceCalcer.Function;
+import de.engine.math.DistanceCalcer.IFunction;
 import de.engine.objects.Circle;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
@@ -122,7 +122,7 @@ public class CollisionDetector
     public void objectGroundCollision2()
     {
         long t = System.currentTimeMillis();
-        Function func = new Function()
+        IFunction func = new IFunction()
         {
             @Override
             public double function(double x)
@@ -147,7 +147,14 @@ public class CollisionDetector
             
             if (dist < object.getRadius())
             {
-                object.isPinned = true; // ^^
+                if (object instanceof Circle)
+                {
+                    object.isPinned = true; // ^^
+                }
+                else if (object instanceof Polygon)
+                {
+                    
+                }
             }
         }
         DebugMonitor.getInstance().updateMessage("distCalc", "" + (System.currentTimeMillis() - t));
