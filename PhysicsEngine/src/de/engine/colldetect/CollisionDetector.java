@@ -1,9 +1,12 @@
 package de.engine.colldetect;
 
+import java.util.*;
+
 import de.engine.DebugMonitor;
 import de.engine.environment.Scene;
 import de.engine.math.*;
-import de.engine.math.DistanceCalcer.IFunction;
+import de.engine.math.DistanceCalcer.*;
+import de.engine.math.Vector;
 import de.engine.objects.Circle;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
@@ -103,6 +106,8 @@ public class CollisionDetector
         
         for (ObjectProperties object : scene.getObjects())
         {
+            if (object.isPinned)
+                continue;
             // this helps to define an interval
             // double range = object.velocity.getX() * 2;
             double range = object.getRadius() * 5;
@@ -118,11 +123,47 @@ public class CollisionDetector
             {
                 if (object instanceof Circle)
                 {
-                    object.isPinned = true; // ^^
+                    object.isPinned = true;
                 }
                 else if (object instanceof Polygon)
                 {
+                    Polygon polygon = (Polygon) object;
+                    List<Vector> rotatedPoints = new ArrayList<>();
                     
+                    for (Vector point : polygon.points)
+                    {
+                        
+                        rotatedPoints.add(Util.add(polygon.world_position.rotation.getMatrix().multVector(point),
+                                polygon.getPosition()));
+                    }
+                    
+                    int length = polygon.points.length;
+                    
+                    for (int i = 0; i < length; i++)
+                    {
+                        Vector p1 = rotatedPoints.get(i);
+                        Vector p2 = rotatedPoints.get((i + 1)% length);
+                        
+                        if (p1.getX() == p2.getX())
+                        {
+                            continue;
+                        }
+                        
+                        StraightLine line = new StraightLine(p1, p2);
+                        
+                        distCalcer.setStraightLine(line);
+                        dist = distCalcer.findRootBetweenFunctionLine();
+                        
+                        if (dist <= 0.1)
+                        {
+                            double x = distCalcer.getLastSolvedX();
+                            double y = line.function(x);
+                            
+                            polygon.closest_point = new Vector(x, y);
+                            polygon.isPinned = true;
+                            break;
+                        }
+                    }
                 }
             }
         }

@@ -17,7 +17,7 @@ public class Ground //extends ObjectProperties
     }
     
     
-    public int function( int i )
+    public double function( double i )
     {
         switch( type ) 
         {
@@ -30,7 +30,7 @@ public class Ground //extends ObjectProperties
     
     
     // TODO - will be replaced by something dynamic later
-    private int function_hill_valley(int i)
+    private double function_hill_valley(double i)
     {
 //        this.surfaceColor = Color.GRAY;
 //        this.coreColor    = this.BITTER_ORANGE;
@@ -44,7 +44,7 @@ public class Ground //extends ObjectProperties
     }
     
     
-    private int function_downhill(int i)
+    private double function_downhill(double i)
     {
 //        this.surfaceColor = this.GRASS_GREEN;
 //        this.coreColor    = this.FREAKY_GREEN;
@@ -60,7 +60,7 @@ public class Ground //extends ObjectProperties
     }
     
     
-    private int function_stairs(int i)
+    private double function_stairs(double i)
     {
 //        this.surfaceColor = this.DAAAARK_GREY;
 //        this.coreColor    = this.LIGHT_BLUE;
