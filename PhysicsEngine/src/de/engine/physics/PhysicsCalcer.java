@@ -12,7 +12,27 @@ import de.engine.objects.Polygon;
 public class PhysicsCalcer
 {
     
-    public static void calcCircles(Circle c1, Circle c2, double collTime)
+    public static void run(ObjectProperties obj1, ObjectProperties obj2, double collTime)
+    {
+        if (obj1 instanceof Circle && obj2 instanceof Circle)
+        {
+            PhysicsCalcer.calcCircles((Circle) obj1, (Circle) obj2, collTime);
+        }
+        else if (obj1 instanceof Circle && obj2 instanceof Polygon)
+        {
+            PhysicsCalcer.calcCirclePolygon((Circle) obj1, (Polygon) obj2, collTime);
+        }
+        else if (obj1 instanceof Polygon && obj2 instanceof Circle)
+        {
+            PhysicsCalcer.calcCirclePolygon((Circle) obj2, (Polygon) obj1, collTime);
+        }
+        else if (obj1 instanceof Polygon && obj2 instanceof Polygon)
+        {
+            PhysicsCalcer.calcPolygons((Polygon) obj2, (Polygon) obj1, collTime);
+        }
+    }
+    
+    private static void calcCircles(Circle c1, Circle c2, double collTime)
     {
 
         CollisionData cd = new CollisionData(c1, c2, collTime);
@@ -24,7 +44,7 @@ public class PhysicsCalcer
         }
     }
     
-    public static void calcCirclePolygon(Circle o1, Polygon o2, double collTime)
+    private static void calcCirclePolygon(Circle o1, Polygon o2, double collTime)
     {
         CollisionData cd = new CollisionData(o1, o2, collTime);
         ContactCreator.getCirclePolygonContact(cd);
@@ -35,7 +55,7 @@ public class PhysicsCalcer
         }
     }
     
-    public static void calcPolygons(Polygon o1, Polygon o2, double collTime)
+    private static void calcPolygons(Polygon o1, Polygon o2, double collTime)
     {
         CollisionData cd = new CollisionData(o1, o2, collTime);
         ContactCreator.getPolygonsContact(cd);
@@ -56,7 +76,7 @@ public class PhysicsCalcer
     }
     
     //Quelle: http://www.myphysicslab.com/collision.html
-    public static void resolveContact(ObjectProperties o1, ObjectProperties o2, double collTime, CollisionData.Contact contact)
+    private static void resolveContact(ObjectProperties o1, ObjectProperties o2, double collTime, CollisionData.Contact contact)
     {
         Vector coll_point = contact.point;
         Vector coll_normal = contact.normal;
@@ -97,14 +117,14 @@ public class PhysicsCalcer
             o1.next_velocity = v_o1_n;
             o1.next_angular_velocity = ang_v_o1_n;
             o1.next_time = collTime;
-            //o1.update(collTime);
+            o1.update(collTime);
         }
         
         if(!o2.isPinned) {
             o2.next_velocity = v_o2_n;
             o2.next_angular_velocity = ang_v_o2_n;
             o2.next_time = collTime;
-            //o2.update(collTime);
+            o2.update(collTime);
         }
         
         //double afterCollTime = EnvProps.deltaTime() - collTime;

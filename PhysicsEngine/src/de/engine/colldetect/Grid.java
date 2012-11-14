@@ -13,20 +13,21 @@ public class Grid
 {
     private static class Element
     {
-        int id;
+        ObjectProperties obj;
+        //int id;
         double min_time;
         double max_time;
         
-        public Element(int id, double min_time, double max_time)
+        public Element(ObjectProperties obj, double min_time, double max_time)
         {
-            this.id = id;
+            this.obj = obj;
             this.min_time = min_time;
             this.max_time = max_time;
         }
         
         public Element(Element e)
         {
-            this.id = e.id;
+            this.obj = e.obj;
             this.min_time = e.min_time;
             this.max_time = e.max_time;
         }
@@ -35,8 +36,9 @@ public class Grid
     private double cellSize = 10;
     public Scene scene;
     private HashMap<Integer, HashMap<Integer, java.util.Vector<Element>>> objectFields;
-    java.util.Vector<Integer[]> collisionPairs;
+    java.util.Vector<ObjectProperties[]> collisionPairs;
     java.util.Vector<Double[]> coll_times;
+    java.util.Vector<Double> coll_time;
     
     public Grid(Scene scene)
     {
@@ -49,7 +51,7 @@ public class Grid
         this.reset();
         for (int i = 0; i < scene.getCount(); i++)
         {
-            this.scanFieldsForObjectWithSweep(scene.getObject(i), i);
+            this.scanFieldsForObjectWithSweep(scene.getObject(i));
         }
     }
     
@@ -58,6 +60,7 @@ public class Grid
         objectFields = new HashMap<>();
         collisionPairs = new java.util.Vector<>();
         coll_times = new java.util.Vector<>();
+        coll_time = new java.util.Vector<>();
     }
     
     private void scan(Vector[] aabb, Element element)
@@ -78,7 +81,7 @@ public class Grid
                         boolean inserted = false;
                         for (Element e : objectFields.get(i).get(j))
                         {
-                            if (element.id == e.id)
+                            if (element.obj.getId() == e.obj.getId())
                             {
                                 e.max_time = element.max_time;
                                 inserted = true;
@@ -110,7 +113,7 @@ public class Grid
         }
     }
     
-    public void scanFieldsForObjectWithSweep(ObjectProperties op, Integer id)
+    public void scanFieldsForObjectWithSweep(ObjectProperties op)
     {
         // tuning needed
         double d_step = Util.scale(op.velocity, op.getTime()).getLength() / (2 * op.getRadius());
@@ -118,30 +121,31 @@ public class Grid
         
         Element element;
         if (1 > ((int) d_step))
-            element = new Element(id, op.frametime, EnvProps.deltaTime());
+            element = new Element(op, op.frametime, EnvProps.deltaTime());
         else
-            element = new Element(id, op.frametime, d_time);
+            element = new Element(op, op.frametime, d_time);
         Vector[] aabb = op.getAABB();
         scan(aabb, element);
         
         double help_time = 0;
         for (int i = 1; i <= (int) d_step; i++)
         {
-            element = new Element(id, op.frametime + d_time * (i - 1), op.frametime + d_time * (i + 1));
+            element = new Element(op, op.frametime + d_time * (i - 1), op.frametime + d_time * (i + 1));
             help_time = element.min_time;
             aabb = op.getAABB(d_time * i);
             scan(aabb, element);
         }
         
-        element = new Element(id, help_time, EnvProps.deltaTime());
+        element = new Element(op, help_time, EnvProps.deltaTime());
         aabb = op.getNextAABB();
         scan(aabb, element);
     }
     
     public void calcCollisionPairs()
     {
-        collisionPairs = new java.util.Vector<Integer[]>();
+        collisionPairs = new java.util.Vector<ObjectProperties[]>();
         coll_times = new java.util.Vector<Double[]>();
+        coll_time = new java.util.Vector<>();
         Set<Integer> xs = objectFields.keySet();
         for (Integer x : xs)
         {
@@ -163,56 +167,79 @@ public class Grid
         }
     }
     
-    public java.util.Vector<Integer> getNextCollisions()
+    public Integer getNextCollision()
     {
         if (0 < coll_times.size())
         {
-            java.util.Vector<Integer> index = new java.util.Vector<>();
-            index.add(0);
-            double colltime = coll_times.get(0)[0];
-            for (int i = 1; i < coll_times.size(); i++)
+            int index = 0;
+            Double colltime = CollisionTimer.getCollTime(collisionPairs.get(index)[0], collisionPairs.get(index)[1], coll_times.get(index)[0], coll_times.get(index)[1]);
+            coll_time.set(index, colltime);
+            int i = 1;
+            while ( i < coll_times.size())
             {
-                if (coll_times.get(i)[0] == colltime)
+                if(colltime == null)
                 {
-                    boolean insert = true;
-                    for (int j = 0; j < index.size(); j++)
+                    colltime = CollisionTimer.getCollTime(collisionPairs.get(i)[0], collisionPairs.get(i)[1], coll_times.get(i)[0], coll_times.get(i)[1]);
+                    collisionPairs.remove(index);
+                    coll_times.remove(index);
+                    coll_time.remove(index);
+                    index = i - 1;
+                    coll_time.set(index, colltime);
+                    continue; 
+                }
+                
+                if (coll_times.get(i)[0] <= colltime && colltime <= coll_times.get(i)[1])
+                {
+                    if(coll_time.get(i) == null)
                     {
-                        if (collisionPairs.get(index.get(j))[0] == collisionPairs.get(i)[0] || collisionPairs.get(index.get(j))[0] == collisionPairs.get(i)[1] || collisionPairs.get(index.get(j))[1] == collisionPairs.get(i)[0] || collisionPairs.get(index.get(j))[1] == collisionPairs.get(i)[1])
+                        Double colltime_i = CollisionTimer.getCollTime(collisionPairs.get(i)[0], collisionPairs.get(i)[1], coll_times.get(i)[0], coll_times.get(i)[1]);
+                        if(colltime_i == null)
                         {
-                            insert = false;
+                            collisionPairs.remove(i);
+                            coll_times.remove(i);
+                            coll_time.remove(i);
+                            continue;
                         }
+                        coll_time.set(i, colltime_i);   
                     }
-                    if (insert)
-                        index.add(i);
+                    if(coll_time.get(i) < colltime)
+                    {
+                        index = i;
+                        colltime = coll_time.get(i);
+                    }
                 }
-                else if (coll_times.get(i)[0] < colltime)
-                {
-                    index = new java.util.Vector<>();
-                    index.add(i);
-                    colltime = coll_times.get(i)[0];
-                }
+                i++;
             }
-            return index;
+            if(colltime == null)
+            {
+                collisionPairs.remove(index);
+                coll_times.remove(index);
+                coll_time.remove(index);
+                return null;   
+            }
+            else 
+                return index;
         }
         return null;
     }
     
-    private void clearCollPairs(int obj_id)
+    private void clearCollPairs(ObjectProperties obj)
     {
         int i = 0;
         while (i < collisionPairs.size())
         {
-            if (collisionPairs.get(i)[0] == obj_id || collisionPairs.get(i)[1] == obj_id)
+            if (collisionPairs.get(i)[0].getId() == obj.getId() || collisionPairs.get(i)[1].getId() == obj.getId())
             {
                 collisionPairs.remove(i);
                 coll_times.remove(i);
+                coll_time.remove(i);
             }
             else
                 i++;
         }
     }
     
-    private void clearFields(int obj_id)
+    private void clearFields(ObjectProperties obj)
     {
         Set<Integer> xs = objectFields.keySet();
         for (Integer x : xs)
@@ -223,7 +250,7 @@ public class Grid
                 int i = 0;
                 while (i < objectFields.get(x).get(y).size())
                 {
-                    if (objectFields.get(x).get(y).get(i).id == obj_id)
+                    if (objectFields.get(x).get(y).get(i).obj.getId() == obj.getId())
                     {
                         objectFields.get(x).get(y).remove(i);
                         break;
@@ -234,7 +261,7 @@ public class Grid
         }
     }
     
-    private void updateCollisionPairs(int obj1_id)
+    private void updateCollisionPairs(ObjectProperties obj)
     {
         Set<Integer> xs = objectFields.keySet();
         for (Integer x : xs)
@@ -247,7 +274,7 @@ public class Grid
                     java.util.Vector<Element> ops = objectFields.get(x).get(y);
                     for (int i = 0; i < ops.size() - 1; i++)
                     {
-                        if (ops.get(i).id == obj1_id)
+                        if (ops.get(i).obj.getId() == obj.getId())
                         {
                             for (int j = 0; j < ops.size(); j++)
                             {
@@ -264,28 +291,28 @@ public class Grid
         }
     }
     
-    public void update(int obj_id)
+    public void update(ObjectProperties obj)
     {
-        clearCollPairs(obj_id);
-        clearFields(obj_id);
-        scanFieldsForObjectWithSweep(scene.getObject(obj_id), obj_id);
-        updateCollisionPairs(obj_id);
+        clearCollPairs(obj);
+        clearFields(obj);
+        scanFieldsForObjectWithSweep(obj);
+        updateCollisionPairs(obj);
     }
     
     private void insertCollPair(java.util.Vector<Element> ops, int i, int j)
     {
-        if (ops.get(i).min_time < ops.get(j).max_time || ops.get(j).min_time < ops.get(i).max_time)
+        if (ops.get(i).min_time < ops.get(j).max_time && ops.get(j).min_time < ops.get(i).max_time)
         {
-            Integer[] opPair = new Integer[2];
-            if (ops.get(i).id < ops.get(j).id)
+            ObjectProperties[] opPair = new ObjectProperties[2];
+            if (ops.get(i).obj.getId() < ops.get(j).obj.getId())
             {
-                opPair[0] = ops.get(i).id;
-                opPair[1] = ops.get(j).id;
+                opPair[0] = ops.get(i).obj;
+                opPair[1] = ops.get(j).obj;
             }
             else
             {
-                opPair[0] = ops.get(j).id;
-                opPair[1] = ops.get(i).id;
+                opPair[0] = ops.get(j).obj;
+                opPair[1] = ops.get(i).obj;
             }
             if (!collisionPairs.contains(opPair))
             {
@@ -294,6 +321,7 @@ public class Grid
                 min_max_times[0] = (ops.get(i).min_time < ops.get(j).min_time) ? ops.get(i).min_time : ops.get(j).min_time;
                 min_max_times[1] = (ops.get(i).max_time > ops.get(j).max_time) ? ops.get(i).max_time : ops.get(j).max_time;
                 coll_times.add(min_max_times);
+                coll_time.add(null);
             }
         }
         
