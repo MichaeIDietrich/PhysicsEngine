@@ -72,18 +72,12 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     public void render(Graphics2D g)
     {
         Path2D.Double square = new Path2D.Double();
-        square.moveTo(this.getPosition().getX() + this.points[3].getX(), this.getPosition().getY() + this.points[3].getY());
-        
-        /*
-         * for (int i = 0; i < this.points.length; i++) { Vector p = getWorldPointPos(i); square.lineTo(p.getX(), p.getY()); }
-         */
+        square.moveTo(this.points[3].getX(), this.points[3].getY());
         
         for (Vector point : this.points)
         {
             square.lineTo(point.getX(), point.getY());
         }
-        if (0 < this.points.length)
-            square.lineTo(this.points[0].getX(), this.points[0].getY());
         
         square.transform(AffineTransform.getRotateInstance(this.world_position.rotation.getAngle()));
         square.transform(AffineTransform.getTranslateInstance(this.getPosition().getX(), this.getPosition().getY()));

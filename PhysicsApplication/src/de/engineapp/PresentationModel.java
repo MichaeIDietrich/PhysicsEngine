@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.engine.PhysicsEngine2D;
 import de.engine.environment.Scene;
-import de.engine.math.PhysicsEngine2D;
 import de.engine.math.Vector;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;

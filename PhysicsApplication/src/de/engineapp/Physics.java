@@ -1,6 +1,6 @@
 package de.engineapp;
 
-import static de.engineapp.Constants.*;
+import de.engine.DebugMonitor;
 
 public class Physics
 {
@@ -44,21 +44,25 @@ public class Physics
                 {
                     long t = System.currentTimeMillis();
                     
-                    pModel.getPhysicsEngine2D().calculateNextFrame( deltaTime/1000d );
+                    pModel.getPhysicsEngine2D().calculateNextFrame( deltaTime / 1000d );
+                    
+                    // real time that the calculation needed
+                    long diffTime = System.currentTimeMillis() - t;
+                    DebugMonitor.getInstance().updateMessage("calc", "" + diffTime);
+                    
                     finishedCallback.done();
                     
-                    
-                    t = System.currentTimeMillis() - t;
-                    pModel.setProperty(CALCULATE_TIME, "" + t);
+                    // calculation time + repaint time
+                    diffTime = System.currentTimeMillis() - t;
                     
                     try
                     {
                         // don't waste cpu power, so sleep rest of the time
-                        Thread.sleep(t < deltaTime ? deltaTime - t : 0);
+                        Thread.sleep(diffTime < deltaTime ? deltaTime - diffTime : 0);
                     }
                     catch (InterruptedException e)
                     {
-                        // may occur, but should be no problem, we just ignore it
+                        // may occur, but should not be a problem, we just ignore it
                         //e.printStackTrace();
                         
                         // finally we need to set the interrupt flag again, because 
@@ -71,12 +75,14 @@ public class Physics
                     if (System.currentTimeMillis() >= timeCounter)
                     {
                         timeCounter = System.currentTimeMillis() + 1000;
-                        pModel.setProperty(FPS, "" + fpsCounter);
+                        DebugMonitor.getInstance().updateMessage("FPS", "" + fpsCounter);
                         fpsCounter = 0;
                     }
+                    
+                    DebugMonitor.getInstance().updateMessage("all", "" + (System.currentTimeMillis() - t));
                 }
                 
-                pModel.setProperty(FPS, "0");
+                DebugMonitor.getInstance().updateMessage("FPS", "0");
             }
         };
         

@@ -12,7 +12,6 @@ public final class Recorder
     
     
     private List<Scene> frames;
-//    private List<Ground> grounds;
     
     
     public static Recorder getInstance()
@@ -29,7 +28,6 @@ public final class Recorder
     private Recorder()
     {
         frames = new ArrayList<>();
-//        grounds = new ArrayList<>();
     }
     
     
@@ -41,18 +39,6 @@ public final class Recorder
     
     public void addFrame(Scene scene)
     {
-////        List<ObjectProperties> objects = new ArrayList<>();
-//        Scene sceneClone = new Scene();
-//        
-//        for (ObjectProperties object : scene.getObjects())
-//        {
-//            sceneClone.add(object.clone());
-//        }
-//        
-//        
-//        frames.add(sceneClone);
-//        grounds.add(scene.getGround().clone());
-        
         frames.add(scene.clone());
     }
     
@@ -63,24 +49,11 @@ public final class Recorder
     }
     
     
-//    public List<ObjectProperties> getFrameObjects(int index)
-//    {
-//        return frames.get(index);
-//    }
-//    
-//    
-//    public Ground getFrameGround(int index)
-//    {
-//        return grounds.get(index);
-//    }
-    
-    
     public void shrinkToFrame(int index)
     {
         while (frames.size() > index + 1)
         {
             frames.remove(frames.size() - 1);
-//            grounds.remove(frames.size() - 1);
         }
     }
     
@@ -88,6 +61,5 @@ public final class Recorder
     public void clear()
     {
         frames.clear();
-//        grounds.clear();
     }
 }
