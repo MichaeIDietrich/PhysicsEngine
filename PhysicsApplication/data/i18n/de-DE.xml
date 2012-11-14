@@ -37,6 +37,8 @@
   <String id="PHYSICS_MODE">Physik-Modus</String>
   <String id="RECORDING_MODE">Physik-Aufnahme-Modus</String>
   <String id="PLAYBACK_MODE">Wiedergabe-Modus</String>
+  <String id="WRONG_VERSION">&lt;html&gt;Die Datei wurde nicht mit derselben Programmversion erstellt wie die laufende Programmversion.&lt;br/&gt;Dies kann zu Problemen führen.&lt;br/&gt;Möchten Sie trotzdem fortfahren?&lt;/html&gt;</String>
+  <String id="TITLE_IMPORT">Datei-Import</String>
   
   <!--  Tooltips -->
   <String id="TT_NEW">Erstellt eine neue Szene</String>
