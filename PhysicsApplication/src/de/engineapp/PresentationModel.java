@@ -23,6 +23,7 @@ public class PresentationModel
         public void groundRemoved(Ground ground);
         public void objectSelected(ObjectProperties object);
         public void objectDeselected(ObjectProperties object);
+        public void objectUpdated(ObjectProperties object);
         public void sceneUpdated(Scene scene);
     }
     
@@ -471,9 +472,9 @@ public class PresentationModel
     /**
      * If the PhysicsEngine is not running, this method will cause a repaint of the canvas and its content.
      */
-    public void fireRepaintEvents()
+    public void fireRepaint()
     {
-        fireRepaintEvents(false);
+        fireRepaint(false);
     }
     
     /**
@@ -481,7 +482,7 @@ public class PresentationModel
      * 
      * @param force - if this parameter is true, the canvas will be repainted even if the PhysicsEngine is running.
      */
-    public void fireRepaintEvents(boolean force)
+    public void fireRepaint(boolean force)
     {
         if (force || !physicsState.isRunning())
         {
@@ -493,11 +494,20 @@ public class PresentationModel
     }
     
     
-    public void fireSceneUpdateEvents()
+    public void fireSceneUpdated()
     {
         for (SceneListener listener : sceneListeners)
         {
             listener.sceneUpdated(scene);
+        }
+    }
+    
+    
+    public void fireObjectUpdated(ObjectProperties object)
+    {
+        for (SceneListener listener : sceneListeners)
+        {
+            listener.objectUpdated(object);
         }
     }
     

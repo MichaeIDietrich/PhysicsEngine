@@ -172,7 +172,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
         if (pModel.getProperty(MODE).equals(CMD_PLAYBACK_MODE))
         {
             pModel.setScene(Recorder.getInstance().getFrame(frames.getValue() - 1));
-            pModel.fireRepaintEvents();
+            pModel.fireRepaint();
         }
     }
     
@@ -208,4 +208,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
             }
         }
     }
+    
+    @Override
+    public void objectUpdated(ObjectProperties object) { }
 }

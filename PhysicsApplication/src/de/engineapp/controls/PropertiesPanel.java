@@ -208,6 +208,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         MaterialCombo.setSelectedItem(pModel.getSelectedObject().surface);
         MaterialCombo.addActionListener(this);
         
+        fix.setSelected(pModel.getSelectedObject().isPinned);
         fix.addActionListener(this);
 
         colorBox.setForeground(((IDrawable) object).getColor());
@@ -267,12 +268,12 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         {
             case "del":
                 pModel.removedObject(pModel.getSelectedObject());
-                pModel.fireRepaintEvents();
+                pModel.fireRepaint();
                 break;
                 
             case "close":
                 pModel.setSelectedObject(null);
-                pModel.fireRepaintEvents();
+                pModel.fireRepaint();
                 break;
                 
             case "next":
@@ -287,7 +288,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                     pModel.setSelectedObject(pModel.getScene().getObject(0));
                 }
                 showPanel(pModel.getSelectedObject());
-                pModel.fireRepaintEvents();
+                pModel.fireRepaint();
                 break;
                 
             case "previous":
@@ -307,7 +308,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                     }
                 }
                 showPanel(pModel.getSelectedObject());
-                pModel.fireRepaintEvents();
+                pModel.fireRepaint();
                 break;
         }
 
@@ -318,7 +319,6 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         if(e.getSource() == fix)
         {
             pModel.getSelectedObject().isPinned = fix.isSelected();
-            System.out.println(pModel.getSelectedObject().isPinned);
         }
         
         
@@ -341,10 +341,17 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             pModel.getSelectedObject().surface = MaterialCombo.getSelectedItem();
             pModel.getSelectedObject().isPinned = fix.isSelected();
 
-            pModel.fireRepaintEvents();
+            pModel.fireRepaint();
         }
         
     }
+    
+    
+    @Override
+    public void objectUpdated(ObjectProperties object)
+    {
+    }
+    
     
     //Werte der Controls zur Laufzeit der Szene anpassen
     @Override

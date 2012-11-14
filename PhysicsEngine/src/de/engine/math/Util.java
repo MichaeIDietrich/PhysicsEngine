@@ -78,7 +78,7 @@ public class Util
         {
             old_distance = distance;
             
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 6; i++)
             {
                 xn = xn - getFunctionsValue(xn, radius[n], object, ground) / derive1D(xn, radius[n], object, ground);
             }
