@@ -208,8 +208,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         MaterialCombo.setSelectedItem(pModel.getSelectedObject().surface);
         MaterialCombo.addActionListener(this);
         
-        fix.setSelected(pModel.getSelectedObject().isPinned);
         fix.addActionListener(this);
+        fix.setSelected(pModel.getSelectedObject().isPinned);
 
         colorBox.setForeground(((IDrawable) object).getColor());
         colorBox.addChangeListener(this);
@@ -381,9 +381,10 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             yCord.setValue(pModel.getSelectedObject().getPosition().getY());
             vx.setValue(pModel.getSelectedObject().velocity.getX());
             vy.setValue(pModel.getSelectedObject().velocity.getY());
-    
+            fix.setSelected(pModel.getSelectedObject().isPinned);
+
             name.setText(((ISelectable)pModel.getSelectedObject()).getName());
-            
+
             potLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().potential_energy));
             kinLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().kinetic_energy));
             avoidUpdate = 0;
