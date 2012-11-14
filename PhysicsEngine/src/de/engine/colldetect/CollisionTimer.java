@@ -12,7 +12,7 @@ import de.engine.objects.Polygon;
 public class CollisionTimer
 {
     
-    public static double getCollTime(ObjectProperties o1, ObjectProperties o2, double begin, double end)
+    public static Double getCollTime(ObjectProperties o1, ObjectProperties o2, double begin, double end)
     {
         if (o1 instanceof Circle && o2 instanceof Circle)
         {
@@ -25,19 +25,20 @@ public class CollisionTimer
         // return -1;
     }
     
-    public static double getCirclesCollTime(Circle o1, Circle o2)
+    public static Double getCirclesCollTime(Circle o1, Circle o2)
     {
-        double distance = Util.minus(o1.getPosition(), o2.getPosition()).getLength();
+        double start_time = (o1.frametime > o2.frametime) ? o1.frametime : o2.frametime;
+        double distance = Util.minus(o1.getPosition(start_time), o2.getPosition(start_time)).getLength();
         double min_distance = o1.getRadius() + o2.getRadius();
         double velocity = Util.minus(o1.velocity, o2.velocity).getLength();
         double coll_time = (distance - min_distance) / velocity;
         if ((min_distance + 2) < Util.minus(o1.getPosition(coll_time), o2.getPosition(coll_time)).getLength() || coll_time > EnvProps.deltaTime())
-            return -1;
+            return null;
         else
             return coll_time;
     }
     
-    public static double getCirclePolygonsCollTime(ObjectProperties o1, ObjectProperties o2, double begin, double end)
+    public static Double getCirclePolygonsCollTime(ObjectProperties o1, ObjectProperties o2, double begin, double end)
     {
         java.util.Vector<Double> times = new java.util.Vector<Double>();
         java.util.Vector<Integer> pre = new java.util.Vector<Integer>();
@@ -67,7 +68,7 @@ public class CollisionTimer
             }
             else
             {
-                return -1;
+                return null;
             }
             
             if (coll.get(i) && !coll.get(pre.get(i)))
@@ -106,7 +107,7 @@ public class CollisionTimer
             }
             if (!coll.containsValue(true) && time_delta < 0.005)
             {
-                return -1;
+                return null;
             }
             if (time_delta < 0.001)
             {
@@ -117,7 +118,7 @@ public class CollisionTimer
                 break;
             }
         }
-        return -1;
+        return null;
     }
     
     private static boolean collideCirclePolygon(Circle o1, Polygon o2, double time)
