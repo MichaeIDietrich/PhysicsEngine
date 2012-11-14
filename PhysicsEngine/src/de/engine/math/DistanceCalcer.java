@@ -2,16 +2,64 @@ package de.engine.math;
 
 public final class DistanceCalcer
 {
-    public interface Function
+    public interface IFunction
     {
         public double function(double x);
+    }
+    
+    
+    public class StraightLine implements IFunction
+    {
+        private double m;
+        private double n;
+        
+        private double a;
+        private double b;
+        
+        
+        public StraightLine(Vector p1, Vector p2)
+        {
+            m = (p2.getY() - p1.getY()) / (p2.getX() - p1.getX());
+            n = p2.getY() - m * p2.getX();
+            
+            a = p1.getX();
+            b = p2.getX();
+        }
+        
+        
+        public double function(double x)
+        {
+            return m * x + n;
+        }
+        
+        
+        public double getA()
+        {
+            return a;
+        }
+        
+        public void setA(double a)
+        {
+            this.a = a;
+        }
+        
+        
+        public double getB()
+        {
+            return b;
+        }
+        
+        public void setB(double b)
+        {
+            this.b = b;
+        }
     }
     
     private static final double eps_sqrt = Math.sqrt(r8_epsilon());
     
     private double tolerance;
     private Vector point;
-    private Function function;
+    private IFunction function;
     
     private double lastSolvedX;
     
@@ -32,14 +80,14 @@ public final class DistanceCalcer
     }
     
     
-    public DistanceCalcer(double tolerance, Function function)
+    public DistanceCalcer(double tolerance, IFunction function)
     {
         this.tolerance = tolerance;
         this.function = function;
     }
     
     
-    public DistanceCalcer(double tolerance, Function function, Vector point)
+    public DistanceCalcer(double tolerance, IFunction function, Vector point)
     {
         this.tolerance = tolerance;
         this.function = function;
@@ -49,7 +97,7 @@ public final class DistanceCalcer
     
     public double calculateDistanceBetweenFunctionPoint(double intervalStart, double intervalEnd)
     {
-        Function distFunc = new Function()
+        IFunction distFunc = new IFunction()
         {
             @Override
             public double function(double x)
@@ -72,7 +120,7 @@ public final class DistanceCalcer
     }
     
     
-    public static double calculateMinimum(double a, double b, double tolerance, Function f)
+    public static double calculateMinimum(double a, double b, double tolerance, IFunction f)
     
     // ****************************************************************************80
     //
@@ -379,12 +427,12 @@ public final class DistanceCalcer
     }
     
     
-    public Function getFunction()
+    public IFunction getFunction()
     {
         return function;
     }
     
-    public void setFunction(Function function)
+    public void setFunction(IFunction function)
     {
         this.function = function;
     }
