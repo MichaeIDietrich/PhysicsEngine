@@ -34,6 +34,11 @@ public class ContactCreator
             if (coll_point != null)
             {
                 cd.contacts.add(new Contact(coll_point, pos_ray));
+            } else {
+                Vector point_col = Util.minus(point_pos, circle_pos);
+                if(point_col.getLength() <= cd.o1.getRadius()){
+                    cd.contacts.add(new Contact(point_pos, point_col.getUnitVector()));
+                }
             }
         }
     }

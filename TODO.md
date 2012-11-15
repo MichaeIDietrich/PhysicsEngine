@@ -14,8 +14,11 @@ Version 0.1.1 (16.11.2012)
 
 TODO:
 
-* improve Collision Detection between Circle-Square
 * improve Collision Detection between Squares
+
+WIP
+
+* improve Collision Detection between Circle-Square (geckoxx)
 
 
 Version 0.1.2 (19.11.2012)
