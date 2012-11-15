@@ -91,6 +91,7 @@ public class Polygon extends ObjectProperties implements Cloneable {
     public void clone(Polygon newPolygon)
     {
         // TODO
+        newPolygon.world_position.rotation.setAngle(this.world_position.rotation.getAngle());
         newPolygon.setMass(getMass());
         newPolygon.velocity = this.velocity.clone();
         newPolygon.id = this.id;
