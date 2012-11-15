@@ -57,9 +57,10 @@ public class Util
         return Math.atan2(vec2.getY() - vec1.getY(), vec2.getX() - vec1.getX());
     }
     
+    
     public static Double newtonIteration(ObjectProperties object, Ground ground)
     {
-        // If the object has no velocity in x direction, return the objects coordinate.
+        // If the object has no velocity in x direction, return the objects x-coordinate.
         if (object.velocity.getX() == 0)
             return object.getPosition().getX();
         
@@ -74,11 +75,13 @@ public class Util
         
         Double result = 0d;
         
+        int max_iterations = (int) (object.velocity.getX() + object.velocity.getY())/15;
+        
         for (int n = 0; n < 3; n++)
         {
             old_distance = distance;
             
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < max_iterations; i++)
             {
                 xn = xn - getFunctionsValue(xn, radius[n], object, ground) / derive1D(xn, radius[n], object, ground);
             }
@@ -96,17 +99,23 @@ public class Util
     /**
      * Calculates the 1st derivation of the function given in <i>getFunctionsValue</i>.
      * 
-     * @param x
-     *            - determines the point of which the derivation is wanted
-     * @param object
-     *            -
+     * @param x - determines the point of which the derivation is wanted
+     * @param object -
      * @param ground
      * @return
      */
     public static Double derive1D(Double x, Double radius, ObjectProperties object, Ground ground)
     {
+       
         // df(x) = ( f(x + 1/h ) - f(x - 1/h) ) * h/2
-        return (getFunctionsValue(x + h, radius, object, ground) - getFunctionsValue(x - h, radius, object, ground)) * 2d / h;
+        if (object.velocity.getY()<0) 
+        {
+            return (getFunctionsValue(x + h, radius, object, ground) - getFunctionsValue(x - h, radius, object, ground)) * 2d / h;
+        } 
+        else 
+        {
+            return -(getFunctionsValue(x + h, radius, object, ground) - getFunctionsValue(x - h, radius, object, ground)) * 2d / h;
+        }
     }
     
     public static Double getFunctionsValue(Double x, Double radius, ObjectProperties object, Ground ground)
@@ -117,11 +126,11 @@ public class Util
         
         // for calculating a pair of tangents right and left beside the main vector of the sphere
         double alpha = Math.atan(m);
-        double diff_x = radius * Math.sin(alpha);
+        double diff_x =  radius * Math.sin(alpha);
         double diff_y = -radius * Math.cos(alpha);
         
         function.set(0, m * (x - object.getPosition().getX() - diff_x) + n + diff_y);
-        function.set(1, (double) ground.function(x.intValue()));
+        function.set(1, ground.function(x.intValue()));
         
         return function.get(1) - function.get(0);
     }
