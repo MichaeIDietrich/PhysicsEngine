@@ -7,6 +7,7 @@ import javax.swing.*;
 
 import de.engineapp.*;
 import de.engineapp.controls.*;
+import de.engineapp.util.Localizer;
 
 import static de.engineapp.Constants.*;
 

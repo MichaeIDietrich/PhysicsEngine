@@ -14,6 +14,7 @@ public interface Constants
     public final static String LANGUAGE_CODE = "langCode";
     public final static String OBJECT_MODE = "ObjectMode";
     public final static String MODE = "mode";
+    public final static String CURRENT_PLAYBACK_FRAME = "playbackFrame";
     
     // localization
     // TODO - add all string constants for localization
@@ -34,9 +35,9 @@ public interface Constants
     public final static String CMD_RECORDING_MODE = "recordingMode";
     public final static String CMD_PLAYBACK_MODE = "playBackMode";
     public final static String CMD_SETTINGS = "settings";
+    public final static String CMD_DISCARD = "discard";
     
     // decor ID's
-    public final static String DECOR_SELECTION = "selection";
     public final static String DECOR_ARROW = "arrow";
     public final static String DECOR_RANGE = "range";
     public final static String DECOR_COORDINATE = "coordinate";

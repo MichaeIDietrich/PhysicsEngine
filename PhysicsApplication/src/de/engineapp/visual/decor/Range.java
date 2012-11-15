@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
 import de.engine.objects.ObjectProperties;
-import de.engineapp.PropertyConnector;
+import de.engineapp.util.PropertyConnector;
 import de.engineapp.visual.IDrawable;
 
 public class Range implements IDrawable

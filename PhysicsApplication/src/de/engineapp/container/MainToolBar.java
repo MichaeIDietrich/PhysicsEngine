@@ -1,4 +1,4 @@
-package de.engineapp.controls;
+package de.engineapp.container;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,6 +18,9 @@ import de.engine.objects.ObjectProperties.Material;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.PresentationModel.ViewBoxListener;
+import de.engineapp.controls.*;
+import de.engineapp.rec.Playback;
+import de.engineapp.util.*;
 import de.engineapp.visual.*;
 import de.engineapp.visual.Circle;
 import de.engineapp.visual.Square;
@@ -38,7 +41,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     
     private static final FileFilter SCENE_FILTER = new FileFilter()
     {
-
         @Override
         public boolean accept(File f)
         {
@@ -61,14 +63,16 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     private QuickButton play;
     private QuickButton pause;
     private QuickButton reset;
-    private QuickButton grid;
-    private QuickButton showArrows;
+    private QuickToggleButton grid;
+    private QuickToggleButton showArrows;
     private QuickButton focus;
     private QuickButton settings;
     
     private ZoomSlider slider;
     
     private DropDownButton mode;
+    
+    private Playback player;
     
     
     public MainToolBar(PresentationModel model)
@@ -87,8 +91,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         play       = new QuickButton(Util.getIcon("play"),          CMD_PLAY,        this);
         pause      = new QuickButton(Util.getIcon("pause"),         CMD_PAUSE,       this);
         reset      = new QuickButton(Util.getIcon("reset"),         CMD_RESET,       this);
-        grid       = new QuickButton(Util.getIcon("grid"),          CMD_GRID,        this);
-        showArrows = new QuickButton(Util.getIcon("object_arrows3"), CMD_SHOW_ARROWS, this);
+        grid       = new QuickToggleButton(Util.getIcon("grid"),          CMD_GRID,        this);
+        showArrows = new QuickToggleButton(Util.getIcon("object_arrows3"), CMD_SHOW_ARROWS, this);
         focus      = new QuickButton(Util.getIcon("focus"),         CMD_FOCUS,       this);
         settings   = new QuickButton(Util.getIcon("settings2"),     CMD_SETTINGS,    this);
         
@@ -127,6 +131,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         slider.setValue(pModel.getZoom());
         grid.setSelected(pModel.isState(GRID));
         showArrows.setSelected(pModel.isState(SHOW_ARROWS_ALWAYS));
+        
+        player = new Playback(pModel, 30);
     }
     
     
@@ -284,10 +290,20 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                     
                     reset.setEnabled(false);
                     
+                    mode.setEnabled(false);
+                    
                     // store scene copy, to enable reset function
                     pModel.storeScene();
                     
-                    pModel.getPhysicsState().start();
+                    if (pModel.getProperty(MODE).equals(CMD_PLAYBACK_MODE))
+                    {
+                        System.out.println("wiedergabe");
+                        player.start();
+                    }
+                    else
+                    {
+                        pModel.getPhysicsState().start();
+                    }
                 }
                 else
                 {
@@ -297,11 +313,21 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                     
                     pause.setEnabled( false );
                     play.setEnabled(   true );
-                    pModel.getPhysicsState().pause();
+                    
+                    mode.setEnabled(true);
                     
                     if (pModel.hasStoredScene())
                     {
                         reset.setEnabled(true);
+                    }
+                    
+                    if (pModel.getProperty(MODE).equals(CMD_PLAYBACK_MODE))
+                    {
+                        player.pause();
+                    }
+                    else
+                    {
+                        pModel.getPhysicsState().pause();
                     }
                 }
                 

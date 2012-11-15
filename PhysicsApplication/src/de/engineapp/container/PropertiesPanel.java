@@ -1,4 +1,4 @@
-package de.engineapp.controls;
+package de.engineapp.container;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -15,6 +15,8 @@ import de.engine.objects.ObjectProperties;
 import de.engine.objects.ObjectProperties.Material;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.*;
+import de.engineapp.controls.*;
+import de.engineapp.util.*;
 import de.engineapp.visual.*;
 import de.engineapp.windows.ColorPickerPopup;
 

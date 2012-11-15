@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import de.engineapp.*;
+import de.engineapp.util.*;
 
 import static de.engineapp.Constants.*;
 

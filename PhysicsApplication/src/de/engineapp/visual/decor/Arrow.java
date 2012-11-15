@@ -5,7 +5,7 @@ import java.awt.geom.*;
 
 import de.engine.math.*;
 import de.engine.objects.ObjectProperties;
-import de.engineapp.PropertyConnector;
+import de.engineapp.util.PropertyConnector;
 import de.engineapp.visual.IDrawable;
 
 public class Arrow implements IDrawable

@@ -1,8 +1,9 @@
 package de.engineapp;
 
 import de.engine.DebugMonitor;
+import de.engineapp.util.AsyncWorker;
 
-public class Physics
+public class Physics extends AsyncWorker
 {
     // interface to recognize repaints caused by finishing of frame calculation
     public interface FinishedCallback
@@ -14,8 +15,6 @@ public class Physics
     private PresentationModel pModel;
     private long deltaTime;
     private FinishedCallback finishedCallback;
-    
-    private Thread worker = null;
     
     
     public Physics(PresentationModel model, long deltaTime, FinishedCallback finishedCallback)
@@ -52,7 +51,8 @@ public class Physics
                     
                     finishedCallback.done();
                     
-                    // calculation time + repaint time
+                    // calculation time + repaint time (repaint will now use 
+                    // another thread, so it does not matter anymore here)
                     diffTime = System.currentTimeMillis() - t;
                     
                     try
@@ -87,20 +87,5 @@ public class Physics
         };
         
         worker.start();
-    }
-    
-    
-    public void pause()
-    {
-        if (worker != null && worker.isAlive())
-        {
-            worker.interrupt();
-        }
-    }
-    
-    
-    public boolean isRunning()
-    {
-        return worker != null && worker.isAlive();
     }
 }

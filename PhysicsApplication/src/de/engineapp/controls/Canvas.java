@@ -13,6 +13,7 @@ import de.engine.math.Util;
 import de.engine.objects.*;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.*;
+import de.engineapp.util.Task;
 import de.engineapp.visual.*;
 import de.engineapp.visual.Circle;
 import de.engineapp.visual.Ground;
@@ -31,7 +32,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     
     // secondary buffer, which will copied to the front buffer
     // after all draw operations are finished
-    private BufferedImage buffer = null;
+    private BufferedImage frontBuffer = null;
+    private BufferedImage backBuffer  = null;
     
     // stores the mouse offset while dragging
     private Point mouseOffset;
@@ -52,7 +54,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             @Override
             public void componentResized(ComponentEvent e)
             {
-                buffer = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), BufferedImage.TYPE_INT_RGB);
+                frontBuffer = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), BufferedImage.TYPE_INT_RGB);
+                backBuffer  = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), BufferedImage.TYPE_INT_RGB);
                 
                 // fire resize
                 pModel.resizeCanvas(Canvas.this.getWidth(), Canvas.this.getHeight());
@@ -83,19 +86,26 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     
     public Graphics2D getGraphics()
     {
-        Graphics2D g = (Graphics2D) buffer.getGraphics();
+        Graphics2D g = (Graphics2D) backBuffer.getGraphics();
         
-        // automatically clear buffer, may be removed later
         clearBuffer(g);
         
         return g;
     }
     
     
+    public void switchBuffers()
+    {
+        BufferedImage tmp = frontBuffer;
+        frontBuffer = backBuffer;
+        backBuffer = tmp;
+    }
+    
+    
     @Override
     public void paint(Graphics g)
     {
-        g.drawImage(buffer, 0, 0, null);
+        g.drawImage(frontBuffer, 0, 0, null);
     }
     
     
@@ -267,7 +277,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         
         Range selection = new Range(object, "radius");
         selection.setBorder(new Color(180, 120, 20));
-        decorableObject.putDecor(DECOR_SELECTION, selection);
         
         if (pModel.isState(SHOW_ARROWS_ALWAYS))
         {
@@ -283,7 +292,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         decorableObject.removeDecor(DECOR_ARROW);
         decorableObject.removeDecor(DECOR_COORDINATE);
         decorableObject.removeDecor(DECOR_CLOSEST_POINT);
-        decorableObject.removeDecor(DECOR_SELECTION);
         
         if (pModel.isState(SHOW_ARROWS_ALWAYS))
         {
