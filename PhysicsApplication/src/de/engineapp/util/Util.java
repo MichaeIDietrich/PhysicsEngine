@@ -1,4 +1,4 @@
-package de.engineapp;
+package de.engineapp.util;
 
 import java.awt.Image;
 import java.util.HashMap;

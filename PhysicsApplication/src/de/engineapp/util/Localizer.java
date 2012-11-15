@@ -1,8 +1,9 @@
-package de.engineapp;
+package de.engineapp.util;
 
 import java.io.*;
 import java.util.*;
 
+import de.engineapp.Configuration;
 import de.engineapp.xml.*;
 
 import static de.engineapp.Constants.*;

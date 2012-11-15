@@ -8,33 +8,27 @@ import javax.swing.*;
 
 import de.engine.*;
 import de.engine.environment.Scene;
-import de.engine.objects.ObjectProperties;
 import de.engineapp.*;
-import de.engineapp.PresentationModel.PaintListener;
-import de.engineapp.PresentationModel.StorageListener;
-import de.engineapp.controls.*;
+import de.engineapp.Renderer;
+import de.engineapp.container.*;
 import de.engineapp.controls.Canvas;
 import de.engineapp.controls.dnd.DragAndDropController;
-import de.engineapp.visual.*;
+import de.engineapp.util.*;
 
 import static de.engineapp.Constants.*;
 
 
-public class MainWindow extends JFrame implements PaintListener, StorageListener
+public final class MainWindow extends JFrame
 {
     private static final long serialVersionUID = -1405279482198323306L;
     
-    
-//    private Configuration config = Configuration.getInstance();
     private final static Localizer LOCALIZER = Localizer.getInstance();
     
-    private final static RenderingHints ANTIALIAS = new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
      
     private PresentationModel pModel = null;
     
     private Canvas canvas;
-    
-    private Grid grid = null;
+    private Renderer renderer;
     
     
     public MainWindow()
@@ -43,9 +37,6 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         
         pModel = new PresentationModel();
         pModel.setProperty(MODE, CMD_PHYSICS_MODE);
-        
-        pModel.addPaintListener(this);
-        pModel.addStorageListener(this);
         
         // Free objects (if necessary) before this application ends
         this.addWindowListener(new WindowAdapter()
@@ -83,18 +74,19 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         
         pModel.setPhysicsState(new Physics(pModel, 1000L / 30L, new Physics.FinishedCallback()
         {
-            
             @Override
             public void done()
             {
                 pModel.fireSceneUpdated();
-                pModel.fireRepaint(true);
+                renderer.pushScene(pModel.getScene());
             }
         }));
         
         
         initializeLookAndFeel();
         initializeComponents();
+        
+        renderer = new Renderer(pModel, canvas);
         
         
         this.setVisible(true);
@@ -195,115 +187,9 @@ public class MainWindow extends JFrame implements PaintListener, StorageListener
         
         this.setIconImages(iconList);
         
-        if (pModel.isState(GRID))
-        {
-            grid = new Grid(pModel);
-        }
         if (pModel.isState(MAXIMIZED))
         {
             this.setExtendedState(this.getExtendedState() | MAXIMIZED_BOTH);
         }
     }
-    
-    
-    // TODO - improve this method at all
-    private void renderScene()
-    {
-        long t = System.currentTimeMillis();
-        
-        // HINT - always the getGraphics()-Method is called,
-        // the background buffer will be cleared automatically
-        Graphics2D g = canvas.getGraphics();
-        
-        // enable anti aliasing
-        g.addRenderingHints( ANTIALIAS );
-        
-        // define the origin
-        g.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
-        // translate the scene to the point you have navigated to before
-        g.translate(pModel.getViewOffsetX(), pModel.getViewOffsetY());
-        // zoom into the scene + invert y-axis
-        g.scale(pModel.getZoom(), -pModel.getZoom());
-        
-        // scale the stroke to ensure its contour has a one pixel width
-        g.setStroke(new BasicStroke(1 / (float) pModel.getZoom()));
-        
-        if (grid != null)
-        {
-            grid.render(g);
-        }
-        
-        
-        if (pModel.getScene().getGround() != null)
-        {
-            if (pModel.getScene().getGround() instanceof IDrawable)
-            {
-                ((IDrawable) pModel.getScene().getGround()).render(g);
-            }
-            else
-            {
-                System.err.println("cannot render " + pModel.getScene().getGround());
-            }
-        }
-        
-        Collection<IDrawable> decorSet = new ArrayList<>();
-        
-        for (ObjectProperties obj : pModel.getScene().getObjects())
-        {
-            if (obj instanceof IDrawable)
-            {
-                ((IDrawable) obj).render(g);
-            }
-            else
-            {
-                System.err.println("Cannot render object: " + obj);
-            }
-            
-            if (obj instanceof IDecorable)
-            {
-                decorSet.addAll(((IDecorable) obj).getDecorSet());
-            }
-        }
-        
-        for (IDrawable decor : decorSet)
-        {
-            decor.render(g);
-        }
-        
-        
-        canvas.repaint();
-        
-        
-        DebugMonitor.getInstance().updateMessage("repaint", "" + (System.currentTimeMillis() - t));
-    }
-    
-    
-    @Override
-    public void repaintCanvas()
-    {
-        renderScene();
-    }
-    
-    
-    @Override
-    public void stateChanged(String id, boolean value)
-    {
-        System.out.println(id + ": " + value);
-        switch (id)
-        {
-            case GRID:
-                if (value)
-                {
-                    grid = new Grid(pModel);
-                }
-                else
-                {
-                    grid = null;
-                }
-                break;
-        }
-    }
-    
-    @Override
-    public void propertyChanged(String id, String value) { }
 }

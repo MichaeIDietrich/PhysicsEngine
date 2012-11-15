@@ -1,4 +1,4 @@
-package de.engineapp;
+package de.engineapp.util;
 
 public class Task
 {

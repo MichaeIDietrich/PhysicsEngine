@@ -151,7 +151,7 @@ public final class DropDownButton extends JButton implements MouseListener, Acti
     @Override
     public void mouseClicked(MouseEvent e)
     {
-        if (SwingUtilities.isLeftMouseButton(e))
+        if (SwingUtilities.isLeftMouseButton(e) && this.isEnabled())
         {
             if (e.getX() > this.getWidth() - 14)
             {
