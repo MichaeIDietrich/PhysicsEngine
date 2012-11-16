@@ -56,11 +56,11 @@ public class PropertyConnector<T>
                     return clazz.cast(fieldValue);
                     
                 case METHOD:
-                    Object methodValue = connectedField.get(connectedObject);
+                    Object methodValue = connectedMethod.invoke(connectedObject, (Object[]) null);//.get(connectedObject);
                     return clazz.cast(methodValue);
             }
         }
-        catch (IllegalArgumentException | IllegalAccessException e)
+        catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e)
         {
             e.printStackTrace();
         }
@@ -127,7 +127,7 @@ public class PropertyConnector<T>
         }
         for (Method method : clazz.getDeclaredMethods())
         {
-            if (method.getName().equals(methodName))
+            if (method.getName().equals(methodName) && method.getParameterTypes().length == 0)
             {
                 return method;
             }
