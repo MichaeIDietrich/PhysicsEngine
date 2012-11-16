@@ -1,5 +1,6 @@
 package de.engine.colldetect;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -14,7 +15,6 @@ public class Grid
     private static class Element
     {
         ObjectProperties obj;
-        //int id;
         double min_time;
         double max_time;
         
@@ -33,12 +33,12 @@ public class Grid
         }
     }
     
-    private double cellSize = 10;
+    private double cellSize = 50;
     public Scene scene;
-    private HashMap<Integer, HashMap<Integer, java.util.Vector<Element>>> objectFields;
-    java.util.Vector<ObjectProperties[]> collisionPairs;
-    java.util.Vector<Double[]> coll_times;
-    java.util.Vector<Double> coll_time;
+    private HashMap<Integer, HashMap<Integer, ArrayList<Element>>> objectFields;
+    ArrayList<ObjectProperties[]> collisionPairs;
+    ArrayList<Double[]> coll_times;
+    ArrayList<Double> coll_time;
     
     public Grid(Scene scene)
     {
@@ -58,9 +58,9 @@ public class Grid
     public void reset()
     {
         objectFields = new HashMap<>();
-        collisionPairs = new java.util.Vector<>();
-        coll_times = new java.util.Vector<>();
-        coll_time = new java.util.Vector<>();
+        collisionPairs = new ArrayList<>();
+        coll_times = new ArrayList<>();
+        coll_time = new ArrayList<>();
     }
     
     private void scan(Vector[] aabb, Element element)
@@ -95,15 +95,15 @@ public class Grid
                     }
                     else
                     {
-                        java.util.Vector<Element> ops = new java.util.Vector<Element>();
+                        ArrayList<Element> ops = new ArrayList<Element>();
                         ops.add(element);
                         objectFields.get(i).put(j, ops);
                     }
                 }
                 else
                 {
-                    HashMap<Integer, java.util.Vector<Element>> row = new HashMap<Integer, java.util.Vector<Element>>();
-                    java.util.Vector<Element> ops = new java.util.Vector<Element>();
+                    HashMap<Integer, ArrayList<Element>> row = new HashMap<Integer, ArrayList<Element>>();
+                    ArrayList<Element> ops = new ArrayList<Element>();
                     ops.add(element);
                     row.put(j, ops);
                     objectFields.put(i, row);
@@ -143,9 +143,9 @@ public class Grid
     
     public void calcCollisionPairs()
     {
-        collisionPairs = new java.util.Vector<ObjectProperties[]>();
-        coll_times = new java.util.Vector<Double[]>();
-        coll_time = new java.util.Vector<>();
+        collisionPairs = new ArrayList<ObjectProperties[]>();
+        coll_times = new ArrayList<Double[]>();
+        coll_time = new ArrayList<>();
         Set<Integer> xs = objectFields.keySet();
         for (Integer x : xs)
         {
@@ -154,7 +154,7 @@ public class Grid
             {
                 if (1 < objectFields.get(x).get(y).size())
                 {
-                    java.util.Vector<Element> ops = objectFields.get(x).get(y);
+                    ArrayList<Element> ops = objectFields.get(x).get(y);
                     for (int i = 0; i < ops.size() - 1; i++)
                     {
                         for (int j = i + 1; j < ops.size(); j++)
@@ -172,14 +172,14 @@ public class Grid
         if (0 < coll_times.size())
         {
             int index = 0;
-            Double colltime = CollisionTimer.getCollTime(collisionPairs.get(index)[0], collisionPairs.get(index)[1], coll_times.get(index)[0], coll_times.get(index)[1]);
+            Double colltime = getCollTime(index);
             coll_time.set(index, colltime);
             int i = 1;
             while ( i < coll_times.size())
             {
                 if(colltime == null)
                 {
-                    colltime = CollisionTimer.getCollTime(collisionPairs.get(i)[0], collisionPairs.get(i)[1], coll_times.get(i)[0], coll_times.get(i)[1]);
+                    colltime = getCollTime(i);
                     collisionPairs.remove(index);
                     coll_times.remove(index);
                     coll_time.remove(index);
@@ -192,7 +192,7 @@ public class Grid
                 {
                     if(coll_time.get(i) == null)
                     {
-                        Double colltime_i = CollisionTimer.getCollTime(collisionPairs.get(i)[0], collisionPairs.get(i)[1], coll_times.get(i)[0], coll_times.get(i)[1]);
+                        Double colltime_i = getCollTime(i);
                         if(colltime_i == null)
                         {
                             collisionPairs.remove(i);
@@ -221,6 +221,11 @@ public class Grid
                 return index;
         }
         return null;
+    }
+    
+    private Double getCollTime(int index)
+    {
+        return CollisionTimer.getCollTime(collisionPairs.get(index)[0], collisionPairs.get(index)[1], coll_times.get(index)[0], coll_times.get(index)[1]);
     }
     
     private void clearCollPairs(ObjectProperties obj)
@@ -271,7 +276,7 @@ public class Grid
             {
                 if (1 < objectFields.get(x).get(y).size())
                 {
-                    java.util.Vector<Element> ops = objectFields.get(x).get(y);
+                    ArrayList<Element> ops = objectFields.get(x).get(y);
                     for (int i = 0; i < ops.size() - 1; i++)
                     {
                         if (ops.get(i).obj.getId() == obj.getId())
@@ -299,7 +304,7 @@ public class Grid
         updateCollisionPairs(obj);
     }
     
-    private void insertCollPair(java.util.Vector<Element> ops, int i, int j)
+    private void insertCollPair(ArrayList<Element> ops, int i, int j)
     {
         if (ops.get(i).min_time < ops.get(j).max_time && ops.get(j).min_time < ops.get(i).max_time)
         {

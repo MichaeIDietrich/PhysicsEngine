@@ -112,34 +112,21 @@ public class Polygon extends ObjectProperties implements Cloneable {
     
     @Override
     public Vector[] getAABB() {
-        Vector aabb[] = new Vector[2];
-        aabb[0] = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
-        aabb[1] = new Vector(Double.MIN_VALUE, Double.MIN_VALUE);
-        for (int i = 0; i < points.length; i++)
-        {
-            Vector v = getWorldPointPos(i);
-            if(v.getX() > aabb[1].getX()) {
-                aabb[1].setX(v.getX());
-            } else if(v.getX() < aabb[0].getX()) {
-                aabb[0].setX(v.getX());
-            }
-            if(v.getY() > aabb[1].getY()) {
-                aabb[1].setY(v.getY());
-            } else if(v.getY() < aabb[0].getY()) {
-                aabb[0].setY(v.getY());
-            }
-        }
-        return aabb;
+        return getAABB(0);
     }
     
     @Override
     public Vector[] getAABB(double time) {
         Vector aabb[] = new Vector[2];
         aabb[0] = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
-        aabb[1] = new Vector(Double.MIN_VALUE, Double.MIN_VALUE);
+        aabb[1] = new Vector(-1 * Double.MAX_VALUE, -1 * Double.MAX_VALUE);
         for (int i = 0; i < points.length; i++)
         {
-            Vector v = getWorldPointPos(i, time);
+            Vector v;
+            if(time == 0)
+                v = getWorldPointPos(i);
+            else
+                v = getWorldPointPos(i, time);
             if(v.getX() > aabb[1].getX()) {
                 aabb[1].setX(v.getX());
             } else if(v.getX() < aabb[0].getX()) {
@@ -156,24 +143,7 @@ public class Polygon extends ObjectProperties implements Cloneable {
 
     @Override
     public Vector[] getNextAABB() {
-        Vector aabb[] = new Vector[2];
-        aabb[0] = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
-        aabb[1] = new Vector(Double.MIN_VALUE, Double.MIN_VALUE);
-        for (int i = 0; i < points.length; i++)
-        {
-            Vector v = getWorldPointPos(i, EnvProps.deltaTime());
-            if(v.getX() > aabb[1].getX()) {
-                aabb[1].setX(v.getX());
-            } else if(v.getX() < aabb[0].getX()) {
-                aabb[0].setX(v.getX());
-            }
-            if(v.getY() > aabb[1].getY()) {
-                aabb[1].setY(v.getY());
-            } else if(v.getY() < aabb[0].getY()) {
-                aabb[0].setY(v.getY());
-            }
-        }
-        return aabb;
+        return getAABB(EnvProps.deltaTime());
     }
 
     @Override
