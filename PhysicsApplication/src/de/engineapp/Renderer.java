@@ -18,6 +18,8 @@ public final class Renderer extends AsyncWorker implements PaintListener, Storag
     private final static RenderingHints ANTIALIAS = new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     
     
+    private boolean singleThreaded;
+    
     private Canvas canvas;
     private PresentationModel pModel;
     
@@ -31,6 +33,18 @@ public final class Renderer extends AsyncWorker implements PaintListener, Storag
     {
         pModel = model;
         this.canvas = canvas;
+        
+        System.out.print("Available Processors: " + Runtime.getRuntime().availableProcessors());
+        if (Runtime.getRuntime().availableProcessors() == 1)
+        {
+            System.out.println(" => calculation and rendering will be single threaded");
+            singleThreaded = true;
+        }
+        else
+        {
+            System.out.println(" => rendering will be threaded");
+            singleThreaded = false;
+        }
         
         if (pModel.isState(GRID))
         {
@@ -60,7 +74,14 @@ public final class Renderer extends AsyncWorker implements PaintListener, Storag
             }
         };
         
-        worker.start();
+        if (singleThreaded)
+        {
+            worker.run();
+        }
+        else
+        {
+            worker.start();
+        }
     }
     
     
