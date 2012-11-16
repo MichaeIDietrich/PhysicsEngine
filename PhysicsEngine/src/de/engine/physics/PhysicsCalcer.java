@@ -71,7 +71,6 @@ public class PhysicsCalcer
                 Contact c = new Contact(Util.add(cd.contacts.get(0).point, cd.contacts.get(1).point).scale(0.5), cd.contacts.get(0).normal);
                 resolveContact(o1, o2, collTime, c);
             }
-            
         }
     }
     
@@ -112,13 +111,10 @@ public class PhysicsCalcer
         
         Vector j_normal = Util.scale(coll_normal, j);
         
-        Vector v_o1_n = Util.add(o1.velocity, Util.scale(j_normal, 1 / o1.getMass()));
-        Vector v_o2_n = Util.minus(o2.velocity, Util.scale(j_normal, 1 / o2.getMass()));
-        
-        double ang_v_o1_n = o1.angular_velocity + Util.crossProduct(r_o1, j_normal) / o1.moment_of_inertia;
-        double ang_v_o2_n = o2.angular_velocity - Util.crossProduct(r_o2, j_normal) / o2.moment_of_inertia;
-        
         if(!o1.isPinned) {
+            Vector v_o1_n = Util.add(o1.velocity, Util.scale(j_normal, 1 / o1.getMass()));
+            double ang_v_o1_n = o1.angular_velocity + Util.crossProduct(r_o1, j_normal) / o1.moment_of_inertia;
+            
             o1.next_velocity = v_o1_n;
             o1.next_angular_velocity = ang_v_o1_n;
             o1.next_time = collTime;
@@ -126,6 +122,9 @@ public class PhysicsCalcer
         }
         
         if(!o2.isPinned) {
+            Vector v_o2_n = Util.minus(o2.velocity, Util.scale(j_normal, 1 / o2.getMass()));
+            double ang_v_o2_n = o2.angular_velocity - Util.crossProduct(r_o2, j_normal) / o2.moment_of_inertia;
+            
             o2.next_velocity = v_o2_n;
             o2.next_angular_velocity = ang_v_o2_n;
             o2.next_time = collTime;

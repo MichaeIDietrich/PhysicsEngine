@@ -2,6 +2,11 @@ package de.engineapp;
 
 public interface Constants
 {
+    //software-version
+    public final static int MAJOR = 0;
+    public final static int MINOR = 1;
+    public final static int REVISION = 0;
+    
     // properties, states (storage)
     public final static String GRID = "grid";
     public final static String MAXIMIZED = "maximized";
