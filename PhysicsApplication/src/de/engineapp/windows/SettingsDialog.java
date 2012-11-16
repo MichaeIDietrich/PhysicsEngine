@@ -2,11 +2,14 @@ package de.engineapp.windows;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import de.engineapp.*;
 import de.engineapp.controls.*;
+import de.engineapp.util.AppRelauncher;
 import de.engineapp.util.Localizer;
 
 import static de.engineapp.Constants.*;
@@ -23,6 +26,7 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
     private JComboBox<String> cboLookAndFeels;
     
     private boolean successful = false;
+    private String activeLafName = null;
     
     private Configuration config;
     
@@ -88,16 +92,23 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         container.add(new JLabel(LOCALIZER.getString("LOOKANDFEEL")));
         container.addGap(3);
         
+        String activeLafClassName = UIManager.getLookAndFeel().getClass().getName();
+        
         String[] lookAndFeels = new String[UIManager.getInstalledLookAndFeels().length];
         for (int i = 0; i < lookAndFeels.length; i++)
         {
-            lookAndFeels[i] = UIManager.getInstalledLookAndFeels()[i].getName();
+            LookAndFeelInfo info = UIManager.getInstalledLookAndFeels()[i];
+            lookAndFeels[i] = info.getName();
+            if (activeLafClassName.equals(info.getClassName()))
+            {
+                activeLafName = info.getName();
+            }
         }
         
         
         cboLookAndFeels = new JComboBox<String>(lookAndFeels);
         cboLookAndFeels.setFocusable(false);
-        cboLookAndFeels.setSelectedItem(UIManager.getLookAndFeel().getName());
+        cboLookAndFeels.setSelectedItem(activeLafName);
         cboLookAndFeels.setPreferredSize(new Dimension(120, cboShowProperties.getPreferredSize().height));
         cboLookAndFeels.addItemListener(this);
         
@@ -126,6 +137,16 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
                 Configuration.overrideInstance(config);
                 successful = true;
                 this.dispose();
+                
+//                try
+//                {
+//                    AppRelauncher.restartApplication(null);
+//                }
+//                catch (IOException ex)
+//                {
+//                    ex.printStackTrace();
+//                }
+                
                 break;
                 
             case "cancel":
