@@ -247,7 +247,19 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     
     
     @Override
-    public void objectAdded(ObjectProperties object) { }
+    public void objectAdded(ObjectProperties object)
+    {
+        if (pModel.isState(SHOW_ARROWS_ALWAYS))
+        {
+            attachVelocityArrow(object);
+        }
+        
+        if (pModel.isState(DEBUG))
+        {
+            Box aabb = new Box(object, "getAABB");
+            ((IDecorable) object).putDecor("aabb", aabb);
+        }
+    }
     
     @Override
     public void objectRemoved(ObjectProperties object) { }
@@ -379,10 +391,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 circle.setMass(10);
                 pModel.addObject( circle );
                 
-                if (pModel.isState(SHOW_ARROWS_ALWAYS))
-                {
-                    attachVelocityArrow(circle);
-                }
                 break;
                 
             case OBJ_SQUARE:
@@ -390,10 +398,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 square.setMass(10);
                 pModel.addObject( square );
                 
-                if (pModel.isState(SHOW_ARROWS_ALWAYS))
-                {
-                    attachVelocityArrow(square);
-                }
                 break;
                 
             case OBJ_GROUND:
