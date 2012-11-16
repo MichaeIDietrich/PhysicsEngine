@@ -3,6 +3,7 @@ package de.engine.colldetect;
 import java.util.*;
 
 import de.engine.DebugMonitor;
+import de.engine.colldetect.Grid.CollPair;
 import de.engine.environment.Scene;
 import de.engine.math.*;
 import de.engine.math.DistanceCalcer.*;
@@ -36,18 +37,15 @@ public class CollisionDetector
     public void checkScene()
     {
         grid.scanScene();
-        grid.calcCollisionPairs();
         Integer collision = grid.getNextCollision();
         while (collision != null)
         {
-            ObjectProperties o1 = grid.collisionPairs.get(collision)[0];
-            ObjectProperties o2 = grid.collisionPairs.get(collision)[1];
-            Double coll_time = grid.coll_time.get(collision);
-            if (null != coll_time)
+            CollPair collPair = grid.collisionPairs.get(collision);
+            if (null != collPair.coll_time)
             {
-                PhysicsCalcer.run(o1, o2, coll_time);
-                grid.update(o1);
-                grid.update(o2);
+                PhysicsCalcer.run(collPair.obj1, collPair.obj2, collPair.coll_time);
+                grid.update(collPair.obj1);
+                grid.update(collPair.obj2);
             }
             collision = grid.getNextCollision();
         }
