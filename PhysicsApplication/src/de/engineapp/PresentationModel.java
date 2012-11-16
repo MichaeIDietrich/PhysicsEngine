@@ -3,8 +3,8 @@ package de.engineapp;
 import java.awt.Point;
 import java.awt.event.*;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+
+import javax.swing.event.EventListenerList;
 
 import de.engine.PhysicsEngine2D;
 import de.engine.environment.Scene;
@@ -15,7 +15,7 @@ import de.engineapp.controls.Canvas;
 
 public class PresentationModel
 {
-    public interface SceneListener
+    public interface SceneListener extends java.util.EventListener
     {
         public void objectAdded(ObjectProperties object);
         public void objectRemoved(ObjectProperties object);
@@ -27,34 +27,32 @@ public class PresentationModel
         public void sceneUpdated(Scene scene);
     }
     
-    public interface ViewBoxListener
+    public interface ViewBoxListener extends java.util.EventListener
     {
         public void offsetChanged(int offsetX, int offsetY);
         public void sizeChanged(int width, int height);
         public void zoomChanged(double zoom);
     }
     
-    public interface PaintListener
+    public interface PaintListener extends java.util.EventListener
     {
         public void repaintCanvas();
     }
     
-    public interface StorageListener
+    public interface StorageListener extends java.util.EventListener
     {
         public void stateChanged(String id, boolean value);
         public void propertyChanged(String id, String value);
     }
     
-    
-//    public final static double RATIO = 10.0;
+    public interface EventListener extends java.util.EventListener
+    {
+        public void eventFired(String name);
+    }
     
     
     /** Listeners */
-    private Set<ViewBoxListener> viewBoxListeners = null;
-    private Set<SceneListener> sceneListeners = null;
-    private Set<PaintListener> paintListeners = null;
-    private Set<StorageListener> storageListeners = null;
-    
+    private EventListenerList listenerList;
     
     
     /** stores the navigation offset (navigation by the use of the right mouse button) */
@@ -86,10 +84,7 @@ public class PresentationModel
     
     public PresentationModel()
     {
-        viewBoxListeners = new HashSet<>();
-        sceneListeners = new HashSet<>();
-        paintListeners = new HashSet<>();
-        storageListeners = new HashSet<>();
+        listenerList = new EventListenerList();
         
         stateMap = new HashMap<>();
         propertyMap = new HashMap<>();
@@ -99,17 +94,17 @@ public class PresentationModel
     
     public void addViewBoxListener(ViewBoxListener listener)
     {
-        viewBoxListeners.add(listener);
+        listenerList.add(ViewBoxListener.class, listener);
     }
     
     public void removeViewBoxListener(ViewBoxListener listener)
     {
-        viewBoxListeners.add(listener);
+        listenerList.remove(ViewBoxListener.class, listener);
     }
     
     private void fireViewBoxOffsetEvents()
     {
-        for (ViewBoxListener listener : viewBoxListeners)
+        for (ViewBoxListener listener : listenerList.getListeners(ViewBoxListener.class))
         {
             listener.offsetChanged(viewOffsetX, viewOffsetY);
         }
@@ -117,7 +112,7 @@ public class PresentationModel
     
     private void fireResizeCanvasEvents()
     {
-        for (ViewBoxListener listener : viewBoxListeners)
+        for (ViewBoxListener listener : listenerList.getListeners(ViewBoxListener.class))
         {
             listener.sizeChanged(canvasWidth, canvasHeight);
         }
@@ -126,34 +121,34 @@ public class PresentationModel
     
     public void addSceneListener(SceneListener listener)
     {
-        sceneListeners.add(listener);
+        listenerList.add(SceneListener.class, listener);
     }
     
     public void removeSceneListener(SceneListener listener)
     {
-        sceneListeners.add(listener);
+        listenerList.remove(SceneListener.class, listener);
     }
     
     
     public void addPaintListener(PaintListener listener)
     {
-        paintListeners.add(listener);
+        listenerList.add(PaintListener.class, listener);
     }
     
     public void removePaintListener(PaintListener listener)
     {
-        paintListeners.add(listener);
+        listenerList.remove(PaintListener.class, listener);
     }
     
     
     public void addStorageListener(StorageListener listener)
     {
-        storageListeners.add(listener);
+        listenerList.add(StorageListener.class, listener);
     }
     
     public void removeStorageListener(StorageListener listener)
     {
-        storageListeners.add(listener);
+        listenerList.remove(StorageListener.class, listener);
     }
     
     private void fireStateListeners(String id)
@@ -162,7 +157,7 @@ public class PresentationModel
         
         if (value != null)
         {
-            for (StorageListener listener : storageListeners)
+            for (StorageListener listener : listenerList.getListeners(StorageListener.class))
             {
                 listener.stateChanged(id, value);
             }
@@ -171,9 +166,28 @@ public class PresentationModel
     
     private void firePropertyListeners(String id)
     {
-        for (StorageListener listener : storageListeners)
+        for (StorageListener listener : listenerList.getListeners(StorageListener.class))
         {
             listener.propertyChanged(id, propertyMap.get(id));
+        }
+    }
+    
+    
+    public void addEventListener(EventListener listener)
+    {
+        listenerList.add(EventListener.class, listener);
+    }
+    
+    public void removeEventListener(EventListener listener)
+    {
+        listenerList.remove(EventListener.class, listener);
+    }
+    
+    public void fireEventListeners(String eventName)
+    {
+        for (EventListener listener : listenerList.getListeners(EventListener.class))
+        {
+            listener.eventFired(eventName);
         }
     }
     
@@ -253,7 +267,7 @@ public class PresentationModel
         this.zoom = zoom;
         Configuration.getInstance().setZoom(zoom);
         
-        for (ViewBoxListener listener : viewBoxListeners)
+        for (ViewBoxListener listener : listenerList.getListeners(ViewBoxListener.class))
         {
             listener.zoomChanged(zoom);
         }
@@ -271,7 +285,7 @@ public class PresentationModel
         
 //        this.setViewOffset((int) (-center.getX() * zoom + center.getX() + viewOffsetX * zoom), (int) (center.getY() * zoom - center.getY() - viewOffsetX / zoom));
         
-        for (ViewBoxListener listener : viewBoxListeners)
+        for (ViewBoxListener listener : listenerList.getListeners(ViewBoxListener.class))
         {
             listener.zoomChanged(zoom);
         }
@@ -346,7 +360,7 @@ public class PresentationModel
         {
             if (selectedObject != null)
             {
-                for (SceneListener listener : sceneListeners)
+                for (SceneListener listener : listenerList.getListeners(SceneListener.class))
                 {
                     listener.objectDeselected(selectedObject);
                 }
@@ -356,7 +370,7 @@ public class PresentationModel
             
             if (object != null)
             {
-                for (SceneListener listener : sceneListeners)
+                for (SceneListener listener : listenerList.getListeners(SceneListener.class))
                 {
                     listener.objectSelected(selectedObject);
                 }
@@ -379,7 +393,7 @@ public class PresentationModel
             
             scene.add(object);
             
-            for (SceneListener listener : sceneListeners)
+            for (SceneListener listener : listenerList.getListeners(SceneListener.class))
             {
                 listener.objectAdded(object);
             }
@@ -392,7 +406,7 @@ public class PresentationModel
         {
             if (selectedObject == object)
             {
-                for (SceneListener listener : sceneListeners)
+                for (SceneListener listener : listenerList.getListeners(SceneListener.class))
                 {
                     listener.objectDeselected(object);
                 }
@@ -400,7 +414,7 @@ public class PresentationModel
             
             scene.remove(object);
             
-            for (SceneListener listener : sceneListeners)
+            for (SceneListener listener : listenerList.getListeners(SceneListener.class))
             {
                 listener.objectRemoved(object);
             }
@@ -414,7 +428,7 @@ public class PresentationModel
         {
             scene.setGround(ground);
             
-            for (SceneListener listener : sceneListeners)
+            for (SceneListener listener : listenerList.getListeners(SceneListener.class))
             {
                 listener.groundAdded(ground);
             }
@@ -427,7 +441,7 @@ public class PresentationModel
         {
             scene.setGround(null);
             
-            for (SceneListener listener : sceneListeners)
+            for (SceneListener listener : listenerList.getListeners(SceneListener.class))
             {
                 listener.groundRemoved(ground);
             }
@@ -486,7 +500,7 @@ public class PresentationModel
     {
         if (force || !physicsState.isRunning())
         {
-            for (PaintListener listener : paintListeners)
+            for (PaintListener listener : listenerList.getListeners(PaintListener.class))
             {
                 listener.repaintCanvas();
             }
@@ -496,7 +510,7 @@ public class PresentationModel
     
     public void fireSceneUpdated()
     {
-        for (SceneListener listener : sceneListeners)
+        for (SceneListener listener : listenerList.getListeners(SceneListener.class))
         {
             listener.sceneUpdated(scene);
         }
@@ -505,7 +519,7 @@ public class PresentationModel
     
     public void fireObjectUpdated(ObjectProperties object)
     {
-        for (SceneListener listener : sceneListeners)
+        for (SceneListener listener : listenerList.getListeners(SceneListener.class))
         {
             listener.objectUpdated(object);
         }
