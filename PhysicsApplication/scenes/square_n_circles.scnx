@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene version="1.0" gravitation="9.81">
+  <Square name="Object 97" material="STEEL" x="-36.0" y="56.994660279075" vx="0.0" vy="-0.161809725" mass="200.0" radius="32.72995569810628" pinned="false" />
+  <Circle name="Object 98" material="STEEL" x="-40.020625" y="130.048410279075" vx="-0.625" vy="-36.411809725" mass="10.0" radius="8.0" pinned="false" />
+  <Circle name="Object 99" material="STEEL" x="-100.781875" y="81.162160279075" vx="33.125" vy="-2.661809725" mass="10.0" radius="8.0" pinned="false" />
+  <Circle name="Object 100" material="STEEL" x="19.2575" y="113.709660279075" vx="-22.5" vy="-20.161809725" mass="10.0" radius="8.0" pinned="false" />
+  <Circle name="Object 101" material="STEEL" x="-54.835" y="2.049035279075" vx="5.0" vy="24.213190275" mass="10.0" radius="8.0" pinned="false" />
+  <Circle name="Object 102" material="STEEL" x="-106.97" y="21.987160279075" vx="35.0" vy="22.338190275" mass="10.0" radius="8.0" pinned="false" />
+  <Circle name="Object 103" material="STEEL" x="20.445625" y="14.404660279075" vx="-24.375" vy="19.838190275" mass="10.0" radius="8.0" pinned="false" />
+  <Circle name="Object 104" material="STEEL" x="33.700625" y="65.578410279075" vx="-39.375" vy="-1.411809725" mass="10.0" radius="8.0" pinned="false" />
+</Scene>

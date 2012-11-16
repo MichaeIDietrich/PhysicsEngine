@@ -1,4 +1,4 @@
-package de.engineapp.container;
+package de.engineapp.containers;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -34,8 +34,6 @@ import static de.engineapp.Constants.*;
 public class MainToolBar extends JToolBar implements ActionListener, ChangeListener, StorageListener, ViewBoxListener
 {
     private static final long serialVersionUID = 4164673212238397915L;
-    
-    private static final String SCENE_VERSION = "1.0";
     
     private final static Localizer LOCALIZER = Localizer.getInstance();
     
@@ -412,7 +410,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             
             writer.writeDeclaration();
             writer.writeStartElement("Scene");
-            writer.writeAttribute("version", SCENE_VERSION);
+            writer.writeAttribute("version", FILE_VERSION);
             writer.writeAttribute("gravitation", "9.81"); // missing property
             
             if (scene.getGround() != null)
@@ -484,7 +482,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             {
                 String version = node.getAttribute("version");
                 
-                if (!SCENE_VERSION.equals(version))
+                if (!FILE_VERSION.equals(version))
                 {
                     String[] options = new String[] { LOCALIZER.getString("OK"), LOCALIZER.getString("CANCEL") };
                     
@@ -545,6 +543,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 }
                 
                 pModel.setScene(scene);
+                pModel.fireEventListeners(SCENE_LOADED);
                 pModel.fireRepaint();
             }
         }

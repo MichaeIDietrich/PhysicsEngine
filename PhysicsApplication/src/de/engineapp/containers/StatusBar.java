@@ -1,4 +1,4 @@
-package de.engineapp.container;
+package de.engineapp.containers;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -14,6 +14,7 @@ import de.engine.environment.Scene;
 import de.engine.math.Vector;
 import de.engine.objects.*;
 import de.engineapp.*;
+import de.engineapp.PresentationModel.EventListener;
 import de.engineapp.PresentationModel.*;
 import de.engineapp.controls.*;
 import de.engineapp.rec.Recorder;
@@ -21,7 +22,7 @@ import de.engineapp.util.Util;
 
 import static de.engineapp.Constants.*;
 
-public class StatusBar extends JPanel implements MouseMotionListener, StorageListener, SceneListener, ChangeListener, MessageListener, ActionListener
+public class StatusBar extends JPanel implements MouseMotionListener, StorageListener, SceneListener, ChangeListener, MessageListener, ActionListener, EventListener
 {
     private static final long serialVersionUID = 8107903887585331982L;
     
@@ -54,6 +55,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
         model.addMouseMotionListenerToCanvas(this);
         model.addStorageListener(this);
         model.addSceneListener(this);
+        model.addEventListener(this);
         
         this.setPreferredSize(new Dimension(0, 30));
         
@@ -85,16 +87,9 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
         
         frames = new SliderEx(1, 1, 1);
         frames.setGroupSize(30);
-//        frames = new JSlider(1, 1);
-//        frames.setMinorTickSpacing(30);
-//        frames.setPaintTicks(true);
         frames.addChangeListener(this);
         
         DebugMonitor.getInstance().addMessageListener(this);
-        
-//        SliderEx s = new SliderEx(1, 100, 1);
-//        s.setGroupSize(30);
-//        this.add(s);
     }
     
     
@@ -266,5 +261,15 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
         Recorder.getInstance().clear();
         frames.setValue(1);
         frames.setMaximum(1);
+    }
+    
+    
+    @Override
+    public void eventFired(String name)
+    {
+        if (name.equals(SCENE_LOADED))
+        {
+            lblObjectCount.setText(" " + pModel.getScene().getCount() + " Objects ");
+        }
     }
 }

@@ -6,6 +6,7 @@ public interface Constants
     public final static int MAJOR = 0;
     public final static int MINOR = 1;
     public final static int REVISION = 0;
+    public final static String FILE_VERSION = "1.0";
     
     // properties, states (storage)
     public final static String GRID = "grid";
@@ -20,6 +21,9 @@ public interface Constants
     public final static String OBJECT_MODE = "ObjectMode";
     public final static String MODE = "mode";
     public final static String CURRENT_PLAYBACK_FRAME = "playbackFrame";
+    
+    // events
+    public final static String SCENE_LOADED = "sceneLoaded";
     
     // localization
     // TODO - add all string constants for localization
