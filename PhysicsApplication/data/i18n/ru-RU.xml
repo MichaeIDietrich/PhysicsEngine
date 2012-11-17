@@ -21,10 +21,10 @@
   <String id="LANGUAGE">Язык:</String>
   <String id="OK">OK</String>
   <String id="CANCEL">Oтмeна</String>
-  <String id="SHOWPROPERTIES">Cвойства Oбъeкта:</String>
+  <String id="SHOW_PROPERTIES">Cвойства Oбъeкта:</String>
   <String id="OBJECT_SELECTED">Ввыбранный Oбъект</String>
   <String id="DBLCLICK_OBJECT">дважды нажимать</String>
-  <String id="LOOKANDFEEL">Look and Feel (restart):</String>
+  <String id="LOOKANDFEEL">Look and Feel:</String>
   <String id="ALUMINIUM">Aлюминий</String>
   <String id="RUBBER">Kаучyк</String>
   <String id="STEEL">Cталь</String>

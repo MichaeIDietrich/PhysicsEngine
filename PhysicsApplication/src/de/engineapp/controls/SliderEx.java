@@ -44,8 +44,8 @@ public class SliderEx extends JComponent implements MouseListener, MouseMotionLi
         {
             colBorder1 = new Color(50, 50, 50);
             colBorder2 = Color.BLACK;
-            colBack1 = new Color(150, 150, 150);
-            colBack2 = new Color(200, 200, 200);
+            colBack1 = new Color(200, 200, 200);
+            colBack2 = new Color(150, 150, 150);
             colSlider = new Color(210, 210, 210);
             colSliderBorder = new Color(100, 100, 100);
         }

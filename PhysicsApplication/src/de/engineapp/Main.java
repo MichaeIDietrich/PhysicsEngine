@@ -62,6 +62,17 @@ public class Main
                 case "-nodebug":
                     config.setState(DEBUG, false);
                     break;
+                    
+                case "-skin":
+                    if (++index < args.length)
+                    {
+                        config.setProperty(SKIN, args[index]);
+                    }
+                    else
+                    {
+                        System.out.println("The Parameter next to '-skin' is missing");
+                    }
+                    break;
             }
         }
         

@@ -2,15 +2,12 @@ package de.engineapp.windows;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 
 import javax.swing.*;
-import javax.swing.UIManager.LookAndFeelInfo;
 
 import de.engineapp.*;
 import de.engineapp.controls.*;
-import de.engineapp.util.AppRelauncher;
-import de.engineapp.util.Localizer;
+import de.engineapp.util.*;
 
 import static de.engineapp.Constants.*;
 
@@ -26,7 +23,6 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
     private JComboBox<String> cboLookAndFeels;
     
     private boolean successful = false;
-    private String activeLafName = null;
     
     private Configuration config;
     
@@ -39,7 +35,7 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
     
     private SettingsDialog(Window parent)
     {
-        super(parent, LOCALIZER.getString("SETTINGS"));
+        super(parent, LOCALIZER.getString(L_SETTINGS));
         
         config = Configuration.getInstance().clone();
         
@@ -63,7 +59,7 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         container.add(Box.createHorizontalStrut(220));
         
         container.addGap(15);
-        container.add(new JLabel(LOCALIZER.getString("LANGUAGE")));
+        container.add(new JLabel(LOCALIZER.getString(L_LANGUAGE)));
         container.addGap(3);
         
         cboLang = new IconComboBox<String>(LOCALIZER.getAvailableLanguages(), "flags");
@@ -75,11 +71,11 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         
         
         container.addGap(15);
-        container.add(new JLabel(LOCALIZER.getString("SHOWPROPERTIES")));
+        container.add(new JLabel(LOCALIZER.getString(L_SHOW_PROPERTIES)));
         container.addGap(3);
         
-        cboShowProperties = new JComboBox<String>(new String[] { LOCALIZER.getString("OBJECT_SELECTED"),
-                                                                 LOCALIZER.getString("DBLCLICK_OBJECT") });
+        cboShowProperties = new JComboBox<String>(new String[] { LOCALIZER.getString(L_OBJECT_SELECTED),
+                                                                 LOCALIZER.getString(L_DBLCLICK_OBJECT) });
         cboShowProperties.setFocusable(false);
         cboShowProperties.setSelectedIndex(config.isState(DBLCLICK_SHOW_PROPERTIES) ? 1 : 0);
         cboShowProperties.setPreferredSize(new Dimension(120, cboShowProperties.getPreferredSize().height));
@@ -89,26 +85,13 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         
         
         container.addGap(15);
-        container.add(new JLabel(LOCALIZER.getString("LOOKANDFEEL")));
+        container.add(new JLabel(LOCALIZER.getString(L_LOOKANDFEEL)));
         container.addGap(3);
         
-        String activeLafClassName = UIManager.getLookAndFeel().getClass().getName();
         
-        String[] lookAndFeels = new String[UIManager.getInstalledLookAndFeels().length];
-        for (int i = 0; i < lookAndFeels.length; i++)
-        {
-            LookAndFeelInfo info = UIManager.getInstalledLookAndFeels()[i];
-            lookAndFeels[i] = info.getName();
-            if (activeLafClassName.equals(info.getClassName()))
-            {
-                activeLafName = info.getName();
-            }
-        }
-        
-        
-        cboLookAndFeels = new JComboBox<String>(lookAndFeels);
+        cboLookAndFeels = new JComboBox<String>(LookAndFeelManager.getLookAndFeelNames());
         cboLookAndFeels.setFocusable(false);
-        cboLookAndFeels.setSelectedItem(activeLafName);
+        cboLookAndFeels.setSelectedItem(LookAndFeelManager.getCurrentLookAndFeelName());
         cboLookAndFeels.setPreferredSize(new Dimension(120, cboShowProperties.getPreferredSize().height));
         cboLookAndFeels.addItemListener(this);
         
@@ -120,8 +103,8 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         
-        pnlButtons.add(new QuickButton(LOCALIZER.getString("OK"), "ok", this));
-        pnlButtons.add(new QuickButton(LOCALIZER.getString("CANCEL"), "cancel", this));
+        pnlButtons.add(new QuickButton(LOCALIZER.getString(L_OK), CMD_OK, this));
+        pnlButtons.add(new QuickButton(LOCALIZER.getString(L_CANCEL), CMD_CANCEL, this));
         
         rootPane.add(pnlButtons, BorderLayout.PAGE_END);
         rootPane.add(container);
@@ -133,23 +116,13 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
     {
         switch (e.getActionCommand())
         {
-            case "ok":
+            case CMD_OK:
                 Configuration.overrideInstance(config);
                 successful = true;
                 this.dispose();
-                
-//                try
-//                {
-//                    AppRelauncher.restartApplication(null);
-//                }
-//                catch (IOException ex)
-//                {
-//                    ex.printStackTrace();
-//                }
-                
                 break;
                 
-            case "cancel":
+            case CMD_CANCEL:
                 // reset the current language to the unchanged one
                 LOCALIZER.setCurrentLanguage(Configuration.getInstance().getProperty(LANGUAGE_CODE));
                 this.dispose();
@@ -174,7 +147,10 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
             }
             else if (e.getSource().equals(cboLookAndFeels))
             {
-                config.setProperty(LOOK_AND_FEEL, cboLookAndFeels.getSelectedItem().toString());
+                String lookAndFeel = cboLookAndFeels.getSelectedItem().toString();
+                config.setProperty(LOOK_AND_FEEL, lookAndFeel);
+                LookAndFeelManager.applyLookAndFeelByName(lookAndFeel);
+                LookAndFeelManager.updateControls(this);
             }
         }
     }
@@ -183,7 +159,7 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
     private void changeLanguage()
     {
         LOCALIZER.setCurrentLanguage(config.getProperty(LANGUAGE_CODE));
-        this.setTitle(LOCALIZER.getString("SETTINGS"));
+        this.setTitle(LOCALIZER.getString(L_SETTINGS));
         rootPane.removeAll();
         initializeComponents();
         rootPane.getRootPane().validate();
