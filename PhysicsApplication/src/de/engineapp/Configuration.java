@@ -110,7 +110,7 @@ public class Configuration implements Serializable, Cloneable, StorageListener, 
     }
     
     
-    public void attackPresentationModel(PresentationModel model)
+    public void attachPresentationModel(PresentationModel model)
     {
         model.addViewBoxListener(this);
         model.addStorageListener(this);

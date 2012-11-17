@@ -13,8 +13,19 @@ import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.controls.Canvas;
 
+/**
+ * The PresentationModel handles the whole communication between the application GUI and
+ * provides a lot of functionality and event-handling to cover all the communication stuff.
+ * 
+ * @author Michael
+ */
 public class PresentationModel
 {
+    /**
+     * The SceneListener recognizes changes to the scene and objects within the scene.
+     * 
+     * @author Michael
+     */
     public interface SceneListener extends java.util.EventListener
     {
         public void objectAdded(ObjectProperties object);
@@ -27,6 +38,11 @@ public class PresentationModel
         public void sceneUpdated(Scene scene);
     }
     
+    /**
+     * The ViewBoxListener recognizes changes to the representation of the scene.
+     * 
+     * @author Michael
+     */
     public interface ViewBoxListener extends java.util.EventListener
     {
         public void offsetChanged(int offsetX, int offsetY);
@@ -34,28 +50,45 @@ public class PresentationModel
         public void zoomChanged(double zoom);
     }
     
+    /**
+     * The PaintListener recognizes and provides an event to tell other
+     * program parts wether the scene was repainted
+     * 
+     * @author Michael
+     */
     public interface PaintListener extends java.util.EventListener
     {
         public void repaintCanvas();
     }
     
+    /**
+     * The storageListener provides listeners for modified states and properties. 
+     * 
+     * @author Michael
+     */
     public interface StorageListener extends java.util.EventListener
     {
         public void stateChanged(String id, boolean value);
         public void propertyChanged(String id, String value);
     }
     
+    /**
+     * The EventListener provides a listener for small events to avoid
+     * unnecessary code
+     * 
+     * @author Michael
+     */
     public interface EventListener extends java.util.EventListener
     {
         public void eventFired(String name);
     }
     
     
-    /** Listeners */
+    /** list of registered listeners */
     private EventListenerList listenerList;
     
     
-    /** stores the navigation offset (navigation by the use of the right mouse button) */
+    // stores the navigation offset (navigation by the use of the right mouse button)
     private int viewOffsetX = 0;
     private int viewOffsetY = 0;
     private int canvasWidth = 0;
@@ -82,6 +115,9 @@ public class PresentationModel
     private Canvas canvas = null;
     
     
+    /**
+     * Creates a new Instance of the PresentationModel.
+     */
     public PresentationModel()
     {
         listenerList = new EventListenerList();
@@ -89,7 +125,9 @@ public class PresentationModel
         stateMap = new HashMap<>();
         propertyMap = new HashMap<>();
         
-        Configuration.getInstance().attackPresentationModel(this);
+        // attach this model to the configuration to load the settings
+        // on startup and save on shutdown
+        Configuration.getInstance().attachPresentationModel(this);
     }
     
     public void addViewBoxListener(ViewBoxListener listener)
