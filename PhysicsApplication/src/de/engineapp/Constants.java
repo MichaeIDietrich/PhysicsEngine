@@ -5,7 +5,7 @@ public interface Constants
     //software-version
     public final static int MAJOR = 0;
     public final static int MINOR = 1;
-    public final static int REVISION = 0;
+    public final static int REVISION = 1;
     public final static String FILE_VERSION = "1.1";
     
     // properties, states (storage)
