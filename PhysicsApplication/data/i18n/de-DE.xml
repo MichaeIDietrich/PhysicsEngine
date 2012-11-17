@@ -25,10 +25,10 @@
   <String id="SAVE">Speichern</String>
   <String id="TITLE_OPEN">Szene öffnen...</String>
   <String id="TITLE_SAVE">Szene speichern...</String>
-  <String id="SHOWPROPERTIES">Objekteigenschaften anzeigen:</String>
+  <String id="SHOW_PROPERTIES">Objekteigenschaften anzeigen:</String>
   <String id="OBJECT_SELECTED">Bei Objektanwahl</String>
   <String id="DBLCLICK_OBJECT">Bei Doppelklick</String>
-  <String id="LOOKANDFEEL">Look and Feel (Neustart):</String>
+  <String id="LOOKANDFEEL">Look and Feel:</String>
   <String id="ALUMINIUM">Aluminium</String>
   <String id="RUBBER">Gummi</String>
   <String id="STEEL">Stahl</String>
@@ -39,6 +39,7 @@
   <String id="PLAYBACK_MODE">Wiedergabe-Modus</String>
   <String id="WRONG_VERSION">&lt;html&gt;Die Datei wurde nicht mit derselben Programmversion erstellt wie die laufende Programmversion.&lt;br/&gt;Dies kann zu Problemen führen.&lt;br/&gt;Möchten Sie trotzdem fortfahren?&lt;/html&gt;</String>
   <String id="TITLE_IMPORT">Datei-Import</String>
+  <String id="OBJECTS">Objekte</String>
   
   <!--  Tooltips -->
   <String id="TT_NEW">Erstellt eine neue Szene</String>
@@ -55,5 +56,6 @@
   <String id="TT_CIRCLE">Platziert einen Kreis an einer beliebigen Stelle in der Szene</String>
   <String id="TT_SQUARE">Platziert ein Viereck an einer beliebigen Stelle in der Szene</String>
   <String id="TT_GROUND">Platziert eine Funktion als Begrenzungsboden in der Szene</String>
+  <String id="TT_DISCARD">Löscht die bestehende Aufnahme</String>
   
 </Localization>

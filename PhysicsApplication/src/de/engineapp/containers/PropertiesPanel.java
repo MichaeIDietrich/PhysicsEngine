@@ -89,8 +89,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         //Buttons
           del.addActionListener(this);
         close.addActionListener(this);
-          del.setActionCommand("del");
-        close.setActionCommand("close");
+          del.setActionCommand(CMD_DELETE);
+        close.setActionCommand(CMD_CLOSE);
         
         //Namensfeld konfigurieren
         name.setEditable(isEnabled());
@@ -133,21 +133,21 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     private void createControls()
     {
         //Labels
-        nameLabel       = new JLabel(LOCALIZER.getString("NAME_OF_OBJECT"));
-        materialLabel   = new JLabel(LOCALIZER.getString("MATERIAL"));
-        xCordinateLabel = new JLabel(LOCALIZER.getString("X_COORDINATE"));
-        yCordinateLabel = new JLabel(LOCALIZER.getString("Y_COORDINATE"));
-        xSpeedLabel     = new JLabel(LOCALIZER.getString("X_VELOCITY"));
-        ySpeedLabel     = new JLabel(LOCALIZER.getString("Y_VELOCITY"));
-        massLabel       = new JLabel(LOCALIZER.getString("MASS"));
-        radiusLabel     = new JLabel(LOCALIZER.getString("RADIUS"));
+        nameLabel       = new JLabel(LOCALIZER.getString(L_NAME_OF_OBJECT));
+        materialLabel   = new JLabel(LOCALIZER.getString(L_MATERIAL));
+        xCordinateLabel = new JLabel(LOCALIZER.getString(L_X_COORDINATE));
+        yCordinateLabel = new JLabel(LOCALIZER.getString(L_Y_COORDINATE));
+        xSpeedLabel     = new JLabel(LOCALIZER.getString(L_X_VELOCITY));
+        ySpeedLabel     = new JLabel(LOCALIZER.getString(L_Y_VELOCITY));
+        massLabel       = new JLabel(LOCALIZER.getString(L_MASS));
+        radiusLabel     = new JLabel(LOCALIZER.getString(L_RADIUS));
         
-        LabelPotE       = new JLabel(LOCALIZER.getString("POT_ENERGY"));
-        LabelKinE       = new JLabel(LOCALIZER.getString("KIN_ENERGY"));
+        LabelPotE       = new JLabel(LOCALIZER.getString(L_POT_ENERGY));
+        LabelKinE       = new JLabel(LOCALIZER.getString(L_KIN_ENERGY));
 
         //Buttons
-        del          = new JButton(LOCALIZER.getString("REMOVE"));
-        close        = new JButton(LOCALIZER.getString("CLOSE"));
+        del          = new JButton(LOCALIZER.getString(L_REMOVE));
+        close        = new JButton(LOCALIZER.getString(L_CLOSE));
         
         //Namensfeld
         name         = new JTextField();
@@ -155,7 +155,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         groupName.setOpaque(true);
         
         //Combobox + CheckBox
-        fix          = new JCheckBox(LOCALIZER.getString("PINNED"));
+        fix          = new JCheckBox(LOCALIZER.getString(L_PINNED));
     }
 
     @Override
@@ -195,8 +195,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         
         MaterialCombo = new IconComboBox<Material>(Material.values(), "materials");
         
-        next         = new QuickButton(Util.getIcon("next"),"next",this);
-        previous     = new QuickButton(Util.getIcon("previous"),"previous",this);
+        next         = new QuickButton(Util.getIcon(ICO_NEXT), CMD_NEXT, this);
+        previous     = new QuickButton(Util.getIcon(ICO_PREVIOUS), CMD_PREVIOUS, this);
         groupName.add(previous, BorderLayout.LINE_START);
         groupName.add(next, BorderLayout.LINE_END);
         groupName.add(name);
@@ -268,17 +268,17 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     {
         switch(e.getActionCommand())
         {
-            case "del":
+            case CMD_DELETE:
                 pModel.removedObject(pModel.getSelectedObject());
                 pModel.fireRepaint();
                 break;
                 
-            case "close":
+            case CMD_CLOSE:
                 pModel.setSelectedObject(null);
                 pModel.fireRepaint();
                 break;
                 
-            case "next":
+            case CMD_NEXT:
                 Iterator<ObjectProperties> it = pModel.getScene().getObjects().iterator();
                 while(it.next() != pModel.getSelectedObject());
                 if(it.hasNext())
@@ -293,7 +293,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                 pModel.fireRepaint();
                 break;
                 
-            case "previous":
+            case CMD_PREVIOUS:
                 if(pModel.getSelectedObject() == pModel.getScene().getObject(0))
                 {
                     pModel.setSelectedObject(pModel.getScene().getObject(pModel.getScene().getCount()-1));

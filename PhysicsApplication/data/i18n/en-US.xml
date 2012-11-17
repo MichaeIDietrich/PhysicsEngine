@@ -25,10 +25,10 @@
   <String id="SAVE">Save</String>
   <String id="TITLE_OPEN">Open scene...</String>
   <String id="TITLE_SAVE">Save scene...</String>
-  <String id="SHOWPROPERTIES">Show object properties:</String>
+  <String id="SHOW_PROPERTIES">Show object properties:</String>
   <String id="OBJECT_SELECTED">On selection</String>
   <String id="DBLCLICK_OBJECT">On doubleclick</String>
-  <String id="LOOKANDFEEL">Look and Feel (restart):</String>
+  <String id="LOOKANDFEEL">Look and Feel:</String>
   <String id="ALUMINIUM">Aluminium</String>
   <String id="RUBBER">Rubber</String>
   <String id="STEEL">Steel</String>
@@ -39,6 +39,7 @@
   <String id="PLAYBACK_MODE">Playback Mode</String>
   <String id="WRONG_VERSION">&lt;html&gt;The file version differs from the application version.&lt;br/&gt;This may lead to problems.&lt;br/&gt;Do you want to continue?&lt;/html&gt;</String>
   <String id="TITLE_IMPORT">File Import</String>
+  <String id="OBJECTS">Objects</String>
   
   
   <!--  Tooltips -->
@@ -56,5 +57,6 @@
   <String id="TT_CIRCLE">Places a circle at any location in the scene</String>
   <String id="TT_SQUARE">Places a square at any location in the scene</String>
   <String id="TT_GROUND">Places a function bordering the ground in the scene</String>
+  <String id="TT_DISCARD">Deletes the current Record</String>
   
 </Localization>

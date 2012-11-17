@@ -33,10 +33,15 @@ public final class MainWindow extends JFrame
     
     public MainWindow()
     {
-        super(LOCALIZER.getString("APP_NAME"));
+        super(LOCALIZER.getString(L_APP_NAME));
         
         pModel = new PresentationModel();
         pModel.setProperty(MODE, CMD_PHYSICS_MODE);
+        
+        if (Configuration.getInstance().getProperty(SKIN) != null)
+        {
+            Util.setSourcePath(Configuration.getInstance().getProperty(SKIN));
+        }
         
         // Free objects (if necessary) before this application ends
         this.addWindowListener(new WindowAdapter()
@@ -95,39 +100,14 @@ public final class MainWindow extends JFrame
     
     private void initializeLookAndFeel()
     {
-        try
+        Configuration config = Configuration.getInstance();
+        
+        if (!LookAndFeelManager.applyLookAndFeelByName(config.getProperty(LOOK_AND_FEEL)))
         {
-            if (Configuration.getInstance().getProperty(LOOK_AND_FEEL) != null)
-            {
-                for (int i = 0; i < UIManager.getInstalledLookAndFeels().length; i++)
-                {
-                    if (Configuration.getInstance().getProperty(LOOK_AND_FEEL).equals(
-                            UIManager.getInstalledLookAndFeels()[i].getName()))
-                    {
-                        UIManager.setLookAndFeel(UIManager.getInstalledLookAndFeels()[i].getClassName());
-                        return;
-                    }
-                }
-            }
-            
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            
-            for (int i = 0; i < UIManager.getInstalledLookAndFeels().length; i++)
-            {
-                if (UIManager.getSystemLookAndFeelClassName().equals(
-                        UIManager.getInstalledLookAndFeels()[i].getClassName()))
-                {
-                    Configuration.getInstance().setProperty(LOOK_AND_FEEL, 
-                            UIManager.getInstalledLookAndFeels()[i].getName());
-                    return;
-                }
-            }
+            LookAndFeelManager.applySystemLookAndFeel();
         }
-        catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e)
-        {
-            System.out.println("Cannot apply Look And Feel!");
-            e.printStackTrace();
-        }
+        
+        config.setProperty(LOOK_AND_FEEL, LookAndFeelManager.getCurrentLookAndFeelName());
     }
     
     
@@ -177,13 +157,13 @@ public final class MainWindow extends JFrame
         this.setLocationRelativeTo(null);
         
         ArrayList<Image> iconList = new ArrayList<>();
-        iconList.add(Util.getImage("main/256"));
-        iconList.add(Util.getImage("main/128"));
-        iconList.add(Util.getImage("main/64"));
-        iconList.add(Util.getImage("main/48"));
-        iconList.add(Util.getImage("main/32"));
-        iconList.add(Util.getImage("main/24"));
-        iconList.add(Util.getImage("main/16"));
+        iconList.add(Util.getImage(ICO_MAIN_256));
+        iconList.add(Util.getImage(ICO_MAIN_128));
+        iconList.add(Util.getImage(ICO_MAIN_64));
+        iconList.add(Util.getImage(ICO_MAIN_48));
+        iconList.add(Util.getImage(ICO_MAIN_32));
+        iconList.add(Util.getImage(ICO_MAIN_24));
+        iconList.add(Util.getImage(ICO_MAIN_16));
         
         this.setIconImages(iconList);
         

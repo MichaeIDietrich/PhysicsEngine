@@ -18,7 +18,7 @@ import de.engineapp.PresentationModel.EventListener;
 import de.engineapp.PresentationModel.*;
 import de.engineapp.controls.*;
 import de.engineapp.rec.Recorder;
-import de.engineapp.util.Util;
+import de.engineapp.util.*;
 
 import static de.engineapp.Constants.*;
 
@@ -28,6 +28,8 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     
     private static final Border STATUS_BORDER = BorderFactory.createCompoundBorder(
             BorderFactory.createLoweredSoftBevelBorder(), BorderFactory.createEmptyBorder(0, 5, 0, 5));
+    
+    private final static Localizer LOCALIZER = Localizer.getInstance();
     
     
     private PresentationModel pModel;
@@ -70,9 +72,11 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
             debugMessages = new HashMap<>();
         }
         
-        discard = new QuickButton(Util.getIcon("discard"), CMD_DISCARD, this);
+        discard = new QuickButton(Util.getIcon(ICO_DISCARD), CMD_DISCARD, this);
+        discard.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        discard.setToolTipText(LOCALIZER.getString(TT_DISCARD));
         
-        lblObjectCount = new JLabel("0 Objects");
+        lblObjectCount = new JLabel("0 " + LOCALIZER.getString(L_OBJECTS));
         lblObjectCount.setBorder(STATUS_BORDER);
         
         lblCoordinates = new JLabel("(0; 0)");
@@ -163,6 +167,11 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
                     frames.setValue(number);
                 }
                 break;
+                
+            case LANGUAGE_CODE:
+                discard.setToolTipText(LOCALIZER.getString(TT_DISCARD));
+                lblObjectCount.setText(pModel.getScene().getCount() + " " + LOCALIZER.getString(L_OBJECTS));
+                break;
         }
     }
     
@@ -170,13 +179,13 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     @Override
     public void objectAdded(ObjectProperties object)
     {
-        lblObjectCount.setText(" " + pModel.getScene().getCount() + " Objects ");
+        lblObjectCount.setText(pModel.getScene().getCount() + " " + LOCALIZER.getString(L_OBJECTS));
     }
     
     @Override
     public void objectRemoved(ObjectProperties object)
     {
-        lblObjectCount.setText(" " + pModel.getScene().getCount() + " Objects ");
+        lblObjectCount.setText(pModel.getScene().getCount() + " " + LOCALIZER.getString(L_OBJECTS));
     }
     
     @Override
@@ -269,7 +278,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     {
         if (name.equals(SCENE_LOADED))
         {
-            lblObjectCount.setText(" " + pModel.getScene().getCount() + " Objects ");
+            lblObjectCount.setText(pModel.getScene().getCount() + " " + LOCALIZER.getString(L_OBJECTS));
         }
     }
 }

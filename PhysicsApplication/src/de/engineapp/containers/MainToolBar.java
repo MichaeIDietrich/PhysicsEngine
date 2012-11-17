@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileFilter;
 
 import de.engine.environment.Scene;
 import de.engine.math.Vector;
+import de.engine.math.Rotation;
 import de.engine.objects.*;
 import de.engine.objects.ObjectProperties.Material;
 import de.engineapp.*;
@@ -83,16 +84,16 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         pModel.addViewBoxListener(this);
         pModel.addStorageListener(this);
         
-        new_       = new QuickButton(Util.getIcon("new"),           CMD_NEW,         this);
-        open       = new QuickButton(Util.getIcon("open"),          CMD_OPEN,        this);
-        save       = new QuickButton(Util.getIcon("save"),          CMD_SAVE,        this);
-        play       = new QuickButton(Util.getIcon("play"),          CMD_PLAY,        this);
-        pause      = new QuickButton(Util.getIcon("pause"),         CMD_PAUSE,       this);
-        reset      = new QuickButton(Util.getIcon("reset"),         CMD_RESET,       this);
-        grid       = new QuickToggleButton(Util.getIcon("grid"),          CMD_GRID,        this);
-        showArrows = new QuickToggleButton(Util.getIcon("object_arrows3"), CMD_SHOW_ARROWS, this);
-        focus      = new QuickButton(Util.getIcon("focus"),         CMD_FOCUS,       this);
-        settings   = new QuickButton(Util.getIcon("settings2"),     CMD_SETTINGS,    this);
+        new_       = new QuickButton(      Util.getIcon(ICO_NEW),           CMD_NEW,         this);
+        open       = new QuickButton(      Util.getIcon(ICO_OPEN),          CMD_OPEN,        this);
+        save       = new QuickButton(      Util.getIcon(ICO_SAVE),          CMD_SAVE,        this);
+        play       = new QuickButton(      Util.getIcon(ICO_PLAY),          CMD_PLAY,        this);
+        pause      = new QuickButton(      Util.getIcon(ICO_PAUSE),         CMD_PAUSE,       this);
+        reset      = new QuickButton(      Util.getIcon(ICO_RESET),         CMD_RESET,       this);
+        grid       = new QuickToggleButton(Util.getIcon(ICO_GRID),          CMD_GRID,        this);
+        showArrows = new QuickToggleButton(Util.getIcon(ICO_OBJECT_ARROWS), CMD_SHOW_ARROWS, this);
+        focus      = new QuickButton(      Util.getIcon(ICO_FOCUS),         CMD_FOCUS,       this);
+        settings   = new QuickButton(      Util.getIcon(ICO_SETTINGS),      CMD_SETTINGS,    this);
         
         pause.setEnabled(false);
         reset.setEnabled(false);
@@ -100,10 +101,10 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         slider = new ZoomSlider(pModel.getZoom());
         slider.addChangeListener(this);
         
-        mode = new DropDownButton(Util.getIcon("physics"), CMD_NEXT_MODE, this);
-        mode.addAction(LOCALIZER.getString("PHYSICS_MODE"), Util.getIcon("physics"), CMD_PHYSICS_MODE);
-        mode.addAction(LOCALIZER.getString("RECORDING_MODE"), Util.getIcon("record2"), CMD_RECORDING_MODE);
-        mode.addAction(LOCALIZER.getString("PLAYBACK_MODE"), Util.getIcon("playback"), CMD_PLAYBACK_MODE);
+        mode = new DropDownButton(Util.getIcon(ICO_PHYSICS), CMD_NEXT_MODE, this);
+        mode.addAction(LOCALIZER.getString(L_PHYSICS_MODE), Util.getIcon(ICO_PHYSICS), CMD_PHYSICS_MODE);
+        mode.addAction(LOCALIZER.getString(L_RECORDING_MODE), Util.getIcon(ICO_RECORD), CMD_RECORDING_MODE);
+        mode.addAction(LOCALIZER.getString(L_PLAYBACK_MODE), Util.getIcon(ICO_PLAYBACK), CMD_PLAYBACK_MODE);
         
         setToolTips();
         
@@ -136,30 +137,30 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     
     private void setToolTips()
     {
-        new_.setToolTipText(LOCALIZER.getString("TT_NEW"));
-        open.setToolTipText(LOCALIZER.getString("TT_OPEN"));
-        save.setToolTipText(LOCALIZER.getString("TT_SAVE"));
-        play.setToolTipText(LOCALIZER.getString("TT_PLAY"));
-        pause.setToolTipText(LOCALIZER.getString("TT_PAUSE"));
-        reset.setToolTipText(LOCALIZER.getString("TT_RESET"));
-        grid.setToolTipText(LOCALIZER.getString("TT_GRID"));
-        showArrows.setToolTipText(LOCALIZER.getString("TT_SHOW_ARROWS"));
-        focus.setToolTipText(LOCALIZER.getString("TT_FOCUS"));
-        slider.setToolTipText(LOCALIZER.getString("TT_ZOOM"));
-        settings.setToolTipText(LOCALIZER.getString("TT_SETTINGS"));
+        new_.setToolTipText(LOCALIZER.getString(TT_NEW));
+        open.setToolTipText(LOCALIZER.getString(TT_OPEN));
+        save.setToolTipText(LOCALIZER.getString(TT_SAVE));
+        play.setToolTipText(LOCALIZER.getString(TT_PLAY));
+        pause.setToolTipText(LOCALIZER.getString(TT_PAUSE));
+        reset.setToolTipText(LOCALIZER.getString(TT_RESET));
+        grid.setToolTipText(LOCALIZER.getString(TT_GRID));
+        showArrows.setToolTipText(LOCALIZER.getString(TT_SHOW_ARROWS));
+        focus.setToolTipText(LOCALIZER.getString(TT_FOCUS));
+        slider.setToolTipText(LOCALIZER.getString(TT_ZOOM));
+        settings.setToolTipText(LOCALIZER.getString(TT_SETTINGS));
         
         switch (pModel.getProperty(MODE))
         {
             case CMD_PHYSICS_MODE:
-                mode.setToolTipText(LOCALIZER.getString("PHYSICS_MODE"));
+                mode.setToolTipText(LOCALIZER.getString(L_PHYSICS_MODE));
                 break;
                 
             case CMD_RECORDING_MODE:
-                mode.setToolTipText(LOCALIZER.getString("RECORDING_MODE"));
+                mode.setToolTipText(LOCALIZER.getString(L_RECORDING_MODE));
                 break;
                 
             case CMD_PLAYBACK_MODE:
-                mode.setToolTipText(LOCALIZER.getString("PLAYBACK_MODE"));
+                mode.setToolTipText(LOCALIZER.getString(L_PLAYBACK_MODE));
                 break;
         }
     }
@@ -255,8 +256,16 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             case CMD_SETTINGS:
                 if (SettingsDialog.showDialog((Window) this.getTopLevelAncestor()))
                 {
-                    pModel.setProperty(LANGUAGE_CODE, Configuration.getInstance().getProperty(LANGUAGE_CODE));
-                    pModel.setState(DBLCLICK_SHOW_PROPERTIES, Configuration.getInstance().isState(DBLCLICK_SHOW_PROPERTIES));
+                    Configuration newConfig = Configuration.getInstance();
+                    if (!newConfig.getProperty(LANGUAGE_CODE).equals(pModel.getProperty(LANGUAGE_CODE)))
+                    {
+                        pModel.setProperty(LANGUAGE_CODE, newConfig.getProperty(LANGUAGE_CODE));
+                    }
+                    if (newConfig.isState(DBLCLICK_SHOW_PROPERTIES) != pModel.isState(DBLCLICK_SHOW_PROPERTIES))
+                    {
+                        pModel.setState(DBLCLICK_SHOW_PROPERTIES, newConfig.isState(DBLCLICK_SHOW_PROPERTIES));
+                    }
+                    LookAndFeelManager.updateControls(this.getTopLevelAncestor());
                 }
                 break;
         }
@@ -295,7 +304,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                     
                     if (pModel.getProperty(MODE).equals(CMD_PLAYBACK_MODE))
                     {
-                        System.out.println("wiedergabe");
                         player.start();
                     }
                     else
@@ -350,18 +358,18 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 switch (value)
                 {
                     case CMD_PHYSICS_MODE:
-                        mode.setIcon(Util.getIcon("physics"));
-                        mode.setToolTipText(LOCALIZER.getString("PHYSICS_MODE"));
+                        mode.setIcon(Util.getIcon(ICO_PHYSICS));
+                        mode.setToolTipText(LOCALIZER.getString(L_PHYSICS_MODE));
                         break;
                         
                     case CMD_RECORDING_MODE:
-                        mode.setIcon(Util.getIcon("record2"));
-                        mode.setToolTipText(LOCALIZER.getString("RECORDING_MODE"));
+                        mode.setIcon(Util.getIcon(ICO_RECORD));
+                        mode.setToolTipText(LOCALIZER.getString(L_RECORDING_MODE));
                         break;
                         
                     case CMD_PLAYBACK_MODE:
-                        mode.setIcon(Util.getIcon("playback"));
-                        mode.setToolTipText(LOCALIZER.getString("PLAYBACK_MODE"));
+                        mode.setIcon(Util.getIcon(ICO_PLAYBACK));
+                        mode.setToolTipText(LOCALIZER.getString(L_PLAYBACK_MODE));
                         break;
                 }
                 break;
@@ -391,16 +399,16 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             stdSceneDir.mkdir();
         }
         
-        UIManager.put("FileChooser.cancelButtonText", LOCALIZER.getString("CANCEL"));
-        UIManager.put("FileChooser.cancelButtonToolTipText", LOCALIZER.getString("CANCEL"));
-        UIManager.put("FileChooser.saveButtonText", LOCALIZER.getString("SAVE"));
-        UIManager.put("FileChooser.saveButtonToolTipText", LOCALIZER.getString("SAVE"));
+        UIManager.put("FileChooser.cancelButtonText", LOCALIZER.getString(L_CANCEL));
+        UIManager.put("FileChooser.cancelButtonToolTipText", LOCALIZER.getString(L_CANCEL));
+        UIManager.put("FileChooser.saveButtonText", LOCALIZER.getString(L_SAVE));
+        UIManager.put("FileChooser.saveButtonToolTipText", LOCALIZER.getString(L_SAVE));
         
         JFileChooser dlgSave = new JFileChooser("scene");
         dlgSave.setCurrentDirectory(stdSceneDir);
         dlgSave.setSelectedFile(new File("scene.scnx"));
         dlgSave.setFileFilter(SCENE_FILTER);
-        dlgSave.setDialogTitle(LOCALIZER.getString("TITLE_SAVE"));
+        dlgSave.setDialogTitle(LOCALIZER.getString(L_TITLE_SAVE));
         
         if (dlgSave.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
         {
@@ -432,8 +440,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                     writer.writeStartElement("Square");
                 }
                 
-//            writer.writeAttribute("id", "" + object.getId()); // not possible to set, if a file is loaded
                 writer.writeAttribute("name", ((ISelectable) object).getName());
+                writer.writeAttribute("color", "" + ((IDrawable) object).getColor().getRGB());
                 writer.writeAttribute("material", "" + object.surface);
                 writer.writeAttribute("x", "" + object.getPosition().getX());
                 writer.writeAttribute("y", "" + object.getPosition().getY());
@@ -441,6 +449,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 writer.writeAttribute("vy", "" + object.velocity.getY());
                 writer.writeAttribute("mass", "" + object.getMass());
                 writer.writeAttribute("radius", "" + object.getRadius());
+                writer.writeAttribute("rotation", "" + object.world_position.rotation.getAngle());
                 writer.writeAttribute("pinned", object.isPinned ? "true" : "false");
                 
                 writer.writeEndElement();
@@ -461,16 +470,16 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
             stdSceneDir.mkdir();
         }
         
-        UIManager.put("FileChooser.cancelButtonText", LOCALIZER.getString("CANCEL"));
-        UIManager.put("FileChooser.cancelButtonToolTipText", LOCALIZER.getString("CANCEL"));
-        UIManager.put("FileChooser.openButtonText", LOCALIZER.getString("OPEN"));
-        UIManager.put("FileChooser.openButtonToolTipText", LOCALIZER.getString("OPEN"));
+        UIManager.put("FileChooser.cancelButtonText", LOCALIZER.getString(L_CANCEL));
+        UIManager.put("FileChooser.cancelButtonToolTipText", LOCALIZER.getString(L_CANCEL));
+        UIManager.put("FileChooser.openButtonText", LOCALIZER.getString(L_OPEN));
+        UIManager.put("FileChooser.openButtonToolTipText", LOCALIZER.getString(L_OPEN));
         
         JFileChooser dlgOpen = new JFileChooser("scene");
         dlgOpen.setCurrentDirectory(stdSceneDir);
         dlgOpen.setSelectedFile(new File("scene.scnx"));
         dlgOpen.setFileFilter(SCENE_FILTER);
-        dlgOpen.setDialogTitle(LOCALIZER.getString("TITLE_OPEN"));
+        dlgOpen.setDialogTitle(LOCALIZER.getString(L_TITLE_OPEN));
         
         if (dlgOpen.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
         {
@@ -484,10 +493,10 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 
                 if (!FILE_VERSION.equals(version))
                 {
-                    String[] options = new String[] { LOCALIZER.getString("OK"), LOCALIZER.getString("CANCEL") };
+                    String[] options = new String[] { LOCALIZER.getString(L_OK), LOCALIZER.getString(L_CANCEL) };
                     
                     if (JOptionPane.showOptionDialog(this.getTopLevelAncestor(), 
-                            LOCALIZER.getString("WRONG_VERSION"), LOCALIZER.getString("TITLE_IMPORT"),
+                            LOCALIZER.getString(L_WRONG_VERSION), LOCALIZER.getString(L_TITLE_IMPORT),
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0])
                             != 0)
                     {
@@ -524,8 +533,10 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                     }
                     
                     ((ISelectable) object).setName(obj.getAttribute("name"));
+                    ((IDrawable) object).setColor(new Color(getInt(obj.getAttribute("color"))));
                     object.setMass(getDouble(obj.getAttribute("mass")));
                     object.velocity = new Vector(getDouble(obj.getAttribute("vx")), getDouble(obj.getAttribute("vy")));
+                    object.world_position.rotation = new Rotation(getDouble(obj.getAttribute("rotation")));
                     
                     String strMat = obj.getAttribute("material");
                     for (Material mat : Material.values())
