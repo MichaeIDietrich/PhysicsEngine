@@ -183,14 +183,14 @@ public class Grid
         if (0 < collisionPairs.size())
         {
             int index = 0;
-            Double colltime = getCollTime(index);
+            Double colltime = getCollTime(collisionPairs.get(index));
             collisionPairs.get(index).coll_time = colltime;
             int i = 1;
             while (i < collisionPairs.size())
             {
                 if (colltime == null)
                 {
-                    colltime = getCollTime(i);
+                    colltime = getCollTime(collisionPairs.get(i));
                     collisionPairs.remove(index);
                     index = i - 1;
                     collisionPairs.get(index).coll_time = colltime;
@@ -198,23 +198,20 @@ public class Grid
                 }
                 
                 CollPair collPair = collisionPairs.get(i);
-                if (collPair.min_time <= colltime && colltime <= collPair.max_time)
+                if (collPair.min_time <= colltime && collPair.coll_time == null)
                 {
-                    if (collPair.coll_time == null)
+                    Double colltime_i = getCollTime(collPair);
+                    if (colltime_i == null)
                     {
-                        Double colltime_i = getCollTime(i);
-                        if (colltime_i == null)
-                        {
-                            collisionPairs.remove(i);
-                            continue;
-                        }
-                        collPair.coll_time = colltime_i;
+                        collisionPairs.remove(i);
+                        continue;
                     }
-                    if (collPair.coll_time < colltime)
-                    {
-                        index = i;
-                        colltime = collPair.coll_time;
-                    }
+                    collPair.coll_time = colltime_i;
+                }
+                if (collPair.coll_time != null && collPair.coll_time < colltime)
+                {
+                    index = i;
+                    colltime = collPair.coll_time;
                 }
                 i++;
             }
@@ -229,9 +226,8 @@ public class Grid
         return null;
     }
     
-    private Double getCollTime(int index)
+    private Double getCollTime(CollPair collPair)
     {
-        CollPair collPair = collisionPairs.get(index);
         return CollisionTimer.getCollTime(collPair.obj1, collPair.obj2, collPair.min_time, collPair.max_time);
     }
     
