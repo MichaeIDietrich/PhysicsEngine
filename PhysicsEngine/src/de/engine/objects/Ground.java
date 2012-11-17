@@ -68,7 +68,7 @@ public class Ground //extends ObjectProperties
         // stairs 
         int stairs = 12;
         
-        return -0.3*i - (9*i*i + stairs*i*i*i - i)/(i-150*i*i + 200) + 50 + 4d*Math.sin(0.04*i) + this.watermark;
+        return -0.3*i - (9*i*i + stairs*i*i*i - i)/(i-150d*i*i + 200d) + 50d + 4d*Math.sin(0.04*i) + this.watermark;
     }
     
     
