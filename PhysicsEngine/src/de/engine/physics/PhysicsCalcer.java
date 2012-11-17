@@ -82,8 +82,8 @@ public class PhysicsCalcer
         
         Vector r_o1 = Util.minus(coll_point, o1.getPosition(collTime));
         Vector r_o2 = Util.minus(coll_point, o2.getPosition(collTime));
-        Vector v_o1 = new Vector(-1 * o1.angular_velocity * r_o1.getX(), o1.angular_velocity * r_o1.getY()).add(o1.velocity);
-        Vector v_o2 = new Vector(-1 * o2.angular_velocity * r_o2.getX(), o2.angular_velocity * r_o2.getY()).add(o2.velocity);
+        Vector v_o1 = new Vector(o1.angular_velocity * r_o1.getX(), o1.angular_velocity * r_o1.getY()).add(o1.velocity);
+        Vector v_o2 = new Vector(o2.angular_velocity * r_o2.getX(), o2.angular_velocity * r_o2.getY()).add(o2.velocity);
 
         double r_o1_cross_n = Util.crossProduct(r_o1, coll_normal);
         double r_o2_cross_n = Util.crossProduct(r_o2, coll_normal);
