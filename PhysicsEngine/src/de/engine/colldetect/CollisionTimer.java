@@ -2,7 +2,6 @@ package de.engine.colldetect;
 
 import java.util.HashMap;
 
-import de.engine.environment.EnvProps;
 import de.engine.math.Util;
 import de.engine.math.Vector;
 import de.engine.objects.Circle;
@@ -16,23 +15,24 @@ public class CollisionTimer
     {
         if (o1 instanceof Circle && o2 instanceof Circle)
         {
-            return getCirclesCollTime((Circle) o1, (Circle) o2);
+            return getCirclesCollTime((Circle) o1, (Circle) o2, begin, end);
         }
         else
         {
             return getCirclePolygonsCollTime(o2, o1, begin, end);
         }
-        // return -1;
     }
     
-    public static Double getCirclesCollTime(Circle o1, Circle o2)
+    public static Double getCirclesCollTime(Circle o1, Circle o2, double begin, double end)
     {
-        double start_time = (o1.frametime > o2.frametime) ? o1.frametime : o2.frametime;
-        double distance = Util.minus(o1.getPosition(start_time), o2.getPosition(start_time)).getLength();
+        //double start_time = (o1.frametime > o2.frametime) ? o1.frametime : o2.frametime;
+        double distance = Util.minus(o1.getPosition(begin), o2.getPosition(begin)).getLength();
         double min_distance = o1.getRadius() + o2.getRadius();
         double velocity = Util.minus(o1.velocity, o2.velocity).getLength();
-        double coll_time = (distance - min_distance) / velocity;
-        if ((min_distance + 2) < Util.minus(o1.getPosition(coll_time), o2.getPosition(coll_time)).getLength() || coll_time > EnvProps.deltaTime())
+        double coll_time = ((distance - min_distance) / velocity) + begin;
+        //double after_distance = Util.minus(o1.getPosition(coll_time), o2.getPosition(coll_time)).getLength();
+        //TODO: (distance - 0.01) not beautiful
+        if (coll_time > end || coll_time < begin || (distance - 0.01) < Util.minus(o1.getPosition(coll_time), o2.getPosition(coll_time)).getLength())
             return null;
         else
             return coll_time;
