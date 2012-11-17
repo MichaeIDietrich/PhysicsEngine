@@ -87,26 +87,18 @@ public class PhysicsCalcer
 
         double r_o1_cross_n = Util.crossProduct(r_o1, coll_normal);
         double r_o2_cross_n = Util.crossProduct(r_o2, coll_normal);
-        
-        double j_z;
+
+        Vector v_rel = Util.minus(v_o1, v_o2);
+        double j_z = Util.scalarProduct(v_rel, coll_normal) *  -(1 + (o1.surface.elasticity() + o2.surface.elasticity()) / 2);
         double j_n;
         
         if(o1.isPinned)
-        {
-            j_z = Util.scalarProduct(v_o2, coll_normal) *  -(1 + (o1.surface.elasticity() + o2.surface.elasticity()) / 2);
             j_n = (1 / o2.getMass()) + (r_o2_cross_n * r_o2_cross_n) / o2.moment_of_inertia;
-        }
         else if(o2.isPinned)
-        {
-            j_z = Util.scalarProduct(v_o1, coll_normal) *  -(1 + (o1.surface.elasticity() + o2.surface.elasticity()) / 2);
             j_n = (1 / o1.getMass()) + (r_o1_cross_n * r_o1_cross_n) / o1.moment_of_inertia;
-        }
         else
-        {
-            Vector v_rel = Util.minus(v_o1, v_o2);
-            j_z = Util.scalarProduct(v_rel, coll_normal) *  -(1 + (o1.surface.elasticity() + o2.surface.elasticity()) / 2);
             j_n = (1 / o1.getMass()) + (1 / o2.getMass()) + (r_o1_cross_n * r_o1_cross_n) / o1.moment_of_inertia + (r_o2_cross_n * r_o2_cross_n) / o2.moment_of_inertia;
-        }
+        
         double j = j_z / j_n;
         
         Vector j_normal = Util.scale(coll_normal, j);
