@@ -96,6 +96,7 @@ public class Polygon extends ObjectProperties implements Cloneable {
         newPolygon.velocity = this.velocity.clone();
         newPolygon.id = this.id;
         newPolygon.surface = this.surface;
+        newPolygon.isPinned = this.isPinned;
     }
     
     
