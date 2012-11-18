@@ -18,6 +18,9 @@ public class Util
     private static double diff_y = 0;
     private static double alpha = 0;
     private static boolean set_slope = false;
+    // has to be set before using Newton Iteration
+    public static ObjectProperties object;
+    public static Ground ground;
     
     public static double distance(Vector p1, Vector p2)
     {
@@ -62,45 +65,22 @@ public class Util
     }
     
     
-    public static Double newtonIteration(ObjectProperties object, Ground ground)
+    public static Double newtonIteration()
     {
         // If the object has no velocity in x direction, return the objects x-coordinate.
         if (object.velocity.getX() == 0)
             return object.getPosition().getX();
         
-        if (!set_slope) 
-        {
-            // m = slope, n = shift in y, linear function
-            m = object.velocity.getY() / object.velocity.getX();
-            n = object.getPosition().getY();
-        }
-        
-        if (m<=0.15 && m>=-0.15) 
-        {
-            double oldm = m;
-            
-            set_slope = true;
-            
-            m = 0.2;
-            n = object.getPosition().getY();
-            double i1 = newtonIteration(object, ground);
-            
-            m = -0.2;
-            n = object.getPosition().getY();
-            double i2 = newtonIteration(object, ground);
-            
-            set_slope = false;
-            System.out.println( i1 + " | " + i2);
-            
-            return (i1+i2)/2d;
-        } 
+        // m = slope, n = shift in y, linear function
+        m = object.velocity.getY() / object.velocity.getX();
+        n = object.getPosition().getY();
         
         // for calculating a pair of tangents right and left beside the main vector of the sphere
         alpha = Math.atan( m );
         
-        Double xn  = object.getPosition().getX();
+        Double xn = object.getPosition().getX();
         Double new_distance = Double.MAX_VALUE;
-        Double old_distance = 0d;
+        Double old_distance = Double.MAX_VALUE;
         Double result       = 0d;
         
         radius[0] = -object.getRadius();
@@ -116,11 +96,11 @@ public class Util
             
             for (int i = 0; i < 6; i++)
             {
-                xn = xn - getFunctionsValue(xn, object, ground) / derive1D(xn, object, ground);
+                xn = xn - newFkt(xn) / derive1D(xn);
             }
             
             int y = (int) ground.function(xn);
-            new_distance = Math.sqrt( Math.pow(xn - object.getPosition().getX(), 2d) + Math.pow(y - object.getPosition().getY(), 2d) );
+            new_distance = Math.pow(xn - object.getPosition().getX(), 2d) + Math.pow(y - object.getPosition().getY(), 2d);
             
             // returns the intersection coordinate with the shortest distance between circle an ground
             if (new_distance < old_distance)
@@ -137,50 +117,30 @@ public class Util
      * @param ground
      * @return
      */
-    public static Double derive1D(Double x, ObjectProperties object, Ground ground)
+    public static Double derive1D( Double x )
     {
-       
-        // df(x) = ( f(x-h) - f(x-h) ) * 2/h
-        if (object.velocity.getY()<0) 
-        {
-            return  (getFunctionsValue(x + h, object, ground) - getFunctionsValue(x - h, object, ground)) * 2d / h;
-        } 
-        else 
-        {
-            return -(getFunctionsValue(x + h, object, ground) - getFunctionsValue(x - h, object, ground)) * 2d / h;
-        }
+        // df(x) = ( f(x-h) - f(x-h) ) / 2h
+        return  (newFkt( x+h ) - newFkt( x-h )) / ( h+h );
     }
     
-    /**
-     * Calculates the 2nd derivation of the function given in <i>getFunctionsValue</i>.
-     * 
-     * @param x - determines the point of which the derivation is wanted
-     * @param object -
-     * @param ground
-     * @return
-     */
-    public static Double derive2D(Double x, ObjectProperties object, Ground ground)
+    public static Double newFkt(Double x)
     {
-       
-        // df(x) = ( f(x-h) - 2f(x) + f(x-h) ) / h²
-        if (object.velocity.getY()<0) 
-        {
-            return  (getFunctionsValue(x + h, object, ground) - 2d*getFunctionsValue( x, object, ground ) + getFunctionsValue(x - h, object, ground)) / h*h;
-        } 
-        else 
-        {
-            return -(getFunctionsValue(x + h, object, ground) - 2d*getFunctionsValue( x, object, ground ) + getFunctionsValue(x - h, object, ground)) / h*h;
-        }
+        Vector function = functions(x);
+        return function.get(1) - function.get(0);
     }
     
-    public static Double getFunctionsValue(Double x, ObjectProperties object, Ground ground)
+    public static Vector functions(Double x)
     {
         function.set(0, m * (x - object.getPosition().getX() -diff_x) +n +diff_y );
         function.set(1, ground.function(x) );
-        
-        return function.get(1) - function.get(0);
+
+        return function;
     }
 
+    
+    
+    
+    
     // ************************************************************
 
     /**

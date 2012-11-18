@@ -67,7 +67,9 @@ public class CollisionDetector
             if (scene.getCount() > 0 && object != null && scene.getGround() != null)
             {
                 Ground ground = scene.getGround();
-                Double xn = Util.newtonIteration(object, ground);
+                Util.ground = ground;
+                Util.object = object;
+                Double xn = Util.newtonIteration();
                 
                 object.last_intersection.setX(xn);
                 object.last_intersection.setY(ground.function(xn.intValue()));
@@ -77,6 +79,8 @@ public class CollisionDetector
                 
                 // calc distance by pythagoras
                 int c = (int) Math.sqrt(Math.pow(x - object.getPosition().getX(), 2d) + Math.pow(y - object.getPosition().getY(), 2d));
+                
+                System.out.println( 180 * Util.getAngle( object.velocity, new Vector(xn, Util.newFkt(xn))) / Math.PI );
                 
                 if (c < object.getRadius())
                 {
