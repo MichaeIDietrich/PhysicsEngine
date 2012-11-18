@@ -26,7 +26,7 @@ public final class AboutDialog extends JDialog implements ActionListener
         
         this.setTitle(LOCALIZER.getString(L_ABOUT));
         
-        JLabel label = new JLabel(Util.getIcon(ICO_MAIN_256));
+        JLabel label = new JLabel(GuiUtil.getIcon(ICO_MAIN_256));
         label.setBorder(new EmptyBorder(5, 5, 5, 10));
         label.setText(String.format(LOCALIZER.getString(L_ABOUT_TEXT), MAJOR, MINOR, REVISION));
         
