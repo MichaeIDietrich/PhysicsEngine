@@ -160,6 +160,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
 
     @Override
     public void objectAdded(ObjectProperties object) {}
+    
     @Override
     public void objectRemoved(ObjectProperties object) {}
 
@@ -402,6 +403,18 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         {
             s = " kJ";
             d = d/1000;
+            
+            if (Math.abs(d) > 1000)
+            {
+                s = " MJ";
+                d = d/1000;
+                
+                if (Math.abs(d) > 1000)
+                {
+                    s = " GJ";
+                    d = d/1000;
+                }
+            }
         }
         else
         {
