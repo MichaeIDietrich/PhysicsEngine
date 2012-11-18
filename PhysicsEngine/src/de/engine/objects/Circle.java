@@ -28,6 +28,7 @@ public class Circle extends ObjectProperties implements Cloneable
     public void clone(Circle newCircle)
     {
         // TODO - add all properties, that need to be copied
+        newCircle.world_position.rotation.setAngle(this.world_position.rotation.getAngle());
         newCircle.setMass(getMass());
         newCircle.velocity = this.velocity.clone();
         newCircle.id = this.id;
