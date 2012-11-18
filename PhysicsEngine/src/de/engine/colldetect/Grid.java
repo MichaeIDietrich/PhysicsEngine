@@ -307,6 +307,8 @@ public class Grid
     
     private void insertCollPair(Element e1, Element e2)
     {
+        if(e1.obj.isPinned && e2.obj.isPinned)
+            return;
         if (e1.min_time < e2.max_time && e2.min_time < e1.max_time)
         {
             for (CollPair collPair : collisionPairs)
