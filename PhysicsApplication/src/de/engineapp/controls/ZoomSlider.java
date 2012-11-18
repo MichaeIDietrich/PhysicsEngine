@@ -19,8 +19,8 @@ public class ZoomSlider extends JPanel
 {
     private static final long serialVersionUID = -8005150860316824860L;
     
-    private static boolean isGTK = Configuration.getInstance().getProperty(LOOK_AND_FEEL).equals("GTK+");
-    private static boolean isNimbus = Configuration.getInstance().getProperty(LOOK_AND_FEEL).equals("Nimbus");
+    private static boolean isGTK = Configuration.getInstance().getProperty(PRP_LOOK_AND_FEEL).equals("GTK+");
+    private static boolean isNimbus = Configuration.getInstance().getProperty(PRP_LOOK_AND_FEEL).equals("Nimbus");
     
     
     private JSlider slider = null;

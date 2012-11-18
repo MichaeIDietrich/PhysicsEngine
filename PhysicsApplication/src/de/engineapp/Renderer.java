@@ -1,6 +1,6 @@
 package de.engineapp;
 
-import static de.engineapp.Constants.GRID;
+import static de.engineapp.Constants.STG_GRID;
 
 import java.awt.*;
 import java.util.*;
@@ -46,7 +46,7 @@ public final class Renderer extends AsyncWorker implements PaintListener, Storag
             singleThreaded = false;
         }
         
-        if (pModel.isState(GRID))
+        if (pModel.isState(STG_GRID))
         {
             grid = new Grid(pModel);
         }
@@ -184,7 +184,7 @@ public final class Renderer extends AsyncWorker implements PaintListener, Storag
         System.out.println(id + ": " + value);
         switch (id)
         {
-            case GRID:
+            case STG_GRID:
                 if (value)
                 {
                     grid = new Grid(pModel);

@@ -72,11 +72,11 @@ public class ObjectToolBar extends JToolBar implements MouseListener, StorageLis
                 ground.setSelected(false);
                 if (circle.isSelected())
                 {
-                    pModel.setProperty(OBJECT_MODE, OBJ_CIRCLE);
+                    pModel.setProperty(PRP_OBJECT_MODE, OBJ_CIRCLE);
                 }
                 else
                 {
-                    pModel.setProperty(OBJECT_MODE, null);
+                    pModel.setProperty(PRP_OBJECT_MODE, null);
                 }
             }
             else if (e.getComponent().equals(square))
@@ -85,11 +85,11 @@ public class ObjectToolBar extends JToolBar implements MouseListener, StorageLis
                 ground.setSelected(false);
                 if (square.isSelected())
                 {
-                    pModel.setProperty(OBJECT_MODE, OBJ_SQUARE);
+                    pModel.setProperty(PRP_OBJECT_MODE, OBJ_SQUARE);
                 }
                 else
                 {
-                    pModel.setProperty(OBJECT_MODE, null);
+                    pModel.setProperty(PRP_OBJECT_MODE, null);
                 }
             }
             else if (e.getComponent().equals(ground))
@@ -98,11 +98,11 @@ public class ObjectToolBar extends JToolBar implements MouseListener, StorageLis
                 square.setSelected(false);
                 if (ground.isSelected())
                 {
-                    pModel.setProperty(OBJECT_MODE, OBJ_GROUND);
+                    pModel.setProperty(PRP_OBJECT_MODE, OBJ_GROUND);
                 }
                 else
                 {
-                    pModel.setProperty(OBJECT_MODE, null);
+                    pModel.setProperty(PRP_OBJECT_MODE, null);
                 }
             }
         }
@@ -127,7 +127,7 @@ public class ObjectToolBar extends JToolBar implements MouseListener, StorageLis
     @Override
     public void propertyChanged(String id, String value)
     {
-        if (id.equals(LANGUAGE_CODE))
+        if (id.equals(PRP_LANGUAGE_CODE))
         {
             setToolTips();
         }

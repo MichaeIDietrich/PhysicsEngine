@@ -56,20 +56,22 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     
     private PresentationModel pModel;
     
-    private QuickButton new_;
-    private QuickButton open;
-    private QuickButton save;
-    private QuickButton play;
-    private QuickButton pause;
-    private QuickButton reset;
-    private QuickToggleButton grid;
-    private QuickToggleButton showArrows;
-    private QuickButton focus;
-    private QuickButton settings;
+    private QuickButton newButton;
+    private QuickButton openButton;
+    private QuickButton saveButton;
+    private QuickButton playButton;
+    private QuickButton pauseButton;
+    private QuickButton resetButton;
+    private QuickToggleButton showGridButton;
+    private QuickToggleButton showArrowsButton;
+    private QuickButton focusButton;
+    private QuickButton settingsButton;
+    private QuickButton helpButton;
+    private QuickButton aboutButton;
     
-    private ZoomSlider slider;
+    private ZoomSlider zoomSlider;
     
-    private DropDownButton mode;
+    private DropDownButton modeButton;
     
     private Playback player;
     
@@ -84,52 +86,56 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         pModel.addViewBoxListener(this);
         pModel.addStorageListener(this);
         
-        new_       = new QuickButton(      Util.getIcon(ICO_NEW),           CMD_NEW,         this);
-        open       = new QuickButton(      Util.getIcon(ICO_OPEN),          CMD_OPEN,        this);
-        save       = new QuickButton(      Util.getIcon(ICO_SAVE),          CMD_SAVE,        this);
-        play       = new QuickButton(      Util.getIcon(ICO_PLAY),          CMD_PLAY,        this);
-        pause      = new QuickButton(      Util.getIcon(ICO_PAUSE),         CMD_PAUSE,       this);
-        reset      = new QuickButton(      Util.getIcon(ICO_RESET),         CMD_RESET,       this);
-        grid       = new QuickToggleButton(Util.getIcon(ICO_GRID),          CMD_GRID,        this);
-        showArrows = new QuickToggleButton(Util.getIcon(ICO_OBJECT_ARROWS), CMD_SHOW_ARROWS, this);
-        focus      = new QuickButton(      Util.getIcon(ICO_FOCUS),         CMD_FOCUS,       this);
-        settings   = new QuickButton(      Util.getIcon(ICO_SETTINGS),      CMD_SETTINGS,    this);
+        newButton        = new QuickButton(      Util.getIcon(ICO_NEW),           CMD_NEW,         this);
+        openButton       = new QuickButton(      Util.getIcon(ICO_OPEN),          CMD_OPEN,        this);
+        saveButton       = new QuickButton(      Util.getIcon(ICO_SAVE),          CMD_SAVE,        this);
+        playButton       = new QuickButton(      Util.getIcon(ICO_PLAY),          CMD_PLAY,        this);
+        pauseButton      = new QuickButton(      Util.getIcon(ICO_PAUSE),         CMD_PAUSE,       this);
+        resetButton      = new QuickButton(      Util.getIcon(ICO_RESET),         CMD_RESET,       this);
+        showGridButton   = new QuickToggleButton(Util.getIcon(ICO_GRID),          CMD_GRID,        this);
+        showArrowsButton = new QuickToggleButton(Util.getIcon(ICO_OBJECT_ARROWS), CMD_SHOW_ARROWS, this);
+        focusButton      = new QuickButton(      Util.getIcon(ICO_FOCUS),         CMD_FOCUS,       this);
+        settingsButton   = new QuickButton(      Util.getIcon(ICO_SETTINGS),      CMD_SETTINGS,    this);
+        helpButton       = new QuickButton(      Util.getIcon(ICO_HELP),          CMD_HELP,        this);
+        aboutButton      = new QuickButton(      Util.getIcon(ICO_ABOUT),         CMD_ABOUT,       this);
         
-        pause.setEnabled(false);
-        reset.setEnabled(false);
+        pauseButton.setEnabled(false);
+        resetButton.setEnabled(false);
         
-        slider = new ZoomSlider(pModel.getZoom());
-        slider.addChangeListener(this);
+        zoomSlider = new ZoomSlider(pModel.getZoom());
+        zoomSlider.addChangeListener(this);
         
-        mode = new DropDownButton(Util.getIcon(ICO_PHYSICS), CMD_NEXT_MODE, this);
-        mode.addAction(LOCALIZER.getString(L_PHYSICS_MODE), Util.getIcon(ICO_PHYSICS), CMD_PHYSICS_MODE);
-        mode.addAction(LOCALIZER.getString(L_RECORDING_MODE), Util.getIcon(ICO_RECORD), CMD_RECORDING_MODE);
-        mode.addAction(LOCALIZER.getString(L_PLAYBACK_MODE), Util.getIcon(ICO_PLAYBACK), CMD_PLAYBACK_MODE);
+        modeButton = new DropDownButton(Util.getIcon(ICO_PHYSICS), CMD_NEXT_MODE, this);
+        modeButton.addAction(LOCALIZER.getString(L_PHYSICS_MODE),   Util.getIcon(ICO_PHYSICS),  CMD_PHYSICS_MODE);
+        modeButton.addAction(LOCALIZER.getString(L_RECORDING_MODE), Util.getIcon(ICO_RECORD),   CMD_RECORDING_MODE);
+        modeButton.addAction(LOCALIZER.getString(L_PLAYBACK_MODE),  Util.getIcon(ICO_PLAYBACK), CMD_PLAYBACK_MODE);
         
         setToolTips();
         
-        this.add(new_);
-        this.add(open);
-        this.add(save);
+        this.add(newButton);
+        this.add(openButton);
+        this.add(saveButton);
         this.addSeparator();
-        this.add(play);
-        this.add(pause);
-        this.add(reset);
+        this.add(playButton);
+        this.add(pauseButton);
+        this.add(resetButton);
         this.addSeparator();
-        this.add(grid);
-        this.add(showArrows);
+        this.add(showGridButton);
+        this.add(showArrowsButton);
         this.addSeparator();
-        this.add(focus);
+        this.add(focusButton);
         this.addSeparator();
-        this.add(slider);
+        this.add(zoomSlider);
         this.addSeparator();
-        this.add(mode);
+        this.add(modeButton);
         this.addSeparator();
-        this.add(settings);
+        this.add(settingsButton);
+        this.add(helpButton);
+        this.add(aboutButton);
         
-        slider.setValue(pModel.getZoom());
-        grid.setSelected(pModel.isState(GRID));
-        showArrows.setSelected(pModel.isState(SHOW_ARROWS_ALWAYS));
+        zoomSlider.setValue(pModel.getZoom());
+        showGridButton.setSelected(pModel.isState(STG_GRID));
+        showArrowsButton.setSelected(pModel.isState(STG_SHOW_ARROWS_ALWAYS));
         
         player = new Playback(pModel, 30);
     }
@@ -137,30 +143,32 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     
     private void setToolTips()
     {
-        new_.setToolTipText(LOCALIZER.getString(TT_NEW));
-        open.setToolTipText(LOCALIZER.getString(TT_OPEN));
-        save.setToolTipText(LOCALIZER.getString(TT_SAVE));
-        play.setToolTipText(LOCALIZER.getString(TT_PLAY));
-        pause.setToolTipText(LOCALIZER.getString(TT_PAUSE));
-        reset.setToolTipText(LOCALIZER.getString(TT_RESET));
-        grid.setToolTipText(LOCALIZER.getString(TT_GRID));
-        showArrows.setToolTipText(LOCALIZER.getString(TT_SHOW_ARROWS));
-        focus.setToolTipText(LOCALIZER.getString(TT_FOCUS));
-        slider.setToolTipText(LOCALIZER.getString(TT_ZOOM));
-        settings.setToolTipText(LOCALIZER.getString(TT_SETTINGS));
+        newButton.setToolTipText(       LOCALIZER.getString(TT_NEW));
+        openButton.setToolTipText(      LOCALIZER.getString(TT_OPEN));
+        saveButton.setToolTipText(      LOCALIZER.getString(TT_SAVE));
+        playButton.setToolTipText(      LOCALIZER.getString(TT_PLAY));
+        pauseButton.setToolTipText(     LOCALIZER.getString(TT_PAUSE));
+        resetButton.setToolTipText(     LOCALIZER.getString(TT_RESET));
+        showGridButton.setToolTipText(  LOCALIZER.getString(TT_GRID));
+        showArrowsButton.setToolTipText(LOCALIZER.getString(TT_SHOW_ARROWS));
+        focusButton.setToolTipText(     LOCALIZER.getString(TT_FOCUS));
+        zoomSlider.setToolTipText(      LOCALIZER.getString(TT_ZOOM));
+        settingsButton.setToolTipText(  LOCALIZER.getString(TT_SETTINGS));
+        helpButton.setToolTipText(      LOCALIZER.getString(TT_HELP));
+        aboutButton.setToolTipText(     LOCALIZER.getString(TT_ABOUT));
         
-        switch (pModel.getProperty(MODE))
+        switch (pModel.getProperty(PRP_MODE))
         {
             case CMD_PHYSICS_MODE:
-                mode.setToolTipText(LOCALIZER.getString(L_PHYSICS_MODE));
+                modeButton.setToolTipText(LOCALIZER.getString(L_PHYSICS_MODE));
                 break;
                 
             case CMD_RECORDING_MODE:
-                mode.setToolTipText(LOCALIZER.getString(L_RECORDING_MODE));
+                modeButton.setToolTipText(LOCALIZER.getString(L_RECORDING_MODE));
                 break;
                 
             case CMD_PLAYBACK_MODE:
-                mode.setToolTipText(LOCALIZER.getString(L_PLAYBACK_MODE));
+                modeButton.setToolTipText(LOCALIZER.getString(L_PLAYBACK_MODE));
                 break;
         }
     }
@@ -180,9 +188,9 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 
             case CMD_OPEN:
                 loadScene();
-                if (pModel.isState(SHOW_ARROWS_ALWAYS))
+                if (pModel.isState(STG_SHOW_ARROWS_ALWAYS))
                 {
-                    pModel.setState(SHOW_ARROWS_ALWAYS, true);
+                    pModel.setState(STG_SHOW_ARROWS_ALWAYS, true);
                 }
                 break;
                 
@@ -191,31 +199,31 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 break;
                 
             case CMD_PLAY:
-                pModel.setState(RUN_PHYSICS, true);
+                pModel.setState(STG_RUN_PHYSICS, true);
                 break;
                 
             case CMD_PAUSE:
-                pModel.setState(RUN_PHYSICS, false);
+                pModel.setState(STG_RUN_PHYSICS, false);
                 break;
                 
             case CMD_RESET:
                 pModel.restoreScene();
-                reset.setEnabled(false);
-                if (pModel.isState(SHOW_ARROWS_ALWAYS))
+                resetButton.setEnabled(false);
+                if (pModel.isState(STG_SHOW_ARROWS_ALWAYS))
                 {
-                    pModel.setState(SHOW_ARROWS_ALWAYS, true);
+                    pModel.setState(STG_SHOW_ARROWS_ALWAYS, true);
                 }
                 pModel.fireRepaint();
                 break;
                 
             case CMD_GRID:
-                pModel.toggleState(GRID);
+                pModel.toggleState(STG_GRID);
                 pModel.fireRepaint();
                 break;
                 
             case CMD_SHOW_ARROWS:
-                pModel.toggleState(SHOW_ARROWS_ALWAYS);
-                showArrows.setSelected(pModel.isState(SHOW_ARROWS_ALWAYS));
+                pModel.toggleState(STG_SHOW_ARROWS_ALWAYS);
+                showArrowsButton.setSelected(pModel.isState(STG_SHOW_ARROWS_ALWAYS));
                 break;
                 
             case CMD_FOCUS:
@@ -224,49 +232,57 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 break;
                 
             case CMD_NEXT_MODE:
-                switch (pModel.getProperty(MODE))
+                switch (pModel.getProperty(PRP_MODE))
                 {
                     case CMD_PHYSICS_MODE:
-                        pModel.setProperty(MODE, CMD_RECORDING_MODE);
+                        pModel.setProperty(PRP_MODE, CMD_RECORDING_MODE);
                         break;
                         
                     case CMD_RECORDING_MODE:
-                        pModel.setProperty(MODE, CMD_PLAYBACK_MODE);
+                        pModel.setProperty(PRP_MODE, CMD_PLAYBACK_MODE);
                         break;
                         
                     case CMD_PLAYBACK_MODE:
-                        pModel.setProperty(MODE, CMD_PHYSICS_MODE);
+                        pModel.setProperty(PRP_MODE, CMD_PHYSICS_MODE);
                         break;
                         
                 }
                 break;
                 
             case CMD_PHYSICS_MODE:
-                pModel.setProperty(MODE, CMD_PHYSICS_MODE);
+                pModel.setProperty(PRP_MODE, CMD_PHYSICS_MODE);
                 break;
                 
             case CMD_RECORDING_MODE:
-                pModel.setProperty(MODE, CMD_RECORDING_MODE);
+                pModel.setProperty(PRP_MODE, CMD_RECORDING_MODE);
                 break;
                 
             case CMD_PLAYBACK_MODE:
-                pModel.setProperty(MODE, CMD_PLAYBACK_MODE);
+                pModel.setProperty(PRP_MODE, CMD_PLAYBACK_MODE);
                 break;
                 
             case CMD_SETTINGS:
                 if (SettingsDialog.showDialog((Window) this.getTopLevelAncestor()))
                 {
                     Configuration newConfig = Configuration.getInstance();
-                    if (!newConfig.getProperty(LANGUAGE_CODE).equals(pModel.getProperty(LANGUAGE_CODE)))
+                    if (!newConfig.getProperty(PRP_LANGUAGE_CODE).equals(pModel.getProperty(PRP_LANGUAGE_CODE)))
                     {
-                        pModel.setProperty(LANGUAGE_CODE, newConfig.getProperty(LANGUAGE_CODE));
+                        pModel.setProperty(PRP_LANGUAGE_CODE, newConfig.getProperty(PRP_LANGUAGE_CODE));
                     }
-                    if (newConfig.isState(DBLCLICK_SHOW_PROPERTIES) != pModel.isState(DBLCLICK_SHOW_PROPERTIES))
+                    if (newConfig.isState(STG_DBLCLICK_SHOW_PROPERTIES) != pModel.isState(STG_DBLCLICK_SHOW_PROPERTIES))
                     {
-                        pModel.setState(DBLCLICK_SHOW_PROPERTIES, newConfig.isState(DBLCLICK_SHOW_PROPERTIES));
+                        pModel.setState(STG_DBLCLICK_SHOW_PROPERTIES, newConfig.isState(STG_DBLCLICK_SHOW_PROPERTIES));
                     }
                     LookAndFeelManager.updateControls(this.getTopLevelAncestor());
                 }
+                break;
+                
+            case CMD_HELP:
+                
+                break;
+                
+            case CMD_ABOUT:
+                new AboutDialog((Window) this.getTopLevelAncestor());
                 break;
         }
     }
@@ -275,7 +291,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     @Override
     public void stateChanged(ChangeEvent e)
     {
-        pModel.setZoom(slider.getValue(), new Point(pModel.getCanvasWidth() / 2, pModel.getCanvasHeight() / 2));
+        pModel.setZoom(zoomSlider.getValue(), new Point(pModel.getCanvasWidth() / 2, pModel.getCanvasHeight() / 2));
         pModel.fireRepaint();
     }
     
@@ -285,24 +301,24 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     {
         switch (id)
         {
-            case RUN_PHYSICS:
+            case STG_RUN_PHYSICS:
                 if (value)
                 {
-                    new_.setEnabled(false);
-                    open.setEnabled(false);
-                    save.setEnabled(false);
+                    newButton.setEnabled(false);
+                    openButton.setEnabled(false);
+                    saveButton.setEnabled(false);
                     
-                    play.setEnabled( false );
-                    pause.setEnabled( true );
+                    playButton.setEnabled( false );
+                    pauseButton.setEnabled( true );
                     
-                    reset.setEnabled(false);
+                    resetButton.setEnabled(false);
                     
-                    mode.setEnabled(false);
+                    modeButton.setEnabled(false);
                     
                     // store scene copy, to enable reset function
                     pModel.storeScene();
                     
-                    if (pModel.getProperty(MODE).equals(CMD_PLAYBACK_MODE))
+                    if (pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
                     {
                         player.start();
                     }
@@ -313,21 +329,21 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 }
                 else
                 {
-                    new_.setEnabled(true);
-                    open.setEnabled(true);
-                    save.setEnabled(true);
+                    newButton.setEnabled(true);
+                    openButton.setEnabled(true);
+                    saveButton.setEnabled(true);
                     
-                    pause.setEnabled( false );
-                    play.setEnabled(   true );
+                    pauseButton.setEnabled( false );
+                    playButton.setEnabled(   true );
                     
-                    mode.setEnabled(true);
+                    modeButton.setEnabled(true);
                     
                     if (pModel.hasStoredScene())
                     {
-                        reset.setEnabled(true);
+                        resetButton.setEnabled(true);
                     }
                     
-                    if (pModel.getProperty(MODE).equals(CMD_PLAYBACK_MODE))
+                    if (pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
                     {
                         player.pause();
                     }
@@ -339,8 +355,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 
                 break;
                 
-            case GRID:
-                grid.setSelected(value);
+            case STG_GRID:
+                showGridButton.setSelected(value);
                 break;
         }
     }
@@ -350,26 +366,26 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     {
         switch (id)
         {
-            case LANGUAGE_CODE:
+            case PRP_LANGUAGE_CODE:
                 setToolTips();
                 break;
                 
-            case MODE:
+            case PRP_MODE:
                 switch (value)
                 {
                     case CMD_PHYSICS_MODE:
-                        mode.setIcon(Util.getIcon(ICO_PHYSICS));
-                        mode.setToolTipText(LOCALIZER.getString(L_PHYSICS_MODE));
+                        modeButton.setIcon(Util.getIcon(ICO_PHYSICS));
+                        modeButton.setToolTipText(LOCALIZER.getString(L_PHYSICS_MODE));
                         break;
                         
                     case CMD_RECORDING_MODE:
-                        mode.setIcon(Util.getIcon(ICO_RECORD));
-                        mode.setToolTipText(LOCALIZER.getString(L_RECORDING_MODE));
+                        modeButton.setIcon(Util.getIcon(ICO_RECORD));
+                        modeButton.setToolTipText(LOCALIZER.getString(L_RECORDING_MODE));
                         break;
                         
                     case CMD_PLAYBACK_MODE:
-                        mode.setIcon(Util.getIcon(ICO_PLAYBACK));
-                        mode.setToolTipText(LOCALIZER.getString(L_PLAYBACK_MODE));
+                        modeButton.setIcon(Util.getIcon(ICO_PLAYBACK));
+                        modeButton.setToolTipText(LOCALIZER.getString(L_PLAYBACK_MODE));
                         break;
                 }
                 break;
@@ -386,7 +402,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     @Override
     public void zoomChanged(double zoom)
     {
-        slider.setValue(pModel.getZoom());
+        zoomSlider.setValue(pModel.getZoom());
     }
     
     
@@ -554,7 +570,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 }
                 
                 pModel.setScene(scene);
-                pModel.fireEventListeners(SCENE_LOADED);
+                pModel.fireEventListeners(EVT_SCENE_LOADED);
                 pModel.fireRepaint();
             }
         }

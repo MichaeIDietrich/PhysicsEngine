@@ -67,7 +67,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
         boxRight = Box.createHorizontalBox();
         boxRight.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         
-        if (pModel.isState(DEBUG))
+        if (pModel.isState(STG_DEBUG))
         {
             debugMessages = new HashMap<>();
         }
@@ -117,11 +117,11 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     @Override
     public void stateChanged(String id, boolean value)
     {
-        if (id.equals(RUN_PHYSICS))
+        if (id.equals(STG_RUN_PHYSICS))
         {
             discard.setEnabled(!value);
             
-            if (pModel.getProperty(MODE).equals(CMD_RECORDING_MODE))
+            if (pModel.getProperty(PRP_MODE).equals(CMD_RECORDING_MODE))
             {
                 frames.setBackground(value ? Color.RED : this.getBackground());
             }
@@ -134,17 +134,17 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     {
         switch (id)
         {
-            case MODE:
+            case PRP_MODE:
                 if (value.equals(CMD_PHYSICS_MODE))
                 {
-                    frames.setBackground(pModel.isState(RUN_PHYSICS) ? Color.RED : this.getBackground());
+                    frames.setBackground(pModel.isState(STG_RUN_PHYSICS) ? Color.RED : this.getBackground());
                     boxMain.remove(frames);
                     boxMain.remove(discard);
                     this.updateUI();
                 }
                 else if (value.equals(CMD_RECORDING_MODE))
                 {
-                    frames.setBackground(pModel.isState(RUN_PHYSICS) ? Color.RED : this.getBackground());
+                    frames.setBackground(pModel.isState(STG_RUN_PHYSICS) ? Color.RED : this.getBackground());
                     frames.setEnabled(false);
                     boxMain.add(frames);
                     boxMain.add(discard);
@@ -152,7 +152,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
                 }
                 else if (value.equals(CMD_PLAYBACK_MODE))
                 {
-                    frames.setBackground(pModel.isState(RUN_PHYSICS) ? Color.RED : this.getBackground());
+                    frames.setBackground(pModel.isState(STG_RUN_PHYSICS) ? Color.RED : this.getBackground());
                     frames.setEnabled(true);
                     boxMain.add(frames);
                     boxMain.add(discard);
@@ -160,7 +160,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
                 }
                 break;
                 
-            case CURRENT_PLAYBACK_FRAME:
+            case PRP_CURRENT_PLAYBACK_FRAME:
                 int number = Integer.parseInt(value);
                 if (frames.getValue() != number)
                 {
@@ -168,7 +168,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
                 }
                 break;
                 
-            case LANGUAGE_CODE:
+            case PRP_LANGUAGE_CODE:
                 discard.setToolTipText(LOCALIZER.getString(TT_DISCARD));
                 lblObjectCount.setText(pModel.getScene().getCount() + " " + LOCALIZER.getString(L_OBJECTS));
                 break;
@@ -203,11 +203,11 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     @Override
     public void sceneUpdated(Scene scene)
     {
-        if (pModel.getProperty(MODE).equals(CMD_RECORDING_MODE))
+        if (pModel.getProperty(PRP_MODE).equals(CMD_RECORDING_MODE))
         {
             Recorder recorder = Recorder.getInstance();
             recorder.addFrame(scene);
-            pModel.setProperty(CURRENT_PLAYBACK_FRAME, "" + recorder.getFrameCount());
+            pModel.setProperty(PRP_CURRENT_PLAYBACK_FRAME, "" + recorder.getFrameCount());
             frames.setMaximum(recorder.getFrameCount());
             frames.setValue(recorder.getFrameCount());
         }
@@ -219,9 +219,9 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     {
         Recorder recorder = Recorder.getInstance();
         
-        if (pModel.getProperty(MODE).equals(CMD_PLAYBACK_MODE) && recorder.getFrameCount() > 0)
+        if (pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE) && recorder.getFrameCount() > 0)
         {
-            pModel.setProperty(CURRENT_PLAYBACK_FRAME, "" + frames.getValue());
+            pModel.setProperty(PRP_CURRENT_PLAYBACK_FRAME, "" + frames.getValue());
             pModel.setScene(recorder.getFrame(frames.getValue() - 1));
             pModel.fireRepaint();
         }
@@ -276,7 +276,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     @Override
     public void eventFired(String name)
     {
-        if (name.equals(SCENE_LOADED))
+        if (name.equals(EVT_SCENE_LOADED))
         {
             lblObjectCount.setText(pModel.getScene().getCount() + " " + LOCALIZER.getString(L_OBJECTS));
         }

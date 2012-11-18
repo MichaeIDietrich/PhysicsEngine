@@ -63,7 +63,7 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         container.addGap(3);
         
         cboLang = new IconComboBox<String>(LOCALIZER.getAvailableLanguages(), "flags");
-        cboLang.setSelectedItem(config.getProperty(LANGUAGE_CODE));
+        cboLang.setSelectedItem(config.getProperty(PRP_LANGUAGE_CODE));
         cboLang.setPreferredSize(new Dimension(120, cboLang.getPreferredSize().height));
         cboLang.addItemListener(this);
         
@@ -77,7 +77,7 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         cboShowProperties = new JComboBox<String>(new String[] { LOCALIZER.getString(L_OBJECT_SELECTED),
                                                                  LOCALIZER.getString(L_DBLCLICK_OBJECT) });
         cboShowProperties.setFocusable(false);
-        cboShowProperties.setSelectedIndex(config.isState(DBLCLICK_SHOW_PROPERTIES) ? 1 : 0);
+        cboShowProperties.setSelectedIndex(config.isState(STG_DBLCLICK_SHOW_PROPERTIES) ? 1 : 0);
         cboShowProperties.setPreferredSize(new Dimension(120, cboShowProperties.getPreferredSize().height));
         cboShowProperties.addItemListener(this);
         
@@ -124,7 +124,7 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
                 
             case CMD_CANCEL:
                 // reset the current language to the unchanged one
-                LOCALIZER.setCurrentLanguage(Configuration.getInstance().getProperty(LANGUAGE_CODE));
+                LOCALIZER.setCurrentLanguage(Configuration.getInstance().getProperty(PRP_LANGUAGE_CODE));
                 this.dispose();
                 break;
         }
@@ -138,17 +138,17 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         {
             if (e.getSource().equals(cboLang))
             {
-                config.setProperty(LANGUAGE_CODE, cboLang.getSelectedItem());
+                config.setProperty(PRP_LANGUAGE_CODE, cboLang.getSelectedItem());
                 changeLanguage();
             }
             else if (e.getSource().equals(cboShowProperties))
             {
-                config.setState(DBLCLICK_SHOW_PROPERTIES, cboShowProperties.getSelectedIndex() == 1);
+                config.setState(STG_DBLCLICK_SHOW_PROPERTIES, cboShowProperties.getSelectedIndex() == 1);
             }
             else if (e.getSource().equals(cboLookAndFeels))
             {
                 String lookAndFeel = cboLookAndFeels.getSelectedItem().toString();
-                config.setProperty(LOOK_AND_FEEL, lookAndFeel);
+                config.setProperty(PRP_LOOK_AND_FEEL, lookAndFeel);
                 LookAndFeelManager.applyLookAndFeelByName(lookAndFeel);
                 LookAndFeelManager.updateControls(this);
             }
@@ -158,7 +158,7 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
     
     private void changeLanguage()
     {
-        LOCALIZER.setCurrentLanguage(config.getProperty(LANGUAGE_CODE));
+        LOCALIZER.setCurrentLanguage(config.getProperty(PRP_LANGUAGE_CODE));
         this.setTitle(LOCALIZER.getString(L_SETTINGS));
         rootPane.removeAll();
         initializeComponents();

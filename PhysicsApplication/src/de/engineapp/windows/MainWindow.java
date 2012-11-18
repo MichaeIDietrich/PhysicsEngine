@@ -36,11 +36,11 @@ public final class MainWindow extends JFrame
         super(LOCALIZER.getString(L_APP_NAME));
         
         pModel = new PresentationModel();
-        pModel.setProperty(MODE, CMD_PHYSICS_MODE);
+        pModel.setProperty(PRP_MODE, CMD_PHYSICS_MODE);
         
-        if (Configuration.getInstance().getProperty(SKIN) != null)
+        if (Configuration.getInstance().getProperty(PRP_SKIN) != null)
         {
-            Util.setSourcePath(Configuration.getInstance().getProperty(SKIN));
+            Util.setImageSourcePath(Configuration.getInstance().getProperty(PRP_SKIN));
         }
         
         // Free objects (if necessary) before this application ends
@@ -61,11 +61,11 @@ public final class MainWindow extends JFrame
             {
                 if ((MainWindow.this.getExtendedState() & MAXIMIZED_BOTH) != 0)
                 {
-                    pModel.setState(MAXIMIZED, true);
+                    pModel.setState(STG_MAXIMIZED, true);
                 }
                 else
                 {
-                    pModel.setState(MAXIMIZED, false);
+                    pModel.setState(STG_MAXIMIZED, false);
                 }
             }
         });
@@ -102,12 +102,12 @@ public final class MainWindow extends JFrame
     {
         Configuration config = Configuration.getInstance();
         
-        if (!LookAndFeelManager.applyLookAndFeelByName(config.getProperty(LOOK_AND_FEEL)))
+        if (!LookAndFeelManager.applyLookAndFeelByName(config.getProperty(PRP_LOOK_AND_FEEL)))
         {
             LookAndFeelManager.applySystemLookAndFeel();
         }
         
-        config.setProperty(LOOK_AND_FEEL, LookAndFeelManager.getCurrentLookAndFeelName());
+        config.setProperty(PRP_LOOK_AND_FEEL, LookAndFeelManager.getCurrentLookAndFeelName());
     }
     
     
@@ -167,7 +167,7 @@ public final class MainWindow extends JFrame
         
         this.setIconImages(iconList);
         
-        if (pModel.isState(MAXIMIZED))
+        if (pModel.isState(STG_MAXIMIZED))
         {
             this.setExtendedState(this.getExtendedState() | MAXIMIZED_BOTH);
         }

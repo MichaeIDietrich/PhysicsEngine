@@ -9,22 +9,22 @@ public interface Constants
     public final static String FILE_VERSION = "1.1";
     
     // properties, states (storage)
-    public final static String GRID = "grid";
-    public final static String MAXIMIZED = "maximized";
-    public final static String RUN_PHYSICS = "runPhysics";
-    public final static String DEBUG = "debug";
-    public final static String SHOW_ARROWS_ALWAYS = "showArrowsAlways";
-    public final static String DBLCLICK_SHOW_PROPERTIES = "dblClickshowProperties";
+    public final static String STG_GRID = "grid";
+    public final static String STG_MAXIMIZED = "maximized";
+    public final static String STG_RUN_PHYSICS = "runPhysics";
+    public final static String STG_DEBUG = "debug";
+    public final static String STG_SHOW_ARROWS_ALWAYS = "showArrowsAlways";
+    public final static String STG_DBLCLICK_SHOW_PROPERTIES = "dblClickshowProperties";
     
-    public final static String LOOK_AND_FEEL = "lookAndFeel";
-    public final static String LANGUAGE_CODE = "langCode";
-    public final static String OBJECT_MODE = "ObjectMode";
-    public final static String MODE = "mode";
-    public final static String CURRENT_PLAYBACK_FRAME = "playbackFrame";
-    public final static String SKIN = "skin";
+    public final static String PRP_LOOK_AND_FEEL = "lookAndFeel";
+    public final static String PRP_LANGUAGE_CODE = "langCode";
+    public final static String PRP_OBJECT_MODE = "ObjectMode";
+    public final static String PRP_MODE = "mode";
+    public final static String PRP_CURRENT_PLAYBACK_FRAME = "playbackFrame";
+    public final static String PRP_SKIN = "skin";
     
     // events
-    public final static String SCENE_LOADED = "sceneLoaded";
+    public final static String EVT_SCENE_LOADED = "sceneLoaded";
     
     // localization
     public final static String L_APP_NAME = "APP_NAME";
@@ -64,6 +64,9 @@ public interface Constants
     public final static String L_WRONG_VERSION = "WRONG_VERSION";
     public final static String L_TITLE_IMPORT = "TITLE_IMPORT";
     public final static String L_OBJECTS = "OBJECTS";
+    public final static String L_ABOUT = "ABOUT";
+    public final static String L_HELP = "HELP";
+    public final static String L_ABOUT_TEXT = "ABOUT_TEXT";
     
     //tooltips
     public final static String TT_NEW = "TT_NEW";
@@ -81,6 +84,8 @@ public interface Constants
     public final static String TT_SQUARE = "TT_SQUARE";
     public final static String TT_GROUND = "TT_GROUND";
     public final static String TT_DISCARD = "TT_DISCARD";
+    public final static String TT_HELP = "TT_HELP";
+    public final static String TT_ABOUT = "TT_ABOUT";
     
     // commands
     // TODO - add all string constants for action commands
@@ -105,6 +110,8 @@ public interface Constants
     public final static String CMD_PREVIOUS = "previous";
     public final static String CMD_OK = "ok";
     public final static String CMD_CANCEL = "cancel";
+    public final static String CMD_HELP = "help";
+    public final static String CMD_ABOUT = "about";
     
     // decor ID's
     public final static String DECOR_ARROW = "arrow";
@@ -140,6 +147,8 @@ public interface Constants
     public final static String ICO_SAVE = "save";
     public final static String ICO_SETTINGS = "settings";
     public final static String ICO_SQUARE = "square";
+    public final static String ICO_HELP = "help";
+    public final static String ICO_ABOUT = "about";
     
     public final static String ICO_MAIN_16 = "main/16";
     public final static String ICO_MAIN_24 = "main/24";

@@ -10,16 +10,6 @@ import static de.engineapp.Constants.*;
 
 public final class Localizer
 {
-    private static class XMLFilter implements FilenameFilter
-    {
-        @Override
-        public boolean accept(File dir, String name)
-        {
-            return name.endsWith(".xml");
-        }
-    }
-    
-    
     private static Localizer instance = null;
     
     private String currentLanguageCode;
@@ -30,15 +20,15 @@ public final class Localizer
     {
         stringTable = new HashMap<>();
         
-        currentLanguageCode = Configuration.getInstance().getProperty(LANGUAGE_CODE);
+        currentLanguageCode = Configuration.getInstance().getProperty(PRP_LANGUAGE_CODE);
         if (currentLanguageCode == null)
         {
             currentLanguageCode = Locale.getDefault().toLanguageTag();
-            Configuration.getInstance().setProperty(LANGUAGE_CODE, currentLanguageCode);
+            Configuration.getInstance().setProperty(PRP_LANGUAGE_CODE, currentLanguageCode);
         }
         
-        File file = getLanguage(currentLanguageCode);
-        loadLanguageFile(file);
+        String resource = getLanguage(currentLanguageCode);
+        loadLanguageResource(resource);
     }
     
     
@@ -53,24 +43,24 @@ public final class Localizer
     }
     
     
-    public File getLanguage(String langCode)
+    public String getLanguage(String langCode)
     {
-        File langFile = new File("data/i18n/" + langCode + ".xml");
-        if (langFile.exists())
+        String langResource = "i18n/" + langCode + ".xml";
+        if (Util.resourceExists(langResource))
         {
             //System.out.println("loaded '" + langCode + "'");
-            return langFile;
+            return langResource;
         }
         else
         {
-            langFile = new File("data/i18n/en-US.xml");
-            if (langFile.exists())
+            langResource = "i18n/en-US.xml";
+            if (Util.resourceExists(langResource))
             {
-                return langFile;
+                return langResource;
             }
             else
             {
-                System.err.println("Language-File 'data/i18n/en-US.xml' not found!");
+                System.err.println("Language-File 'i18n/en-US.xml' not found!");
             }
         }
         
@@ -78,11 +68,13 @@ public final class Localizer
     }
     
     
-    private void loadLanguageFile(File file)
+    private void loadLanguageResource(String path)
     {
-        if (file != null)
+        InputStream stream = Util.getResource(path);
+        
+        if (stream != null)
         {
-            XMLReader reader = new XMLReader(file);
+            XMLReader reader = new XMLReader(stream);
             
             stringTable.clear();
             
@@ -92,7 +84,7 @@ public final class Localizer
                 
                 stringTable.put(id, entry.getValue());
             }
-            System.out.println("loaded: " + file.getName());
+            System.out.println("loaded: " + path);
         }
     }
     
@@ -113,13 +105,16 @@ public final class Localizer
     public String[] getAvailableLanguages()
     {
         List<String> languages = new ArrayList<>();
-        File langDir = new File("data/i18n");
+        String langDir = "i18n";
         
-        if (langDir.exists() && langDir.isDirectory())
+        if (Util.resourceExists(langDir))
         {
-            for (File file : langDir.listFiles(new XMLFilter()))
+            for (String res : Util.getResources(langDir))
             {
-                languages.add(file.getName().substring(0, file.getName().lastIndexOf('.')));
+                if (res.endsWith(".xml"))
+                {
+                    languages.add(res.substring(0, res.lastIndexOf('.')));
+                }
             }
         }
         
@@ -136,7 +131,7 @@ public final class Localizer
     public void setCurrentLanguage(String langCode)
     {
         currentLanguageCode = langCode;
-        File file = getLanguage(currentLanguageCode);
-        loadLanguageFile(file);
+        String resource = getLanguage(currentLanguageCode);
+        loadLanguageResource(resource);
     }
 }

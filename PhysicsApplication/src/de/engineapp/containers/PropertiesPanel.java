@@ -173,7 +173,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     @Override
     public void objectSelected(ObjectProperties object)
     {
-        if (!pModel.isState(DBLCLICK_SHOW_PROPERTIES))
+        if (!pModel.isState(STG_DBLCLICK_SHOW_PROPERTIES))
         {
             showPanel(object);
         }
@@ -417,7 +417,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     @Override
     public void propertyChanged(String id, String value)
     {
-        if (id.equals(LANGUAGE_CODE))
+        if (id.equals(PRP_LANGUAGE_CODE))
         {
             createControls();
             
@@ -434,7 +434,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     public void mouseClicked(MouseEvent e)
     {
         if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2 && 
-                pModel.isState(DBLCLICK_SHOW_PROPERTIES) && pModel.getSelectedObject() != null)
+                pModel.isState(STG_DBLCLICK_SHOW_PROPERTIES) && pModel.getSelectedObject() != null)
         {
             showPanel(pModel.getSelectedObject());
         }

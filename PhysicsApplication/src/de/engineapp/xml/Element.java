@@ -2,31 +2,46 @@ package de.engineapp.xml;
 
 import java.util.*;
 
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 
 public class Element
 {
     private Node domNode;
+    
     
     public Element(Node domNode)
     {
         this.domNode = domNode;
     }
     
+    
     public String getName()
     {
         return domNode.getNodeName();
     }
     
+    
     public String getValue()
     {
-        return domNode.getTextContent();
+        if (domNode.getChildNodes().getLength() == 1 && domNode.getChildNodes().item(0).getNodeType() == Node.TEXT_NODE)
+        {
+            return domNode.getTextContent();
+        }
+        else
+        {
+            StringBuilder sb = new StringBuilder();
+            nodeToText(sb, domNode.getChildNodes());
+            
+            return xmlTrim(sb.toString());
+        }
     }
+    
     
     public int getAttributeCount()
     {
         return domNode.getAttributes().getLength();
     }
+    
     
     public String getAttribute(String name)
     {
@@ -41,6 +56,7 @@ public class Element
         }
     }
     
+    
     public Map<String, String> getAttibutes()
     {
        Map<String, String> attributes = new HashMap<>();
@@ -52,5 +68,72 @@ public class Element
         }
         
         return attributes;
+    }
+    
+    
+    private static void nodeToText(StringBuilder sb, NodeList nodeList)
+    {
+        for (int i = 0; i < nodeList.getLength(); i++)
+        {
+            Node node = nodeList.item(i);
+            
+            if (node.getNodeType() == Node.TEXT_NODE)
+            {
+                sb.append(node.getTextContent());
+            }
+            else
+            {
+                if (node.hasChildNodes())
+                {
+                    sb.append("<" + node.getNodeName());
+                    appendAttributes(sb, node);
+                    sb.append(">");
+                    
+                    nodeToText(sb, node.getChildNodes());
+                    
+                    sb.append("</" + node.getNodeName() + ">");
+                }
+                else
+                {
+                    sb.append("<" + node.getNodeName());
+                    appendAttributes(sb, node);
+                    sb.append("/>");
+                }
+            }
+        }
+    }
+    
+    
+    private static void appendAttributes(StringBuilder sb, Node node)
+    {
+        for (int i = 0; i < node.getAttributes().getLength(); i++)
+        {
+            Node attr = node.getAttributes().item(i);
+            sb.append(" " + attr.getNodeName() + "=\"" + attr.getTextContent() + "\"");
+        }
+    }
+    
+    
+    private static String xmlTrim(String text)
+    {
+        int start = -1, end = text.length();
+        
+        while (start < text.length() && isWhitespace(text.charAt(++start)));
+        while (end > -1 && isWhitespace(text.charAt(--end)));
+        
+        if (end != -1)
+        {
+            return text.substring(start, end + 1);
+        }
+        else
+        {
+            return "";
+        }
+    }
+    
+    
+    private static boolean isWhitespace(char c)
+    {
+        return c == ' ' || c == '\t' || c == '\r' || c == '\n';
     }
 }

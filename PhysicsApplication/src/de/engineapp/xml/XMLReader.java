@@ -38,7 +38,24 @@ public class XMLReader
         {
             e.printStackTrace();
         }
-        
+    }
+    
+    
+    public XMLReader(InputStream stream)
+    {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        try
+        {
+            DocumentBuilder builder  = factory.newDocumentBuilder();
+            document = builder.parse(stream);
+            
+            XPathFactory xpathfactory = XPathFactory.newInstance();
+            xPath = xpathfactory.newXPath();
+        }
+        catch (SAXException | IOException | ParserConfigurationException e)
+        {
+            e.printStackTrace();
+        }
     }
     
     

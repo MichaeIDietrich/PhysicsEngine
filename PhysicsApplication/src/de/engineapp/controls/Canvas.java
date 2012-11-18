@@ -179,10 +179,10 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 // 2. the engine is not running
                 // 3. the mode for placing objects is enabled
                 // 4. currently the application is not in playback mode
-                if (object == null && !pModel.getPhysicsState().isRunning() && pModel.getProperty(OBJECT_MODE) != null
-                        && !pModel.getProperty(MODE).equals(CMD_PLAYBACK_MODE))
+                if (object == null && !pModel.getPhysicsState().isRunning() && pModel.getProperty(PRP_OBJECT_MODE) != null
+                        && !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
                 {
-                    createObject(pModel.getProperty(OBJECT_MODE), e.getPoint());
+                    createObject(pModel.getProperty(PRP_OBJECT_MODE), e.getPoint());
                 }
                 else
                 {
@@ -245,7 +245,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         {
          // if ctrl is pressed modify the velocity vector (except in playback mode)
             if (e.isControlDown() && !e.isShiftDown() && !e.isAltDown() && 
-                    !pModel.getProperty(MODE).equals(CMD_PLAYBACK_MODE))
+                    !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
             {
                 // set new velocity
                 pModel.getSelectedObject().velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
@@ -254,7 +254,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             }
             // else modify the object's position in the scene (except in playback mode)
             else if (dragDelay != null && dragDelay.isDone() && !e.isControlDown() && !e.isShiftDown() && 
-                    !e.isAltDown() && !pModel.getProperty(MODE).equals(CMD_PLAYBACK_MODE))
+                    !e.isAltDown() && !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
             {
                 pModel.getSelectedObject().world_position.translation = cursor;
                 pModel.fireObjectUpdated(pModel.getSelectedObject());
@@ -275,7 +275,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         // (except in playback mode)
         else if ((SwingUtilities.isMiddleMouseButton(e) || (SwingUtilities.isLeftMouseButton(e) && 
                 e.isShiftDown())) && pModel.getSelectedObject() != null && 
-                !pModel.getProperty(MODE).equals(CMD_PLAYBACK_MODE))
+                !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
         {
             pModel.getSelectedObject().setRadius(Util.distance(pModel.getSelectedObject().getPosition(), cursor));
             pModel.fireObjectUpdated(pModel.getSelectedObject());
@@ -292,12 +292,12 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void objectAdded(ObjectProperties object)
     {
-        if (pModel.isState(SHOW_ARROWS_ALWAYS))
+        if (pModel.isState(STG_SHOW_ARROWS_ALWAYS))
         {
             attachVelocityArrow(object);
         }
         
-        if (pModel.isState(DEBUG))
+        if (pModel.isState(STG_DEBUG))
         {
             Box aabb = new Box(object, "getAABB");
             ((IDecorable) object).putDecor("aabb", aabb);
@@ -326,7 +326,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         Arrow arrow = new Arrow(object, "velocity");
         decorableObject.putDecor(DECOR_ARROW, arrow);
         
-        if (pModel.isState(DEBUG))
+        if (pModel.isState(STG_DEBUG))
         {
             // attach calculated intersection point with the ground
             Coordinate coord = new Coordinate( object, "last_intersection" );
@@ -344,7 +344,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         
         // remove world velocity arrow, because it has already another one
         // which can be modified by the user
-        if (pModel.isState(SHOW_ARROWS_ALWAYS))
+        if (pModel.isState(STG_SHOW_ARROWS_ALWAYS))
         {
             decorableObject.removeDecor(DECOR_MULTIPLE_ARROW);
         }
@@ -360,7 +360,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         decorableObject.removeDecor(DECOR_COORDINATE);
         decorableObject.removeDecor(DECOR_CLOSEST_POINT);
         
-        if (pModel.isState(SHOW_ARROWS_ALWAYS))
+        if (pModel.isState(STG_SHOW_ARROWS_ALWAYS))
         {
             attachVelocityArrow(object);
         }
@@ -489,7 +489,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     public void stateChanged(String id, boolean value)
     {
         // wether the global velocity arrow should be attached or not
-        if (id.equals(SHOW_ARROWS_ALWAYS))
+        if (id.equals(STG_SHOW_ARROWS_ALWAYS))
         {
             for (ObjectProperties object : pModel.getScene().getObjects())
             {
