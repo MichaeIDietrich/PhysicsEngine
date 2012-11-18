@@ -178,7 +178,7 @@ public class Grid
         }
     }
     
-    public Integer getNextCollision()
+    public CollPair getNextCollision()
     {
         if (0 < collisionPairs.size())
         {
@@ -221,7 +221,7 @@ public class Grid
                 return null;
             }
             else
-                return index;
+                return collisionPairs.get(index);
         }
         return null;
     }
