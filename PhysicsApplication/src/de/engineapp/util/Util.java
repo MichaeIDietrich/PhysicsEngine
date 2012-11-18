@@ -2,6 +2,7 @@ package de.engineapp.util;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.zip.*;
@@ -204,5 +205,18 @@ public final class Util
         }
         
         return null;
+    }
+    
+    
+    public static String getHtmlImage(String id)
+    {
+        URL url = Util.class.getResource("/" + root + path + id + ".png");
+        
+        if (url != null)
+        {
+            return "<image src=\"" + url.toString() + "\">";
+        }
+        
+        return "<image src=\"\">";
     }
 }
