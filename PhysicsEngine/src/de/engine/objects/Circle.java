@@ -32,6 +32,7 @@ public class Circle extends ObjectProperties implements Cloneable
         newCircle.velocity = this.velocity.clone();
         newCircle.id = this.id;
         newCircle.surface = this.surface;
+        newCircle.isPinned = this.isPinned;
         // ...
     }
     
