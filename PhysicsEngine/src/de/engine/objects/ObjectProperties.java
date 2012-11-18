@@ -1,9 +1,7 @@
 package de.engine.objects;
 
 import de.engine.environment.EnvProps;
-import de.engine.math.Transformation;
-import de.engine.math.Util;
-import de.engine.math.Vector;
+import de.engine.math.*;
 
 public abstract class ObjectProperties implements Cloneable
 {
@@ -61,6 +59,7 @@ public abstract class ObjectProperties implements Cloneable
         world_position.translation = new Vector(x, y);
     }
     
+    
     public Vector getPosition(double time)
     {
         double localtime = getTime(time);
@@ -71,6 +70,29 @@ public abstract class ObjectProperties implements Cloneable
     {
         return getPosition(EnvProps.deltaTime());
     }
+    
+    
+    public double getX()
+    {
+        return world_position.translation.getX();
+    }
+    
+    public double getY()
+    {
+        return world_position.translation.getY();
+    }
+    
+    
+    public double getRotationAngle()
+    {
+        return world_position.rotation.getAngle();
+    }
+    
+    public void setRotationAngle(double angle)
+    {
+        world_position.rotation = new Rotation(angle);
+    }
+    
     
     // TODO forces, velocity, momentum should be a vector, because of their
     // direction

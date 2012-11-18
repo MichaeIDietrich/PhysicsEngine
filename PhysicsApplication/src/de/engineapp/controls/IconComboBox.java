@@ -104,7 +104,7 @@ public final class IconComboBox<T> extends JComboBox<T>
         
         for (String entry : entries)
         {
-            icons.add(Util.getIcon(iconFolder + "/" + entry));
+            icons.add(GuiUtil.getIcon(iconFolder + "/" + entry));
         }
         
         this.setRenderer(new ItemRenderer(entries, icons));
@@ -122,7 +122,7 @@ public final class IconComboBox<T> extends JComboBox<T>
         for (T entry : data)
         {
             entries.add(LOCALIZER.getString(entry.toString()));
-            icons.add(Util.getIcon(iconFolder + "/" + entry));
+            icons.add(GuiUtil.getIcon(iconFolder + "/" + entry));
         }
         
         this.setRenderer(new ItemRenderer(entries, icons));

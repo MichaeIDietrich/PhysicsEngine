@@ -72,7 +72,7 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
             debugMessages = new HashMap<>();
         }
         
-        discard = new QuickButton(Util.getIcon(ICO_DISCARD), CMD_DISCARD, this);
+        discard = new QuickButton(GuiUtil.getIcon(ICO_DISCARD), CMD_DISCARD, this);
         discard.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
         discard.setToolTipText(LOCALIZER.getString(TT_DISCARD));
         

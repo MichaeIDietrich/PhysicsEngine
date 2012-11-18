@@ -86,18 +86,18 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         pModel.addViewBoxListener(this);
         pModel.addStorageListener(this);
         
-        newButton        = new QuickButton(      Util.getIcon(ICO_NEW),           CMD_NEW,         this);
-        openButton       = new QuickButton(      Util.getIcon(ICO_OPEN),          CMD_OPEN,        this);
-        saveButton       = new QuickButton(      Util.getIcon(ICO_SAVE),          CMD_SAVE,        this);
-        playButton       = new QuickButton(      Util.getIcon(ICO_PLAY),          CMD_PLAY,        this);
-        pauseButton      = new QuickButton(      Util.getIcon(ICO_PAUSE),         CMD_PAUSE,       this);
-        resetButton      = new QuickButton(      Util.getIcon(ICO_RESET),         CMD_RESET,       this);
-        showGridButton   = new QuickToggleButton(Util.getIcon(ICO_GRID),          CMD_GRID,        this);
-        showArrowsButton = new QuickToggleButton(Util.getIcon(ICO_OBJECT_ARROWS), CMD_SHOW_ARROWS, this);
-        focusButton      = new QuickButton(      Util.getIcon(ICO_FOCUS),         CMD_FOCUS,       this);
-        settingsButton   = new QuickButton(      Util.getIcon(ICO_SETTINGS),      CMD_SETTINGS,    this);
-        helpButton       = new QuickButton(      Util.getIcon(ICO_HELP),          CMD_HELP,        this);
-        aboutButton      = new QuickButton(      Util.getIcon(ICO_ABOUT),         CMD_ABOUT,       this);
+        newButton        = new QuickButton(      GuiUtil.getIcon(ICO_NEW),           CMD_NEW,         this);
+        openButton       = new QuickButton(      GuiUtil.getIcon(ICO_OPEN),          CMD_OPEN,        this);
+        saveButton       = new QuickButton(      GuiUtil.getIcon(ICO_SAVE),          CMD_SAVE,        this);
+        playButton       = new QuickButton(      GuiUtil.getIcon(ICO_PLAY),          CMD_PLAY,        this);
+        pauseButton      = new QuickButton(      GuiUtil.getIcon(ICO_PAUSE),         CMD_PAUSE,       this);
+        resetButton      = new QuickButton(      GuiUtil.getIcon(ICO_RESET),         CMD_RESET,       this);
+        showGridButton   = new QuickToggleButton(GuiUtil.getIcon(ICO_GRID),          CMD_GRID,        this);
+        showArrowsButton = new QuickToggleButton(GuiUtil.getIcon(ICO_OBJECT_ARROWS), CMD_SHOW_ARROWS, this);
+        focusButton      = new QuickButton(      GuiUtil.getIcon(ICO_FOCUS),         CMD_FOCUS,       this);
+        settingsButton   = new QuickButton(      GuiUtil.getIcon(ICO_SETTINGS),      CMD_SETTINGS,    this);
+        helpButton       = new QuickButton(      GuiUtil.getIcon(ICO_HELP),          CMD_HELP,        this);
+        aboutButton      = new QuickButton(      GuiUtil.getIcon(ICO_ABOUT),         CMD_ABOUT,       this);
         
         pauseButton.setEnabled(false);
         resetButton.setEnabled(false);
@@ -105,10 +105,10 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         zoomSlider = new ZoomSlider(pModel.getZoom());
         zoomSlider.addChangeListener(this);
         
-        modeButton = new DropDownButton(Util.getIcon(ICO_PHYSICS), CMD_NEXT_MODE, this);
-        modeButton.addAction(LOCALIZER.getString(L_PHYSICS_MODE),   Util.getIcon(ICO_PHYSICS),  CMD_PHYSICS_MODE);
-        modeButton.addAction(LOCALIZER.getString(L_RECORDING_MODE), Util.getIcon(ICO_RECORD),   CMD_RECORDING_MODE);
-        modeButton.addAction(LOCALIZER.getString(L_PLAYBACK_MODE),  Util.getIcon(ICO_PLAYBACK), CMD_PLAYBACK_MODE);
+        modeButton = new DropDownButton(GuiUtil.getIcon(ICO_PHYSICS), CMD_NEXT_MODE, this);
+        modeButton.addAction(LOCALIZER.getString(L_PHYSICS_MODE),   GuiUtil.getIcon(ICO_PHYSICS),  CMD_PHYSICS_MODE);
+        modeButton.addAction(LOCALIZER.getString(L_RECORDING_MODE), GuiUtil.getIcon(ICO_RECORD),   CMD_RECORDING_MODE);
+        modeButton.addAction(LOCALIZER.getString(L_PLAYBACK_MODE),  GuiUtil.getIcon(ICO_PLAYBACK), CMD_PLAYBACK_MODE);
         
         setToolTips();
         
@@ -374,17 +374,17 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 switch (value)
                 {
                     case CMD_PHYSICS_MODE:
-                        modeButton.setIcon(Util.getIcon(ICO_PHYSICS));
+                        modeButton.setIcon(GuiUtil.getIcon(ICO_PHYSICS));
                         modeButton.setToolTipText(LOCALIZER.getString(L_PHYSICS_MODE));
                         break;
                         
                     case CMD_RECORDING_MODE:
-                        modeButton.setIcon(Util.getIcon(ICO_RECORD));
+                        modeButton.setIcon(GuiUtil.getIcon(ICO_RECORD));
                         modeButton.setToolTipText(LOCALIZER.getString(L_RECORDING_MODE));
                         break;
                         
                     case CMD_PLAYBACK_MODE:
-                        modeButton.setIcon(Util.getIcon(ICO_PLAYBACK));
+                        modeButton.setIcon(GuiUtil.getIcon(ICO_PLAYBACK));
                         modeButton.setToolTipText(LOCALIZER.getString(L_PLAYBACK_MODE));
                         break;
                 }

@@ -35,9 +35,9 @@ public class ObjectToolBar extends JToolBar implements MouseListener, StorageLis
         this.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         this.setFloatable(false);
         
-        circle = new DragButton(Util.getIcon(ICO_CIRCLE), OBJ_CIRCLE, true);
-        square = new DragButton(Util.getIcon(ICO_SQUARE), OBJ_SQUARE, true);
-        ground = new DragButton(Util.getIcon(ICO_GROUND), OBJ_GROUND, Util.getImage(ICO_RULER), new Point(16, 14));
+        circle = new DragButton(GuiUtil.getIcon(ICO_CIRCLE), OBJ_CIRCLE, true);
+        square = new DragButton(GuiUtil.getIcon(ICO_SQUARE), OBJ_SQUARE, true);
+        ground = new DragButton(GuiUtil.getIcon(ICO_GROUND), OBJ_GROUND, GuiUtil.getImage(ICO_RULER), new Point(16, 14));
         
         circle.addMouseListener(this);
         square.addMouseListener(this);

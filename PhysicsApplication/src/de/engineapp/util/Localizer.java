@@ -46,7 +46,7 @@ public final class Localizer
     public String getLanguage(String langCode)
     {
         String langResource = "i18n/" + langCode + ".xml";
-        if (Util.resourceExists(langResource))
+        if (GuiUtil.resourceExists(langResource))
         {
             //System.out.println("loaded '" + langCode + "'");
             return langResource;
@@ -54,7 +54,7 @@ public final class Localizer
         else
         {
             langResource = "i18n/en-US.xml";
-            if (Util.resourceExists(langResource))
+            if (GuiUtil.resourceExists(langResource))
             {
                 return langResource;
             }
@@ -70,7 +70,7 @@ public final class Localizer
     
     private void loadLanguageResource(String path)
     {
-        InputStream stream = Util.getResource(path);
+        InputStream stream = GuiUtil.getResource(path);
         
         if (stream != null)
         {
@@ -107,9 +107,9 @@ public final class Localizer
         List<String> languages = new ArrayList<>();
         String langDir = "i18n";
         
-        if (Util.resourceExists(langDir))
+        if (GuiUtil.resourceExists(langDir))
         {
-            for (String res : Util.getResources(langDir))
+            for (String res : GuiUtil.getResources(langDir))
             {
                 if (res.endsWith(".xml"))
                 {
