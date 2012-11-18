@@ -17,7 +17,7 @@ public class Util
     private static double diff_x = 0;
     private static double diff_y = 0;
     private static double alpha = 0;
-    
+    private static boolean set_slope = false;
     
     public static double distance(Vector p1, Vector p2)
     {
@@ -68,6 +68,36 @@ public class Util
         if (object.velocity.getX() == 0)
             return object.getPosition().getX();
         
+        if (!set_slope) 
+        {
+            // m = slope, n = shift in y, linear function
+            m = object.velocity.getY() / object.velocity.getX();
+            n = object.getPosition().getY();
+        }
+        
+        if (m<=0.15 && m>=-0.15) 
+        {
+            double oldm = m;
+            
+            set_slope = true;
+            
+            m = 0.2;
+            n = object.getPosition().getY();
+            double i1 = newtonIteration(object, ground);
+            
+            m = -0.2;
+            n = object.getPosition().getY();
+            double i2 = newtonIteration(object, ground);
+            
+            set_slope = false;
+            System.out.println( i1 + " | " + i2);
+            
+            return (i1+i2)/2d;
+        } 
+        
+        // for calculating a pair of tangents right and left beside the main vector of the sphere
+        alpha = Math.atan( m );
+        
         Double xn  = object.getPosition().getX();
         Double new_distance = Double.MAX_VALUE;
         Double old_distance = 0d;
@@ -77,13 +107,6 @@ public class Util
         radius[1] = 0d;
         radius[2] = +object.getRadius();
 
-        // m = slope, n = shift in y, linear function
-        m = object.velocity.getY() / object.velocity.getX();
-        n = object.getPosition().getY();
-        
-        // for calculating a pair of tangents right and left beside the main vector of the sphere
-        alpha = Math.atan( m );
-        
         for (int p = 0; p < 3; p++)
         {
             old_distance = new_distance;
