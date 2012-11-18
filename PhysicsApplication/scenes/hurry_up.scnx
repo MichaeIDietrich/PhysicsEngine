@@ -5,7 +5,7 @@
   <Circle name="Object 2" color="-65536" material="STEEL" x="-250.0" y="50.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
   <Circle name="Object 3" color="-65536" material="STEEL" x="-250.0" y="200.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
   <Circle name="Object 4" color="-65536" material="STEEL" x="-250.0" y="250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
-  <Circle name="Object 5" color="-65536" material="STEEL" x="57.142857142857146" y="15.714285714285715" vx="-28.571428571428573" vy="22.85714285714286" mass="10.0" radius="80.62257748298549" rotation="7.105377454759833E-18" pinned="false" />
+  <Circle name="Object 5" color="-65536" material="STEEL" x="-199.0" y="-199.0" vx="-19.0" vy="407.0" mass="10.0" radius="22.28156352903794" rotation="6.213460344753347E-14" pinned="false" />
   <Circle name="Object 18" color="-65536" material="STEEL" x="-250.0" y="-0.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
   <Circle name="Object 19" color="-65536" material="STEEL" x="-250.0" y="-50.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
   <Circle name="Object 20" color="-65536" material="STEEL" x="-250.0" y="-100.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />

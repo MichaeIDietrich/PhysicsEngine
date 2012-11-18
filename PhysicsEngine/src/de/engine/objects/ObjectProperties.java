@@ -174,6 +174,8 @@ public abstract class ObjectProperties implements Cloneable
         potential_energy = -mass * EnvProps.grav_acc() * world_position.translation.getY();
         
         // calc kinetic energy: Epot = m/2*v² (mass * grav_const * y-coordinate)
+        kinetic_energy = 0.5 * mass * Math.abs( this.velocity.getX() );
+        
         frametime = 0;
         
         next_velocity = velocity;
