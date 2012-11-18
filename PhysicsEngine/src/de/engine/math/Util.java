@@ -9,11 +9,15 @@ import de.engine.objects.Square;
 public class Util
 {
     // needed for derivation
-    private static final Double h = Math.pow(10d, 10d);
+    private static final Double h = Math.pow(10d, 40d);
     private static Vector function = new Vector();
     private static double m = 0;
     private static double n = 0;
     private static Double[] radius = new Double[3];
+    private static double diff_x = 0;
+    private static double diff_y = 0;
+    private static double alpha = 0;
+    
     
     public static double distance(Vector p1, Vector p2)
     {
@@ -64,33 +68,39 @@ public class Util
         if (object.velocity.getX() == 0)
             return object.getPosition().getX();
         
-        Double xn = object.getPosition().getX();
+        Double xn  = object.getPosition().getX();
+        Double new_distance = Double.MAX_VALUE;
+        Double old_distance = 0d;
+        Double result       = 0d;
         
         radius[0] = -object.getRadius();
         radius[1] = 0d;
         radius[2] = +object.getRadius();
+
+        // m = slope, n = shift in y, linear function
+        m = object.velocity.getY() / object.velocity.getX();
+        n = object.getPosition().getY();
         
-        Double distance = Double.MAX_VALUE;
-        Double old_distance;
+        // for calculating a pair of tangents right and left beside the main vector of the sphere
+        alpha = Math.atan( m );
         
-        Double result = 0d;
-        
-        int max_iterations = (int) (object.velocity.getX() + object.velocity.getY())/15;
-        
-        for (int n = 0; n < 3; n++)
+        for (int p = 0; p < 3; p++)
         {
-            old_distance = distance;
+            old_distance = new_distance;
             
-            for (int i = 0; i < max_iterations; i++)
+            diff_x =  radius[p] * Math.sin(alpha);
+            diff_y = -radius[p] * Math.cos(alpha);
+            
+            for (int i = 0; i < 6; i++)
             {
-                xn = xn - getFunctionsValue(xn, radius[n], object, ground) / derive1D(xn, radius[n], object, ground);
+                xn = xn - getFunctionsValue(xn, object, ground) / derive1D(xn, object, ground);
             }
             
             int y = (int) ground.function(xn);
-            distance = Math.sqrt(Math.pow(xn - object.getPosition().getX(), 2d) + Math.pow(y - object.getPosition().getY(), 2d));
+            new_distance = Math.sqrt( Math.pow(xn - object.getPosition().getX(), 2d) + Math.pow(y - object.getPosition().getY(), 2d) );
             
             // returns the intersection coordinate with the shortest distance between circle an ground
-            if (distance < old_distance)
+            if (new_distance < old_distance)
                 result = xn;
         }
         return result;
@@ -104,37 +114,52 @@ public class Util
      * @param ground
      * @return
      */
-    public static Double derive1D(Double x, Double radius, ObjectProperties object, Ground ground)
+    public static Double derive1D(Double x, ObjectProperties object, Ground ground)
     {
        
-        // df(x) = ( f(x + 1/h ) - f(x - 1/h) ) * h/2
+        // df(x) = ( f(x-h) - f(x-h) ) * 2/h
         if (object.velocity.getY()<0) 
         {
-            return (getFunctionsValue(x + h, radius, object, ground) - getFunctionsValue(x - h, radius, object, ground)) * 2d / h;
+            return  (getFunctionsValue(x + h, object, ground) - getFunctionsValue(x - h, object, ground)) * 2d / h;
         } 
         else 
         {
-            return -(getFunctionsValue(x + h, radius, object, ground) - getFunctionsValue(x - h, radius, object, ground)) * 2d / h;
+            return -(getFunctionsValue(x + h, object, ground) - getFunctionsValue(x - h, object, ground)) * 2d / h;
         }
     }
     
-    public static Double getFunctionsValue(Double x, Double radius, ObjectProperties object, Ground ground)
+    /**
+     * Calculates the 2nd derivation of the function given in <i>getFunctionsValue</i>.
+     * 
+     * @param x - determines the point of which the derivation is wanted
+     * @param object -
+     * @param ground
+     * @return
+     */
+    public static Double derive2D(Double x, ObjectProperties object, Ground ground)
     {
-        // m = slope, n = shift in y, linear function
-        m = object.velocity.getY() / object.velocity.getX();
-        n = object.getPosition().getY();
-        
-        // for calculating a pair of tangents right and left beside the main vector of the sphere
-        double alpha = Math.atan(m);
-        double diff_x =  radius * Math.sin(alpha);
-        double diff_y = -radius * Math.cos(alpha);
-        
-        function.set(0, m * (x - object.getPosition().getX() - diff_x) + n + diff_y);
-        function.set(1, ground.function(x.intValue()));
+       
+        // df(x) = ( f(x-h) - 2f(x) + f(x-h) ) / h²
+        if (object.velocity.getY()<0) 
+        {
+            return  (getFunctionsValue(x + h, object, ground) - 2d*getFunctionsValue( x, object, ground ) + getFunctionsValue(x - h, object, ground)) / h*h;
+        } 
+        else 
+        {
+            return -(getFunctionsValue(x + h, object, ground) - 2d*getFunctionsValue( x, object, ground ) + getFunctionsValue(x - h, object, ground)) / h*h;
+        }
+    }
+    
+    public static Double getFunctionsValue(Double x, ObjectProperties object, Ground ground)
+    {
+        function.set(0, m * (x - object.getPosition().getX() -diff_x) +n +diff_y );
+        function.set(1, ground.function(x) );
         
         return function.get(1) - function.get(0);
     }
-    
+
+    // ************************************************************
+
     /**
      * returns all axis between a Polygon and a Circle for the seperating axis theorem
      */

@@ -37,17 +37,16 @@ public class CollisionDetector
     public void checkScene()
     {
         grid.scanScene();
-        Integer collision = grid.getNextCollision();
-        while (collision != null)
+        CollPair collPair = grid.getNextCollision();
+        while (collPair != null)
         {
-            CollPair collPair = grid.collisionPairs.get(collision);
             if (null != collPair.coll_time)
             {
                 PhysicsCalcer.run(collPair.obj1, collPair.obj2, collPair.coll_time);
                 grid.update(collPair.obj1);
                 grid.update(collPair.obj2);
             }
-            collision = grid.getNextCollision();
+            collPair = grid.getNextCollision();
         }
         
         // Tests the collision between objects and ground
@@ -56,6 +55,7 @@ public class CollisionDetector
             objectGroundCollision();
             objectGroundCollision2();
         }
+        
     }
     
     public void objectGroundCollision()
