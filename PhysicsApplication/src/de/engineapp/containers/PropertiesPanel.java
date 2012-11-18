@@ -195,8 +195,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         
         MaterialCombo = new IconComboBox<Material>(Material.values(), "materials");
         
-        next         = new QuickButton(Util.getIcon(ICO_NEXT), CMD_NEXT, this);
-        previous     = new QuickButton(Util.getIcon(ICO_PREVIOUS), CMD_PREVIOUS, this);
+        next         = new QuickButton(GuiUtil.getIcon(ICO_NEXT), CMD_NEXT, this);
+        previous     = new QuickButton(GuiUtil.getIcon(ICO_PREVIOUS), CMD_PREVIOUS, this);
         groupName.add(previous, BorderLayout.LINE_START);
         groupName.add(next, BorderLayout.LINE_END);
         groupName.add(name);

@@ -119,6 +119,7 @@ public interface Constants
     public final static String DECOR_COORDINATE = "coordinate";
     public final static String DECOR_CLOSEST_POINT = "closestPoint";
     public final static String DECOR_MULTIPLE_ARROW = "multipleArrow";
+    public final static String DECOR_ANGLE_VIEWER = "angleViewer";
     
     // objects
     public final static String OBJ_CIRCLE = "circle";
