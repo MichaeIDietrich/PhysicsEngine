@@ -9,7 +9,7 @@ import de.engine.objects.Square;
 public class Util
 {
     // needed for derivation
-    private static final Double h = Math.pow(10d, 40d);
+    private static final Double h = Math.pow(10d, 4d);
     private static Vector function = new Vector();
     private static double m = 0;
     private static double n = 0;
@@ -21,6 +21,7 @@ public class Util
     // has to be set before using Newton Iteration
     public static ObjectProperties object;
     public static Ground ground;
+    private static int sign = 1;
     
     public static double distance(Vector p1, Vector p2)
     {
@@ -87,20 +88,23 @@ public class Util
         radius[1] = 0d;
         radius[2] = +object.getRadius();
 
+        sign = (object.velocity.getY()<0) ? 1 : -1;
+        
         for (int p = 0; p < 3; p++)
         {
             old_distance = new_distance;
             
             diff_x =  radius[p] * Math.sin(alpha);
             diff_y = -radius[p] * Math.cos(alpha);
-            
+
             for (int i = 0; i < 6; i++)
             {
-                xn = xn - newFkt(xn) / derive1D(xn);
+                double fktValue = newFkt(xn);
+                xn = xn - fktValue / derive1D( fktValue ); 
             }
             
-            int y = (int) ground.function(xn);
-            new_distance = Math.pow(xn - object.getPosition().getX(), 2d) + Math.pow(y - object.getPosition().getY(), 2d);
+            new_distance = Math.pow( xn                  - object.getPosition().getX(), 2d) + 
+                           Math.pow( ground.function(xn) - object.getPosition().getY(), 2d);
             
             // returns the intersection coordinate with the shortest distance between circle an ground
             if (new_distance < old_distance)
@@ -120,7 +124,7 @@ public class Util
     public static Double derive1D( Double x )
     {
         // df(x) = ( f(x-h) - f(x-h) ) / 2h
-        return  (newFkt( x+h ) - newFkt( x-h )) / ( h+h );
+        return  sign * (newFkt( x+h ) - newFkt( x-h )) * 2d / h ;
     }
     
     public static Double newFkt(Double x)
