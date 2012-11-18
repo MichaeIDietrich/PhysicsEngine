@@ -9,11 +9,10 @@ import javax.swing.SwingUtilities;
 
 import de.engine.environment.Scene;
 import de.engine.math.*;
-import de.engine.math.Util;
 import de.engine.objects.*;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.*;
-import de.engineapp.util.Task;
+import de.engineapp.util.*;
 import de.engineapp.visual.*;
 import de.engineapp.visual.Circle;
 import de.engineapp.visual.Ground;
@@ -143,73 +142,71 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void mousePressed(MouseEvent e)
     {
+        
         // get in-scene cursor position
         Vector cursor = pModel.toTransformedVector(e.getPoint());
-        
-        // show radius if shift is pressed
-        if (e.isShiftDown() && pModel.getSelectedObject() != null)
-        {
-            Range range = new Range(pModel.getSelectedObject(), "radius");
-            ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
-            pModel.fireRepaint();
-        }
+        boolean hasSelection = pModel.getSelectedObject() != null;
         
         if (SwingUtilities.isLeftMouseButton(e))
         {
             // start a timer, to make moving objects possible after a short delay
             dragDelay = new Task(200);
             dragDelay.start();
-            
-            // if ctrl is pressed modify the velocity vector
-            if (e.isControlDown() && !e.isShiftDown() && !e.isAltDown() && pModel.getSelectedObject() != null)
-            {
-                // set new velocity
-                pModel.getSelectedObject().velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
-                
-                pModel.fireObjectUpdated(pModel.getSelectedObject());
-                pModel.fireRepaint();
-            }
-            // if no modifier key is pressed either selected an object or create new objects
-            else if (!e.isControlDown() && !e.isShiftDown() && !e.isAltDown())
-            {
-                ObjectProperties object = pModel.getScene().getObjectFromPoint(cursor.getX(), cursor.getY());
-                
-                // create new objects if
-                // 1. there is no object under the cursor
-                // 2. the engine is not running
-                // 3. the mode for placing objects is enabled
-                // 4. currently the application is not in playback mode
-                if (object == null && !pModel.getPhysicsState().isRunning() && pModel.getProperty(PRP_OBJECT_MODE) != null
-                        && !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
-                {
-                    createObject(pModel.getProperty(PRP_OBJECT_MODE), e.getPoint());
-                }
-                else
-                {
-                    pModel.setSelectedObject(object);
-                }
-            }
-            // if shift is pressed, show the object radius
-            else if (!e.isControlDown() && e.isShiftDown() && !e.isAltDown() && pModel.getSelectedObject() != null)
-            {
-                Range range = new Range(pModel.getSelectedObject(), "radius");
-                ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
-            }
-            
-            pModel.fireRepaint();
         }
         // right mouse button initializes the move the view offset
         else if (SwingUtilities.isRightMouseButton(e))
         {
             mouseOffset = new Point(e.getPoint());
         }
-        // if middle mouse button is pressed, show the object radius
-        else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
+        
+        // show radius if shift is pressed
+        if (hasSelection && GuiUtil.isLeftButton(e, false, true, false))
         {
             Range range = new Range(pModel.getSelectedObject(), "radius");
             ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
-            pModel.fireRepaint();
         }
+        // show angle if alt is pressed
+        else if (hasSelection && GuiUtil.isLeftButton(e, false, false, true))
+        {
+            AngleViewer angleViewer = new AngleViewer(pModel.getSelectedObject());
+            ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_ANGLE_VIEWER, angleViewer);
+        }
+        // if ctrl is pressed modify the velocity vector
+        else if (GuiUtil.isLeftButton(e, true, false, false))
+        {
+            // set new velocity
+            pModel.getSelectedObject().velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
+            
+            pModel.fireObjectUpdated(pModel.getSelectedObject());
+        }
+        // if no modifier key is pressed either selected an object or create new objects
+        else if (GuiUtil.isLeftButton(e, false, false, false))
+        {
+            ObjectProperties object = pModel.getScene().getObjectFromPoint(cursor.getX(), cursor.getY());
+            
+            // create new objects if
+            // 1. there is no object under the cursor
+            // 2. the engine is not running
+            // 3. the mode for placing objects is enabled
+            // 4. currently the application is not in playback mode
+            if (object == null && !pModel.getPhysicsState().isRunning() && pModel.getProperty(PRP_OBJECT_MODE) != null
+                    && !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
+            {
+                createObject(pModel.getProperty(PRP_OBJECT_MODE), e.getPoint());
+            }
+            else
+            {
+                pModel.setSelectedObject(object);
+            }
+        }
+        // if middle mouse button is pressed, show the object radius
+        else if (hasSelection && SwingUtilities.isMiddleMouseButton(e))
+        {
+            Range range = new Range(pModel.getSelectedObject(), "radius");
+            ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
+        }
+        
+        pModel.fireRepaint();
     }
     
     
@@ -224,6 +221,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             if (pModel.getSelectedObject() != null)
             {
                 ((IDecorable) pModel.getSelectedObject()).removeDecor(DECOR_RANGE);
+                ((IDecorable) pModel.getSelectedObject()).removeDecor(DECOR_ANGLE_VIEWER);
                 pModel.fireRepaint();
             }
         }
@@ -240,6 +238,47 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     {
         // get in-scene cursor position
         Vector cursor = pModel.toTransformedVector(e.getPoint());
+        boolean hasSelection = pModel.getSelectedObject() != null;
+        
+        // if ctrl is pressed modify the velocity vector (except in playback mode)
+        if (hasSelection && GuiUtil.isLeftButton(e, true, false, false) && 
+                !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
+        {
+            // set new velocity
+            pModel.getSelectedObject().velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
+            pModel.fireObjectUpdated(pModel.getSelectedObject());
+            pModel.fireRepaint();
+        }
+        // if alt is pressed modify the object's angle (except in playback mode)
+        else if (hasSelection && GuiUtil.isLeftButton(e, false, false, true) && 
+                !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
+        {
+            double x = cursor.getX() - pModel.getSelectedObject().getX();
+            double y = cursor.getY() - pModel.getSelectedObject().getY();
+            
+            double newAngle = Math.atan2(y, x);
+            pModel.getSelectedObject().setRotationAngle(newAngle);
+            pModel.fireRepaint();
+        }
+        // middle mouse button or left mouse + shift button modifies the object's radius
+        // (except in playback mode)
+        else if (hasSelection && (GuiUtil.isLeftButton(e, false, true, false) ||
+                SwingUtilities.isMiddleMouseButton(e)) && !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
+        {
+            pModel.getSelectedObject().setRadius(Util.distance(pModel.getSelectedObject().getPosition(), cursor));
+            pModel.fireObjectUpdated(pModel.getSelectedObject());
+            pModel.fireRepaint();
+        }
+        // right mouse button moves the view offset
+        else if (SwingUtilities.isRightMouseButton(e))
+        {
+            pModel.moveViewOffset(e.getX() - mouseOffset.x, e.getY() - mouseOffset.y);
+            mouseOffset.x = e.getPoint().x;
+            mouseOffset.y = e.getPoint().y;
+            
+            // refresh canvas
+            pModel.fireRepaint();
+        }
         
         if (SwingUtilities.isLeftMouseButton(e) && !e.isShiftDown() && pModel.getSelectedObject() != null)
         {

@@ -1,6 +1,7 @@
 package de.engineapp.util;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -8,9 +9,9 @@ import java.util.List;
 import java.util.zip.*;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
-public final class Util
+public final class GuiUtil
 {
     private static HashMap<String, ImageIcon> iconMap;
     private static String path;
@@ -24,7 +25,7 @@ public final class Util
     }
     
     // hidden constructor
-    private Util() { }
+    private GuiUtil() { }
     
     
     public static ImageIcon getIcon(String id)
@@ -103,7 +104,7 @@ public final class Util
     
     public static void setImageSourcePath(String path)
     {
-        Util.path = path.endsWith("/") ? path : path + "/";
+        GuiUtil.path = path.endsWith("/") ? path : path + "/";
     }
     
     
@@ -114,7 +115,7 @@ public final class Util
     
     public static void setImageRootPath(String path)
     {
-        Util.root = path.endsWith("/") ? path : path + "/";
+        GuiUtil.root = path.endsWith("/") ? path : path + "/";
     }
     
     
@@ -125,7 +126,7 @@ public final class Util
             name = "/" + name;
         }
         
-        return Util.class.getResourceAsStream(name);
+        return GuiUtil.class.getResourceAsStream(name);
     }
     
     
@@ -136,7 +137,7 @@ public final class Util
             name = "/" + name;
         }
         
-        return Util.class.getResource(name) != null;
+        return GuiUtil.class.getResource(name) != null;
     }
     
     
@@ -210,7 +211,7 @@ public final class Util
     
     public static String getHtmlImage(String id)
     {
-        URL url = Util.class.getResource("/" + root + path + id + ".png");
+        URL url = GuiUtil.class.getResource("/" + root + path + id + ".png");
         
         if (url != null)
         {
@@ -218,5 +219,24 @@ public final class Util
         }
         
         return "<image src=\"\">";
+    }
+    
+    
+    public static boolean isLeftButton(MouseEvent e, boolean ctrlDown, boolean shiftDown, boolean altDown)
+    {
+        return SwingUtilities.isLeftMouseButton(e) && e.isControlDown() == ctrlDown &&
+                e.isShiftDown() == shiftDown && e.isAltDown() == altDown;
+    }
+    
+    public static boolean isRightButton(MouseEvent e, boolean ctrlDown, boolean shiftDown, boolean altDown)
+    {
+        return SwingUtilities.isRightMouseButton(e) && e.isControlDown() == ctrlDown &&
+                e.isShiftDown() == shiftDown && e.isAltDown() == altDown;
+    }
+    
+    public static boolean isMiddleButton(MouseEvent e, boolean ctrlDown, boolean shiftDown, boolean altDown)
+    {
+        return SwingUtilities.isMiddleMouseButton(e) && e.isControlDown() == ctrlDown &&
+                e.isShiftDown() == shiftDown && e.isAltDown() == altDown;
     }
 }
