@@ -43,7 +43,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         @Override
         public boolean accept(File f)
         {
-            return f.getName().endsWith(".scnx");
+            return f.getName().endsWith(".scnx") || f.isDirectory();
         }
         
         @Override

@@ -71,6 +71,11 @@ public class PhysicsCalcer
                 Contact c = new Contact(Util.add(cd.contacts.get(0).point, cd.contacts.get(1).point).scale(0.5), cd.contacts.get(0).normal);
                 resolveContact(o1, o2, collTime, c);
             }
+            else
+            {
+                resolveContact(o1, o2, collTime, cd.contacts.get(0));
+                resolveContact(o1, o2, collTime, cd.contacts.get(1));
+            }
         }
     }
     
