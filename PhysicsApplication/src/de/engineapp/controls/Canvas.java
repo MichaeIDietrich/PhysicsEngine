@@ -262,6 +262,14 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             pModel.getSelectedObject().setRotationAngle(newAngle);
             pModel.fireRepaint();
         }
+     // else modify the object's position in the scene (except in playback mode)
+        else if (hasSelection && dragDelay != null && dragDelay.isDone() && GuiUtil.isLeftButton(e, false, false, false) && 
+                !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
+        {
+            pModel.getSelectedObject().world_position.translation = cursor;
+            pModel.fireObjectUpdated(pModel.getSelectedObject());
+            pModel.fireRepaint();
+        }
         // middle mouse button or left mouse + shift button modifies the object's radius
         // (except in playback mode)
         else if (hasSelection && (GuiUtil.isLeftButton(e, false, true, false) ||
