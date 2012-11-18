@@ -53,7 +53,7 @@ public class CollisionDetector
         if (scene.existGround())
         {
             objectGroundCollision();
-            objectGroundCollision2();
+//            objectGroundCollision2();
         }
         
     }
@@ -78,14 +78,18 @@ public class CollisionDetector
                 int y = (int) object.last_intersection.getY();
                 
                 // calc distance by pythagoras
-                int c = (int) Math.sqrt(Math.pow(x - object.getPosition().getX(), 2d) + Math.pow(y - object.getPosition().getY(), 2d));
+                double c = Math.sqrt( Math.pow(x - object.getPosition().getX(), 2d) + Math.pow(y - object.getPosition().getY(), 2d) );
                 
-                System.out.println( 180 * Util.getAngle( object.velocity, new Vector(xn, Util.newFkt(xn))) / Math.PI );
-                
-                if (c < object.getRadius())
+                System.out.println( Math.atan( Util.getAngle( object.velocity, new Vector(xn, Util.newFkt(xn)))));
+
+                // the faster the object, the ealier it must be stopped
+                double corrFactor = 0.01*Math.sqrt( object.velocity.getX()*object.velocity.getX() + object.velocity.getY()*object.velocity.getY());
+
+                if (c <= object.getRadius() + corrFactor )
                 {
                     object.velocity.setX(0);
                     object.velocity.setY(0);
+                    object.isPinned = true;
                 }
             }
         }
