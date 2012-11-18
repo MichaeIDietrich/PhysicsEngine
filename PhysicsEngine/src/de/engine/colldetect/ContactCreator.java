@@ -52,7 +52,7 @@ public class ContactCreator
         {
             cd.contacts.add(contact);
         }
-        contacts = searchContact((Polygon)cd.o1, (Polygon)cd.o2, cd.time);
+        contacts = searchContact((Polygon)cd.o2, (Polygon)cd.o1, cd.time);
         for (Contact contact : contacts)
         {
             cd.contacts.add(contact);
@@ -64,17 +64,17 @@ public class ContactCreator
         ArrayList<Contact> contacts = new ArrayList<>();
         for (int i = 0; i < o1.points.length; i++)
         {
+            Vector corner_o1 = o1.getWorldPointPos(i, time);
             for (int k = 0; k < o2.points.length; k++)
             {
                 int l = (k == (o2.points.length - 1)) ? 0 : k + 1;
-                Vector corner_o1 = o1.getWorldPointPos(i, time);
                 Vector corner_o2 = o2.getWorldPointPos(k, time);
                 //Vector dist = Util.minus(corner_o1, corner_o2);
                 Vector edge = o2.getWorldPointPos(l, time).minus(corner_o2);
                 Vector edge_normal = edge.getNormalVector().getUnitVector();
                 //double distance = Util.scalarProduct(dist, ray_normal);
                 Vector cross_point = Util.crossEdges(corner_o1, edge_normal, corner_o2, edge);
-                if(cross_point != null && Util.scalarProduct(edge_normal, Util.minus(o1.getPosition(time), corner_o1)) > 0)
+                if(cross_point != null)// && Util.scalarProduct(edge_normal, Util.minus(o1.getPosition(time), corner_o1)) > 0)
                 {
                     contacts.add(new Contact(cross_point, edge_normal));
                 }

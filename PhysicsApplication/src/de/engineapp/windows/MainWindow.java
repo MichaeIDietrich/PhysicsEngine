@@ -40,7 +40,7 @@ public final class MainWindow extends JFrame
         
         if (Configuration.getInstance().getProperty(PRP_SKIN) != null)
         {
-            Util.setImageSourcePath(Configuration.getInstance().getProperty(PRP_SKIN));
+            GuiUtil.setImageSourcePath(Configuration.getInstance().getProperty(PRP_SKIN));
         }
         
         // Free objects (if necessary) before this application ends
@@ -157,13 +157,13 @@ public final class MainWindow extends JFrame
         this.setLocationRelativeTo(null);
         
         ArrayList<Image> iconList = new ArrayList<>();
-        iconList.add(Util.getImage(ICO_MAIN_256));
-        iconList.add(Util.getImage(ICO_MAIN_128));
-        iconList.add(Util.getImage(ICO_MAIN_64));
-        iconList.add(Util.getImage(ICO_MAIN_48));
-        iconList.add(Util.getImage(ICO_MAIN_32));
-        iconList.add(Util.getImage(ICO_MAIN_24));
-        iconList.add(Util.getImage(ICO_MAIN_16));
+        iconList.add(GuiUtil.getImage(ICO_MAIN_256));
+        iconList.add(GuiUtil.getImage(ICO_MAIN_128));
+        iconList.add(GuiUtil.getImage(ICO_MAIN_64));
+        iconList.add(GuiUtil.getImage(ICO_MAIN_48));
+        iconList.add(GuiUtil.getImage(ICO_MAIN_32));
+        iconList.add(GuiUtil.getImage(ICO_MAIN_24));
+        iconList.add(GuiUtil.getImage(ICO_MAIN_16));
         
         this.setIconImages(iconList);
         

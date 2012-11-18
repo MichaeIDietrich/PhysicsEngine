@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Scene version="1.0" gravitation="9.81">
-  <Square name="Object 97" material="STEEL" x="-36.0" y="56.994660279075" vx="0.0" vy="-0.161809725" mass="200.0" radius="32.72995569810628" pinned="false" />
-  <Circle name="Object 98" material="STEEL" x="-40.020625" y="130.048410279075" vx="-0.625" vy="-36.411809725" mass="10.0" radius="8.0" pinned="false" />
-  <Circle name="Object 99" material="STEEL" x="-100.781875" y="81.162160279075" vx="33.125" vy="-2.661809725" mass="10.0" radius="8.0" pinned="false" />
-  <Circle name="Object 100" material="STEEL" x="19.2575" y="113.709660279075" vx="-22.5" vy="-20.161809725" mass="10.0" radius="8.0" pinned="false" />
-  <Circle name="Object 101" material="STEEL" x="-54.835" y="2.049035279075" vx="5.0" vy="24.213190275" mass="10.0" radius="8.0" pinned="false" />
-  <Circle name="Object 102" material="STEEL" x="-106.97" y="21.987160279075" vx="35.0" vy="22.338190275" mass="10.0" radius="8.0" pinned="false" />
-  <Circle name="Object 103" material="STEEL" x="20.445625" y="14.404660279075" vx="-24.375" vy="19.838190275" mass="10.0" radius="8.0" pinned="false" />
-  <Circle name="Object 104" material="STEEL" x="33.700625" y="65.578410279075" vx="-39.375" vy="-1.411809725" mass="10.0" radius="8.0" pinned="false" />
+<Scene version="1.1" gravitation="9.81">
+  <Square name="Object 97" color="-7352576" material="STEEL" x="-36.0" y="56.983980837225" vx="0.0" vy="-0.32361945" mass="200.0" radius="32.72995569810628" rotation="0.0" pinned="false" />
+  <Circle name="Object 98" color="-16777216" material="STEEL" x="-40.041250000000005" y="128.841480837225" vx="-0.625" vy="-36.573619449999995" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
+  <Circle name="Object 99" color="-16777216" material="STEEL" x="-99.68875" y="81.068980837225" vx="33.125" vy="-2.82361945" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
+  <Circle name="Object 100" color="-16777216" material="STEEL" x="18.515" y="113.038980837225" vx="-22.5" vy="-20.323619450000002" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
+  <Circle name="Object 101" color="-16777216" material="STEEL" x="-54.67" y="2.842730837225" vx="5.0" vy="24.051380549999998" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
+  <Circle name="Object 102" color="-16777216" material="STEEL" x="-105.815" y="22.718980837224997" vx="35.0" vy="22.176380549999998" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
+  <Circle name="Object 103" color="-16777216" material="STEEL" x="19.64125" y="15.053980837225" vx="-24.375" vy="19.676380549999998" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
+  <Circle name="Object 104" color="-16777216" material="STEEL" x="32.401250000000005" y="65.526480837225" vx="-39.375" vy="-1.5736194499999998" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
+  <Circle name="Object 16" color="-65536" material="STEEL" x="-79.45" y="121.37354916796389" vx="16.66666666666667" vy="-25.71736528055556" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
+  <Circle name="Object 17" color="-65536" material="STEEL" x="-12.567142857142859" y="109.95466027907501" vx="-12.857142857142856" vy="-23.018952582142862" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
+  <Circle name="Object 18" color="-65536" material="STEEL" x="-10.353571428571428" y="-1.990339720925" vx="-10.714285714285715" vy="26.26676170357143" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
+  <Circle name="Object 19" color="-65536" material="STEEL" x="31.72571428571429" y="33.18180313621786" vx="-34.285714285714285" vy="9.838190275" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
+  <Circle name="Object 20" color="-65536" material="STEEL" x="-87.36214285714286" y="2.224660279075" vx="15.0" vy="24.123904560714283" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
+  <Circle name="Object 21" color="-65536" material="STEEL" x="-99.55928571428572" y="53.471803136217865" vx="35.000000000000014" vy="-3.018952582142861" mass="10.0" radius="8.0" rotation="0.0" pinned="false" />
 </Scene>

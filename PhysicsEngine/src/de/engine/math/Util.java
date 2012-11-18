@@ -275,7 +275,7 @@ public class Util
         
         if (s2 >= 0 && s2 <= 1 && s1 >= 0 && s1 <= 1)
         {
-            return new Vector(pos1n.getX() + s1 * edge1n.getX(), pos1n.getX() + s1 * edge1n.getX());
+            return new Vector(pos1n.getX() + s1 * edge1n.getX(), pos1n.getY() + s1 * edge1n.getY());
         }
         
         return null;
