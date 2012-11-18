@@ -166,7 +166,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
         }
         // show angle if alt is pressed
-        else if (hasSelection && GuiUtil.isLeftButton(e, false, false, true))
+        else if (hasSelection && (GuiUtil.isLeftButton(e, false, false, true) || 
+                GuiUtil.isLeftButton(e, true, true, false)))
         {
             AngleViewer angleViewer = new AngleViewer(pModel.getSelectedObject());
             ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_ANGLE_VIEWER, angleViewer);
@@ -250,7 +251,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             pModel.fireRepaint();
         }
         // if alt is pressed modify the object's angle (except in playback mode)
-        else if (hasSelection && GuiUtil.isLeftButton(e, false, false, true) && 
+        else if (hasSelection && (GuiUtil.isLeftButton(e, false, false, true) || 
+                GuiUtil.isLeftButton(e, true, true, false)) && 
                 !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
         {
             double x = cursor.getX() - pModel.getSelectedObject().getX();
@@ -280,46 +282,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             pModel.fireRepaint();
         }
         
-        if (SwingUtilities.isLeftMouseButton(e) && !e.isShiftDown() && pModel.getSelectedObject() != null)
-        {
-         // if ctrl is pressed modify the velocity vector (except in playback mode)
-            if (e.isControlDown() && !e.isShiftDown() && !e.isAltDown() && 
-                    !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
-            {
-                // set new velocity
-                pModel.getSelectedObject().velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
-                pModel.fireObjectUpdated(pModel.getSelectedObject());
-                pModel.fireRepaint();
-            }
-            // else modify the object's position in the scene (except in playback mode)
-            else if (dragDelay != null && dragDelay.isDone() && !e.isControlDown() && !e.isShiftDown() && 
-                    !e.isAltDown() && !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
-            {
-                pModel.getSelectedObject().world_position.translation = cursor;
-                pModel.fireObjectUpdated(pModel.getSelectedObject());
-                pModel.fireRepaint();
-            }
-        }
-        // right mouse button moves the view offset
-        else if (SwingUtilities.isRightMouseButton(e))
-        {
-            pModel.moveViewOffset(e.getX() - mouseOffset.x, e.getY() - mouseOffset.y);
-            mouseOffset.x = e.getPoint().x;
-            mouseOffset.y = e.getPoint().y;
-            
-            // refresh canvas
-            pModel.fireRepaint();
-        }
-        // middle mouse button or left mouse + shift button modifies the object's radius
-        // (except in playback mode)
-        else if ((SwingUtilities.isMiddleMouseButton(e) || (SwingUtilities.isLeftMouseButton(e) && 
-                e.isShiftDown())) && pModel.getSelectedObject() != null && 
-                !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
-        {
-            pModel.getSelectedObject().setRadius(Util.distance(pModel.getSelectedObject().getPosition(), cursor));
-            pModel.fireObjectUpdated(pModel.getSelectedObject());
-            pModel.fireRepaint();
-        }
     }
     
     
@@ -462,7 +424,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         {
             pModel.setZoom(wheel - 8.0, e.getPoint());
         }
-        
         
         pModel.fireRepaint();
     }
