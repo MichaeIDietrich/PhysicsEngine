@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene version="1.1" gravitation="9.81">
+  <Circle name="Object 0" color="-65536" material="STEEL" x="-250.0" y="150.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 1" color="-65536" material="STEEL" x="-250.0" y="100.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 2" color="-65536" material="STEEL" x="-250.0" y="50.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 3" color="-65536" material="STEEL" x="-250.0" y="200.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 4" color="-65536" material="STEEL" x="-250.0" y="250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 5" color="-65536" material="STEEL" x="57.142857142857146" y="15.714285714285715" vx="-28.571428571428573" vy="22.85714285714286" mass="10.0" radius="80.62257748298549" rotation="7.105377454759833E-18" pinned="false" />
+  <Circle name="Object 18" color="-65536" material="STEEL" x="-250.0" y="-0.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 19" color="-65536" material="STEEL" x="-250.0" y="-50.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 20" color="-65536" material="STEEL" x="-250.0" y="-100.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 21" color="-65536" material="STEEL" x="-250.0" y="-150.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 22" color="-65536" material="STEEL" x="-250.0" y="-200.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 23" color="-65536" material="STEEL" x="-250.0" y="-250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 24" color="-65536" material="STEEL" x="-200.0" y="250.00000000000003" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 25" color="-65536" material="STEEL" x="-150.0" y="250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 26" color="-65536" material="STEEL" x="-100.0" y="250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 27" color="-65536" material="STEEL" x="-50.0" y="250.00000000000003" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 28" color="-65536" material="STEEL" x="0.0" y="250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 29" color="-65536" material="STEEL" x="50.0" y="250.00000000000003" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 30" color="-65536" material="STEEL" x="100.0" y="250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 31" color="-65536" material="STEEL" x="150.0" y="250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 32" color="-65536" material="STEEL" x="200.0" y="250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 33" color="-65536" material="STEEL" x="250.00000000000003" y="250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 34" color="-65536" material="STEEL" x="250.00000000000003" y="200.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 35" color="-65536" material="STEEL" x="250.0" y="150.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 36" color="-65536" material="STEEL" x="250.0" y="100.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 37" color="-65536" material="STEEL" x="250.00000000000003" y="50.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 38" color="-65536" material="STEEL" x="250.00000000000003" y="0.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 39" color="-65536" material="STEEL" x="250.00000000000003" y="-50.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 40" color="-65536" material="STEEL" x="250.00000000000003" y="-100.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 41" color="-65536" material="STEEL" x="250.00000000000003" y="-150.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 42" color="-65536" material="STEEL" x="250.00000000000003" y="-200.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 43" color="-65536" material="STEEL" x="250.0" y="-250.00000000000003" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 44" color="-65536" material="STEEL" x="200.0" y="-250.00000000000003" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 45" color="-65536" material="STEEL" x="-200.0" y="-250.00000000000003" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 46" color="-65536" material="STEEL" x="-150.0" y="-250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 47" color="-65536" material="STEEL" x="-100.0" y="-250.00000000000003" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 48" color="-65536" material="STEEL" x="-50.0" y="-250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 49" color="-65536" material="STEEL" x="0.0" y="-250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 50" color="-65536" material="STEEL" x="50.0" y="-250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 51" color="-65536" material="STEEL" x="100.0" y="-250.0" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+  <Circle name="Object 52" color="-65536" material="STEEL" x="150.0" y="-250.00000000000003" vx="0.0" vy="0.0" mass="10.0" radius="8.0" rotation="0.0" pinned="true" />
+</Scene>

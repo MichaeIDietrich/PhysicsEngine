@@ -21,7 +21,7 @@ public class Main
             switch (args[index].toLowerCase())
             {
                 case "-grid":
-                    config.setState(GRID, true);
+                    config.setState(STG_GRID, true);
                     break;
                     
                 case "-zoom":
@@ -47,7 +47,7 @@ public class Main
                 case "-lang":
                     if (++index < args.length)
                     {
-                        config.setProperty(LANGUAGE_CODE, args[index]);
+                        config.setProperty(PRP_LANGUAGE_CODE, args[index]);
                     }
                     else
                     {
@@ -56,17 +56,17 @@ public class Main
                     break;
                     
                 case "-debug":
-                    config.setState(DEBUG, true);
+                    config.setState(STG_DEBUG, true);
                     break;
                     
                 case "-nodebug":
-                    config.setState(DEBUG, false);
+                    config.setState(STG_DEBUG, false);
                     break;
                     
                 case "-skin":
                     if (++index < args.length)
                     {
-                        config.setProperty(SKIN, args[index]);
+                        config.setProperty(PRP_SKIN, args[index]);
                     }
                     else
                     {

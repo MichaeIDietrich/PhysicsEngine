@@ -28,13 +28,13 @@ public final class Playback extends AsyncWorker
             {
                 while (!this.isInterrupted())
                 {
-                    int currentFrame = Integer.parseInt(pModel.getProperty(CURRENT_PLAYBACK_FRAME));
+                    int currentFrame = Integer.parseInt(pModel.getProperty(PRP_CURRENT_PLAYBACK_FRAME));
                     
                     if (++currentFrame >= Recorder.getInstance().getFrameCount())
                     {
                         currentFrame = 1;
                     }
-                    pModel.setProperty(CURRENT_PLAYBACK_FRAME, "" + currentFrame);
+                    pModel.setProperty(PRP_CURRENT_PLAYBACK_FRAME, "" + currentFrame);
                     
                     try
                     {

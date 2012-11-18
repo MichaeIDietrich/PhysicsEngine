@@ -8,8 +8,8 @@
   <String id="MATERIAL">Objektmaterial</String>
   <String id="X_COORDINATE">x-Koordinate</String>
   <String id="Y_COORDINATE">y-Koordinate</String>
-  <String id="X_VELOCITY">&lt;html&gt;v&lt;sub&gt;x&lt;/sub&gt; in m/s&lt;/html&gt;</String>
-  <String id="Y_VELOCITY">&lt;html&gt;v&lt;sub&gt;y&lt;/sub&gt; in m/s&lt;/html&gt;</String>
+  <String id="X_VELOCITY"><html>v<sub>x</sub> in m/s</html></String>
+  <String id="Y_VELOCITY"><html>v<sub>y</sub> in m/s</html></String>
   <String id="MASS">Masse in kg</String>
   <String id="RADIUS">Radius</String>
   <String id="POT_ENERGY">Potenzielle Energie: </String>
@@ -37,9 +37,11 @@
   <String id="PHYSICS_MODE">Physik-Modus</String>
   <String id="RECORDING_MODE">Physik-Aufnahme-Modus</String>
   <String id="PLAYBACK_MODE">Wiedergabe-Modus</String>
-  <String id="WRONG_VERSION">&lt;html&gt;Die Datei wurde nicht mit derselben Programmversion erstellt wie die laufende Programmversion.&lt;br/&gt;Dies kann zu Problemen führen.&lt;br/&gt;Möchten Sie trotzdem fortfahren?&lt;/html&gt;</String>
+  <String id="WRONG_VERSION"><html>Die Datei wurde nicht mit derselben Programmversion erstellt wie die laufende Programmversion.<br/>Dies kann zu Problemen führen.<br/>Möchten Sie trotzdem fortfahren?</html></String>
   <String id="TITLE_IMPORT">Datei-Import</String>
   <String id="OBJECTS">Objekte</String>
+  <String id="HELP">Hilfe</String>
+  <String id="ABOUT">Über</String>
   
   <!--  Tooltips -->
   <String id="TT_NEW">Erstellt eine neue Szene</String>
@@ -57,5 +59,24 @@
   <String id="TT_SQUARE">Platziert ein Viereck an einer beliebigen Stelle in der Szene</String>
   <String id="TT_GROUND">Platziert eine Funktion als Begrenzungsboden in der Szene</String>
   <String id="TT_DISCARD">Löscht die bestehende Aufnahme</String>
+  <String id="TT_HELP">Hilfe zur Oizys Physics Engine anzeigen</String>
+  <String id="TT_ABOUT">Über Oizys Physics Engine</String>
+  
+  
+  <String id="ABOUT_TEXT">
+    <html>
+      <h1 style="color:#404040;">Oizys Physics Engine</h1>
+      %s.%s.%s<br/><br/>
+      Bei der Oizys Physics Engine handelt es sich<br/>
+      um eine Anwendung zur Darstellung<br/>
+      von physikalischen Gesetzmäßigkeiten in Echtzeit.<br/><br/>
+      Die Anwendung steht unter der GPL.<br/><br/>
+      <h4>Entwicklerteam:</h4>
+      <div style="text-indent:10px;"/>● Johannes Hackel<br/>
+      <div style="text-indent:10px;"/>● Carsten Krahl<br/>
+      <div style="text-indent:10px;"/>● Tim Illner<br/>
+      <div style="text-indent:10px;"/>● Michael Dietrich
+    </html>
+  </String>
   
 </Localization>

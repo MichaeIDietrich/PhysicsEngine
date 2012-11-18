@@ -33,13 +33,13 @@ public class Configuration implements Serializable, Cloneable, StorageListener, 
         
         // set default values
         zoom = 1.0;
-        states.put(GRID, false);
-        states.put(MAXIMIZED, false);
-        states.put(DBLCLICK_SHOW_PROPERTIES, false);
-        states.put(DEBUG, false);
-        states.put(SHOW_ARROWS_ALWAYS, false);
-        properties.put(LANGUAGE_CODE, null);
-        properties.put(LOOK_AND_FEEL, null);
+        states.put(STG_GRID, false);
+        states.put(STG_MAXIMIZED, false);
+        states.put(STG_DBLCLICK_SHOW_PROPERTIES, false);
+        states.put(STG_DEBUG, false);
+        states.put(STG_SHOW_ARROWS_ALWAYS, false);
+        properties.put(PRP_LANGUAGE_CODE, null);
+        properties.put(PRP_LOOK_AND_FEEL, null);
     }
     
     

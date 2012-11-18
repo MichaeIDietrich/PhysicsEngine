@@ -1,8 +1,12 @@
 package de.engineapp.util;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.io.*;
+import java.util.*;
+import java.util.List;
+import java.util.zip.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 public final class Util
@@ -14,7 +18,7 @@ public final class Util
     static
     {
         iconMap = new HashMap<>();
-        root = "data/images/";
+        root = "images/";
         path = "default/";
     }
     
@@ -28,17 +32,17 @@ public final class Util
         
         if (icon == null)
         {
-            icon = new ImageIcon(root + id + ".png");
+            icon = loadImage(root + id + ".png");
             
-            if (icon.getImageLoadStatus() == MediaTracker.COMPLETE)
+            if (icon != null)
             {
                 iconMap.put(id, icon);
             }
             else
             {
-                icon = new ImageIcon(root + path + id + ".png");
+                icon = loadImage(root + path + id + ".png");
                 
-                if (icon.getImageLoadStatus() == MediaTracker.COMPLETE)
+                if (icon != null)
                 {
                     iconMap.put(id, icon);
                 }
@@ -66,24 +70,139 @@ public final class Util
     }
     
     
-    public static String getSourcePath()
+    private static ImageIcon loadImage(String path)
+    {
+        try
+        {
+            InputStream stream = getResource(path);
+            
+            if (stream != null)
+            {
+                ImageIcon icon = new ImageIcon(ImageIO.read(stream));
+                
+                if (icon.getImageLoadStatus() == MediaTracker.COMPLETE)
+                {
+                    return icon;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        return null;
+    }
+    
+    
+    public static String getImageSourcePath()
     {
         return path;
     }
     
-    public static void setSourcePath(String path)
+    public static void setImageSourcePath(String path)
     {
         Util.path = path.endsWith("/") ? path : path + "/";
     }
     
     
-    public static String getRootPath()
+    public static String getImageRootPath()
     {
         return root;
     }
     
-    public static void setRootPath(String path)
+    public static void setImageRootPath(String path)
     {
         Util.root = path.endsWith("/") ? path : path + "/";
+    }
+    
+    
+    public static InputStream getResource(String name)
+    {
+        if (name.charAt(0) != '/')
+        {
+            name = "/" + name;
+        }
+        
+        return Util.class.getResourceAsStream(name);
+    }
+    
+    
+    public static boolean resourceExists(String name)
+    {
+        if (name.charAt(0) != '/')
+        {
+            name = "/" + name;
+        }
+        
+        return Util.class.getResource(name) != null;
+    }
+    
+    
+    public static String[] getResources(String path)
+    {
+        if (path == null)
+        {
+            path = new String();
+        }
+        
+        if (path.length() > 0 && path.charAt(0) == '/')
+        {
+            path = path.substring(1);
+        }
+        
+        try
+        {
+            String classPath = System.getProperty("java.class.path");
+//            String classPath = "C:\\Users\\Micha\\Desktop\\pe.jar";
+            
+            if (classPath.endsWith(".jar"))
+            {
+                ZipFile zipFile = new ZipFile(classPath);
+                
+                List<String> entries = new ArrayList<>();
+                
+                for (ZipEntry entry : Collections.list(zipFile.entries()))
+                {
+                    String name = entry.getName();
+                    if (name.startsWith(path))
+                    {
+                        String res = name.substring(path.length() + 1);
+                        int i = res.indexOf('/');
+                        
+                        if (i == -1)
+                        {
+                            if (res.length() > 0)
+                            {
+                                entries.add(res);
+                            }
+                        }
+                        else
+                        {
+                            res = res.substring(0, i);
+                            
+                            if (!entries.contains(res))
+                            {
+                                entries.add(res);
+                            }
+                        }
+                    }
+                }
+                
+                zipFile.close();
+                
+                return entries.toArray(new String[entries.size()]);
+            }
+            else
+            {
+                return new File("resources/" + path).list();
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        return null;
     }
 }

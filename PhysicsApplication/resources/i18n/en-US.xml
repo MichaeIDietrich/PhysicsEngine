@@ -40,6 +40,8 @@
   <String id="WRONG_VERSION">&lt;html&gt;The file version differs from the application version.&lt;br/&gt;This may lead to problems.&lt;br/&gt;Do you want to continue?&lt;/html&gt;</String>
   <String id="TITLE_IMPORT">File Import</String>
   <String id="OBJECTS">Objects</String>
+  <String id="HELP">Help</String>
+  <String id="ABOUT">About</String>
   
   
   <!--  Tooltips -->
@@ -58,5 +60,22 @@
   <String id="TT_SQUARE">Places a square at any location in the scene</String>
   <String id="TT_GROUND">Places a function bordering the ground in the scene</String>
   <String id="TT_DISCARD">Deletes the current Record</String>
+  <String id="TT_HELP">Show help about Oizys Physics Engine</String>
+  <String id="TT_ABOUT">About Oizys Physics Engine</String>
   
+  
+  <String id="ABOUT_TEXT">
+    <html>
+      <h1 style="color:#404040;">Oizys Physics Engine</h1>
+      %s.%s.%s<br/><br/>
+      The Oizys Physics Engine is an application<br/>
+      that represents physical laws in real time.<br/><br/>
+      This application is licensed under the GPL.<br/><br/>
+      <h4>Contributers:</h4>
+      <div style="text-indent:10px;"/>● Johannes Hackel<br/>
+      <div style="text-indent:10px;"/>● Carsten Krahl<br/>
+      <div style="text-indent:10px;"/>● Tim Illner<br/>
+      <div style="text-indent:10px;"/>● Michael Dietrich
+    </html>
+  </String>
 </Localization>
