@@ -13,6 +13,7 @@ public class Util
     private static Vector function = new Vector();
     private static double m = 0;
     private static double n = 0;
+    public  static double used_m = 0;
     private static Double[] radius = new Double[3];
     private static double diff_x = 0;
     private static double diff_y = 0;
@@ -72,9 +73,38 @@ public class Util
         if (object.velocity.getX() == 0)
             return object.getPosition().getX();
         
-        // m = slope, n = shift in y, linear function
-        m = object.velocity.getY() / object.velocity.getX();
-        n = object.getPosition().getY();
+        if (!set_slope) 
+        {
+            // m = slope, n = shift in y, linear function
+            m = object.velocity.getY() / object.velocity.getX();
+            n = object.getPosition().getY();
+            
+            sign = (object.velocity.getY()<0) ? 1 : -1;
+        }
+        
+        if (m<=0.15 && m>=-0.15) 
+        {
+            double oldm = m;
+          
+            set_slope = true;
+          
+            m = 0.16;
+            n = object.getPosition().getY();
+            sign = object.velocity.getX()>=0 ? -1 :  1;
+            double i1 = newtonIteration();
+          
+            m = -0.16;
+            n = object.getPosition().getY();
+            sign = object.velocity.getX()>=0 ?  1 : -1;
+            double i2 = newtonIteration();
+            
+            if (object.velocity.getX()>=0 && i1<object.getPosition().getX()) i1=i2;
+            
+            set_slope = false;
+//            System.out.println( "i1="+i1 +" | i1="+ i2);
+          
+            return i1 + Math.abs(i1-i2) * ((oldm-0.15)/0.32);
+        } 
         
         // for calculating a pair of tangents right and left beside the main vector of the sphere
         alpha = Math.atan( m );
@@ -88,8 +118,6 @@ public class Util
         radius[1] = 0d;
         radius[2] = +object.getRadius();
 
-        sign = (object.velocity.getY()<0) ? 1 : -1;
-        
         for (int p = 0; p < 3; p++)
         {
             old_distance = new_distance;
@@ -108,7 +136,11 @@ public class Util
             
             // returns the intersection coordinate with the shortest distance between circle an ground
             if (new_distance < old_distance)
+            {
                 result = xn;
+                used_m = m;
+            }
+                
         }
         return result;
     }
