@@ -25,12 +25,10 @@ public class CollisionTimer
     
     public static Double getCirclesCollTime(Circle o1, Circle o2, double begin, double end)
     {
-        //double start_time = (o1.frametime > o2.frametime) ? o1.frametime : o2.frametime;
         double distance = Util.minus(o1.getPosition(begin), o2.getPosition(begin)).getLength();
         double min_distance = o1.getRadius() + o2.getRadius();
         double velocity = Util.minus(o1.velocity, o2.velocity).getLength();
         double coll_time = ((distance - min_distance) / velocity) + begin;
-        //double after_distance = Util.minus(o1.getPosition(coll_time), o2.getPosition(coll_time)).getLength();
         //TODO: (distance - 0.01) not beautiful
         if (coll_time > end || coll_time < begin || (distance - 0.01) < Util.minus(o1.getPosition(coll_time), o2.getPosition(coll_time)).getLength())
             return null;
