@@ -2,7 +2,6 @@ package de.engine.physics;
 
 import de.engine.colldetect.CollisionData;
 import de.engine.colldetect.CollisionData.Contact;
-import de.engine.colldetect.ContactCreator;
 import de.engine.math.Util;
 import de.engine.math.Vector;
 import de.engine.objects.Circle;
@@ -76,6 +75,12 @@ public class PhysicsCalcer
                 resolveContact(o1, o2, collTime, cd.contacts.get(0));
                 resolveContact(o1, o2, collTime, cd.contacts.get(1));
             }
+        }
+        else if (cd.contacts.size() == 4)
+        {
+
+            Contact c = new Contact(Util.add(cd.contacts.get(0).point, cd.contacts.get(1).point).scale(0.5), Util.add(cd.contacts.get(0).normal, cd.contacts.get(1).normal).getUnitVector());
+            resolveContact(o1, o2, collTime, c);
         }
     }
     
