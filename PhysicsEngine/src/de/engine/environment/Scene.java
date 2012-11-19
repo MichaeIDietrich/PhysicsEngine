@@ -13,6 +13,8 @@ public class Scene implements Cloneable
     // ground is unique thats why it has it's own property
     protected Ground ground;
     
+    public double gravitational_acceleration = -9.80665; // m/s²
+    
     
     public Scene()
     {
