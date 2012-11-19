@@ -14,16 +14,11 @@ public class Vector implements Cloneable
     
     private double x;
     private double y;
-    
-    private Double value[] = new Double[2];
   
     public Vector()
     {
         x = 0.0;
         y = 0.0;
-        
-        this.value[0] = 0d;
-        this.value[1] = 0d;
         
         calcLength = true;
         length = 0.0;
@@ -33,9 +28,6 @@ public class Vector implements Cloneable
     {
         this.x = x;
         this.y = y;
-        
-        this.value[0] = x;
-        this.value[1] = y;
         
         calcLength = false;
     }
@@ -142,12 +134,20 @@ public class Vector implements Cloneable
     // import from numeric project is major essential for jakobiMatrix calculation
     public Double get(int index)
     {
-        return value[index];
+        if(index == 0)
+            return x;
+        else if(index == 1)
+            return y;
+        else
+            return null;
     }
     
     public void set(int index, Double value)
     {
-        this.value[index] = value;
+        if(index == 0)
+            x = value;
+        else if(index == 1)
+            y = value;
     }
     
     public Double norm( Integer n ) throws RuntimeException 
@@ -162,35 +162,33 @@ public class Vector implements Cloneable
     {
         Double sum = 0d;
         Double max = 0d;
-
-        for(int i=0; i < 2; i++) 
-        {
-            sum = Math.abs( get(i) );
-            if ( max.compareTo( sum ) == -1 ) max = sum;
-        }
+        sum = Math.abs(x);
+        if ( max.compareTo( sum ) == -1 ) max = sum;
+        sum = Math.abs(y);
+        if ( max.compareTo( sum ) == -1 ) max = sum;
         return max;
     }
     
     
     private Double eunorm() 
     {
-        Double euklidNorm = 0d;
+        return getLength();
+        /*Double euklidNorm = 0d;
         Double        sum = 0d;
         
         for(int i=0; i < 2; i++) sum = sum + get(i)*get(i);
         
         euklidNorm = Math.sqrt( sum );
         
-        return euklidNorm;
+        return euklidNorm;*/
     }
     
     
     public Vector setUnitVector(Vector vector) 
     {
-        for(int i=0; i < 2; i++) 
-        {
-            vector.set(i, 1d);
-        }
+        vector.x = 1;
+        vector.y = 1;
+        
         return vector;
     }
     
@@ -198,15 +196,10 @@ public class Vector implements Cloneable
     @Override
     public Vector clone()
     {
-        Vector copy = new Vector();
+        Vector copy = new Vector(this.x, this.y);
         
-        for (int i = 0; i < 2; i++)
-        {
-            copy.set(i, get(i));
-        }
-        
-        copy.x = this.x;
-        copy.y = this.y;
+        copy.calcLength = this.calcLength;
+        copy.length = this.length;
         
         return copy;
     }
@@ -215,7 +208,8 @@ public class Vector implements Cloneable
     public Double[] toDoubleArray() 
     {
         Double x[] = new Double[2];
-        for(int i=0; i < 2; i++) x[i] = get(i).doubleValue();
+        x[0] = this.x;
+        x[1] = this.y;
         
         return x;
     }
@@ -229,22 +223,12 @@ public class Vector implements Cloneable
     
     public Vector multi( Double value)
     {
-        Vector v = new Vector();
-        for (int i = 0; i < 2; i++)
-        {
-            v.set(i, this.value[i] * value);
-        }
-        return v;
+        return new Vector(this.x * value, this.y * value);
     }
     
     public Vector addit(Vector vector)
     {
-        Vector v = new Vector();
-        for (int i = 0; i < 2; i++)
-        {
-            v.set(i, this.value[i] + vector.get(i));
-        }
-        return v;
+        return new Vector(this.x + vector.x, this.y + vector.y);
     }
     
     /**
