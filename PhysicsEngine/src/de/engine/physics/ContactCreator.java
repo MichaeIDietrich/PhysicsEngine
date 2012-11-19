@@ -2,62 +2,64 @@ package de.engine.physics;
 
 import java.util.ArrayList;
 
-import de.engine.colldetect.CollisionData;
-import de.engine.colldetect.CollisionData.Contact;
 import de.engine.math.Util;
 import de.engine.math.Vector;
+import de.engine.objects.Circle;
 import de.engine.objects.Polygon;
 
 public class ContactCreator
 {
-    public static void getCirclesContact(CollisionData cd)
+    public static class Contact
     {
-        Vector pos_o2 = cd.o2.getPosition(cd.time);
-        Vector pos_o1 = cd.o1.getPosition(cd.time);
+        public Vector point;
+        public Vector normal;
+        public Contact(Vector point, Vector normal)
+        {
+            this.point = point;
+            this.normal = normal;
+        }
+    }
+    
+    public static Contact getCirclesContact(Circle o1, Circle o2, double time)
+    {
+        Vector pos_o2 = o2.getPosition(time);
+        Vector pos_o1 = o1.getPosition(time);
         Vector dist = Util.minus(pos_o1, pos_o2);
         Vector normal = dist.getUnitVector();
-        Vector coll_point = Util.add(pos_o2, dist.scale(cd.o2.getRadius() / dist.getLength()));
-        cd.contacts.add(new Contact(coll_point, normal));
+        Vector coll_point = Util.add(pos_o2, dist.scale(o2.getRadius() / dist.getLength()));
+        return new Contact(coll_point, normal);
         
     }
     
-    public static void getCirclePolygonContact(CollisionData cd)
+    public static Contact getCirclePolygonContact(Circle o1, Polygon o2, double time)
     {
-        Vector circle_pos = cd.o1.getPosition(cd.time);
-        for (int i = 0; i < ((Polygon)cd.o2).points.length; i++)
+        Vector circle_pos = o1.getPosition(time);
+        for (int i = 0; i < o2.points.length; i++)
         {
-            int j = (i == (((Polygon)cd.o2).points.length - 1)) ? 0 : i + 1;
-            Vector point_pos = ((Polygon)cd.o2).getWorldPointPos(i, cd.time);
-            Vector edge_ray = Util.minus(((Polygon)cd.o2).getWorldPointPos(j, cd.time), point_pos);
+            int j = (i == (o2.points.length - 1)) ? 0 : i + 1;
+            Vector point_pos = o2.getWorldPointPos(i, time);
+            Vector edge_ray = Util.minus(o2.getWorldPointPos(j, time), point_pos);
             Vector pos_ray = edge_ray.getNormalVector().getUnitVector();
             
-            Vector coll_point = Util.crossEdges(circle_pos, Util.scale(pos_ray, -1 * cd.o1.getRadius()), point_pos, edge_ray);
+            Vector coll_point = Util.crossEdges(circle_pos, Util.scale(pos_ray, -1 * o1.getRadius()), point_pos, edge_ray);
             if (coll_point != null)
             {
-                cd.contacts.add(new Contact(coll_point, pos_ray));
-                return;
+                return new Contact(coll_point, pos_ray);
             } else {
                 Vector point_col = Util.minus(point_pos, circle_pos);
-                if(point_col.getLength() <= cd.o1.getRadius()){
-                    cd.contacts.add(new Contact(point_pos, point_col.getUnitVector()));
-                    return;
+                if(point_col.getLength() <= o1.getRadius()){
+                    return new Contact(point_pos, point_col.scale(-1.0).getUnitVector());
                 }
             }
         }
+        return null;
     }
     
-    public static void getPolygonsContact(CollisionData cd)
+    public static ArrayList<Contact> getPolygonsContact(Polygon o1, Polygon o2, double time)
     {
-        ArrayList<Contact> contacts = searchContact((Polygon)cd.o1, (Polygon)cd.o2, cd.time);
-        for (Contact contact : contacts)
-        {
-            cd.contacts.add(contact);
-        }
-        contacts = searchContact((Polygon)cd.o2, (Polygon)cd.o1, cd.time);
-        for (Contact contact : contacts)
-        {
-            cd.contacts.add(contact);
-        }
+        ArrayList<Contact> contacts = searchContact(o1, o2, time);
+        contacts.addAll(searchContact(o2, o1, time));
+        return contacts;
     }
     
     private static ArrayList<Contact> searchContact(Polygon o1, Polygon o2, double time)

@@ -22,14 +22,18 @@ public class EnvProps
     
     static EnvProps instance;
     
+    private Scene scene;
+    
     public double deltaTime;
     
-    public double gravitational_acceleration = -9.80665; // m/s²
+    public double default_gravitational_acceleration = -9.80665; // m/s²
     
+    public double default_environment_friction = 0;
     
     private EnvProps()
     {
-        deltaTime = 0.5;
+        deltaTime = 0.033;
+        scene = null;
     }
     
     public static EnvProps getInstance()
@@ -39,15 +43,34 @@ public class EnvProps
         return instance;
     }
     
-    public static double deltaTime() {
+    public static void setScene(Scene scene)
+    {
+        getInstance().scene = scene;
+    }
+    
+    public static double deltaTime()
+    {
         return getInstance().deltaTime;
     }
     
-    public static void deltaTime(double deltaTime) {
+    public static void deltaTime(double deltaTime)
+    {
         getInstance().deltaTime = deltaTime;
     }
-
-    public static double grav_acc() {
-        return getInstance().gravitational_acceleration;
+    
+    public static double grav_acc()
+    {
+        if (getInstance().scene != null)
+            return getInstance().scene.gravitational_acceleration;
+        else
+            return getInstance().default_gravitational_acceleration;
+    }
+    
+    public static double friction()
+    {
+        if (getInstance().scene != null)
+            return getInstance().scene.getEnvironmentFriction();
+        else
+            return getInstance().default_environment_friction;
     }
 }
