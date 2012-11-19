@@ -22,20 +22,23 @@ public abstract class ObjectProperties implements Cloneable
         }
     };
     
-    public double frametime = 0;
+    private double frametime = 0;
     
-    public double next_time = 0;
+    public double getFrameTime()
+    {
+        if(isPinned)
+            return 0;
+        return frametime;
+    }
     
     public double getTime()
     {
         return EnvProps.deltaTime() - frametime;
-        
     }
     
     public double getTime(double time)
     {
         return time - frametime;
-        
     }
     
     public boolean isPinned = false;
@@ -62,6 +65,8 @@ public abstract class ObjectProperties implements Cloneable
     
     public Vector getPosition(double time)
     {
+        if(isPinned)
+            return getPosition();
         double localtime = getTime(time);
         return Util.add(world_position.translation, new Vector((velocity.getX() * localtime), ((EnvProps.grav_acc() / 2d * localtime + velocity.getY()) * localtime)));
     }
@@ -100,9 +105,6 @@ public abstract class ObjectProperties implements Cloneable
     
     public Vector velocity = null;
     public double angular_velocity;
-    
-    public Vector next_velocity = new Vector();
-    public double next_angular_velocity;
     
     public Vector momentum = null;
     public Vector normal_force = null;
@@ -177,9 +179,6 @@ public abstract class ObjectProperties implements Cloneable
         kinetic_energy = 0.5 * mass * Math.abs( this.velocity.getX() );
         
         frametime = 0;
-        
-        next_velocity = velocity;
-        next_angular_velocity = angular_velocity;
     }
     
     public void update(double time)
@@ -191,9 +190,6 @@ public abstract class ObjectProperties implements Cloneable
         velocity.add(0, EnvProps.grav_acc() / 2d * localtime);
         world_position.rotation.setAngle(world_position.rotation.getAngle() + angular_velocity * localtime);
         frametime = time;
-        
-        velocity = next_velocity;
-        angular_velocity = next_angular_velocity;
     }
     
     @Override
