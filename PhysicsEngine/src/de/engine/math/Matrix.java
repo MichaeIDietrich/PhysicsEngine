@@ -12,22 +12,21 @@ public class Matrix
     private int rows = 2;
     private int cols = 2;
     
-	double d11, d12, d21, d22;
 	Double values[][] = new Double[2][2];
 	
 	public Matrix() {
 	}
 
 	public Matrix(double d11, double d12, double d21, double d22) {
-		this.d11 = d11;
-		this.d12 = d12;
-		this.d21 = d21;
-		this.d22 = d22;
+	    values[0][0] = d11;
+	    values[0][1] = d12;
+	    values[1][0] = d21;
+	    values[1][1] = d22;
 	}
 	
 	public Vector multVector(Vector vec) {
-		return new Vector(d11 * vec.getX() + d12 * vec.getY(),
-				d21 * vec.getX() + d22 * vec.getY());
+		return new Vector(values[0][0] * vec.getX() + values[0][1] * vec.getY(),
+		        values[1][0] * vec.getX() + values[1][1] * vec.getY());
 	}
 	
 	
