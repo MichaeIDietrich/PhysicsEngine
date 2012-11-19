@@ -31,6 +31,7 @@ public class PhysicsEngine2D
     public void setScene(Scene scene)
     {
         this.scene = scene;
+        EnvProps.setScene(scene);
         this.collDetector = new CollisionDetector(scene);
     }
     
