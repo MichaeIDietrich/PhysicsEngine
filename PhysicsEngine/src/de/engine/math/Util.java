@@ -130,13 +130,13 @@ public class Util
     public static Double newFkt(Double x)
     {
         Vector function = functions(x);
-        return function.get(1) - function.get(0);
+        return function.getY() - function.getX();
     }
     
     public static Vector functions(Double x)
     {
-        function.set(0, m * (x - object.getPosition().getX() -diff_x) +n +diff_y );
-        function.set(1, ground.function(x) );
+        function.setX(m * (x - object.getPosition().getX() -diff_x) +n +diff_y );
+        function.setY( ground.function(x) );
 
         return function;
     }
