@@ -40,6 +40,7 @@ public class Configuration implements Serializable, Cloneable, StorageListener, 
         states.put(STG_SHOW_ARROWS_ALWAYS, false);
         properties.put(PRP_LANGUAGE_CODE, null);
         properties.put(PRP_LOOK_AND_FEEL, null);
+        properties.put(PRP_CURRENT_FILE, null);
     }
     
     

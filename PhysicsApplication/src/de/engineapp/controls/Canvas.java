@@ -4,8 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import de.engine.environment.Scene;
 import de.engine.math.*;
@@ -18,12 +17,42 @@ import de.engineapp.visual.Circle;
 import de.engineapp.visual.Ground;
 import de.engineapp.visual.Square;
 import de.engineapp.visual.decor.*;
+import de.engineapp.visual.decor.Box;
 
 import static de.engineapp.Constants.*;
 
 
-public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener, KeyListener, MouseWheelListener, StorageListener
+public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener, KeyListener, MouseWheelListener, StorageListener, ActionListener
 {
+    private static class ActionMapper
+    {
+        private JComponent component;
+        private ActionListener al;
+        
+        public ActionMapper(JComponent component, ActionListener al)
+        {
+            this.component = component;
+            this.al = al;
+        }
+        
+        
+        public void addAction(KeyStroke keyStroke, final String command)
+        {
+            component.getInputMap().put(keyStroke, command);
+            component.getActionMap().put(command, new AbstractAction()
+            {
+                private static final long serialVersionUID = -3408826290894454284L;
+                
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    al.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, command));
+                }
+            });
+        }
+    }
+    
+    
     private static final long serialVersionUID = -5320479580417617983L;
     
     
@@ -67,6 +96,11 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 pModel.fireRepaint();
             }
         });
+        
+        
+        ActionMapper actionMapper = new ActionMapper(this, this);
+        actionMapper.addAction(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), CMD_COPY);
+        actionMapper.addAction(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK), CMD_PASTE);
         
         // implement mouse (motion) listener to make navigating throw the scene
         // and manipulating objects possible
@@ -173,7 +207,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_ANGLE_VIEWER, angleViewer);
         }
         // if ctrl is pressed modify the velocity vector
-        else if (GuiUtil.isLeftButton(e, true, false, false))
+        else if (hasSelection && GuiUtil.isLeftButton(e, true, false, false))
         {
             // set new velocity
             pModel.getSelectedObject().velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
@@ -519,4 +553,30 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     
     @Override
     public void propertyChanged(String id, String value) { }
+    
+    
+    @Override
+    public void actionPerformed(ActionEvent e)
+    {
+        switch (e.getActionCommand())
+        {
+            case CMD_COPY:
+                if (pModel.getSelectedObject() != null)
+                {
+                    pModel.setCopiedObject(pModel.getSelectedObject());
+                }
+                break;
+                
+            case CMD_PASTE:
+                if (pModel.getCopiedObject() != null)
+                {
+                    ObjectProperties object = pModel.getCopiedObject().clone(false);
+                    object.setPosition(object.getX() + object.getRadius(), object.getY() + object.getRadius());
+                    pModel.setCopiedObject(object);
+                    pModel.addObject(object);
+                    pModel.fireRepaint();
+                }
+                break;
+        }
+    }
 }

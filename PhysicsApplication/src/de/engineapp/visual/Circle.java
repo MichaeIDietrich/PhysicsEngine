@@ -1,11 +1,11 @@
 package de.engineapp.visual;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.*;
 import java.util.*;
 
 import de.engine.math.Vector;
-import de.engineapp.PresentationModel;
+import de.engineapp.*;
 
 public class Circle extends de.engine.objects.Circle implements IDrawable, ISelectable, IDecorable, Cloneable
 {
@@ -75,6 +75,22 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
         {
             g.draw(circle);
         }
+        
+        
+        if (Configuration.getInstance().isState("debug"))
+        {
+            double r = this.getRadius();
+            double r2 = r * 2;
+            double x = this.getPosition().getX() - r;
+            double y = this.getPosition().getY() - r;
+            
+            double angle = -Math.toDegrees(this.getRotationAngle());
+            
+            Arc2D.Double arc = new Arc2D.Double(x, y, r2, r2, angle, -90, Arc2D.PIE);
+            
+            g.setColor(Color.BLACK);
+            g.fill(arc);
+        }
     }
     
     
@@ -143,13 +159,19 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
     @Override
     public Circle clone()
     {
+        return clone(true);
+    }
+    
+    @Override
+    public Circle clone(boolean cloneId)
+    {
         Circle newCircle = new Circle(null, this.getPosition(), this.getRadius());
         newCircle.name = this.name;
         newCircle.color = this.color;
         newCircle.border = this.border;
         newCircle.decorMap = this.decorMap;
         
-        super.clone(newCircle);
+        super.clone(newCircle, true);
         
         return newCircle;
     }

@@ -2,11 +2,11 @@ package de.engineapp;
 
 public interface Constants
 {
-    //software-version
+    // software-version
     public final static int MAJOR = 0;
     public final static int MINOR = 1;
     public final static int REVISION = 1;
-    public final static String FILE_VERSION = "1.1";
+    public final static String FILE_VERSION = "1.2";
     
     // properties, states (storage)
     public final static String STG_GRID = "grid";
@@ -16,6 +16,7 @@ public interface Constants
     public final static String STG_SHOW_ARROWS_ALWAYS = "showArrowsAlways";
     public final static String STG_DBLCLICK_SHOW_PROPERTIES = "dblClickshowProperties";
     
+    public final static String PRP_CURRENT_FILE = "currentFile";
     public final static String PRP_LOOK_AND_FEEL = "lookAndFeel";
     public final static String PRP_LANGUAGE_CODE = "langCode";
     public final static String PRP_OBJECT_MODE = "ObjectMode";
@@ -45,6 +46,8 @@ public interface Constants
     public final static String L_LANGUAGE = "LANGUAGE";
     public final static String L_OK = "OK";
     public final static String L_CANCEL = "CANCEL";
+    public final static String L_YES = "YES";
+    public final static String L_NO = "NO";
     public final static String L_OPEN = "OPEN";
     public final static String L_SAVE = "SAVE";
     public final static String L_TITLE_OPEN = "TITLE_OPEN";
@@ -67,6 +70,7 @@ public interface Constants
     public final static String L_ABOUT = "ABOUT";
     public final static String L_HELP = "HELP";
     public final static String L_ABOUT_TEXT = "ABOUT_TEXT";
+    public final static String L_OVERWRITE_FILE = "OVERWRITE_FILE";
     
     //tooltips
     public final static String TT_NEW = "TT_NEW";
@@ -112,6 +116,8 @@ public interface Constants
     public final static String CMD_CANCEL = "cancel";
     public final static String CMD_HELP = "help";
     public final static String CMD_ABOUT = "about";
+    public final static String CMD_COPY = "copy";
+    public final static String CMD_PASTE = "paste";
     
     // decor ID's
     public final static String DECOR_ARROW = "arrow";

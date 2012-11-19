@@ -73,6 +73,12 @@ public class Main
                         System.out.println("The Parameter next to '-skin' is missing");
                     }
                     break;
+                    
+                default:
+                    if (index == args.length - 1)
+                    {
+                        config.setProperty(PRP_CURRENT_FILE, args[index]);
+                    }
             }
         }
         

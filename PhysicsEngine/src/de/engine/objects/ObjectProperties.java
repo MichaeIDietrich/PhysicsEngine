@@ -194,6 +194,7 @@ public abstract class ObjectProperties implements Cloneable
     
     @Override
     public abstract ObjectProperties clone();
+    public abstract ObjectProperties clone(boolean cloneId);
     
     public abstract boolean contains(double x, double y);
 }

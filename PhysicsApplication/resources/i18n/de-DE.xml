@@ -21,6 +21,8 @@
   <String id="LANGUAGE">Sprache:</String>
   <String id="OK">OK</String>
   <String id="CANCEL">Abbrechen</String>
+  <String id="YES">Ja</String>
+  <String id="NO">Nein</String>
   <String id="OPEN">Öffnen</String>
   <String id="SAVE">Speichern</String>
   <String id="TITLE_OPEN">Szene öffnen...</String>
@@ -42,6 +44,8 @@
   <String id="OBJECTS">Objekte</String>
   <String id="HELP">Hilfe</String>
   <String id="ABOUT">Über</String>
+  <String id="OVERWRITE_FILE">Die Datei existiert bereits. Soll die Datei überschrieben werden?</String>
+  <String id="FILE_ACCESS_DENIED">Datei '%s' konnte nicht geladen werden.</String>
   
   <!--  Tooltips -->
   <String id="TT_NEW">Erstellt eine neue Szene</String>
