@@ -80,8 +80,15 @@ public class CollisionDetector
                 // calc distance by pythagoras
                 double c = Math.sqrt( Math.pow(x - object.getPosition().getX(), 2d) + Math.pow(y - object.getPosition().getY(), 2d) );
                 
-                System.out.println( Math.atan( Util.getAngle( object.velocity, new Vector(xn, Util.newFkt(xn)))));
-
+//                double angle = 180 * Util.getAngle( new Vector(xn-object.getPosition().getX(), Util.newFkt(xn)-object.getPosition().getY()), 
+//                                                    new Vector(1, -Util.derive1D( Util.newFkt(xn)))
+//                                                  ) / Math.PI;
+                
+                double angle = Util.used_m > -1d/Util.derive1D( Util.newFkt(xn) ) ? Math.atan(Util.used_m) - Math.atan( -1d/Util.derive1D(Util.newFkt(xn)) ) :  
+                                                                                Math.atan(-1d/Util.derive1D( Util.newFkt(xn))) - Math.atan(Util.used_m);
+                
+                System.out.println( Math.floor(180*angle*100d/Math.PI)/100d );
+                
                 // the faster the object, the ealier it must be stopped
                 double corrFactor = 0.01*Math.sqrt( object.velocity.getX()*object.velocity.getX() + object.velocity.getY()*object.velocity.getY());
 
