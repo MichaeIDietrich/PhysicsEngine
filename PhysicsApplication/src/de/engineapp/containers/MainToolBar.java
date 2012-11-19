@@ -12,22 +12,13 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
 import de.engine.environment.Scene;
-import de.engine.math.Vector;
-import de.engine.math.Rotation;
-import de.engine.objects.*;
-import de.engine.objects.ObjectProperties.Material;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.PresentationModel.ViewBoxListener;
 import de.engineapp.controls.*;
 import de.engineapp.rec.Playback;
 import de.engineapp.util.*;
-import de.engineapp.visual.*;
-import de.engineapp.visual.Circle;
-import de.engineapp.visual.Square;
-import de.engineapp.visual.Ground;
 import de.engineapp.windows.*;
-import de.engineapp.xml.*;
 
 import static de.engineapp.Constants.*;
 
@@ -74,6 +65,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     private DropDownButton modeButton;
     
     private Playback player;
+    
+    private SceneManager sceneManager;
     
     
     public MainToolBar(PresentationModel model)
@@ -138,6 +131,8 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         showArrowsButton.setSelected(pModel.isState(STG_SHOW_ARROWS_ALWAYS));
         
         player = new Playback(pModel, 30);
+        
+        sceneManager = new SceneManager(pModel, this.getTopLevelAncestor());
     }
     
     
@@ -180,6 +175,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         switch (e.getActionCommand())
         {
             case CMD_NEW:
+                pModel.setProperty(PRP_CURRENT_FILE, null);
                 pModel.setScene(new Scene());
                 pModel.setZoom(1.0);
                 pModel.setViewOffset(0, 0);
@@ -422,57 +418,34 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         
         JFileChooser dlgSave = new JFileChooser("scene");
         dlgSave.setCurrentDirectory(stdSceneDir);
-        dlgSave.setSelectedFile(new File("scene.scnx"));
+        
+        if (pModel.getProperty(PRP_CURRENT_FILE) != null)
+        {
+            dlgSave.setSelectedFile(new File(pModel.getProperty(PRP_CURRENT_FILE)));
+        }
+        else
+        {
+            dlgSave.setSelectedFile(new File("scene.scnx"));
+        }
+        
         dlgSave.setFileFilter(SCENE_FILTER);
         dlgSave.setDialogTitle(LOCALIZER.getString(L_TITLE_SAVE));
         
         if (dlgSave.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
         {
-            XMLWriter writer = new XMLWriter(dlgSave.getSelectedFile());
-            
-            Scene scene = pModel.getScene();
-            
-            writer.writeDeclaration();
-            writer.writeStartElement("Scene");
-            writer.writeAttribute("version", FILE_VERSION);
-            writer.writeAttribute("gravitation", "9.81"); // missing property
-            
-            if (scene.getGround() != null)
+            if (dlgSave.getSelectedFile().exists())
             {
-                writer.writeStartElement("Ground");
-                writer.writeAttribute("type", "" + scene.getGround().getType());
-                writer.writeAttribute("watermark", "" + scene.getGround().getWatermark());
-                writer.writeEndElement();
+                String[] options = new String[] { LOCALIZER.getString(L_YES), LOCALIZER.getString(L_NO) };
+                
+                if (JOptionPane.showOptionDialog(this.getTopLevelAncestor(), LOCALIZER.getString(L_OVERWRITE_FILE), 
+                        LOCALIZER.getString(L_TITLE_IMPORT), JOptionPane.YES_NO_OPTION, 
+                        JOptionPane.WARNING_MESSAGE, null, options, options[0]) != 0)
+                {
+                    return;
+                }
             }
             
-            for (ObjectProperties object : scene.getObjects())
-            {
-                if (object instanceof Circle)
-                {
-                    writer.writeStartElement("Circle");
-                }
-                else if (object instanceof Square)
-                {
-                    writer.writeStartElement("Square");
-                }
-                
-                writer.writeAttribute("name", ((ISelectable) object).getName());
-                writer.writeAttribute("color", "" + ((IDrawable) object).getColor().getRGB());
-                writer.writeAttribute("material", "" + object.surface);
-                writer.writeAttribute("x", "" + object.getPosition().getX());
-                writer.writeAttribute("y", "" + object.getPosition().getY());
-                writer.writeAttribute("vx", "" + object.velocity.getX());
-                writer.writeAttribute("vy", "" + object.velocity.getY());
-                writer.writeAttribute("mass", "" + object.getMass());
-                writer.writeAttribute("radius", "" + object.getRadius());
-                writer.writeAttribute("rotation", "" + object.world_position.rotation.getAngle());
-                writer.writeAttribute("pinned", object.isPinned ? "true" : "false");
-                
-                writer.writeEndElement();
-            }
-            
-            writer.writeEndElement();
-            writer.close();
+            sceneManager.saveScene(dlgSave.getSelectedFile(), pModel.getScene());
         }
     }
     
@@ -499,102 +472,18 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         
         if (dlgOpen.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
         {
-            XMLReader reader = new XMLReader(dlgOpen.getSelectedFile());
+            File sceneFile = dlgOpen.getSelectedFile();
             
-            Element node = reader.getNode("Scene");
+            Scene scene = sceneManager.loadScene(sceneFile);
             
-            if (node != null)
+            if (scene != null)
             {
-                String version = node.getAttribute("version");
-                
-                if (!FILE_VERSION.equals(version))
-                {
-                    String[] options = new String[] { LOCALIZER.getString(L_OK), LOCALIZER.getString(L_CANCEL) };
-                    
-                    if (JOptionPane.showOptionDialog(this.getTopLevelAncestor(), 
-                            LOCALIZER.getString(L_WRONG_VERSION), LOCALIZER.getString(L_TITLE_IMPORT),
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0])
-                            != 0)
-                    {
-                        return;
-                    }
-                }
-                
-                Scene scene = new Scene();
-                
-                ObjectProperties object = null;
-                node = reader.getNode("Scene/Ground");
-                
-                if (node != null)
-                {
-                    scene.setGround(new Ground(pModel, getInt(node.getAttribute("type")), getInt(node.getAttribute("watermark"))));
-                }
-                
-                for (Element obj : reader.getNodes("Scene/Circle | Scene/Square"))
-                {
-                    switch (obj.getName())
-                    {
-                        case "Circle":
-                            object = new Circle(pModel, new Vector(getDouble(obj.getAttribute("x")), getDouble(obj.getAttribute("y"))), 
-                                    getDouble(obj.getAttribute("radius")));
-                            break;
-                            
-                        case "Square":
-                            object = new Square(pModel, new Vector(getDouble(obj.getAttribute("x")), getDouble(obj.getAttribute("y"))), 
-                                    getDouble(obj.getAttribute("radius")));
-                            break;
-                            
-                        default:
-                            continue;
-                    }
-                    
-                    ((ISelectable) object).setName(obj.getAttribute("name"));
-                    ((IDrawable) object).setColor(new Color(getInt(obj.getAttribute("color"))));
-                    object.setMass(getDouble(obj.getAttribute("mass")));
-                    object.velocity = new Vector(getDouble(obj.getAttribute("vx")), getDouble(obj.getAttribute("vy")));
-                    object.world_position.rotation = new Rotation(getDouble(obj.getAttribute("rotation")));
-                    
-                    String strMat = obj.getAttribute("material");
-                    for (Material mat : Material.values())
-                    {
-                        if (mat.toString().equals(strMat))
-                        {
-                            object.surface = mat;
-                            break;
-                        }
-                    }
-                    
-                    object.isPinned = "true".equals(obj.getAttribute("pinned"));
-                    
-                    scene.add(object);
-                }
+                pModel.setProperty(PRP_CURRENT_FILE, sceneFile.getPath());
                 
                 pModel.setScene(scene);
                 pModel.fireEventListeners(EVT_SCENE_LOADED);
                 pModel.fireRepaint();
             }
         }
-    }
-    
-    
-    private double getDouble(String value)
-    {
-        if (value == null)
-        {
-            return 0.0;
-        }
-        
-        return Double.parseDouble(value);
-    }
-    
-    
-    private int getInt(String value)
-    {
-        if (value == null)
-        {
-            return 0;
-        }
-        
-        return Integer.parseInt(value);
     }
 }

@@ -2,6 +2,7 @@ package de.engineapp.windows;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.*;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import de.engine.*;
 import de.engine.environment.Scene;
 import de.engineapp.*;
 import de.engineapp.Renderer;
+import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.containers.*;
 import de.engineapp.controls.Canvas;
 import de.engineapp.controls.dnd.DragAndDropController;
@@ -18,7 +20,7 @@ import de.engineapp.util.*;
 import static de.engineapp.Constants.*;
 
 
-public final class MainWindow extends JFrame
+public final class MainWindow extends JFrame implements StorageListener
 {
     private static final long serialVersionUID = -1405279482198323306L;
     
@@ -35,8 +37,28 @@ public final class MainWindow extends JFrame
     {
         super(LOCALIZER.getString(L_APP_NAME));
         
+        initializeLookAndFeel();
+        
         pModel = new PresentationModel();
         pModel.setProperty(PRP_MODE, CMD_PHYSICS_MODE);
+        
+        Scene scene = null;
+        
+        if (pModel.getProperty(PRP_CURRENT_FILE) != null)
+        {
+            SceneManager sceneManager = new SceneManager(pModel, this);
+            File sceneFile = new File(pModel.getProperty(PRP_CURRENT_FILE));
+            scene = sceneManager.loadScene(sceneFile);
+            
+            if (scene != null)
+            {
+                this.setTitle(LOCALIZER.getString(L_APP_NAME) +  " [" + sceneFile.getName() + "]");
+            }
+            else
+            {
+                pModel.setProperty(PRP_CURRENT_FILE, null);
+            }
+        }
         
         if (Configuration.getInstance().getProperty(PRP_SKIN) != null)
         {
@@ -75,7 +97,13 @@ public final class MainWindow extends JFrame
         
         
         pModel.setPhysicsEngine2D(new PhysicsEngine2D());
-        pModel.setScene(new Scene());
+        
+        if (scene == null)
+        {
+            scene = new Scene();
+        }
+        
+        pModel.setScene(scene);
         
         pModel.setPhysicsState(new Physics(pModel, 1000L / 30L, new Physics.FinishedCallback()
         {
@@ -88,10 +116,11 @@ public final class MainWindow extends JFrame
         }));
         
         
-        initializeLookAndFeel();
         initializeComponents();
         
         renderer = new Renderer(pModel, canvas);
+        
+        pModel.addStorageListener(this);
         
         
         this.setVisible(true);
@@ -170,6 +199,26 @@ public final class MainWindow extends JFrame
         if (pModel.isState(STG_MAXIMIZED))
         {
             this.setExtendedState(this.getExtendedState() | MAXIMIZED_BOTH);
+        }
+    }
+    
+    
+    @Override
+    public void stateChanged(String id, boolean value) { }
+    
+    @Override
+    public void propertyChanged(String id, String value)
+    {
+        if (id.equals(PRP_CURRENT_FILE))
+        {
+            if (value == null)
+            {
+                this.setTitle(LOCALIZER.getString(L_APP_NAME));
+            }
+            else
+            {
+                this.setTitle(LOCALIZER.getString(L_APP_NAME) +  " [" + new File(value).getName() + "]");
+            }
         }
     }
 }
