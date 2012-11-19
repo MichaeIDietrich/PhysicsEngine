@@ -58,6 +58,8 @@ public class Polygon extends ObjectProperties implements Cloneable {
 	}
 	
 	public Vector getWorldPointPos(int i, double time) {
+	    if(isPinned)
+	        return getWorldPointPos(i);
 	    double localtime = getTime(time);
 	    Transformation tr = new Transformation(Util.add(world_position.translation, Util.scale(velocity, localtime)), new Rotation(world_position.rotation.getAngle() + angular_velocity * localtime));
         return tr.getPostion(points[i]);

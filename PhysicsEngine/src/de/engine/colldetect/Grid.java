@@ -130,21 +130,29 @@ public class Grid
     private void scanFieldsForObjectWithSweep(ObjectProperties op)
     {
         // tuning needed
-        double d_step = Util.scale(op.velocity, op.getTime()).getLength() / (2 * op.getRadius());
+        Element element;
+        if(op.isPinned)
+        {
+            element = new Element(op, op.getFrameTime(), EnvProps.deltaTime());
+            Vector[] aabb = op.getAABB();
+            scan(aabb, element);
+            return;
+        }
+        
+        double d_step =  Util.scale(op.velocity, op.getTime()).getLength() / (2 * op.getRadius());
         double d_time = op.getTime() / d_step;
         
-        Element element;
         if (1 > ((int) d_step))
-            element = new Element(op, op.frametime, EnvProps.deltaTime());
+            element = new Element(op, op.getFrameTime(), EnvProps.deltaTime());
         else
-            element = new Element(op, op.frametime, d_time);
+            element = new Element(op, op.getFrameTime(), d_time);
         Vector[] aabb = op.getAABB();
         scan(aabb, element);
         
-        double help_time = op.frametime;
+        double help_time = op.getFrameTime();
         for (int i = 1; i <= (int) d_step; i++)
         {
-            element = new Element(op, op.frametime + d_time * (i - 1), op.frametime + d_time * (i + 1));
+            element = new Element(op, op.getFrameTime() + d_time * (i - 1), op.getFrameTime() + d_time * (i + 1));
             help_time = element.min_time;
             aabb = op.getAABB(d_time * i);
             scan(aabb, element);
@@ -318,8 +326,20 @@ public class Grid
                     return;
                 }
             }
-            Double min_time = (e1.min_time < e2.min_time) ? e1.min_time : e2.min_time;
-            Double max_time = (e1.max_time > e2.max_time) ? e1.max_time : e2.max_time;
+            Double min_time;
+            if(e1.obj.isPinned)
+                min_time = e2.min_time;
+            else if(e2.obj.isPinned)
+                min_time = e1.min_time;
+            else
+                min_time = (e1.min_time < e2.min_time) ? e1.min_time : e2.min_time;
+            Double max_time;
+            if(e1.obj.isPinned)
+                max_time = e2.max_time;
+            else if(e2.obj.isPinned)
+                max_time = e1.max_time;
+            else
+                max_time = (e1.max_time > e2.max_time) ? e1.max_time : e2.max_time;
             collisionPairs.add(new CollPair(e1.obj, e2.obj, min_time, max_time));
         }
         

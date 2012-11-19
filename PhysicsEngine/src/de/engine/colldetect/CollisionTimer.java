@@ -40,6 +40,9 @@ public class CollisionTimer
     
     public static Double getCirclePolygonsCollTime(ObjectProperties o1, ObjectProperties o2, double begin, double end)
     {
+        double min_time_step = 1 / Util.minus(o1.velocity, o2.velocity).getLength();
+        if(min_time_step > 0.001)
+            min_time_step = 0.001;
         java.util.Vector<Double> times = new java.util.Vector<Double>();
         java.util.Vector<Integer> pre = new java.util.Vector<Integer>();
         java.util.Vector<Integer> past = new java.util.Vector<Integer>();
@@ -105,11 +108,11 @@ public class CollisionTimer
                     pre.add(i);
                 }
             }
-            if (!coll.containsValue(true) && time_delta < 0.005)
+            /*if (!coll.containsValue(true) && time_delta < (min_time_step * 5))
             {
                 return null;
-            }
-            if (time_delta < 0.001)
+            }*/
+            if (time_delta < min_time_step)
             {
                 if (coll_id > 0)
                 {

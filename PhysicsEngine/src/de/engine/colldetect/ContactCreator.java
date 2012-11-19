@@ -52,6 +52,8 @@ public class ContactCreator
         {
             cd.contacts.add(contact);
         }
+        if(cd.contacts.size() > 1)
+            return;
         contacts = searchContact((Polygon)cd.o2, (Polygon)cd.o1, cd.time);
         for (Contact contact : contacts)
         {
