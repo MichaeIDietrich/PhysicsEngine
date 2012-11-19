@@ -1,7 +1,7 @@
 package de.engineapp.visual.decor;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.*;
 
 import de.engine.objects.ObjectProperties;
 import de.engineapp.util.PropertyConnector;
@@ -59,6 +59,10 @@ public class Range implements IDrawable
         
         Ellipse2D.Double circle = new Ellipse2D.Double(x, y, r2, r2);
         
+        String text =  "" + Math.round(r);
+        float textX = (float) (connectedObject.getX() + r + 5);
+        float textY = (float) connectedObject.getY();
+        
         if (color != null)
         {
             g.setColor(color);
@@ -70,5 +74,26 @@ public class Range implements IDrawable
             g.setColor(border);
             g.draw(circle);
         }
+        
+        drawString(g, text, textX, textY);
+    }
+    
+    
+    private void drawString(Graphics2D g, String text, float x, float y)
+    {
+        Path2D.Double textRect = new Path2D.Double(g.getFontMetrics().getStringBounds(text, g));
+        textRect.transform(AffineTransform.getTranslateInstance(x, -y));
+        
+        AffineTransform oldTransform = g.getTransform();
+        g.scale(1, -1);
+        
+        g.setColor(Color.WHITE);
+        g.fill(textRect);
+        
+        g.setColor(Color.BLACK);
+        g.draw(textRect);
+        g.drawString(text, x, -y);
+    
+        g.setTransform(oldTransform);
     }
 }
