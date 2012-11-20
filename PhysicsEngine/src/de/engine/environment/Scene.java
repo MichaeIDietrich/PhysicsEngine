@@ -15,6 +15,8 @@ public class Scene implements Cloneable
     
     public double gravitational_acceleration = -9.80665; // m/s²
     
+    private double environment_friction = 0.002;
+    
     
     public Scene()
     {
@@ -105,5 +107,20 @@ public class Scene implements Cloneable
     public ObjectProperties getObject( ObjectProperties selectedObject )
     {
         return objects.get( selectedObject.getId());
+    }
+
+    public double getEnvironmentFriction()
+    {
+        return environment_friction;
+    }
+
+    public void setEnvironmentFriction(double environment_friction)
+    {
+        if(environment_friction > 1)
+            this.environment_friction = 1;
+        else if(environment_friction < 0)
+            this.environment_friction = 0;
+        else
+            this.environment_friction = environment_friction;
     }
 }

@@ -28,6 +28,8 @@ public class EnvProps
     
     public double default_gravitational_acceleration = -9.80665; // m/s²
     
+    public double default_environment_friction = 0;
+    
     private EnvProps()
     {
         deltaTime = 0.033;
@@ -62,5 +64,13 @@ public class EnvProps
             return getInstance().scene.gravitational_acceleration;
         else
             return getInstance().default_gravitational_acceleration;
+    }
+    
+    public static double friction()
+    {
+        if (getInstance().scene != null)
+            return getInstance().scene.getEnvironmentFriction();
+        else
+            return getInstance().default_environment_friction;
     }
 }

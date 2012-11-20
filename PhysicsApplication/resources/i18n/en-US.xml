@@ -21,6 +21,8 @@
   <String id="LANGUAGE">Language:</String>
   <String id="OK">OK</String>
   <String id="CANCEL">Cancel</String>
+  <String id="YES">Yes</String>
+  <String id="NO">No</String>
   <String id="OPEN">Open</String>
   <String id="SAVE">Save</String>
   <String id="TITLE_OPEN">Open scene...</String>
@@ -42,6 +44,8 @@
   <String id="OBJECTS">Objects</String>
   <String id="HELP">Help</String>
   <String id="ABOUT">About</String>
+  <String id="OVERWRITE_FILE">The file already exists. Do you want to overwrite it?</String>
+  <String id="FILE_ACCESS_DENIED">File '%s' could not be loaded.</String>
   
   
   <!--  Tooltips -->

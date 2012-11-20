@@ -113,6 +113,8 @@ public class PresentationModel
     private ObjectProperties selectedObject = null;
     /** Canvas control */
     private Canvas canvas = null;
+    /** instance of the last copied object */
+    private ObjectProperties copiedObject = null;
     
     
     /**
@@ -603,5 +605,16 @@ public class PresentationModel
                  (point.x - viewOffsetX - canvasWidth  / 2) /  zoom,
                  (point.y - viewOffsetY - canvasHeight / 2) / -zoom
         );
+    }
+    
+    
+    public ObjectProperties getCopiedObject()
+    {
+        return copiedObject;
+    }
+    
+    public void setCopiedObject(ObjectProperties copiedObject)
+    {
+        this.copiedObject = copiedObject;
     }
 }

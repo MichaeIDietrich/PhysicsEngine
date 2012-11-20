@@ -109,20 +109,36 @@ public class PhysicsCalcer
         
         Vector j_normal = Util.scale(coll_normal, j);
         
+        double min_v = 1.0;
+        
         if (!o1.isPinned)
         {
+            if(o1.sleeps())
+                o1.wakeUp();
             o1.update(collTime);
             
             o1.velocity.add(Util.scale(j_normal, 1 / o1.getMass()));
             o1.angular_velocity += Util.crossProduct(r_o1, j_normal) / o1.moment_of_inertia;
+            
+            if((o2.isPinned || o2.sleeps()) && ((-1 * min_v < o1.velocity.getX() && o1.velocity.getX() < min_v) && (-1 * min_v < o1.velocity.getY() && o1.velocity.getY() < min_v))) {
+                o1.velocity = new Vector();
+                o1.fallAsleep(o2);
+            }
         }
         
         if (!o2.isPinned)
         {
+            if(o2.sleeps())
+                o2.wakeUp();
             o2.update(collTime);
             
             o2.velocity.minus(Util.scale(j_normal, 1 / o2.getMass()));
             o2.angular_velocity -= Util.crossProduct(r_o2, j_normal) / o2.moment_of_inertia;
+
+            if((o1.isPinned || o1.sleeps()) && ((-1 * min_v < o2.velocity.getX() && o2.velocity.getX() < min_v) && (-1 * min_v < o2.velocity.getY() && o2.velocity.getY() < min_v))) {
+                o2.velocity = new Vector();
+                o2.fallAsleep(o1);
+            }
         }
     }
 }

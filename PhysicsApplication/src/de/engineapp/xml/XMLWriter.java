@@ -26,11 +26,29 @@ public final class XMLWriter
     {
         try
         {
-            FileOutputStream fos = new FileOutputStream(file);
-            OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+            init(new FileOutputStream(file));
+        }
+        catch (FileNotFoundException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+    
+    
+    public XMLWriter(OutputStream stream)
+    {
+        init(stream);
+    }
+    
+    
+    private void init(OutputStream stream)
+    {
+        try
+        {
+            OutputStreamWriter osw = new OutputStreamWriter(stream, "UTF-8");
             xmlWriter = new BufferedWriter(osw);
         }
-        catch (FileNotFoundException | UnsupportedEncodingException ex)
+        catch (UnsupportedEncodingException ex)
         {
             ex.printStackTrace();
         }
