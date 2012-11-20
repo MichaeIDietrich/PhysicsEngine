@@ -82,10 +82,10 @@ public class CollisionDetector
 
                 double angle = Math.atan( Util.used_m ) - Math.atan( Util.derive1Dr( xn ) );  
                            
-                System.out.println(Math.toDegrees( Math.atan2( object.velocity.getY(), object.velocity.getX() )));
-                System.out.println(Math.toDegrees( Math.atan2( Util.derive1Dr( xn ), 1 )));
-                
-                System.out.println( "x="+object.getPosition().getX()+", y="+Util.used_m*object.getPosition().getX()+" | SP="+ xn +" | m_g= "+ Util.used_m +" | m_f="+ Util.derive1Dr( xn ) +" | angle="+ Math.floor(180*angle*100d/Math.PI)/100d);
+//                System.out.println(Math.toDegrees( Math.atan2( object.velocity.getY(), object.velocity.getX() )));
+//                System.out.println(Math.toDegrees( Math.atan2( Util.derive1Dr( xn ), 1 )));
+//                
+//                System.out.println( "x="+object.getPosition().getX()+", y="+Util.used_m*object.getPosition().getX()+" | SP="+ xn +" | m_g= "+ Util.used_m +" | m_f="+ Util.derive1Dr( xn ) +" | angle="+ Math.floor(180*angle*100d/Math.PI)/100d);
                 
                 // the faster the object, the ealier it must be stopped
                 double corrFactor = 0.01*Math.sqrt( object.velocity.getX()*object.velocity.getX() + object.velocity.getY()*object.velocity.getY());
