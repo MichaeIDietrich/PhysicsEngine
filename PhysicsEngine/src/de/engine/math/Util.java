@@ -9,7 +9,8 @@ import de.engine.objects.Square;
 public class Util
 {
     // needed for derivation
-    private static final Double h = Math.pow(10d, 4d);
+    private static final Double h = Math.pow(10d, -7d);
+    private static final Double u = Math.pow(10d, 10d);
     private static Vector function = new Vector();
     private static double m = 0;
     private static double n = 0;
@@ -73,80 +74,29 @@ public class Util
         if (object.velocity.getX() == 0)
             return object.getPosition().getX();
         
-        if (!set_slope) 
-        {
-            // m = slope, n = shift in y, linear function
-            m = object.velocity.getY() / object.velocity.getX();
-            n = object.getPosition().getY();
-            
-            sign = (object.velocity.getY()<0) ? 1 : -1;
-        }
-        
-        if (m<=0.15 && m>=-0.15) 
-        {
-            double oldm = m;
-          
-            set_slope = true;
-          
-            m = 0.16;
-            n = object.getPosition().getY();
-            sign = object.velocity.getX()>=0 ? -1 :  1;
-            double i1 = newtonIteration();
-          
-            m = -0.16;
-            n = object.getPosition().getY();
-            sign = object.velocity.getX()>=0 ?  1 : -1;
-            double i2 = newtonIteration();
-            
-            if (object.velocity.getX()>=0 && i1<object.getPosition().getX()) i1=i2;
-            
-            set_slope = false;
-//            System.out.println( "i1="+i1 +" | i1="+ i2);
-          
-            return i1 + Math.abs(i1-i2) * ((oldm-0.15)/0.32);
-        } 
-        
-        // for calculating a pair of tangents right and left beside the main vector of the sphere
-        alpha = Math.atan( m );
-        
         Double xn = object.getPosition().getX();
-        Double new_distance = Double.MAX_VALUE;
-        Double old_distance = Double.MAX_VALUE;
-        Double result       = 0d;
         
-        radius[0] = -object.getRadius();
-        radius[1] = 0d;
-        radius[2] = +object.getRadius();
+        // m = slope, n = shift in y, linear function
+        m = object.velocity.getY() / object.velocity.getX();
+        n = object.getPosition().getY() - m*xn;
 
-        for (int p = 0; p < 3; p++)
+//        sign = object.getPosition().getY()<0 ? 1 : -1;
+        
+        for (int i = 0; i < 6; i++)
         {
-            old_distance = new_distance;
-            
-            diff_x =  radius[p] * Math.sin(alpha);
-            diff_y = -radius[p] * Math.cos(alpha);
-
-            for (int i = 0; i < 6; i++)
-            {
-                double fktValue = newFkt(xn);
-                xn = xn - fktValue / derive1D( fktValue ); 
-            }
-            
-            new_distance = Math.pow( xn                  - object.getPosition().getX(), 2d) + 
-                           Math.pow( ground.function(xn) - object.getPosition().getY(), 2d);
-            
-            // returns the intersection coordinate with the shortest distance between circle an ground
-            if (new_distance < old_distance)
-            {
-                result = xn;
-                used_m = m;
-            }
-                
+            double fktValue = newFkt( xn );
+            xn = xn - fktValue / derive1D( fktValue ); 
         }
-        return result;
+
+        used_m = m;
+    
+//        System.out.println( xn );
+        
+        return xn;
     }
     
     /**
-     * Calculates the 1st derivation of the function given in <i>getFunctionsValue</i>.
+     * Calculates the 1st derivation of the function given in <i>functions</i>.
      * 
      * @param x - determines the point of which the derivation is wanted
      * @param object -
@@ -155,8 +105,14 @@ public class Util
      */
     public static Double derive1D( Double x )
     {
-        // df(x) = ( f(x-h) - f(x-h) ) / 2h
-        return  sign * (newFkt( x+h ) - newFkt( x-h )) * 2d / h ;
+        // df(x) = ( -f(x+2h) +8f(x+h) - 8f(x-h) + f(x-2h) ) / 12h
+        return sign * ( -newFkt( x+2d*u ) + 8d*newFkt( x+u ) - 8d*newFkt( x-u ) + newFkt( x-2d*u )) / (2d*u);
+    }
+    
+    public static Double derive1Dr( Double x )
+    {
+        // df(x) = ( f(x+h) - f(x-h) ) / 2h
+        return (functions(x+h).getY() - functions(x-h).getY()) / (2d*h);
     }
     
     public static Double newFkt(Double x)
@@ -167,9 +123,11 @@ public class Util
     
     public static Vector functions(Double x)
     {
-        function.setX(m * (x - object.getPosition().getX() -diff_x) +n +diff_y );
+        function.setX( m*x + n );
         function.setY( ground.function(x) );
 
+//        System.out.println( m + "*x "+ (n<0 ? "":"+") + n);
+        
         return function;
     }
 
