@@ -85,19 +85,31 @@ public class AngleViewer implements IDrawable
     
     private void drawString(Graphics2D g, String text, float x, float y)
     {
-        Path2D.Double textRect = new Path2D.Double(g.getFontMetrics().getStringBounds(text, g));
-        textRect.transform(AffineTransform.getTranslateInstance(x, -y));
-        
         AffineTransform oldTransform = g.getTransform();
-        g.scale(1, -1);
+        Stroke oldStroke = g.getStroke();
+        
+        double scale = oldTransform.getScaleX();
+        x *= scale;
+        y *= -scale;
+        x += 5;
+        
+        g.scale(1 / scale, -1 / scale);
+        g.setStroke(new BasicStroke(1));
+        
+        Rectangle2D textRect = g.getFontMetrics().getStringBounds(text, g);
+        textRect.add(textRect.getMaxX() + 2, textRect.getCenterY());
+        textRect.add(textRect.getMinX() - 2, textRect.getCenterY());
+        Path2D.Double textPath = new Path2D.Double(textRect);
+        textPath.transform(AffineTransform.getTranslateInstance(x, y));
         
         g.setColor(Color.WHITE);
-        g.fill(textRect);
+        g.fill(textPath);
         
         g.setColor(Color.BLACK);
-        g.draw(textRect);
-        g.drawString(text, x, -y);
+        g.draw(textPath);
+        g.drawString(text, x, y);
         
+        g.setStroke(oldStroke);
         g.setTransform(oldTransform);
     }
 }

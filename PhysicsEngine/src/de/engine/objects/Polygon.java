@@ -90,7 +90,14 @@ public class Polygon extends ObjectProperties implements Cloneable
     
     
     @Override
-    public Polygon clone() {
+    public Polygon clone()
+    {
+        return clone(true);
+    }
+    
+    @Override
+    public Polygon clone(boolean cloneId)
+    {
         Polygon newPolygon = new Polygon(getPosition());
         clone(newPolygon);
         
@@ -98,15 +105,24 @@ public class Polygon extends ObjectProperties implements Cloneable
     }
     
     
-    public void clone(Polygon newPolygon)
+    public void clone(Polygon newPolygon, boolean cloneId)
     {
         // TODO
         newPolygon.world_position.rotation.setAngle(this.world_position.rotation.getAngle());
         newPolygon.setMass(getMass());
         newPolygon.velocity = this.velocity.clone();
-        newPolygon.id = this.id;
+        if (cloneId)
+        {
+            newPolygon.id = this.id;
+        }
         newPolygon.surface = this.surface;
         newPolygon.isPinned = this.isPinned;
+        
+    }
+    
+    public void clone(Polygon newPolygon)
+    {
+        clone(newPolygon, true);
     }
     
     

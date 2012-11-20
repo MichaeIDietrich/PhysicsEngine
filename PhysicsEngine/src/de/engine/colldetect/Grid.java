@@ -131,7 +131,7 @@ public class Grid
     {
         // tuning needed
         Element element;
-        if(op.isPinned)
+        if(op.isPinned || op.sleeps())
         {
             element = new Element(op, op.getFrameTime(), EnvProps.deltaTime());
             Vector[] aabb = op.getAABB();
@@ -315,7 +315,7 @@ public class Grid
     
     private void insertCollPair(Element e1, Element e2)
     {
-        if(e1.obj.isPinned && e2.obj.isPinned)
+        if((e1.obj.isPinned || e1.obj.sleeps()) && (e2.obj.isPinned || e2.obj.sleeps()))
             return;
         if (e1.min_time < e2.max_time && e2.min_time < e1.max_time)
         {

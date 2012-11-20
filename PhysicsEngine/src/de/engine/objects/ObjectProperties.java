@@ -22,7 +22,7 @@ public abstract class ObjectProperties implements Cloneable
         }
     };
     
-    private double frametime = 0;
+    private double frametime = -0.01;
     
     public double getFrameTime()
     {
@@ -43,6 +43,23 @@ public abstract class ObjectProperties implements Cloneable
     
     public boolean isPinned = false;
     
+    private ObjectProperties sleepOn = null;
+    
+    public void fallAsleep(ObjectProperties o)
+    {
+        sleepOn = o;
+    }
+    
+    public boolean sleeps()
+    {
+        return (sleepOn != null);
+    }
+    
+    public void wakeUp()
+    {
+        sleepOn = null;
+    }
+    
     // will get incremented every time it's used, to apply unique id's to each
     // of the new objects
     public static int idCounter = 0;
@@ -59,6 +76,7 @@ public abstract class ObjectProperties implements Cloneable
     
     public void setPosition(double x, double y)
     {
+        sleepOn = null;
         world_position.translation = new Vector(x, y);
     }
     
@@ -68,7 +86,7 @@ public abstract class ObjectProperties implements Cloneable
         if(isPinned)
             return getPosition();
         double localtime = getTime(time);
-        return Util.add(world_position.translation, new Vector((velocity.getX() * localtime), ((EnvProps.grav_acc() / 2d * localtime + velocity.getY()) * localtime)));
+        return Util.add(world_position.translation, new Vector(velocity.getX(), (EnvProps.grav_acc() / 2d * localtime + velocity.getY())).scale(localtime));
     }
     
     public Vector getNextPosition()
@@ -163,14 +181,14 @@ public abstract class ObjectProperties implements Cloneable
     
     public void update()
     {
-        if (isPinned)
+        if (isPinned || sleeps())
             return;
         world_position.translation = getNextPosition();
-        world_position.rotation.setAngle(world_position.rotation.getAngle() + angular_velocity * getTime());
+        world_position.rotation.setAngle(world_position.rotation.getAngle() + (angular_velocity * getTime() * (1 - EnvProps.friction())));
         // obj.getPosition().setY(
         // -9.81 / 2d * deltaTime + obj.velocity.getY()
         // * deltaTime + obj.getPosition().getY());
-        velocity.add(0, EnvProps.grav_acc() / 2d * getTime());
+        velocity.add(0, (EnvProps.grav_acc() / 2d * getTime())).scale(1 - EnvProps.friction());
         
         // calc potential energy: Epot = m*g*h (mass * grav_const * y-coordinate)
         potential_energy = -mass * EnvProps.grav_acc() * world_position.translation.getY();
@@ -178,22 +196,23 @@ public abstract class ObjectProperties implements Cloneable
         // calc kinetic energy: Epot = m/2*v² (mass * grav_const * y-coordinate)
         kinetic_energy = 0.5 * mass * Math.abs( this.velocity.getX() );
         
-        frametime = 0;
+        frametime = -0.01;
     }
     
     public void update(double time)
     {
-        if (isPinned)
+        if (isPinned || sleeps())
             return;
         double localtime = getTime(time);
         world_position.translation = getPosition(time);
-        velocity.add(0, EnvProps.grav_acc() / 2d * localtime);
-        world_position.rotation.setAngle(world_position.rotation.getAngle() + angular_velocity * localtime);
+        velocity.add(0, (EnvProps.grav_acc() / 2d * localtime)).scale(1 - EnvProps.friction());
+        world_position.rotation.setAngle(world_position.rotation.getAngle() + (angular_velocity * localtime * (1 - EnvProps.friction())));
         frametime = time;
     }
     
     @Override
     public abstract ObjectProperties clone();
+    public abstract ObjectProperties clone(boolean cloneId);
     
     public abstract boolean contains(double x, double y);
 }
