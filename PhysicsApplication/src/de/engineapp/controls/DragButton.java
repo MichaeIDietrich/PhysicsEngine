@@ -1,11 +1,22 @@
 package de.engineapp.controls;
 
-import java.awt.*;
-import java.awt.dnd.*;
-import java.awt.event.*;
+import java.awt.Image;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.io.Serializable;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
 
 import de.engineapp.controls.dnd.CommandHandler;
 

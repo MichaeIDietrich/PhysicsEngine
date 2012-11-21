@@ -2,16 +2,22 @@ package de.engineapp;
 
 import static de.engineapp.Constants.STG_GRID;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.BasicStroke;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import de.engine.DebugMonitor;
 import de.engine.environment.Scene;
 import de.engine.objects.ObjectProperties;
-import de.engineapp.PresentationModel.*;
+import de.engineapp.PresentationModel.PaintListener;
+import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.controls.Canvas;
 import de.engineapp.util.AsyncWorker;
-import de.engineapp.visual.*;
+import de.engineapp.visual.Grid;
+import de.engineapp.visual.IDecorable;
+import de.engineapp.visual.IDrawable;
 
 public final class Renderer extends AsyncWorker implements PaintListener, StorageListener
 {

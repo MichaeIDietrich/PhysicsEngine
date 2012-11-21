@@ -2,8 +2,10 @@ package de.engineapp.visual;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.*;
-import java.util.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
+import java.util.Collection;
+import java.util.HashMap;
 
 import de.engine.math.Vector;
 import de.engineapp.PresentationModel;

@@ -1,20 +1,39 @@
 package de.engineapp;
 
-import java.awt.*;
-import java.io.*;
-import java.util.zip.*;
+import static de.engineapp.Constants.FILE_VERSION;
+import static de.engineapp.Constants.L_NO;
+import static de.engineapp.Constants.L_TITLE_IMPORT;
+import static de.engineapp.Constants.L_WRONG_VERSION;
+import static de.engineapp.Constants.L_YES;
 
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
+import javax.swing.JOptionPane;
 
 import de.engine.environment.Scene;
-import de.engine.math.*;
+import de.engine.math.Vector;
 import de.engine.objects.ObjectProperties;
 import de.engine.objects.ObjectProperties.Material;
 import de.engineapp.util.Localizer;
-import de.engineapp.visual.*;
-import de.engineapp.xml.*;
-
-import static de.engineapp.Constants.*;
+import de.engineapp.visual.Circle;
+import de.engineapp.visual.Ground;
+import de.engineapp.visual.IDrawable;
+import de.engineapp.visual.ISelectable;
+import de.engineapp.visual.Square;
+import de.engineapp.xml.Element;
+import de.engineapp.xml.XMLReader;
+import de.engineapp.xml.XMLWriter;
 
 public final class SceneManager
 {
