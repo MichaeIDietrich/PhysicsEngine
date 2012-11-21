@@ -150,6 +150,16 @@ public class Vector implements Cloneable
             y = value;
     }
     
+    public Vector norm()
+    {
+        double normfact = Math.sqrt(x*x + y*y);
+        
+        x = x / normfact;
+        y = y / normfact;
+        
+        return this;
+    }
+    
     public Double norm( Integer n ) throws RuntimeException 
     {
         if( n==10 ) return zsnorm();
@@ -245,5 +255,13 @@ public class Vector implements Cloneable
         tempVector.set(rowIndex2, tempBigDecimal);
         
         return tempVector;
+    }
+    
+    public Vector rotate( double angle )
+    {
+        double temp_x = -x*Math.sin( 2*angle );
+        double temp_y =  y*Math.cos( 2*angle );
+        
+        return new Vector( temp_x, temp_y );
     }
 }

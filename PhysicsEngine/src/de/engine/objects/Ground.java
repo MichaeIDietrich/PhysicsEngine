@@ -1,21 +1,40 @@
 package de.engine.objects;
 
+import de.engine.objects.ObjectProperties.Material;
+
 public class Ground //extends ObjectProperties
 {
+    public enum Material
+    {
+        STEEL(1), ALUMINIUM(1), NACL(1), RUBBER(1), WATER(1);
+        
+        private final double elasticity;
+        
+        private Material(double elasticity)
+        {
+            this.elasticity = elasticity;
+        }
+        
+        public double elasticity()
+        {
+            return elasticity;
+        }
+    };
+    
     public static final int HILLANDVALLEY = 1;
     public static final int DOWNHILL      = 2;
     public static final int STAIRS        = 3;
-    
+    public Material surface  = Material.STEEL;
     
     protected int watermark;
     protected int type;
+    
     
     public Ground(int type, int watermark)
     {
         this.type = type;
         this.watermark = watermark;
     }
-    
     
     public double function( double i )
     {
@@ -56,7 +75,7 @@ public class Ground //extends ObjectProperties
         // Grass heigth
         int grass_heigth = 4; 
         
-        return Math.sin(phase * i * Math.PI / 360) * hill_height + hill_height + grass_heigth*Math.sin(i) + this.watermark;
+        return hill_height * ( Math.sin(phase * i * Math.PI / 360) + 1) + grass_heigth * Math.sin(i) + this.watermark;
     }
     
     
@@ -68,7 +87,8 @@ public class Ground //extends ObjectProperties
         // stairs 
         int stairs = 12;
         
-        return -0.3*i - (9*i*i + stairs*i*i*i - i)/(i-150d*i*i + 200d) + 50d + 4d*Math.sin(0.04*i) + this.watermark;
+        double ii = i*i;
+        return -0.3*i - (9*i + stairs*i*ii - i)/(i-150d*ii + 200d) * 3d*Math.sin(0.006*i) + this.watermark;
     }
     
     
