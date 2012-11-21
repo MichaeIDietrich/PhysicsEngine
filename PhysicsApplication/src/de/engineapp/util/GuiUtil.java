@@ -1,15 +1,21 @@
 package de.engineapp.util;
 
-import java.awt.*;
+import java.awt.Image;
+import java.awt.MediaTracker;
 import java.awt.event.MouseEvent;
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.zip.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 public final class GuiUtil
 {

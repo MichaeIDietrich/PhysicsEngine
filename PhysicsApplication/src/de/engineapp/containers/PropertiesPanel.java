@@ -1,10 +1,45 @@
 package de.engineapp.containers;
 
-import java.awt.*;
-import java.awt.event.*;
+import static de.engineapp.Constants.CMD_CLOSE;
+import static de.engineapp.Constants.CMD_DELETE;
+import static de.engineapp.Constants.CMD_NEXT;
+import static de.engineapp.Constants.CMD_PREVIOUS;
+import static de.engineapp.Constants.ICO_NEXT;
+import static de.engineapp.Constants.ICO_PREVIOUS;
+import static de.engineapp.Constants.L_CLOSE;
+import static de.engineapp.Constants.L_KIN_ENERGY;
+import static de.engineapp.Constants.L_MASS;
+import static de.engineapp.Constants.L_MATERIAL;
+import static de.engineapp.Constants.L_NAME_OF_OBJECT;
+import static de.engineapp.Constants.L_PINNED;
+import static de.engineapp.Constants.L_POT_ENERGY;
+import static de.engineapp.Constants.L_RADIUS;
+import static de.engineapp.Constants.L_REMOVE;
+import static de.engineapp.Constants.L_X_COORDINATE;
+import static de.engineapp.Constants.L_X_VELOCITY;
+import static de.engineapp.Constants.L_Y_COORDINATE;
+import static de.engineapp.Constants.L_Y_VELOCITY;
+import static de.engineapp.Constants.PRP_LANGUAGE_CODE;
+import static de.engineapp.Constants.STG_DBLCLICK_SHOW_PROPERTIES;
+
+import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Iterator;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -13,14 +48,19 @@ import de.engine.environment.Scene;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engine.objects.ObjectProperties.Material;
-import de.engineapp.*;
-import de.engineapp.PresentationModel.*;
-import de.engineapp.controls.*;
-import de.engineapp.util.*;
-import de.engineapp.visual.*;
+import de.engineapp.PresentationModel;
+import de.engineapp.PresentationModel.SceneListener;
+import de.engineapp.PresentationModel.StorageListener;
+import de.engineapp.controls.ColorBox;
+import de.engineapp.controls.IconComboBox;
+import de.engineapp.controls.PropertySpinner;
+import de.engineapp.controls.QuickButton;
+import de.engineapp.controls.VerticalBoxPanel;
+import de.engineapp.util.GuiUtil;
+import de.engineapp.util.Localizer;
+import de.engineapp.visual.IDrawable;
+import de.engineapp.visual.ISelectable;
 import de.engineapp.windows.ColorPickerPopup;
-
-import static de.engineapp.Constants.*;
 
 public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, ActionListener, ChangeListener, StorageListener, MouseListener
 {

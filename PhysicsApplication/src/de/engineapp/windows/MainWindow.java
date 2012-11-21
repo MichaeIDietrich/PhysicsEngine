@@ -1,23 +1,48 @@
 package de.engineapp.windows;
 
-import java.awt.*;
-import java.awt.event.*;
+import static de.engineapp.Constants.CMD_PHYSICS_MODE;
+import static de.engineapp.Constants.ICO_MAIN_128;
+import static de.engineapp.Constants.ICO_MAIN_16;
+import static de.engineapp.Constants.ICO_MAIN_24;
+import static de.engineapp.Constants.ICO_MAIN_256;
+import static de.engineapp.Constants.ICO_MAIN_32;
+import static de.engineapp.Constants.ICO_MAIN_48;
+import static de.engineapp.Constants.ICO_MAIN_64;
+import static de.engineapp.Constants.L_APP_NAME;
+import static de.engineapp.Constants.PRP_CURRENT_FILE;
+import static de.engineapp.Constants.PRP_LOOK_AND_FEEL;
+import static de.engineapp.Constants.PRP_MODE;
+import static de.engineapp.Constants.PRP_SKIN;
+import static de.engineapp.Constants.STG_MAXIMIZED;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
-import de.engine.*;
+import de.engine.PhysicsEngine2D;
 import de.engine.environment.Scene;
-import de.engineapp.*;
-import de.engineapp.Renderer;
+import de.engineapp.Configuration;
+import de.engineapp.Physics;
+import de.engineapp.PresentationModel;
 import de.engineapp.PresentationModel.StorageListener;
-import de.engineapp.containers.*;
+import de.engineapp.Renderer;
+import de.engineapp.SceneManager;
+import de.engineapp.containers.MainToolBar;
+import de.engineapp.containers.ObjectToolBar;
+import de.engineapp.containers.PropertiesPanel;
+import de.engineapp.containers.StatusBar;
 import de.engineapp.controls.Canvas;
 import de.engineapp.controls.dnd.DragAndDropController;
-import de.engineapp.util.*;
-
-import static de.engineapp.Constants.*;
+import de.engineapp.util.GuiUtil;
+import de.engineapp.util.Localizer;
+import de.engineapp.util.LookAndFeelManager;
 
 
 public final class MainWindow extends JFrame implements StorageListener

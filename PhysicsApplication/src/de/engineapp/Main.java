@@ -1,8 +1,11 @@
 package de.engineapp;
 
+import static de.engineapp.Constants.PRP_CURRENT_FILE;
+import static de.engineapp.Constants.PRP_LANGUAGE_CODE;
+import static de.engineapp.Constants.PRP_SKIN;
+import static de.engineapp.Constants.STG_DEBUG;
+import static de.engineapp.Constants.STG_GRID;
 import de.engineapp.windows.MainWindow;
-
-import static de.engineapp.Constants.*;
 
 public class Main
 {

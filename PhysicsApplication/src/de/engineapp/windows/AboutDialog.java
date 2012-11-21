@@ -1,15 +1,28 @@
 package de.engineapp.windows;
 
-import java.awt.*;
-import java.awt.event.*;
+import static de.engineapp.Constants.CMD_OK;
+import static de.engineapp.Constants.ICO_MAIN_256;
+import static de.engineapp.Constants.L_ABOUT;
+import static de.engineapp.Constants.L_ABOUT_TEXT;
+import static de.engineapp.Constants.L_OK;
+import static de.engineapp.Constants.MAJOR;
+import static de.engineapp.Constants.MINOR;
+import static de.engineapp.Constants.REVISION;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import de.engineapp.controls.QuickButton;
-import de.engineapp.util.*;
-
-import static de.engineapp.Constants.*;
+import de.engineapp.util.GuiUtil;
+import de.engineapp.util.Localizer;
 
 public final class AboutDialog extends JDialog implements ActionListener
 {

@@ -1,5 +1,14 @@
 package de.engineapp;
 
+import static de.engineapp.Constants.PRP_CURRENT_FILE;
+import static de.engineapp.Constants.PRP_LANGUAGE_CODE;
+import static de.engineapp.Constants.PRP_LOOK_AND_FEEL;
+import static de.engineapp.Constants.STG_DBLCLICK_SHOW_PROPERTIES;
+import static de.engineapp.Constants.STG_DEBUG;
+import static de.engineapp.Constants.STG_GRID;
+import static de.engineapp.Constants.STG_MAXIMIZED;
+import static de.engineapp.Constants.STG_SHOW_ARROWS_ALWAYS;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,12 +16,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import de.engineapp.PresentationModel.*;
-
-import static de.engineapp.Constants.*;
+import de.engineapp.PresentationModel.StorageListener;
+import de.engineapp.PresentationModel.ViewBoxListener;
 
 public class Configuration implements Serializable, Cloneable, StorageListener, ViewBoxListener
 {

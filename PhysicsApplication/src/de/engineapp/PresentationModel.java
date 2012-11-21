@@ -1,7 +1,8 @@
 package de.engineapp;
 
 import java.awt.Point;
-import java.awt.event.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 
 import javax.swing.event.EventListenerList;

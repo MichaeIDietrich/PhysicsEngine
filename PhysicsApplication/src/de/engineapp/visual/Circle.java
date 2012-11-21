@@ -1,11 +1,16 @@
 package de.engineapp.visual;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.util.Collection;
+import java.util.HashMap;
 
 import de.engine.math.Vector;
-import de.engineapp.*;
+import de.engineapp.Configuration;
+import de.engineapp.PresentationModel;
 
 public class Circle extends de.engine.objects.Circle implements IDrawable, ISelectable, IDecorable, Cloneable
 {
