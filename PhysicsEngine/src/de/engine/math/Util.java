@@ -10,20 +10,17 @@ public class Util
 {
     // needed for derivation
     private static final Double h = Math.pow(10d, -7d);
-    private static final Double u = Math.pow(10d, 10d);
+    private static final Double u = Math.pow(10d, 12d);
     private static Vector function = new Vector();
-    private static double m = 0;
-    private static double n = 0;
-    public  static double used_m = 0;
-    private static Double[] radius = new Double[3];
-    private static double diff_x = 0;
-    private static double diff_y = 0;
-    private static double alpha = 0;
+    private static double  m = 0;
+    private static double  n = 0;
+    private static int     sign   = 1;
+    public  static double  used_m = 0;
     private static boolean set_slope = false;
     // has to be set before using Newton Iteration
     public static ObjectProperties object;
-    public static Ground ground;
-    private static int sign = 1;
+    public static Ground           ground;
+    
     
     public static double distance(Vector p1, Vector p2)
     {
@@ -76,22 +73,46 @@ public class Util
         
         Double xn = object.getPosition().getX();
         
-        // m = slope, n = shift in y, linear function
-        m = object.velocity.getY() / object.velocity.getX();
-        n = object.getPosition().getY() - m*xn;
-
-//        sign = object.getPosition().getY()<0 ? 1 : -1;
+        if (!set_slope) 
+        {
+            // m = slope, n = shift in y, linear function
+            m = object.velocity.getY() / object.velocity.getX();
+            n = object.getPosition().getY() - m*xn;
+            
+            sign = (object.velocity.getY()<0) ? 1 : -1;
+        }
         
-        for (int i = 0; i < 6; i++)
+        // interpolates intersections for slopes between -0.15..0.15
+        if (m<=0.15 && m>=-0.15) 
+        {
+            double oldm = m;
+          
+            set_slope = true;
+          
+            m = 0.16;
+            n = object.getPosition().getY() - m*xn;
+            sign = object.velocity.getX()>=0 ? -1 :  1;
+            double i1 = newtonIteration();
+          
+            m = -0.16;
+            n = object.getPosition().getY() - m*xn;
+            sign = object.velocity.getX()>=0 ?  1 : -1;
+            double i2 = newtonIteration();
+
+            set_slope = false;
+          
+            return i1 + Math.abs(i1-i2) * ((oldm-0.15)/0.32);
+        }
+        
+        // the ordinary newton iteration
+        for (int i = 0; i < 8; i++)
         {
             double fktValue = newFkt( xn );
             xn = xn - fktValue / derive1D( fktValue ); 
         }
-
-        used_m = m;
-    
-//        System.out.println( xn );
         
+        used_m = m;
+
         return xn;
     }
     
