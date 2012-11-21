@@ -14,7 +14,7 @@ public class Util
     private static Vector function = new Vector();
     private static double m = 0;
     private static double n = 0;
-    public  static double used_m = 0;
+    public static double used_m = 0;
     private static Double[] radius = new Double[3];
     private static double diff_x = 0;
     private static double diff_y = 0;
@@ -67,7 +67,6 @@ public class Util
         return Math.atan2(vec2.getY() - vec1.getY(), vec2.getX() - vec1.getX());
     }
     
-    
     public static Double newtonIteration()
     {
         // If the object has no velocity in x direction, return the objects x-coordinate.
@@ -78,19 +77,19 @@ public class Util
         
         // m = slope, n = shift in y, linear function
         m = object.velocity.getY() / object.velocity.getX();
-        n = object.getPosition().getY() - m*xn;
-
-//        sign = object.getPosition().getY()<0 ? 1 : -1;
+        n = object.getPosition().getY() - m * xn;
+        
+        // sign = object.getPosition().getY()<0 ? 1 : -1;
         
         for (int i = 0; i < 6; i++)
         {
-            double fktValue = newFkt( xn );
-            xn = xn - fktValue / derive1D( fktValue ); 
+            double fktValue = newFkt(xn);
+            xn = xn - fktValue / derive1D(fktValue);
         }
-
+        
         used_m = m;
-    
-//        System.out.println( xn );
+        
+        // System.out.println( xn );
         
         return xn;
     }
@@ -98,21 +97,23 @@ public class Util
     /**
      * Calculates the 1st derivation of the function given in <i>functions</i>.
      * 
-     * @param x - determines the point of which the derivation is wanted
-     * @param object -
+     * @param x
+     *            - determines the point of which the derivation is wanted
+     * @param object
+     *            -
      * @param ground
      * @return
      */
-    public static Double derive1D( Double x )
+    public static Double derive1D(Double x)
     {
         // df(x) = ( -f(x+2h) +8f(x+h) - 8f(x-h) + f(x-2h) ) / 12h
-        return sign * ( -newFkt( x+2d*u ) + 8d*newFkt( x+u ) - 8d*newFkt( x-u ) + newFkt( x-2d*u )) / (2d*u);
+        return sign * (-newFkt(x + 2d * u) + 8d * newFkt(x + u) - 8d * newFkt(x - u) + newFkt(x - 2d * u)) / (2d * u);
     }
     
-    public static Double derive1Dr( Double x )
+    public static Double derive1Dr(Double x)
     {
         // df(x) = ( f(x+h) - f(x-h) ) / 2h
-        return (functions(x+h).getY() - functions(x-h).getY()) / (2d*h);
+        return (functions(x + h).getY() - functions(x - h).getY()) / (2d * h);
     }
     
     public static Double newFkt(Double x)
@@ -123,20 +124,16 @@ public class Util
     
     public static Vector functions(Double x)
     {
-        function.setX( m*x + n );
-        function.setY( ground.function(x) );
-
-//        System.out.println( m + "*x "+ (n<0 ? "":"+") + n);
+        function.setX(m * x + n);
+        function.setY(ground.function(x));
+        
+        // System.out.println( m + "*x "+ (n<0 ? "":"+") + n);
         
         return function;
     }
-
-    
-    
-    
     
     // ************************************************************
-
+    
     /**
      * returns all axis between a Polygon and a Circle for the seperating axis theorem
      */
@@ -146,7 +143,7 @@ public class Util
     }
     
     /**
-     * returns all axis between two Polygons  for the seperating axis theorem
+     * returns all axis between two Polygons for the seperating axis theorem
      */
     public static Vector[] getAxis(Polygon p1, Polygon p2, double time)
     {
@@ -233,5 +230,76 @@ public class Util
         }
         
         return null;
+    }
+    
+    public static class MinMax
+    {
+        public double min, max;
+        
+        public MinMax()
+        {
+            min = Double.MAX_VALUE;
+            max = -1 * Double.MAX_VALUE;
+        }
+    }
+    
+    public static MinMax polygonInterval(Vector axis, Polygon p, double time)
+    {
+        MinMax mm = new MinMax();
+        for (int i = 0; i < p.points.length; i++)
+        {
+            double d = Util.scalarProduct(axis, p.getWorldPointPos(i, time));
+            if (d < mm.min)
+                mm.min = d;
+            if (d > mm.max)
+                mm.max = d;
+        }
+        return mm;
+    }
+    
+    public static MinMax circleInterval(Vector axis, Circle c, double time)
+    {
+        MinMax mm = new MinMax();
+        double cn = Util.scalarProduct(axis, c.getPosition(time));
+        mm.min = cn - c.getRadius();
+        mm.max = cn + c.getRadius();
+        return mm;
+    }
+    
+    public static boolean intersect(MinMax mm1, MinMax mm2)
+    {
+        return (mm1.min <= mm2.max && mm2.min <= mm1.max);
+    }
+    
+    public static boolean collideCirclePolygonAxis(Vector axis, Circle o1, Polygon o2, double time)
+    {
+        MinMax mm_o1 = circleInterval(axis, o1, time);
+        MinMax mm_o2 = polygonInterval(axis, o2, time);
+        
+        return intersect(mm_o1, mm_o2);
+    }
+    
+    public static boolean collidePolygonPolygonAxis(Vector axis, Polygon o1, Polygon o2, double time)
+    {
+        MinMax mm_o1 = polygonInterval(axis, o1, time);
+        MinMax mm_o2 = polygonInterval(axis, o2, time);
+        
+        return intersect(mm_o1, mm_o2);
+    }
+    
+    public static Vector getVectorComponents(Vector v, Vector a, Vector b)
+    {
+        Vector result = new Vector();
+        if (a.getX() != 0)
+        {
+            result.setY(((v.getX() * a.getY() / a.getX()) - v.getY()) / ((b.getX() * a.getY() / a.getX()) - b.getY()));
+            result.setX((v.getX() - result.getY() * b.getX()) / a.getX());
+        }
+        else if (b.getX() != 0)
+        {
+            result.setX(((v.getX() * b.getY() / b.getX()) - v.getY()) / ((a.getX() * b.getY() / b.getX()) - a.getY()));
+            result.setY((v.getX() - result.getX() * a.getX()) / b.getX());
+        }
+        return result;
     }
 }
