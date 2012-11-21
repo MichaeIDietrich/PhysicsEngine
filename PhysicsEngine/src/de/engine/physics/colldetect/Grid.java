@@ -1,4 +1,4 @@
-package de.engine.colldetect;
+package de.engine.physics.colldetect;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ public class Grid
         }
     }
     
-    public static class CollPair
+    /*public static class CollPair
     {
         ObjectProperties obj1;
         ObjectProperties obj2;
@@ -51,12 +51,12 @@ public class Grid
             this.max_time = max_time;
             this.coll_time = null;
         }
-    }
+    }*/
     
     private double cellSize = 50;
     public Scene scene;
     private HashMap<Integer, HashMap<Integer, ArrayList<Element>>> objectFields;
-    ArrayList<CollPair> collisionPairs;
+    ArrayList<CollisionData> collisionPairs;
     
     public Grid(Scene scene)
     {
@@ -186,29 +186,32 @@ public class Grid
         }
     }
     
-    public CollPair getNextCollision()
+    public CollisionData getNextCollision()
     {
         if (0 < collisionPairs.size())
         {
             int index = 0;
-            Double colltime = getCollTime(collisionPairs.get(index));
+            CollisionTimer.calcCollTime(collisionPairs.get(index));
+            Double colltime = collisionPairs.get(index).coll_time;
             collisionPairs.get(index).coll_time = colltime;
             int i = 1;
             while (i < collisionPairs.size())
             {
                 if (colltime == null)
                 {
-                    colltime = getCollTime(collisionPairs.get(i));
+                    CollisionTimer.calcCollTime(collisionPairs.get(i));
+                    colltime = collisionPairs.get(i).coll_time;
                     collisionPairs.remove(index);
                     index = i - 1;
                     collisionPairs.get(index).coll_time = colltime;
                     continue;
                 }
                 
-                CollPair collPair = collisionPairs.get(i);
+                CollisionData collPair = collisionPairs.get(i);
                 if (collPair.min_time <= colltime && collPair.coll_time == null)
                 {
-                    Double colltime_i = getCollTime(collPair);
+                    CollisionTimer.calcCollTime(collPair);
+                    Double colltime_i = collPair.coll_time;
                     if (colltime_i == null)
                     {
                         collisionPairs.remove(i);
@@ -234,17 +237,12 @@ public class Grid
         return null;
     }
     
-    private Double getCollTime(CollPair collPair)
-    {
-        return CollisionTimer.getCollTime(collPair.obj1, collPair.obj2, collPair.min_time, collPair.max_time);
-    }
-    
     private void clearCollPairs(ObjectProperties obj)
     {
         int i = 0;
         while (i < collisionPairs.size())
         {
-            if (collisionPairs.get(i).obj1.getId() == obj.getId() || collisionPairs.get(i).obj2.getId() == obj.getId())
+            if (collisionPairs.get(i).obj1== obj || collisionPairs.get(i).obj2 == obj)
             {
                 collisionPairs.remove(i);
             }
@@ -319,7 +317,7 @@ public class Grid
             return;
         if (e1.min_time < e2.max_time && e2.min_time < e1.max_time)
         {
-            for (CollPair collPair : collisionPairs)
+            for (CollisionData collPair : collisionPairs)
             {
                 if ((collPair.obj1 == e1.obj && collPair.obj2 == e2.obj) || (collPair.obj1 == e2.obj && collPair.obj2 == e1.obj))
                 {
@@ -340,7 +338,7 @@ public class Grid
                 max_time = e1.max_time;
             else
                 max_time = (e1.max_time > e2.max_time) ? e1.max_time : e2.max_time;
-            collisionPairs.add(new CollPair(e1.obj, e2.obj, min_time, max_time));
+            collisionPairs.add(new CollisionData(e1.obj, e2.obj, min_time, max_time));
         }
         
     }

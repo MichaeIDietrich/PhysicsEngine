@@ -31,6 +31,13 @@ public abstract class ObjectProperties implements Cloneable
         return frametime;
     }
     
+    public void setFrameTime(double frametime)
+    {
+        if(isPinned)
+            return;
+        this.frametime = frametime;
+    }
+    
     public double getTime()
     {
         return EnvProps.deltaTime() - frametime;
