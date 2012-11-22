@@ -294,7 +294,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                     if (object.getX() >= minX && object.getX() <= maxX && 
                         object.getY() >= minY && object.getY() <= maxY)
                     {
-                        Range selection = new Range(object, "radius", 3);
+                        Range selection = new Range(object, "radius", 1.5f);
                         selection.setBorder(new Color(100, 100, 255, 200));
                         ((IDecorable) object).putDecor(DECOR_SELECTION, selection);
                         
@@ -350,11 +350,21 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             pModel.getSelectedObject().setRotationAngle(newAngle);
             pModel.fireRepaint();
         }
-     // else modify the object's position in the scene (except in playback mode)
+        // else modify the object's position in the scene (except in playback mode)
         else if (hasSelection && dragDelay != null && dragDelay.isDone() && 
                 GuiUtil.isLeftButton(e, false, false, false) && 
                 !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
         {
+            if (pModel.hasMultiSelectionObjects())
+            {
+                Vector diff = Util.minus(cursor, pModel.getSelectedObject().getPosition());
+                
+                for (ObjectProperties object : pModel.getMultipleSelectionObjects())
+                {
+                    object.getPosition().add(diff);
+                }
+            }
+            
             pModel.getSelectedObject().world_position.translation = cursor;
             pModel.fireObjectUpdated(pModel.getSelectedObject());
             pModel.fireRepaint();
@@ -370,7 +380,21 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         else if (hasSelection && (GuiUtil.isLeftButton(e, false, true, false) ||
                 SwingUtilities.isMiddleMouseButton(e)) && !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
         {
-            pModel.getSelectedObject().setRadius(Util.distance(pModel.getSelectedObject().getPosition(), cursor));
+            double distance = Util.distance(pModel.getSelectedObject().getPosition(), cursor);
+            
+            if (pModel.hasMultiSelectionObjects())
+            {
+                for (ObjectProperties object : pModel.getMultipleSelectionObjects())
+                {
+                    object.setRadius(distance);
+                }
+            }
+            else
+            {
+                pModel.getSelectedObject().setRadius(distance);
+            }
+            
+            // send an update for the selected object, need some tweaks maybe
             pModel.fireObjectUpdated(pModel.getSelectedObject());
             pModel.fireRepaint();
         }
@@ -497,7 +521,20 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         // remove an object when the delete key is pressed (127 = Delete Key)
         if (e.getKeyChar() == 127 && pModel.getSelectedObject() != null)
         {
+            
+            if (pModel.hasMultiSelectionObjects())
+            {
+                for (ObjectProperties object : pModel.getMultipleSelectionObjects())
+                {
+                    if (object != pModel.getSelectedObject())
+                    {
+                        pModel.removedObject(object);
+                    }
+                }
+                pModel.clearMultiSelectionObjects();
+            }
             pModel.removedObject(pModel.getSelectedObject());
+            
             pModel.fireRepaint();
         }
     }

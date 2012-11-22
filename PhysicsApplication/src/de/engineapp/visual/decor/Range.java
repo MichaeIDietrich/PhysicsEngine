@@ -15,7 +15,7 @@ public class Range implements IDrawable
     
     private ObjectProperties connectedObject;
     private PropertyConnector<Double> pConnector;
-    private int borderWidth;
+    private float borderWidth;
     private boolean showTextBox;
     
     
@@ -26,7 +26,7 @@ public class Range implements IDrawable
         showTextBox = false;
     }
     
-    public Range(ObjectProperties object, String propertyName, int borderWidth)
+    public Range(ObjectProperties object, String propertyName, float borderWidth)
     {
         connectedObject = object;
         pConnector = new PropertyConnector<>(object, propertyName);
@@ -41,7 +41,7 @@ public class Range implements IDrawable
         this.showTextBox = showTextBox;
     }
     
-    public Range(ObjectProperties object, String propertyName, int borderWidth, boolean showTextBox)
+    public Range(ObjectProperties object, String propertyName, float borderWidth, boolean showTextBox)
     {
         connectedObject = object;
         pConnector = new PropertyConnector<>(object, propertyName);
@@ -107,7 +107,7 @@ public class Range implements IDrawable
         
         if (border != null)
         {
-            if (borderWidth == 1)
+            if (borderWidth == 1.0f)
             {
                 g.setColor(border);
                 g.draw(circle);
