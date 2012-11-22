@@ -16,20 +16,37 @@ public class Range implements IDrawable
     private ObjectProperties connectedObject;
     private PropertyConnector<Double> pConnector;
     private int borderWidth;
+    private boolean showTextBox;
     
     
     public Range(ObjectProperties object, String propertyName)
     {
         connectedObject = object;
         pConnector = new PropertyConnector<>(object, propertyName);
+        showTextBox = false;
     }
-    
     
     public Range(ObjectProperties object, String propertyName, int borderWidth)
     {
         connectedObject = object;
         pConnector = new PropertyConnector<>(object, propertyName);
         this.borderWidth = borderWidth;
+        showTextBox = false;
+    }
+    
+    public Range(ObjectProperties object, String propertyName, boolean showTextBox)
+    {
+        connectedObject = object;
+        pConnector = new PropertyConnector<>(object, propertyName);
+        this.showTextBox = showTextBox;
+    }
+    
+    public Range(ObjectProperties object, String propertyName, int borderWidth, boolean showTextBox)
+    {
+        connectedObject = object;
+        pConnector = new PropertyConnector<>(object, propertyName);
+        this.borderWidth = borderWidth;
+        this.showTextBox = showTextBox;
     }
     
     
@@ -82,10 +99,6 @@ public class Range implements IDrawable
         
         Ellipse2D.Double circle = new Ellipse2D.Double(x, y, r2, r2);
         
-        String text =  "" + Math.round(r);
-        float textX = (float) (connectedObject.getX() + r);
-        float textY = (float) connectedObject.getY();
-        
         if (color != null)
         {
             g.setColor(color);
@@ -112,7 +125,14 @@ public class Range implements IDrawable
             }
         }
         
-        drawString(g, text, textX, textY);
+        if (showTextBox)
+        {
+            String text =  "" + Math.round(r);
+            float textX = (float) (connectedObject.getX() + r);
+            float textY = (float) connectedObject.getY();
+            
+            drawString(g, text, textX, textY);
+        }
     }
     
     

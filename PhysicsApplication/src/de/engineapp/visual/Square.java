@@ -145,7 +145,7 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
         newSquare.name = this.name;
         newSquare.color = this.color;
         newSquare.border = this.border;
-        newSquare.decorMap = this.decorMap;
+//        newSquare.decorMap = this.decorMap; // bad idea :p
         
         super.clone(newSquare, cloneId);
         
