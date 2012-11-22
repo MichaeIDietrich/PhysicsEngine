@@ -62,7 +62,7 @@ public class PhysicsCalcer
         {
             if (contacts.get(0).normal.getX() == contacts.get(1).normal.getX() && contacts.get(0).normal.getY() == contacts.get(1).normal.getY())
             {
-                Contact c = new Contact(Util.add(contacts.get(0).point, contacts.get(1).point).scale(0.5), contacts.get(0).normal);
+                Contact c = new Contact(Util.add(contacts.get(0).point, contacts.get(1).point).scale(0.5), contacts.get(0).normal, contacts.get(0).penetration);
                 return resolveContact(collPair, c);
             }
             else
@@ -74,7 +74,7 @@ public class PhysicsCalcer
         else if (contacts.size() == 4)
         {
             
-            Contact c = new Contact(Util.add(contacts.get(0).point, contacts.get(1).point).scale(0.5), Util.add(contacts.get(0).normal, contacts.get(1).normal).getUnitVector());
+            Contact c = new Contact(Util.add(contacts.get(0).point, contacts.get(1).point).scale(0.5), Util.add(contacts.get(0).normal, contacts.get(1).normal).getUnitVector(), contacts.get(0).penetration);
             return resolveContact(collPair, c);
         }
         return null;
@@ -155,7 +155,7 @@ public class PhysicsCalcer
         obj.angular_velocity -= Util.crossProduct(rel_pos, j_normal) / obj.moment_of_inertia;
     }
     
-    private static CollisionData getRestingContact(ObjectProperties obj1, ObjectProperties obj2, Vector coll_normal)
+    private static CollisionData getRestingContact(ObjectProperties obj1, ObjectProperties obj2, Vector coll_normal, double penetration)
     {
         double min_v = 1.0;
         
@@ -170,8 +170,12 @@ public class PhysicsCalcer
             CollisionData restingContact = new CollisionData(obj1, obj2, 0.0, EnvProps.deltaTime());
             restingContact.coll_time = EnvProps.deltaTime();
             restingContact.calc_time = EnvProps.deltaTime();
-            obj1.velocity.minus(normal_part1);
-            obj2.velocity.minus(normal_part2);
+            if(!obj1.isPinned)
+                obj1.world_position.translation.add(Util.scale(coll_normal, penetration));
+            if(!obj2.isPinned)
+                obj2.world_position.translation.add(Util.scale(coll_normal, -1 * penetration));
+            //obj1.velocity.minus(normal_part1);
+            //obj2.velocity.minus(normal_part2);
             return restingContact;
         }
         
@@ -198,6 +202,8 @@ public class PhysicsCalcer
             collPair.obj1.update(collPair.coll_time);
             
             updateVobj1(collPair.obj1, rel_pos, j_normal);
+            
+            return getRestingContact(collPair.obj1, collPair.obj2, contact.normal, contact.penetration);
         }
         else if (collPair.obj1.isPinned)
         {
@@ -209,6 +215,8 @@ public class PhysicsCalcer
             collPair.obj2.update(collPair.coll_time);
             
             updateVobj1(collPair.obj2, rel_pos, j_normal);
+            
+            return getRestingContact(collPair.obj2, collPair.obj1, contact.normal, contact.penetration);
         }
         else
         {
@@ -224,10 +232,9 @@ public class PhysicsCalcer
             
             updateVobj1(collPair.obj1, rel_pos1, j_normal);
             updateVobj2(collPair.obj2, rel_pos2, j_normal);
+            
+            return getRestingContact(collPair.obj1, collPair.obj2, contact.normal, contact.penetration);
         }
-        
-
-        return getRestingContact(collPair.obj1, collPair.obj2, contact.normal);
     }
     
     // Quelle: http://www.myphysicslab.com/collision.html
@@ -304,6 +311,6 @@ public class PhysicsCalcer
             
         }
         
-        return getRestingContact(collPair.obj1, collPair.obj2, coll_normal);
+        return getRestingContact(collPair.obj1, collPair.obj2, coll_normal, contact.penetration);
     }
 }
