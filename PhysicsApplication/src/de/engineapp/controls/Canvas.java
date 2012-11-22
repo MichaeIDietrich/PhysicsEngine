@@ -382,8 +382,11 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         }
         
         // show object radius
-        Range selection = new Range(object, "radius");
-        selection.setBorder(new Color(180, 120, 20));
+//        Range selection = new Range(object, "radius");
+//        selection.setBorder(new Color(180, 120, 20));
+        Range selection = new Range(object, "radius", 3);
+        selection.setBorder(new Color(150, 150, 255, 200));
+        decorableObject.putDecor(DECOR_SELECTION, selection);
         
         // remove world velocity arrow, because it has already another one
         // which can be modified by the user
@@ -402,6 +405,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         decorableObject.removeDecor(DECOR_ARROW);
         decorableObject.removeDecor(DECOR_COORDINATE);
         decorableObject.removeDecor(DECOR_CLOSEST_POINT);
+        decorableObject.removeDecor(DECOR_SELECTION);
         
         if (pModel.isState(STG_SHOW_ARROWS_ALWAYS))
         {

@@ -12,6 +12,7 @@ public class Box implements IDrawable
 {
     private Color color = null;
     private Color border = Color.CYAN;
+    private int drawPriority = 4;
     
     private PropertyConnector<Vector[]> pConnector;
     
@@ -79,6 +80,19 @@ public class Box implements IDrawable
         
         renderVector(g, aabb[0]);
         renderVector(g, aabb[1]);
+    }
+    
+    
+    @Override
+    public int getDrawPriority()
+    {
+        return drawPriority;
+    }
+    
+    @Override
+    public void setDrawPriority(int priority)
+    {
+        drawPriority = priority;
     }
     
     

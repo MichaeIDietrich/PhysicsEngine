@@ -274,7 +274,10 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 break;
                 
             case CMD_HELP:
-                new HelpDialog((Window) this.getTopLevelAncestor());
+                if (!HelpDialog.isAlreadyOpened())
+                {
+                    new HelpDialog((Window) this.getTopLevelAncestor());
+                }
                 break;
                 
             case CMD_ABOUT:
