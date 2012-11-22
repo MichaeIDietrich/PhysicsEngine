@@ -12,6 +12,7 @@ import de.engine.objects.Circle;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engine.objects.Polygon;
+import de.engine.physics.ContactCreator.Contact;
 import de.engine.physics.PhysicsCalcer;
 
 public class CollisionDetector
@@ -22,6 +23,7 @@ public class CollisionDetector
     private de.engine.math.Vector v = null;
     
     private DistanceCalcer distCalcer;
+    private Contact gcontact = null;
     
     public CollisionDetector(Scene scene)
     {
@@ -61,6 +63,8 @@ public class CollisionDetector
     public void objectGroundCollision()
     {
         long time = System.currentTimeMillis();
+
+        if (gcontact==null) gcontact = new Contact(new Vector(), new Vector());
         
         for (ObjectProperties object : scene.getObjects())
         {
@@ -71,25 +75,31 @@ public class CollisionDetector
                 Util.object = object;
                 Double xn = Util.newtonIteration();
                 
-                object.last_intersection.setX(xn);
-                object.last_intersection.setY(ground.function(xn.intValue()));
+                object.last_intersection.setX( xn );
+                object.last_intersection.setY( ground.function(xn) );
                 
-                int x = (int) object.last_intersection.getX();
-                int y = (int) object.last_intersection.getY();
-                
+                double x = object.last_intersection.getX();
+                double y = object.last_intersection.getY();
+ 
                 // calc distance by pythagoras
-                double c = Math.sqrt( Math.pow(x - object.getPosition().getX(), 2d) + Math.pow(y - object.getPosition().getY(), 2d) );
-                
-                System.out.println( Math.atan( Util.getAngle( object.velocity, new Vector(xn, Util.newFkt(xn)))));
+                double c = Math.sqrt( Math.pow(x - object.getPosition().getX(), 2.0) + Math.pow(y - object.getPosition().getY(), 2.0) );
 
-                // the faster the object, the ealier it must be stopped
-                double corrFactor = 0.01*Math.sqrt( object.velocity.getX()*object.velocity.getX() + object.velocity.getY()*object.velocity.getY());
-
-                if (c <= object.getRadius() + corrFactor )
+                if (c <= object.getRadius())
                 {
-                    object.velocity.setX(0);
-                    object.velocity.setY(0);
-                    object.isPinned = true;
+                    Vector coll_normal = new Vector( x, -x/Util.derive1Dr( x ) + y).norm();
+                    
+                    Vector r_o1 = new Vector( x - object.getPosition().getX(), y - object.getPosition().getY()).norm();
+                    double r_o1_cross_n = Util.crossProduct(r_o1, coll_normal);
+
+                    double j_z = -Util.scalarProduct(object.velocity, coll_normal) * (1d + (object.surface.elasticity() + ground.surface.elasticity()) / 2d);
+                    double j_n = (1d / object.getMass()) + (r_o1_cross_n * r_o1_cross_n) / object.moment_of_inertia;
+                    
+                    double j = j_z / j_n;
+                    
+                    Vector v_vec = object.velocity.add( coll_normal.multi( j ).multi( 1d / object.getMass() ));
+                    
+                    object.velocity.setX( v_vec.getX() );
+                    object.velocity.setY( v_vec.getY() );       
                 }
             }
         }
@@ -97,7 +107,7 @@ public class CollisionDetector
         DebugMonitor.getInstance().updateMessage("groundColl", "" + (System.currentTimeMillis() - time));
         // System.out.println(System.currentTimeMillis() - time + " ms / " + "SP: [ " + (int) scene.getObject(0).last_intersection.getX() + ", " + (int) scene.getObject(0).last_intersection.getY() + " ]");
     }
-    
+
     public void objectGroundCollision2()
     {
         long t = System.currentTimeMillis();
