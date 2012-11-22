@@ -9,8 +9,8 @@ import de.engine.objects.Square;
 public class Util
 {
     // needed for derivation
-    private static final Double h = Math.pow(10d, -7d);
-    private static final Double u = Math.pow(10d, 12d);
+    public static final Double h = Math.pow(10d, -7d);
+    public static final Double u = Math.pow(10d, 12d);
     private static Vector function = new Vector();
     private static double  m = 0;
     private static double  n = 0;
@@ -64,6 +64,11 @@ public class Util
         return Math.atan2(vec2.getY() - vec1.getY(), vec2.getX() - vec1.getX());
     }
     
+    
+    public static double getNormalFuncValue( Vector intersection, double pos_on_fkt )
+    {
+        return -pos_on_fkt / Util.derive1Dr( intersection.getX()) + intersection.getY();
+    }
     
     public static Double newtonIteration()
     {
