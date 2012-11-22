@@ -183,7 +183,7 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
         newCircle.name = this.name;
         newCircle.color = this.color;
         newCircle.border = this.border;
-        newCircle.decorMap = this.decorMap;
+//        newCircle.decorMap = this.decorMap; // bad idea :p
         
         super.clone(newCircle, true);
         

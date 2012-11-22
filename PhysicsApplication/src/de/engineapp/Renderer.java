@@ -150,6 +150,11 @@ public final class Renderer extends AsyncWorker implements PaintListener, Storag
         
         orderedObjects.clear();
         
+        for (IDrawable decor : canvas.getDecorSet())
+        {
+            orderedObjects.add(decor);
+        }
+        
         for (ObjectProperties obj : scene.getObjects())
         {
             if (obj instanceof IDrawable)
@@ -173,16 +178,7 @@ public final class Renderer extends AsyncWorker implements PaintListener, Storag
         {
             decor = orderedObjects.poll();
             decor.render(g);
-            System.out.print(decor.getDrawPriority() + ", ");
         }
-        System.out.println();
-        
-        
-//        for (IDrawable decor : orderedObjects)
-//        {
-//            decor.render(g);
-//        }
-        
         
         canvas.switchBuffers();
         canvas.repaint();
