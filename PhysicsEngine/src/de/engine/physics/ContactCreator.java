@@ -13,19 +13,23 @@ public class ContactCreator
     {
         public Vector point;
         public Vector normal;
+        public double penetration;
+        
         public boolean from_second;
         
-        public Contact(Vector point, Vector normal)
+        public Contact(Vector point, Vector normal, double penetration)
         {
             this.point = point;
             this.normal = normal;
+            this.penetration = penetration;
             this.from_second = true;
         }
         
-        public Contact(Vector point, Vector normal, boolean from_second)
+        public Contact(Vector point, Vector normal, double penetration, boolean from_second)
         {
             this.point = point;
             this.normal = normal;
+            this.penetration = penetration;
             this.from_second = from_second;
         }
     }
@@ -37,7 +41,7 @@ public class ContactCreator
         Vector dist = Util.minus(pos_o1, pos_o2);
         Vector normal = dist.getUnitVector();
         Vector coll_point = Util.add(pos_o2, dist.scale(o2.getRadius() / dist.getLength()));
-        return new Contact(coll_point, normal);
+        return new Contact(coll_point, normal, 0.1);
         
     }
     
@@ -54,11 +58,11 @@ public class ContactCreator
             Vector coll_point = Util.crossEdges(circle_pos, Util.scale(pos_ray, -1 * o1.getRadius()), point_pos, edge_ray);
             if (coll_point != null)
             {
-                return new Contact(coll_point, pos_ray);
+                return new Contact(coll_point, pos_ray, o1.getRadius() - Util.distance(circle_pos, coll_point));
             } else {
                 Vector point_col = Util.minus(point_pos, circle_pos);
                 if(point_col.getLength() <= o1.getRadius()){
-                    return new Contact(point_pos, point_col.getUnitVector(), false);
+                    return new Contact(point_pos, point_col.getUnitVector(), o1.getRadius() - point_col.getLength(), false);
                 }
             }
         }
@@ -89,7 +93,7 @@ public class ContactCreator
                 Vector cross_point = Util.crossEdges(corner_o1, edge_normal, corner_o2, edge);
                 if(cross_point != null)// && Util.scalarProduct(edge_normal, Util.minus(o1.getPosition(time), corner_o1)) > 0)
                 {
-                    contacts.add(new Contact(cross_point, edge_normal, from_second));
+                    contacts.add(new Contact(cross_point, edge_normal, Util.distance(cross_point, corner_o1), from_second));
                 }
             }
         }
