@@ -2,7 +2,7 @@ package de.engineapp;
 
 import java.awt.Point;
 import java.awt.event.*;
-import java.util.HashMap;
+import java.util.*;
 
 import javax.swing.event.EventListenerList;
 
@@ -111,6 +111,8 @@ public class PresentationModel
     private Scene storedScene = null;
     /** Selected object in the active Scene */
     private ObjectProperties selectedObject = null;
+    /** Selected objects in the active Scene if multiple objects were selected  */
+    private List<ObjectProperties> selectedObjects = null;
     /** Canvas control */
     private Canvas canvas = null;
     /** instance of the last copied object */
@@ -126,6 +128,8 @@ public class PresentationModel
         
         stateMap = new HashMap<>();
         propertyMap = new HashMap<>();
+        
+        selectedObjects = new ArrayList<>();
         
         // attach this model to the configuration to load the settings
         // on startup and save on shutdown
@@ -416,6 +420,32 @@ public class PresentationModel
                 }
             }
         }
+    }
+    
+    
+    public boolean hasMultiSelectionObjects()
+    {
+        return !selectedObjects.isEmpty();
+    }
+    
+    public List<ObjectProperties> getMultipleSelectionObjects()
+    {
+        return selectedObjects;
+    }
+    
+    public void addMultiSelectionObject(ObjectProperties object)
+    {
+        selectedObjects.add(object);
+    }
+    
+    public void removeMultiSelectionObject(ObjectProperties object)
+    {
+        selectedObjects.remove(object);
+    }
+    
+    public void clearMultiSelectionObjects()
+    {
+        selectedObjects.clear();
     }
     
     

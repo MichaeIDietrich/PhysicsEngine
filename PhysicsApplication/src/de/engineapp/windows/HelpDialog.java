@@ -1,6 +1,7 @@
 package de.engineapp.windows;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -18,17 +19,47 @@ public class HelpDialog extends JDialog
     
     private final static Localizer LOCALIZER = Localizer.getInstance();
     
+    private static boolean opened;
+    
+    private List<Expander> topics;
+    private JPanel container;
+    private JScrollPane scrollPane;
+    
     
     public HelpDialog(Window parent)
     {
         super(parent);
+        
+        opened = true;
+        
         this.setTitle(LOCALIZER.getString(L_HELP));
-        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        
+        this.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                opened = false;
+                HelpDialog.this.dispose();
+            }
+        });
         
         this.setSize(600, 400);
         this.setLocationRelativeTo(parent);
         
         initializeComponents();
+        
+        this.addComponentListener(new ComponentAdapter()
+        {
+            @Override
+            public void componentResized(ComponentEvent e)
+            {
+                for (Expander expander : topics)
+                {
+                    expander.setWidth(scrollPane.getViewport().getWidth() - 10);
+                }
+            }
+        });
         
         this.setVisible(true);
     }
@@ -36,23 +67,42 @@ public class HelpDialog extends JDialog
     
     private void initializeComponents()
     {
-        JPanel viewPort = new JPanel(new BorderLayout());
-        Box container = Box.createVerticalBox();
+        container = new JPanel(new GridBagLayout());
+        topics = new ArrayList<>();
         
-        List<Expander> topics = new ArrayList<>();
         addTopics(topics);
         
-        for (Expander topic : topics)
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.gridx = 0;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.weightx = 1;
+        constraints.weighty = 0;
+        
+        for (Expander expander : topics)
         {
-            JPanel panel = new JPanel(new BorderLayout());
-            panel.add(topic, BorderLayout.PAGE_START);
-            container.add(panel);
+            constraints.gridy = container.getComponentCount();
+            
+            container.add(expander, constraints);
         }
         
-        viewPort.add(container, BorderLayout.PAGE_START);
-        JScrollPane scrollPane = new JScrollPane(viewPort, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        constraints.gridy = container.getComponentCount();
+        constraints.weighty = 1;
+        container.add(new JLabel(), constraints);
+        
+        
+        scrollPane = new JScrollPane(container, 
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+        
         this.add(scrollPane);
+    }
+    
+    
+    public static boolean isAlreadyOpened()
+    {
+        return opened;
     }
     
     
@@ -61,12 +111,12 @@ public class HelpDialog extends JDialog
         try
         {
             InputStream is = GuiUtil.getResource(resourceName);
-            InputStreamReader isr = new InputStreamReader(is);
+            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
             BufferedReader br = new BufferedReader(isr);
             
             StringBuilder builder = new StringBuilder();
             String line;
-        
+            
             while ((line = br.readLine()) != null)
             {
                 builder.append(line);
@@ -88,8 +138,10 @@ public class HelpDialog extends JDialog
     private void addTopics(List<Expander> topics)
     {
         // TODO - add all topics
-        topics.add(new Expander("titel", getDocument("doc/topic1.html")));
-        topics.add(new Expander("titel", getDocument("doc/topic1.html")));
-        topics.add(new Expander("titel", getDocument("doc/topic1.html")));
+        topics.add(new Expander("title", getDocument("doc/topic1.html")));
+        topics.add(new Expander("title", getDocument("doc/topic1.html")));
+        topics.add(new Expander("title", getDocument("doc/topic1.html")));
+//        topics.add(new Expander("Steuerleiste", String.format(getDocument("doc/toolbar.html"), 
+//                GuiUtil.getHtmlImage(ICO_NEW), GuiUtil.getHtmlImage(ICO_OPEN), GuiUtil.getHtmlImage(ICO_SAVE))));
     }
 }

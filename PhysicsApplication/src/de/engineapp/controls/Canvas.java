@@ -3,11 +3,13 @@ package de.engineapp.controls;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.*;
 
 import javax.swing.*;
 
 import de.engine.environment.Scene;
 import de.engine.math.*;
+import de.engine.math.Vector;
 import de.engine.objects.*;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.*;
@@ -22,7 +24,8 @@ import de.engineapp.visual.decor.Box;
 import static de.engineapp.Constants.*;
 
 
-public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener, KeyListener, MouseWheelListener, StorageListener, ActionListener
+public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener, KeyListener, 
+                                                  MouseWheelListener, StorageListener, ActionListener, IDecorable
 {
     private static class ActionMapper
     {
@@ -63,6 +66,9 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     private BufferedImage frontBuffer = null;
     private BufferedImage backBuffer  = null;
     
+    // all visual objects without physical properties
+    private Map<String, IDrawable> sceneDecor;
+    
     // stores the mouse offset while dragging
     private Point mouseOffset;
     
@@ -80,14 +86,18 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         pModel = model;
         model.setCanvas(this);
         
+        sceneDecor = new HashMap<>();
+        
         this.addComponentListener(new ComponentAdapter()
         {
             // resize back buffer
             @Override
             public void componentResized(ComponentEvent e)
             {
-                frontBuffer = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), BufferedImage.TYPE_INT_RGB);
-                backBuffer  = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), BufferedImage.TYPE_INT_RGB);
+                frontBuffer = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), 
+                                                BufferedImage.TYPE_INT_RGB);
+                backBuffer  = new BufferedImage(Canvas.this.getWidth(), Canvas.this.getHeight(), 
+                                                BufferedImage.TYPE_INT_RGB);
                 
                 // fire resize
                 pModel.resizeCanvas(Canvas.this.getWidth(), Canvas.this.getHeight());
@@ -196,7 +206,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         // show radius if shift is pressed
         if (hasSelection && GuiUtil.isLeftButton(e, false, true, false))
         {
-            Range range = new Range(pModel.getSelectedObject(), "radius");
+            Range range = new Range(pModel.getSelectedObject(), "radius", true);
             ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
         }
         // show angle if alt is pressed
@@ -219,6 +229,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         {
             ObjectProperties object = pModel.getScene().getObjectFromPoint(cursor.getX(), cursor.getY());
             
+            pModel.setSelectedObject(object);
+            
             // create new objects if
             // 1. there is no object under the cursor
             // 2. the engine is not running
@@ -229,15 +241,19 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             {
                 createObject(pModel.getProperty(PRP_OBJECT_MODE), e.getPoint());
             }
-            else
+            // span a rectangle to select multiple objects
+            else if (object == null)
             {
-                pModel.setSelectedObject(object);
+                Box selectionRect = new Box(cursor, cursor);
+                selectionRect.setColor(new Color(255, 200, 200, 100));
+                selectionRect.setBorder(new Color(255, 100, 100, 255));
+                this.putDecor(DECOR_SELECTION_RECT, selectionRect);
             }
         }
         // if middle mouse button is pressed, show the object radius
         else if (hasSelection && SwingUtilities.isMiddleMouseButton(e))
         {
-            Range range = new Range(pModel.getSelectedObject(), "radius");
+            Range range = new Range(pModel.getSelectedObject(), "radius", true);
             ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
         }
         
@@ -257,8 +273,46 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             {
                 ((IDecorable) pModel.getSelectedObject()).removeDecor(DECOR_RANGE);
                 ((IDecorable) pModel.getSelectedObject()).removeDecor(DECOR_ANGLE_VIEWER);
-                pModel.fireRepaint();
             }
+            
+            if (getDecor(DECOR_SELECTION_RECT) != null)
+            {
+                Box selectionRect = (Box) getDecor(DECOR_SELECTION_RECT);
+                
+                double x1 = selectionRect.getPoint1().getX();
+                double y1 = selectionRect.getPoint1().getY();
+                double x2 = selectionRect.getPoint2().getX();
+                double y2 = selectionRect.getPoint2().getY();
+                
+                double minX = x1 < x2 ? x1 : x2;
+                double minY = y1 < y2 ? y1 : y2;
+                double maxX = minX + Math.abs(x2 - x1);
+                double maxY = minY + Math.abs(y2 - y1);
+                
+                for (ObjectProperties object : pModel.getScene().getObjects())
+                {
+                    if (object.getX() >= minX && object.getX() <= maxX && 
+                        object.getY() >= minY && object.getY() <= maxY)
+                    {
+                        Range selection = new Range(object, "radius", 3);
+                        selection.setBorder(new Color(100, 100, 255, 200));
+                        ((IDecorable) object).putDecor(DECOR_SELECTION, selection);
+                        
+                        pModel.addMultiSelectionObject(object);
+                    }
+                }
+                
+                // if it is a multi selection
+                // set the first found object as main selected object
+                if (pModel.hasMultiSelectionObjects())
+                {
+                    pModel.setSelectedObject(pModel.getMultipleSelectionObjects().get(0));
+                }
+                
+                removeDecor(DECOR_SELECTION_RECT);
+                
+            }
+            pModel.fireRepaint();
         }
         else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
         {
@@ -297,11 +351,18 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             pModel.fireRepaint();
         }
      // else modify the object's position in the scene (except in playback mode)
-        else if (hasSelection && dragDelay != null && dragDelay.isDone() && GuiUtil.isLeftButton(e, false, false, false) && 
+        else if (hasSelection && dragDelay != null && dragDelay.isDone() && 
+                GuiUtil.isLeftButton(e, false, false, false) && 
                 !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
         {
             pModel.getSelectedObject().world_position.translation = cursor;
             pModel.fireObjectUpdated(pModel.getSelectedObject());
+            pModel.fireRepaint();
+        }
+        else if (!hasSelection && GuiUtil.isLeftButton(e, false, false, false))
+        {
+            Box selectionRect = (Box) getDecor(DECOR_SELECTION_RECT);
+            selectionRect.setPoint2(cursor);
             pModel.fireRepaint();
         }
         // middle mouse button or left mouse + shift button modifies the object's radius
@@ -340,11 +401,11 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             attachVelocityArrow(object);
         }
         
-        if (pModel.isState(STG_DEBUG))
-        {
-            Box aabb = new Box(object, "getAABB");
-            ((IDecorable) object).putDecor("aabb", aabb);
-        }
+//        if (pModel.isState(STG_DEBUG))
+//        {
+//            Box aabb = new Box(object, "getAABB", true);
+//            ((IDecorable) object).putDecor(DECOR_AABB, aabb);
+//        }
     }
     
     @Override
@@ -382,8 +443,11 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         }
         
         // show object radius
-        Range selection = new Range(object, "radius");
-        selection.setBorder(new Color(180, 120, 20));
+//        Range selection = new Range(object, "radius");
+//        selection.setBorder(new Color(180, 120, 20));
+        Range selection = new Range(object, "radius", 3);
+        selection.setBorder(new Color(100, 100, 255, 200));
+        decorableObject.putDecor(DECOR_SELECTION, selection);
         
         // remove world velocity arrow, because it has already another one
         // which can be modified by the user
@@ -402,6 +466,17 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         decorableObject.removeDecor(DECOR_ARROW);
         decorableObject.removeDecor(DECOR_COORDINATE);
         decorableObject.removeDecor(DECOR_CLOSEST_POINT);
+        decorableObject.removeDecor(DECOR_SELECTION);
+        
+        if (pModel.hasMultiSelectionObjects())
+        {
+            for (ObjectProperties selObject : pModel.getMultipleSelectionObjects())
+            {
+                ((IDecorable) selObject).removeDecor(DECOR_SELECTION);
+            }
+            
+            pModel.clearMultiSelectionObjects();
+        }
         
         if (pModel.isState(STG_SHOW_ARROWS_ALWAYS))
         {
@@ -578,5 +653,30 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 }
                 break;
         }
+    }
+    
+    
+    @Override
+    public void putDecor(String key, IDrawable decor)
+    {
+        sceneDecor.put(key, decor);
+    }
+    
+    @Override
+    public IDrawable getDecor(String key)
+    {
+        return sceneDecor.get(key);
+    }
+    
+    @Override
+    public void removeDecor(String key)
+    {
+        sceneDecor.remove(key);
+    }
+    
+    @Override
+    public Collection<IDrawable> getDecorSet()
+    {
+        return sceneDecor.values();
     }
 }

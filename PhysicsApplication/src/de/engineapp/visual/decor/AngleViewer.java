@@ -13,6 +13,7 @@ public class AngleViewer implements IDrawable
     
     private Color color = DEFAULT_FILL;
     private Color border = Color.BLACK;
+    private int drawPriority = 7;
     
     private ObjectProperties connectedObject;
     
@@ -46,6 +47,19 @@ public class AngleViewer implements IDrawable
     public void setBorder(Color color)
     {
         border = color;
+    }
+    
+    
+    @Override
+    public int getDrawPriority()
+    {
+        return drawPriority;
+    }
+    
+    @Override
+    public void setDrawPriority(int priority)
+    {
+        drawPriority = priority;
     }
     
     

@@ -12,6 +12,7 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
     private String name;
     private Color color = Color.RED;
     private Color border = null;
+    private int drawPriority = 1;
     private HashMap<String, IDrawable> decorMap;
     
     
@@ -60,6 +61,19 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
     public void setBorder(Color color)
     {
         border = color;
+    }
+    
+    
+    @Override
+    public int getDrawPriority()
+    {
+        return drawPriority;
+    }
+    
+    @Override
+    public void setDrawPriority(int priority)
+    {
+        drawPriority = priority;
     }
     
     
@@ -145,12 +159,12 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
     
     private Shape createNewShape()
     {
-        double r = this.getRadius();
-        double r2 = r * 2;
-        double x = this.getPosition().getX() - r;
-        double y = this.getPosition().getY() - r;
+        double radius = this.getRadius();
+        double diameter = radius * 2;
+        double x = this.getPosition().getX() - radius;
+        double y = this.getPosition().getY() - radius;
         
-        Ellipse2D.Double circle = new Ellipse2D.Double(x, y, r2, r2);
+        Ellipse2D.Double circle = new Ellipse2D.Double(x, y, diameter, diameter);
         
         return circle;
     }
@@ -169,7 +183,7 @@ public class Circle extends de.engine.objects.Circle implements IDrawable, ISele
         newCircle.name = this.name;
         newCircle.color = this.color;
         newCircle.border = this.border;
-        newCircle.decorMap = this.decorMap;
+//        newCircle.decorMap = this.decorMap; // bad idea :p
         
         super.clone(newCircle, true);
         
