@@ -12,6 +12,7 @@ public class Arrow implements IDrawable
 {
     private Color color = new Color(180, 120, 20);
     private Color border = Color.DARK_GRAY;
+    private int drawPriority = 6;
     
     private Vector from;
     private Vector to;
@@ -65,6 +66,19 @@ public class Arrow implements IDrawable
     public void setBorder(Color color)
     {
         border = color;
+    }
+    
+    
+    @Override
+    public int getDrawPriority()
+    {
+        return drawPriority;
+    }
+    
+    @Override
+    public void setDrawPriority(int priority)
+    {
+        drawPriority = priority;
     }
     
     

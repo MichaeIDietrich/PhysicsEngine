@@ -120,6 +120,7 @@ public interface Constants
     public final static String CMD_PASTE = "paste";
     
     // decor ID's
+    public final static String DECOR_SELECTION = "selection";
     public final static String DECOR_ARROW = "arrow";
     public final static String DECOR_RANGE = "range";
     public final static String DECOR_COORDINATE = "coordinate";

@@ -5,6 +5,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicHTML;
+import javax.swing.text.View;
 
 public class Expander extends JPanel implements ActionListener
 {
@@ -26,16 +28,13 @@ public class Expander extends JPanel implements ActionListener
     
     
     JToggleButton button;
-    JComponent component;
+    HtmlViewer label;
     
     
     public Expander(String text, String doc)
     {
-        this(text, new HtmlViewer(doc));
-    }
-    
-    public Expander(String text, JComponent expandableComponent)
-    {
+        label = new HtmlViewer(doc);
+        
         this.setLayout(new BorderLayout());
         
         button = new JToggleButton(text)
@@ -61,10 +60,25 @@ public class Expander extends JPanel implements ActionListener
         button.setFocusPainted(false);
         button.addActionListener(this);
         
-        component = expandableComponent;
-        component.setBorder(new EmptyBorder(5, 5, 5, 5));
+        label.setBorder(new EmptyBorder(5, 5, 5, 5));
+        
+        label.setMaximumSize(new Dimension(200, 10000));
+        
         
         this.add(button, BorderLayout.PAGE_START);
+    }
+    
+    
+    public void setWidth(int width)
+    {
+        super.validate();
+        View view = (View) label.getClientProperty(BasicHTML.propertyKey);
+        view.setSize(width, 0.0f);
+        float w = view.getPreferredSpan(View.X_AXIS);
+        float h = view.getPreferredSpan(View.Y_AXIS);
+        label.setSize((int) w, (int) h);
+        label.validate();
+        label.repaint();
     }
     
     
@@ -73,17 +87,13 @@ public class Expander extends JPanel implements ActionListener
     {
         if (button.isSelected())
         {
-            this.add(component);
-            this.getTopLevelAncestor().validate();
-            this.getTopLevelAncestor().repaint();
-            this.setMaximumSize(this.getPreferredSize());
+            this.add(label);
         }
         else
         {
-            this.remove(component);
-            this.getTopLevelAncestor().validate();
-            this.getTopLevelAncestor().repaint();
-            this.setMaximumSize(this.getPreferredSize());
+            this.remove(label);
         }
+        this.getTopLevelAncestor().validate();
+        this.getTopLevelAncestor().repaint();
     }
 }

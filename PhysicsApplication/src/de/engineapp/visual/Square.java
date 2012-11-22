@@ -13,6 +13,7 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     private String name;
     private Color color = Color.GREEN;
     private Color border = null;
+    private int drawPriority = 1;
     private HashMap<String, IDrawable> decorMap;
     
     public Square(PresentationModel model, Vector position, Vector corner)
@@ -67,6 +68,20 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
     {
         this.border = color;
     }
+    
+    
+    @Override
+    public int getDrawPriority()
+    {
+        return drawPriority;
+    }
+    
+    @Override
+    public void setDrawPriority(int priority)
+    {
+        drawPriority = priority;
+    }
+    
     
     @Override
     public void render(Graphics2D g)
