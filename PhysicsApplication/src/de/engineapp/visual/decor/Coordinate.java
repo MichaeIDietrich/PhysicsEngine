@@ -12,6 +12,7 @@ public class Coordinate implements IDrawable
 {
     private Color color = Color.BLACK;
     private Color border = Color.WHITE;
+    private int drawPriority = 8;
     
     private Vector coordinate;
     
@@ -53,6 +54,19 @@ public class Coordinate implements IDrawable
     public void setBorder(Color color)
     {
         border = color;
+    }
+    
+    
+    @Override
+    public int getDrawPriority()
+    {
+        return drawPriority;
+    }
+    
+    @Override
+    public void setDrawPriority(int priority)
+    {
+        drawPriority = priority;
     }
     
     

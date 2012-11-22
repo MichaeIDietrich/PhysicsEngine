@@ -12,13 +12,43 @@ public class Box implements IDrawable
 {
     private Color color = null;
     private Color border = Color.CYAN;
+    private int drawPriority = 4;
     
+    private Vector point1;
+    private Vector point2;
     private PropertyConnector<Vector[]> pConnector;
+    private boolean showPoints;
+    
+    
+    public Box(Vector point1, Vector point2)
+    {
+        this.point1 = point1;
+        this.point2 = point2;
+        pConnector = null;
+        showPoints = false;
+    }
     
     
     public Box(ObjectProperties object, String propertyName)
     {
         pConnector = new PropertyConnector<>(object, propertyName);
+        showPoints = false;
+    }
+    
+    
+    public Box(Vector point1, Vector point2, boolean showPoints)
+    {
+        this.point1 = point1;
+        this.point2 = point2;
+        pConnector = null;
+        this.showPoints = showPoints;
+    }
+    
+    
+    public Box(ObjectProperties object, String propertyName, boolean showPoints)
+    {
+        pConnector = new PropertyConnector<>(object, propertyName);
+        this.showPoints = showPoints;
     }
     
     
@@ -51,34 +81,56 @@ public class Box implements IDrawable
     @Override
     public void render(Graphics2D g)
     {
-        Vector[] aabb = pConnector.get();
+        if (pConnector != null)
+        {
+            Vector[] aabb = pConnector.get();
+            
+            point1 = new Vector(aabb[0].getX(), aabb[0].getY());
+            point2 = new Vector(aabb[1].getX(), aabb[1].getY());
+        }
         
-        double x1 = aabb[0].getX();
-        double y1 = aabb[0].getY();
-        double x2 = aabb[1].getX();
-        double y2 = aabb[1].getY();
+        double x1 = point1.getX();
+        double y1 = point1.getY();
+        double x2 = point2.getX();
+        double y2 = point2.getY();
         
         double x = x1 < x2 ? x1 : x2;
         double y = y1 < y2 ? y1 : y2;
         double w = Math.abs(x2 - x1);
         double h = Math.abs(y2 - y1);
         
-        Rectangle2D.Double square = new Rectangle2D.Double(x, y, w, h);
+        Rectangle2D.Double rect = new Rectangle2D.Double(x, y, w, h);
         
         if (color != null)
         {
             g.setColor(color);
-            g.fill(square);
+            g.fill(rect);
         }
         
         if (border != null)
         {
             g.setColor(border);
-            g.draw(square);
+            g.draw(rect);
         }
         
-        renderVector(g, aabb[0]);
-        renderVector(g, aabb[1]);
+        if (showPoints)
+        {
+            renderVector(g, point1);
+            renderVector(g, point2);
+        }
+    }
+    
+    
+    @Override
+    public int getDrawPriority()
+    {
+        return drawPriority;
+    }
+    
+    @Override
+    public void setDrawPriority(int priority)
+    {
+        drawPriority = priority;
     }
     
     
@@ -102,5 +154,27 @@ public class Box implements IDrawable
         g.draw(indicator);
         
         g.setStroke(currentStroke);
+    }
+    
+    
+    public Vector getPoint1()
+    {
+        return point1;
+    }
+    
+    public void setPoint1(Vector point1)
+    {
+        this.point1 = point1;
+    }
+    
+    
+    public Vector getPoint2()
+    {
+        return point2;
+    }
+    
+    public void setPoint2(Vector point2)
+    {
+        this.point2 = point2;
     }
 }

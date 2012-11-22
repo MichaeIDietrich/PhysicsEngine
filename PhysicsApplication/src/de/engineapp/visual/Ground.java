@@ -62,6 +62,16 @@ public class Ground extends de.engine.objects.Ground implements IDrawable, Clone
     
     
     @Override
+    public int getDrawPriority()
+    {
+        return 0;
+    }
+    
+    @Override
+    public void setDrawPriority(int priority) { }
+    
+    
+    @Override
     public void render(Graphics2D g)
     {
         int width = pModel.getCanvasWidth();

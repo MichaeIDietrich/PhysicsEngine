@@ -11,15 +11,42 @@ public class Range implements IDrawable
 {
     private Color color = null;
     private Color border = Color.CYAN;
+    private int drawPriority = 5;
     
     private ObjectProperties connectedObject;
     private PropertyConnector<Double> pConnector;
+    private int borderWidth;
+    private boolean showTextBox;
     
     
     public Range(ObjectProperties object, String propertyName)
     {
         connectedObject = object;
         pConnector = new PropertyConnector<>(object, propertyName);
+        showTextBox = false;
+    }
+    
+    public Range(ObjectProperties object, String propertyName, int borderWidth)
+    {
+        connectedObject = object;
+        pConnector = new PropertyConnector<>(object, propertyName);
+        this.borderWidth = borderWidth;
+        showTextBox = false;
+    }
+    
+    public Range(ObjectProperties object, String propertyName, boolean showTextBox)
+    {
+        connectedObject = object;
+        pConnector = new PropertyConnector<>(object, propertyName);
+        this.showTextBox = showTextBox;
+    }
+    
+    public Range(ObjectProperties object, String propertyName, int borderWidth, boolean showTextBox)
+    {
+        connectedObject = object;
+        pConnector = new PropertyConnector<>(object, propertyName);
+        this.borderWidth = borderWidth;
+        this.showTextBox = showTextBox;
     }
     
     
@@ -50,6 +77,19 @@ public class Range implements IDrawable
     
     
     @Override
+    public int getDrawPriority()
+    {
+        return drawPriority;
+    }
+    
+    @Override
+    public void setDrawPriority(int priority)
+    {
+        drawPriority = priority;
+    }
+    
+    
+    @Override
     public void render(Graphics2D g)
     {
         double r = (Double) pConnector.getObject();
@@ -59,10 +99,6 @@ public class Range implements IDrawable
         
         Ellipse2D.Double circle = new Ellipse2D.Double(x, y, r2, r2);
         
-        String text =  "" + Math.round(r);
-        float textX = (float) (connectedObject.getX() + r);
-        float textY = (float) connectedObject.getY();
-        
         if (color != null)
         {
             g.setColor(color);
@@ -71,11 +107,32 @@ public class Range implements IDrawable
         
         if (border != null)
         {
-            g.setColor(border);
-            g.draw(circle);
+            if (borderWidth == 1)
+            {
+                g.setColor(border);
+                g.draw(circle);
+            }
+            else
+            {
+                Stroke oldStroke = g.getStroke();
+                double scale = g.getTransform().getScaleX();
+                g.setStroke(new BasicStroke((float) (borderWidth / scale)));
+                
+                g.setColor(border);
+                g.draw(circle);
+                
+                g.setStroke(oldStroke);
+            }
         }
         
-        drawString(g, text, textX, textY);
+        if (showTextBox)
+        {
+            String text =  "" + Math.round(r);
+            float textX = (float) (connectedObject.getX() + r);
+            float textY = (float) connectedObject.getY();
+            
+            drawString(g, text, textX, textY);
+        }
     }
     
     

@@ -3,7 +3,6 @@ package de.engineapp;
 import static de.engineapp.Constants.STG_GRID;
 
 import java.awt.*;
-import java.util.*;
 
 import de.engine.DebugMonitor;
 import de.engine.environment.Scene;
@@ -22,6 +21,8 @@ public final class Renderer extends AsyncWorker implements PaintListener, Storag
     
     private Canvas canvas;
     private PresentationModel pModel;
+    
+    private RenderingSorter orderedObjects;
     
     private Scene currentScene = null;
     private Scene cachedScene = null;
@@ -53,6 +54,8 @@ public final class Renderer extends AsyncWorker implements PaintListener, Storag
         
         model.addPaintListener(this);
         model.addStorageListener(this);
+        
+        orderedObjects = new RenderingSorter();
     }
     
     
@@ -145,7 +148,12 @@ public final class Renderer extends AsyncWorker implements PaintListener, Storag
             }
         }
         
-        Collection<IDrawable> decorSet = new ArrayList<>();
+        orderedObjects.clear();
+        
+        for (IDrawable decor : canvas.getDecorSet())
+        {
+            orderedObjects.add(decor);
+        }
         
         for (ObjectProperties obj : scene.getObjects())
         {
@@ -160,15 +168,17 @@ public final class Renderer extends AsyncWorker implements PaintListener, Storag
             
             if (obj instanceof IDecorable)
             {
-                decorSet.addAll(((IDecorable) obj).getDecorSet());
+                orderedObjects.addAll(((IDecorable) obj).getDecorSet());
             }
         }
         
-        for (IDrawable decor : decorSet)
+        IDrawable decor;
+        
+        while (!orderedObjects.isEmpty())
         {
+            decor = orderedObjects.poll();
             decor.render(g);
         }
-        
         
         canvas.switchBuffers();
         canvas.repaint();
