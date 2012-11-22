@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene version="1.1" gravitation="9.81">
-  <Ground type="2" watermark="0" />
-  <Circle name="Object 0" color="-65536" material="STEEL" x="-175.0" y="100.0" vx="75.0" vy="0.0" mass="10.0" radius="18.626292586293264" rotation="0.0" pinned="true" />
+  <Ground type="1" watermark="-55" />
+  <Circle name="Object 0" color="-65536" material="STEEL" x="150.0" y="100.0" vx="-100.0" vy="-50.0" mass="15.0" radius="15.0" rotation="0.0" pinned="true" />
 </Scene>
