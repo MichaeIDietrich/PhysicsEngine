@@ -141,7 +141,12 @@ public class HelpDialog extends JDialog
         topics.add(new Expander("title", getDocument("doc/topic1.html")));
         topics.add(new Expander("title", getDocument("doc/topic1.html")));
         topics.add(new Expander("title", getDocument("doc/topic1.html")));
-//        topics.add(new Expander("Steuerleiste", String.format(getDocument("doc/toolbar.html"), 
-//                GuiUtil.getHtmlImage(ICO_NEW), GuiUtil.getHtmlImage(ICO_OPEN), GuiUtil.getHtmlImage(ICO_SAVE))));
+        topics.add(new Expander("Steuerleiste", String.format(getDocument("doc/toolbar.html"), 
+                GuiUtil.getHtmlImage(ICO_NEW), GuiUtil.getHtmlImage(ICO_OPEN), GuiUtil.getHtmlImage(ICO_SAVE),
+                GuiUtil.getHtmlImage(ICO_PLAY), GuiUtil.getHtmlImage(ICO_PAUSE), GuiUtil.getHtmlImage(ICO_RESET),
+                GuiUtil.getHtmlImage(ICO_GRID), GuiUtil.getHtmlImage(ICO_OBJECT_ARROWS), GuiUtil.getHtmlImage(ICO_FOCUS),
+                GuiUtil.getHtmlImage("blank"), GuiUtil.getHtmlImage("blank"),
+                GuiUtil.getHtmlImage(ICO_PHYSICS), GuiUtil.getHtmlImage(ICO_RECORD), GuiUtil.getHtmlImage(ICO_PLAYBACK),
+                GuiUtil.getHtmlImage(ICO_SETTINGS), GuiUtil.getHtmlImage(ICO_HELP), GuiUtil.getHtmlImage(ICO_ABOUT))));
     }
 }

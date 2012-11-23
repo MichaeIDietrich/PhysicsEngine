@@ -8,7 +8,6 @@ import java.util.*;
 import javax.swing.*;
 
 import de.engine.environment.Scene;
-import de.engine.math.*;
 import de.engine.math.Vector;
 import de.engine.objects.*;
 import de.engineapp.*;
@@ -69,12 +68,16 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     // all visual objects without physical properties
     private Map<String, IDrawable> sceneDecor;
     
+    // this object helps to handle multiple objects and to change their
+    // properties
+    private ObjectManipulator objectManipulator;
+    
     // stores the mouse offset while dragging
     private Point mouseOffset;
     
     // this objects causes a little delay till an object can be dragged
     // this should avoid drags, if an object should only be selected
-    Task dragDelay = null;
+    private Task dragDelay = null;
     
     /**
      * Create a new Canvas to represent objects.
@@ -87,6 +90,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         model.setCanvas(this);
         
         sceneDecor = new HashMap<>();
+        objectManipulator = new ObjectManipulator(model);
         
         this.addComponentListener(new ComponentAdapter()
         {
@@ -186,10 +190,9 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void mousePressed(MouseEvent e)
     {
-        
         // get in-scene cursor position
         Vector cursor = pModel.toTransformedVector(e.getPoint());
-        boolean hasSelection = pModel.getSelectedObject() != null;
+        boolean hasSelection = pModel.hasSelectedObject();
         
         if (SwingUtilities.isLeftMouseButton(e))
         {
@@ -197,6 +200,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             dragDelay = new Task(200);
             dragDelay.start();
         }
+        
         // right mouse button initializes the move the view offset
         else if (SwingUtilities.isRightMouseButton(e))
         {
@@ -206,30 +210,38 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         // show radius if shift is pressed
         if (hasSelection && GuiUtil.isLeftButton(e, false, true, false))
         {
-            Range range = new Range(pModel.getSelectedObject(), "radius", true);
-            ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
+            objectManipulator.initScaleObjects();
         }
+        
         // show angle if alt is pressed
         else if (hasSelection && (GuiUtil.isLeftButton(e, false, false, true) || 
                 GuiUtil.isLeftButton(e, true, true, false)))
         {
-            AngleViewer angleViewer = new AngleViewer(pModel.getSelectedObject());
-            ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_ANGLE_VIEWER, angleViewer);
+            objectManipulator.initRotateObjects();
         }
+        
         // if ctrl is pressed modify the velocity vector
         else if (hasSelection && GuiUtil.isLeftButton(e, true, false, false))
         {
             // set new velocity
-            pModel.getSelectedObject().velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
+            objectManipulator.speedObjects(cursor);
             
             pModel.fireObjectUpdated(pModel.getSelectedObject());
         }
+        
         // if no modifier key is pressed either selected an object or create new objects
         else if (GuiUtil.isLeftButton(e, false, false, false))
         {
             ObjectProperties object = pModel.getScene().getObjectFromPoint(cursor.getX(), cursor.getY());
             
-            pModel.setSelectedObject(object);
+            if (pModel.getMultipleSelectionObjects().contains(object))
+            {
+                pModel.setSelectedObject(object, true);
+            }
+            else
+            {
+                pModel.setSelectedObject(object);
+            }
             
             // create new objects if
             // 1. there is no object under the cursor
@@ -241,6 +253,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
             {
                 createObject(pModel.getProperty(PRP_OBJECT_MODE), e.getPoint());
             }
+            
             // span a rectangle to select multiple objects
             else if (object == null)
             {
@@ -250,11 +263,11 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 this.putDecor(DECOR_SELECTION_RECT, selectionRect);
             }
         }
+        
         // if middle mouse button is pressed, show the object radius
         else if (hasSelection && SwingUtilities.isMiddleMouseButton(e))
         {
-            Range range = new Range(pModel.getSelectedObject(), "radius", true);
-            ((IDecorable) pModel.getSelectedObject()).putDecor(DECOR_RANGE, range);
+            objectManipulator.initScaleObjects();
         }
         
         pModel.fireRepaint();
@@ -294,19 +307,16 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                     if (object.getX() >= minX && object.getX() <= maxX && 
                         object.getY() >= minY && object.getY() <= maxY)
                     {
-                        Range selection = new Range(object, "radius", 1.5f);
-                        selection.setBorder(new Color(100, 100, 255, 200));
-                        ((IDecorable) object).putDecor(DECOR_SELECTION, selection);
-                        
-                        pModel.addMultiSelectionObject(object);
+                        // set the first found object as main selected object
+                        if (pModel.hasSelectedObject())
+                        {
+                            pModel.addMultiSelectionObject(object);
+                        }
+                        else
+                        {
+                            pModel.setSelectedObject(object);
+                        }
                     }
-                }
-                
-                // if it is a multi selection
-                // set the first found object as main selected object
-                if (pModel.hasMultiSelectionObjects())
-                {
-                    pModel.setSelectedObject(pModel.getMultipleSelectionObjects().get(0));
                 }
                 
                 removeDecor(DECOR_SELECTION_RECT);
@@ -327,77 +337,61 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     {
         // get in-scene cursor position
         Vector cursor = pModel.toTransformedVector(e.getPoint());
-        boolean hasSelection = pModel.getSelectedObject() != null;
+        boolean hasSelection = pModel.hasSelectedObject();
         
         // if ctrl is pressed modify the velocity vector (except in playback mode)
         if (hasSelection && GuiUtil.isLeftButton(e, true, false, false) && 
                 !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
         {
             // set new velocity
-            pModel.getSelectedObject().velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
+            objectManipulator.speedObjects(cursor);
+            
             pModel.fireObjectUpdated(pModel.getSelectedObject());
             pModel.fireRepaint();
         }
+        
         // if alt is pressed modify the object's angle (except in playback mode)
         else if (hasSelection && (GuiUtil.isLeftButton(e, false, false, true) || 
                 GuiUtil.isLeftButton(e, true, true, false)) && 
                 !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
         {
-            double x = cursor.getX() - pModel.getSelectedObject().getX();
-            double y = cursor.getY() - pModel.getSelectedObject().getY();
+            objectManipulator.rotateObjects(cursor);
             
-            double newAngle = Math.atan2(y, x);
-            pModel.getSelectedObject().setRotationAngle(newAngle);
+            pModel.fireObjectUpdated(pModel.getSelectedObject());
             pModel.fireRepaint();
         }
+        
         // else modify the object's position in the scene (except in playback mode)
         else if (hasSelection && dragDelay != null && dragDelay.isDone() && 
                 GuiUtil.isLeftButton(e, false, false, false) && 
                 !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
         {
-            if (pModel.hasMultiSelectionObjects())
-            {
-                Vector diff = Util.minus(cursor, pModel.getSelectedObject().getPosition());
-                
-                for (ObjectProperties object : pModel.getMultipleSelectionObjects())
-                {
-                    object.getPosition().add(diff);
-                }
-            }
+            objectManipulator.translateObjects(cursor);
             
-            pModel.getSelectedObject().world_position.translation = cursor;
             pModel.fireObjectUpdated(pModel.getSelectedObject());
             pModel.fireRepaint();
         }
+        
+        // update selection rectangle
         else if (!hasSelection && GuiUtil.isLeftButton(e, false, false, false))
         {
             Box selectionRect = (Box) getDecor(DECOR_SELECTION_RECT);
             selectionRect.setPoint2(cursor);
             pModel.fireRepaint();
         }
+        
         // middle mouse button or left mouse + shift button modifies the object's radius
         // (except in playback mode)
         else if (hasSelection && (GuiUtil.isLeftButton(e, false, true, false) ||
                 SwingUtilities.isMiddleMouseButton(e)) && !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
         {
-            double distance = Util.distance(pModel.getSelectedObject().getPosition(), cursor);
+            objectManipulator.scaleObjects(cursor);
             
-            if (pModel.hasMultiSelectionObjects())
-            {
-                for (ObjectProperties object : pModel.getMultipleSelectionObjects())
-                {
-                    object.setRadius(distance);
-                }
-            }
-            else
-            {
-                pModel.getSelectedObject().setRadius(distance);
-            }
-            
-            // send an update for the selected object, need some tweaks maybe
+            // send an update for the selected object, needs some tweaks maybe
             pModel.fireObjectUpdated(pModel.getSelectedObject());
             pModel.fireRepaint();
         }
+        
         // right mouse button moves the view offset
         else if (SwingUtilities.isRightMouseButton(e))
         {
@@ -447,6 +441,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void objectSelected(ObjectProperties object)
     {
+        System.out.println("objectSelected: " + ((ISelectable) object).getName());
+        
         // get the decor functionality of on object
         IDecorable decorableObject = (IDecorable) object;
         
@@ -467,8 +463,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         }
         
         // show object radius
-//        Range selection = new Range(object, "radius");
-//        selection.setBorder(new Color(180, 120, 20));
         Range selection = new Range(object, "radius", 3);
         selection.setBorder(new Color(100, 100, 255, 200));
         decorableObject.putDecor(DECOR_SELECTION, selection);
@@ -485,6 +479,8 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void objectDeselected(ObjectProperties object)
     {
+        System.out.println("objectDeselected: " + ((ISelectable) object).getName());
+        
         IDecorable decorableObject = (IDecorable) object;
         
         decorableObject.removeDecor(DECOR_ARROW);
@@ -492,20 +488,30 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
         decorableObject.removeDecor(DECOR_CLOSEST_POINT);
         decorableObject.removeDecor(DECOR_SELECTION);
         
-        if (pModel.hasMultiSelectionObjects())
-        {
-            for (ObjectProperties selObject : pModel.getMultipleSelectionObjects())
-            {
-                ((IDecorable) selObject).removeDecor(DECOR_SELECTION);
-            }
-            
-            pModel.clearMultiSelectionObjects();
-        }
         
         if (pModel.isState(STG_SHOW_ARROWS_ALWAYS))
         {
             attachVelocityArrow(object);
         }
+    }
+    
+    
+    @Override
+    public void multipleObjectsSelected(ObjectProperties object)
+    {
+        System.out.println("multipleObjectsSelected: " + ((ISelectable) object).getName());
+        
+        Range selection = new Range(object, "radius", 1.5f);
+        selection.setBorder(new Color(100, 100, 255, 200));
+        ((IDecorable) object).putDecor(DECOR_SELECTION, selection);
+    }
+    
+    @Override
+    public void multipleObjectsDeselected(ObjectProperties object)
+    {
+        System.out.println("multipleObjectsDeselected: " + ((ISelectable) object).getName());
+        
+        ((IDecorable) object).removeDecor(DECOR_SELECTION);
     }
     
     
@@ -528,12 +534,12 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 {
                     if (object != pModel.getSelectedObject())
                     {
-                        pModel.removedObject(object);
+                        pModel.removeObject(object);
                     }
                 }
                 pModel.clearMultiSelectionObjects();
             }
-            pModel.removedObject(pModel.getSelectedObject());
+            pModel.removeObject(pModel.getSelectedObject());
             
             pModel.fireRepaint();
         }

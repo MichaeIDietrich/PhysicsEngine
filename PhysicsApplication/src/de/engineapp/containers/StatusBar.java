@@ -281,4 +281,11 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
             lblObjectCount.setText(pModel.getScene().getCount() + " " + LOCALIZER.getString(L_OBJECTS));
         }
     }
+    
+    
+    @Override
+    public void multipleObjectsSelected(ObjectProperties object) { }
+    
+    @Override
+    public void multipleObjectsDeselected(ObjectProperties object) { }
 }
