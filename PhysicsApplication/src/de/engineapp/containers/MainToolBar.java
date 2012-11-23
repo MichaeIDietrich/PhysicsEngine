@@ -9,14 +9,14 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileFilter;
 
 import de.engine.environment.Scene;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.PresentationModel.ViewBoxListener;
 import de.engineapp.controls.*;
-import de.engineapp.rec.Playback;
+import de.engineapp.io.*;
+import de.engineapp.rec.*;
 import de.engineapp.util.*;
 import de.engineapp.windows.*;
 
@@ -28,21 +28,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     private static final long serialVersionUID = 4164673212238397915L;
     
     private final static Localizer LOCALIZER = Localizer.getInstance();
-    
-    private static final FileFilter SCENE_FILTER = new FileFilter()
-    {
-        @Override
-        public boolean accept(File f)
-        {
-            return f.getName().endsWith(".scnx") || f.isDirectory();
-        }
-        
-        @Override
-        public String getDescription()
-        {
-            return "Scene Files (*.scnx)";
-        }
-    };
     
     
     private PresentationModel pModel;
@@ -121,7 +106,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         this.add(zoomSlider);
         this.addSeparator();
         this.add(modeButton);
-        this.addSeparator();
+        this.add(Box.createHorizontalGlue());
         this.add(settingsButton);
         this.add(helpButton);
         this.add(aboutButton);
@@ -428,10 +413,18 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         }
         else
         {
-            dlgSave.setSelectedFile(new File("scene.scnx"));
+            dlgSave.setSelectedFile(new File("scene"));
         }
         
-        dlgSave.setFileFilter(SCENE_FILTER);
+        // remove all standard filters
+        while (dlgSave.getChoosableFileFilters().length > 0)
+        {
+            dlgSave.removeChoosableFileFilter(dlgSave.getChoosableFileFilters()[0]);
+        }
+        
+        dlgSave.addChoosableFileFilter(new QuickFileFilter("Scene Files (*.scnx)", ".scnx"));
+        dlgSave.addChoosableFileFilter(new QuickFileFilter("Animation Files (*.anix)", ".anix"));
+        
         dlgSave.setDialogTitle(LOCALIZER.getString(L_TITLE_SAVE));
         
         if (dlgSave.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
@@ -448,7 +441,29 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 }
             }
             
-            sceneManager.saveScene(dlgSave.getSelectedFile(), pModel.getScene());
+            System.out.println(dlgSave.getFileFilter());
+            String extension = ((QuickFileFilter) dlgSave.getFileFilter()).getFileExtension();
+            
+            File file = dlgSave.getSelectedFile();
+            if (!file.getName().endsWith(extension))
+            {
+                file = new File(file.getAbsolutePath() + extension);
+            }
+            
+            switch (extension)
+            {
+                case ".scnx":
+                    sceneManager.saveScene(file, pModel.getScene());
+                    break;
+                    
+                case ".anix":
+                    sceneManager.saveAnimation(file, Recorder.getInstance());
+                    break;
+                    
+                default:
+                    // ignore
+            }
+            
         }
     }
     
@@ -470,7 +485,10 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         JFileChooser dlgOpen = new JFileChooser("scene");
         dlgOpen.setCurrentDirectory(stdSceneDir);
         dlgOpen.setSelectedFile(new File("scene.scnx"));
-        dlgOpen.setFileFilter(SCENE_FILTER);
+        
+        dlgOpen.addChoosableFileFilter(new QuickFileFilter("Scene Files (*.scnx)", ".scnx"));
+        dlgOpen.addChoosableFileFilter(new QuickFileFilter("Animation Files (*.anix)", ".anix"));
+        
         dlgOpen.setDialogTitle(LOCALIZER.getString(L_TITLE_OPEN));
         
         if (dlgOpen.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
