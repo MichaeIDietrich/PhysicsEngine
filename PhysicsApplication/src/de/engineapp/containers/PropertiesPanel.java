@@ -270,7 +270,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         switch(e.getActionCommand())
         {
             case CMD_DELETE:
-                pModel.removedObject(pModel.getSelectedObject());
+                pModel.removeObject(pModel.getSelectedObject());
                 pModel.fireRepaint();
                 break;
                 
@@ -385,9 +385,9 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             vx.setValue(pModel.getSelectedObject().velocity.getX());
             vy.setValue(pModel.getSelectedObject().velocity.getY());
             fix.setSelected(pModel.getSelectedObject().isPinned);
-
+            
             name.setText(((ISelectable)pModel.getSelectedObject()).getName());
-
+            
             potLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().potential_energy));
             kinLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().kinetic_energy));
             avoidUpdate = 0;
@@ -464,4 +464,11 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     
     @Override
     public void mouseReleased(MouseEvent e) { }
+    
+    
+    @Override
+    public void multipleObjectsSelected(ObjectProperties object) { }
+    
+    @Override
+    public void multipleObjectsDeselected(ObjectProperties object) { }
 }
