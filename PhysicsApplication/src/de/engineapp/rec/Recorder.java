@@ -3,8 +3,7 @@ package de.engineapp.rec;
 import java.util.*;
 
 import de.engine.environment.Scene;
-//import de.engine.objects.ObjectProperties;
-//import de.engine.objects.Ground;
+
 
 public final class Recorder
 {
@@ -22,6 +21,18 @@ public final class Recorder
         }
         
         return instance;
+    }
+    
+    
+    public static Recorder newInstance()
+    {
+        return new Recorder();
+    }
+    
+    
+    public static void overrideInstance(Recorder newInstance)
+    {
+        instance = newInstance;
     }
     
     

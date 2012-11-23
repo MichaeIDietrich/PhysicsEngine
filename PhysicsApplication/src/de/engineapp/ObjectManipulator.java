@@ -89,7 +89,8 @@ public final class ObjectManipulator
         {
             for (ObjectProperties object : pModel.getMultipleSelectionObjects())
             {
-                object.velocity = Util.minus(cursor, object.getPosition());
+//                object.velocity = Util.minus(cursor, object.getPosition());
+                object.velocity = Util.minus(cursor, pModel.getSelectedObject().getPosition());
             }
         }
     }
