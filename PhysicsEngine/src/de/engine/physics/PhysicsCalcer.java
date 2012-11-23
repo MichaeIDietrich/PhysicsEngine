@@ -60,16 +60,8 @@ public class PhysicsCalcer
         }
         else if (contacts.size() == 2)
         {
-            if (contacts.get(0).normal.getX() == contacts.get(1).normal.getX() && contacts.get(0).normal.getY() == contacts.get(1).normal.getY())
-            {
-                Contact c = new Contact(Util.add(contacts.get(0).point, contacts.get(1).point).scale(0.5), contacts.get(0).normal, contacts.get(0).penetration);
-                return resolveContact(collPair, c);
-            }
-            else
-            {
-                resolveContact(collPair, contacts.get(0));
-                return resolveContact(collPair, contacts.get(1));
-            }
+            Contact c = new Contact(Util.add(contacts.get(0).point, contacts.get(1).point).scale(0.5), contacts.get(0).normal, contacts.get(0).penetration);
+            return resolveContact(collPair, c);
         }
         else if (contacts.size() == 4)
         {
@@ -100,7 +92,7 @@ public class PhysicsCalcer
      */
     private static Vector getContactVelocity(Vector relPos, Vector velocity, double angularV)
     {
-        return Util.scale(relPos, angularV).add(velocity);
+        return new Vector(-1 * angularV * relPos.getY(), angularV * relPos.getX()).add(velocity);
     }
     
     private static double getJzaehler(Vector relVelocity, Vector normal, double elasticity)
