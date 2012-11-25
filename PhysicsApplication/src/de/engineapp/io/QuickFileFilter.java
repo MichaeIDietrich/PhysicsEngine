@@ -20,7 +20,7 @@ public final class QuickFileFilter extends FileFilter
     @Override
     public boolean accept(File f)
     {
-        return f.getName().endsWith(fileExtension);
+        return f.getName().endsWith(fileExtension) || f.isDirectory();
     }
     
     
