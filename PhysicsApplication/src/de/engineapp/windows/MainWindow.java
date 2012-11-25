@@ -15,6 +15,7 @@ import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.containers.*;
 import de.engineapp.controls.Canvas;
 import de.engineapp.controls.dnd.DragAndDropController;
+import de.engineapp.io.SceneManager;
 import de.engineapp.util.*;
 
 import static de.engineapp.Constants.*;
