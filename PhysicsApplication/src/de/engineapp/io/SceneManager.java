@@ -88,18 +88,36 @@ public final class SceneManager
             try
             {
                 ZipFile zipFile = new ZipFile(file);
-                ZipEntry entry = zipFile.getEntry("document.xml");
                 
-                if (entry != null)
+                Recorder recorder = Recorder.newInstance();
+                
+                for (int i = 0; i < zipFile.size(); i++)
                 {
-                    InputStream stream = zipFile.getInputStream(entry);
-                    Recorder recorder = loadAnimationFromStream(stream);
-                    stream.close();
-                    zipFile.close();
+                    ZipEntry entry = zipFile.getEntry((i + 1) + ".xml");
                     
-                    return recorder;
+                    if (entry == null)
+                    {
+                        zipFile.close();
+                        
+                        return null;
+                    }
+                    
+                    InputStream stream = zipFile.getInputStream(entry);
+                    
+                    if (!loadAnimationFromStream(stream, recorder))
+                    {
+                        stream.close();
+                        zipFile.close();
+                        
+                        return null;
+                    }
+                    
+                    stream.close();
                 }
                 zipFile.close();
+                
+                return recorder;
+                
             }
             catch (IOException ex)
             {
@@ -137,10 +155,25 @@ public final class SceneManager
             FileOutputStream fileStream = new FileOutputStream(file);
             ZipOutputStream zipStream = new ZipOutputStream(fileStream);
             
-            ZipEntry entry = new ZipEntry("document.xml");
-            zipStream.putNextEntry(entry);
+            int maxFramesPerDocument = 30;
             
-            saveAnimationToStream(zipStream, recorder);
+            int documentCount = (recorder.getFrameCount() + maxFramesPerDocument - 1) / maxFramesPerDocument;
+            
+            for (int i = 0; i < documentCount; i++)
+            {
+                int currentFrame = i * maxFramesPerDocument;
+                int frameCount = Math.min(recorder.getFrameCount() - currentFrame, maxFramesPerDocument);
+                
+                ZipEntry entry = new ZipEntry((i + 1) + ".xml");
+                zipStream.putNextEntry(entry);
+                
+                saveAnimationToStream(zipStream, recorder, currentFrame, frameCount);
+                
+                zipStream.closeEntry();
+            }
+            
+            zipStream.close();
+            
         }
         catch (IOException ex)
         {
@@ -249,7 +282,7 @@ public final class SceneManager
     }
     
     
-    private Recorder loadAnimationFromStream(InputStream stream)
+    private boolean loadAnimationFromStream(InputStream stream, Recorder recorder)
     {
         XMLReader reader = new XMLReader(stream);
         
@@ -267,11 +300,9 @@ public final class SceneManager
                         LOCALIZER.getString(L_TITLE_IMPORT), JOptionPane.YES_NO_OPTION, 
                         JOptionPane.WARNING_MESSAGE, null, options, options[0]) != 0)
                 {
-                    return null;
+                    return false;
                 }
             }
-            
-            Recorder recorder = Recorder.newInstance();
             
             for (Element sceneFrame : node.getNodes("Scene"))
             {
@@ -327,10 +358,10 @@ public final class SceneManager
                 recorder.addFrame(scene);
             }
             
-            return recorder;
+            return true;
         }
         
-        return null;
+        return false;
     }
     
     
@@ -382,7 +413,7 @@ public final class SceneManager
     }
     
     
-    private void saveAnimationToStream(OutputStream stream, Recorder recorder)
+    private void saveAnimationToStream(OutputStream stream, Recorder recorder, int frameStart, int frameCount)
     {
         XMLWriter writer = new XMLWriter(stream);
         
@@ -390,9 +421,9 @@ public final class SceneManager
         writer.writeStartElement("Animation");
         writer.writeAttribute("version", FILE_VERSION);
         
-        for (int i = 0; i < recorder.getFrameCount(); i++)
+        for (int i = 0; i < frameCount; i++)
         {
-            Scene scene = recorder.getFrame(i);
+            Scene scene = recorder.getFrame(frameStart + i);
             
             writer.writeStartElement("Scene");
             writer.writeAttribute("gravitation", "9.81"); // missing property
@@ -435,7 +466,8 @@ public final class SceneManager
         }
         
         writer.writeEndElement();
-        writer.close();
+        
+        writer.flush();
     }
     
     

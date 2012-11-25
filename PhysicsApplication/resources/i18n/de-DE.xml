@@ -41,6 +41,7 @@
   <String id="PLAYBACK_MODE">Wiedergabe-Modus</String>
   <String id="WRONG_VERSION"><html>Die Datei wurde nicht mit derselben Programmversion erstellt wie die laufende Programmversion.<br/>Dies kann zu Problemen führen.<br/>Möchten Sie trotzdem fortfahren?</html></String>
   <String id="TITLE_IMPORT">Datei-Import</String>
+  <String id="TITLE_EXPORT">Datei-Export</String>
   <String id="OBJECTS">Objekte</String>
   <String id="HELP">Hilfe</String>
   <String id="ABOUT">Über</String>
@@ -74,7 +75,7 @@
       Bei der Oizys Physics Engine handelt es sich<br/>
       um eine Anwendung zur Darstellung<br/>
       von physikalischen Gesetzmäßigkeiten in Echtzeit.<br/><br/>
-      Die Anwendung steht unter der GPL.<br/><br/>
+      Die Anwendung steht unter der <a href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>.<br/><br/>
       <h4>Entwicklerteam:</h4>
       <div style="text-indent:10px;"/>● Johannes Hackel<br/>
       <div style="text-indent:10px;"/>● Carsten Krahl<br/>
