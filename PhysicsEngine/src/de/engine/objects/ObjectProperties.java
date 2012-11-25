@@ -7,7 +7,7 @@ public abstract class ObjectProperties implements Cloneable
 {
     public enum Material
     {
-        STEEL(1), ALUMINIUM(1), NACL(1), RUBBER(1), WATER(1);
+        STEEL(0.9), ALUMINIUM(0.6), NACL(0.4), RUBBER(1), WATER(0.05), WOOD(0.3);
         
         private final double elasticity;
         
