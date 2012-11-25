@@ -2,6 +2,8 @@ package de.engineapp.windows;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.net.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -29,6 +31,24 @@ public final class AboutDialog extends JDialog implements ActionListener
         JLabel label = new JLabel(GuiUtil.getIcon(ICO_MAIN_256));
         label.setBorder(new EmptyBorder(5, 5, 5, 10));
         label.setText(String.format(LOCALIZER.getString(L_ABOUT_TEXT), MAJOR, MINOR, REVISION));
+        label.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                if (SwingUtilities.isLeftMouseButton(e))
+                {
+                    try
+                    {
+                        Desktop.getDesktop().browse(new URI("http://www.gnu.org/licenses/gpl-3.0.html"));
+                    }
+                    catch (IOException | URISyntaxException ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
         
         
         QuickButton okButton = new QuickButton(LOCALIZER.getString(L_OK), CMD_OK, this);
@@ -40,6 +60,7 @@ public final class AboutDialog extends JDialog implements ActionListener
         
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.pack();
+        this.setResizable(false);
         
         this.setLocationRelativeTo(parent);
         

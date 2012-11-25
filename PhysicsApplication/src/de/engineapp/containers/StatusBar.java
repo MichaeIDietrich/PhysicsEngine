@@ -276,9 +276,24 @@ public class StatusBar extends JPanel implements MouseMotionListener, StorageLis
     @Override
     public void eventFired(String name)
     {
-        if (name.equals(EVT_SCENE_LOADED))
+        switch (name)
         {
-            lblObjectCount.setText(pModel.getScene().getCount() + " " + LOCALIZER.getString(L_OBJECTS));
+            case EVT_SCENE_LOADED:
+                lblObjectCount.setText(pModel.getScene().getCount() + " " + LOCALIZER.getString(L_OBJECTS));
+                break;
+                
+            case EVT_ANIMATION_LOADED:
+                frames.setMaximum(Recorder.getInstance().getFrameCount());
+                frames.setValue(1);
+                pModel.setProperty(PRP_CURRENT_PLAYBACK_FRAME, "1");
+                pModel.setProperty(PRP_MODE, CMD_PLAYBACK_MODE);
         }
     }
+    
+    
+    @Override
+    public void multipleObjectsSelected(ObjectProperties object) { }
+    
+    @Override
+    public void multipleObjectsDeselected(ObjectProperties object) { }
 }

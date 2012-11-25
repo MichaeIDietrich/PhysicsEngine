@@ -34,6 +34,8 @@ public class PresentationModel
         public void groundRemoved(Ground ground);
         public void objectSelected(ObjectProperties object);
         public void objectDeselected(ObjectProperties object);
+        public void multipleObjectsSelected(ObjectProperties object);
+        public void multipleObjectsDeselected(ObjectProperties object);
         public void objectUpdated(ObjectProperties object);
         public void sceneUpdated(Scene scene);
     }
@@ -393,12 +395,22 @@ public class PresentationModel
     }
     
     
+    public boolean hasSelectedObject()
+    {
+        return selectedObject != null;
+    }
+    
     public ObjectProperties getSelectedObject()
     {
         return selectedObject;
     }
     
     public void setSelectedObject(ObjectProperties object)
+    {
+        setSelectedObject(object, false);
+    }
+    
+    public void setSelectedObject(ObjectProperties object, boolean preserveSelectionList)
     {
         if (selectedObject != object)
         {
@@ -408,6 +420,39 @@ public class PresentationModel
                 {
                     listener.objectDeselected(selectedObject);
                 }
+            }
+            
+            if (object == null)
+            {
+                clearMultiSelectionObjects();
+            }
+            else if (preserveSelectionList)
+            {
+                
+                if (!selectedObjects.contains(object))
+                {
+                    selectedObjects.add(0, object);
+                }
+                else
+                {
+                    for (SceneListener listener : listenerList.getListeners(SceneListener.class))
+                    {
+                        listener.multipleObjectsDeselected(object);
+                    }
+                }
+                
+                if (selectedObject != null)
+                {
+                    for (SceneListener listener : listenerList.getListeners(SceneListener.class))
+                    {
+                        listener.multipleObjectsSelected(selectedObject);
+                    }
+                }
+            }
+            else
+            {
+                clearMultiSelectionObjects();
+                selectedObjects.add(object);
             }
             
             this.selectedObject = object;
@@ -425,7 +470,7 @@ public class PresentationModel
     
     public boolean hasMultiSelectionObjects()
     {
-        return !selectedObjects.isEmpty();
+        return selectedObjects.size() > 1;
     }
     
     public List<ObjectProperties> getMultipleSelectionObjects()
@@ -436,15 +481,33 @@ public class PresentationModel
     public void addMultiSelectionObject(ObjectProperties object)
     {
         selectedObjects.add(object);
+        for (SceneListener listener : listenerList.getListeners(SceneListener.class))
+        {
+            listener.multipleObjectsSelected(object);
+        }
     }
     
     public void removeMultiSelectionObject(ObjectProperties object)
     {
         selectedObjects.remove(object);
+        for (SceneListener listener : listenerList.getListeners(SceneListener.class))
+        {
+            listener.multipleObjectsDeselected(object);
+        }
     }
     
     public void clearMultiSelectionObjects()
     {
+        for (ObjectProperties object : selectedObjects)
+        {
+            if (object != selectedObject)
+            {
+                for (SceneListener listener : listenerList.getListeners(SceneListener.class))
+                {
+                    listener.multipleObjectsDeselected(object);
+                }
+            }
+        }
         selectedObjects.clear();
     }
     
@@ -470,7 +533,7 @@ public class PresentationModel
         }
     }
     
-    public void removedObject(ObjectProperties object)
+    public void removeObject(ObjectProperties object)
     {
         if (scene != null && object != null)
         {

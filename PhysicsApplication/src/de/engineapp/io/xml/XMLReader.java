@@ -1,4 +1,4 @@
-package de.engineapp.xml;
+package de.engineapp.io.xml;
 
 import java.io.*;
 import java.util.*;
@@ -15,7 +15,7 @@ public class XMLReader
     Document document = null;
     XPath xPath = null;
     
-    private final static List<Element> EMPTY_NODE_LIST = new ArrayList<>();
+    public final static List<Element> EMPTY_NODE_LIST = new ArrayList<>();
     
     
     public XMLReader(String xmlFilePath)

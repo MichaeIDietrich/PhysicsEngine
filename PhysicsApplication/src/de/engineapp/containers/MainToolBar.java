@@ -9,14 +9,14 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileFilter;
 
 import de.engine.environment.Scene;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.PresentationModel.ViewBoxListener;
 import de.engineapp.controls.*;
-import de.engineapp.rec.Playback;
+import de.engineapp.io.*;
+import de.engineapp.rec.*;
 import de.engineapp.util.*;
 import de.engineapp.windows.*;
 
@@ -28,21 +28,6 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
     private static final long serialVersionUID = 4164673212238397915L;
     
     private final static Localizer LOCALIZER = Localizer.getInstance();
-    
-    private static final FileFilter SCENE_FILTER = new FileFilter()
-    {
-        @Override
-        public boolean accept(File f)
-        {
-            return f.getName().endsWith(".scnx") || f.isDirectory();
-        }
-        
-        @Override
-        public String getDescription()
-        {
-            return "Scene Files (*.scnx)";
-        }
-    };
     
     
     private PresentationModel pModel;
@@ -121,7 +106,7 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         this.add(zoomSlider);
         this.addSeparator();
         this.add(modeButton);
-        this.addSeparator();
+        this.add(Box.createHorizontalGlue());
         this.add(settingsButton);
         this.add(helpButton);
         this.add(aboutButton);
@@ -428,10 +413,18 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         }
         else
         {
-            dlgSave.setSelectedFile(new File("scene.scnx"));
+            dlgSave.setSelectedFile(new File("scene"));
         }
         
-        dlgSave.setFileFilter(SCENE_FILTER);
+        // remove all standard filters
+        while (dlgSave.getChoosableFileFilters().length > 0)
+        {
+            dlgSave.removeChoosableFileFilter(dlgSave.getChoosableFileFilters()[0]);
+        }
+        
+        dlgSave.addChoosableFileFilter(new QuickFileFilter(    "Scene Files (*.scnx)", ".scnx"));
+        dlgSave.addChoosableFileFilter(new QuickFileFilter("Animation Files (*.anix)", ".anix"));
+        
         dlgSave.setDialogTitle(LOCALIZER.getString(L_TITLE_SAVE));
         
         if (dlgSave.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
@@ -441,14 +434,35 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
                 String[] options = new String[] { LOCALIZER.getString(L_YES), LOCALIZER.getString(L_NO) };
                 
                 if (JOptionPane.showOptionDialog(this.getTopLevelAncestor(), LOCALIZER.getString(L_OVERWRITE_FILE), 
-                        LOCALIZER.getString(L_TITLE_IMPORT), JOptionPane.YES_NO_OPTION, 
+                        LOCALIZER.getString(L_TITLE_EXPORT), JOptionPane.YES_NO_OPTION, 
                         JOptionPane.WARNING_MESSAGE, null, options, options[0]) != 0)
                 {
                     return;
                 }
             }
             
-            sceneManager.saveScene(dlgSave.getSelectedFile(), pModel.getScene());
+            String extension = ((QuickFileFilter) dlgSave.getFileFilter()).getFileExtension();
+            
+            File file = dlgSave.getSelectedFile();
+            if (!file.getName().endsWith(extension))
+            {
+                file = new File(file.getAbsolutePath() + extension);
+            }
+            
+            switch (extension)
+            {
+                case ".scnx":
+                    sceneManager.saveScene(file, pModel.getScene());
+                    break;
+                    
+                case ".anix":
+                    sceneManager.saveAnimation(file, Recorder.getInstance());
+                    break;
+                    
+                default:
+                    // ignore
+            }
+            
         }
     }
     
@@ -467,25 +481,55 @@ public class MainToolBar extends JToolBar implements ActionListener, ChangeListe
         UIManager.put("FileChooser.openButtonText", LOCALIZER.getString(L_OPEN));
         UIManager.put("FileChooser.openButtonToolTipText", LOCALIZER.getString(L_OPEN));
         
-        JFileChooser dlgOpen = new JFileChooser("scene");
+        JFileChooser dlgOpen = new JFileChooser();
         dlgOpen.setCurrentDirectory(stdSceneDir);
         dlgOpen.setSelectedFile(new File("scene.scnx"));
-        dlgOpen.setFileFilter(SCENE_FILTER);
+        
+        // remove all standard filters
+        while (dlgOpen.getChoosableFileFilters().length > 0)
+        {
+            dlgOpen.removeChoosableFileFilter(dlgOpen.getChoosableFileFilters()[0]);
+        }
+        
+        dlgOpen.addChoosableFileFilter(new QuickFileFilter(    "Scene Files (*.scnx)", ".scnx"));
+        dlgOpen.addChoosableFileFilter(new QuickFileFilter("Animation Files (*.anix)", ".anix"));
+        
         dlgOpen.setDialogTitle(LOCALIZER.getString(L_TITLE_OPEN));
         
         if (dlgOpen.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
         {
-            File sceneFile = dlgOpen.getSelectedFile();
+            String extension = ((QuickFileFilter) dlgOpen.getFileFilter()).getFileExtension();
             
-            Scene scene = sceneManager.loadScene(sceneFile);
+            File file = dlgOpen.getSelectedFile();
             
-            if (scene != null)
+            switch (extension)
             {
-                pModel.setProperty(PRP_CURRENT_FILE, sceneFile.getPath());
-                
-                pModel.setScene(scene);
-                pModel.fireEventListeners(EVT_SCENE_LOADED);
-                pModel.fireRepaint();
+                case ".scnx":
+                    Scene scene = sceneManager.loadScene(file);
+                    
+                    if (scene != null)
+                    {
+                        pModel.setProperty(PRP_CURRENT_FILE, file.getPath());
+                        
+                        pModel.setScene(scene);
+                        pModel.fireEventListeners(EVT_SCENE_LOADED);
+                        pModel.fireRepaint();
+                    }
+                    break;
+                    
+                case ".anix":
+                    Recorder recorder = sceneManager.loadAnimation(file);
+                    
+                    if (recorder != null)
+                    {
+                        // TODO
+                        Recorder.overrideInstance(recorder);
+                        pModel.fireEventListeners(EVT_ANIMATION_LOADED);
+                    }
+                    break;
+                    
+                default:
+                    // ignore
             }
         }
     }

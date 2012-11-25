@@ -26,6 +26,7 @@ public interface Constants
     
     // events
     public final static String EVT_SCENE_LOADED = "sceneLoaded";
+    public final static String EVT_ANIMATION_LOADED = "animationLoaded";
     
     // localization
     public final static String L_APP_NAME = "APP_NAME";
@@ -66,6 +67,7 @@ public interface Constants
     public final static String L_PLAYBACK_MODE = "PLAYBACK_MODE";
     public final static String L_WRONG_VERSION = "WRONG_VERSION";
     public final static String L_TITLE_IMPORT = "TITLE_IMPORT";
+    public final static String L_TITLE_EXPORT = "TITLE_EXPORT";
     public final static String L_OBJECTS = "OBJECTS";
     public final static String L_ABOUT = "ABOUT";
     public final static String L_HELP = "HELP";
