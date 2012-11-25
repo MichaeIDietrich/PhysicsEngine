@@ -580,7 +580,7 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
                 break;
                 
             case OBJ_GROUND:
-                pModel.setGround(new Ground(pModel, Ground.DOWNHILL, (int) sceneLocation.getY()));
+                pModel.setGround(new Ground(pModel, Ground.STAIRS, (int) sceneLocation.getY()));
                 break;
                 
             default:

@@ -94,19 +94,19 @@ public class Util
           
             set_slope = true;
           
-            m = 0.16;
+            m = 0.2;
             n = object.getPosition().getY() - m*xn;
             sign = object.velocity.getX()>=0 ? -1 :  1;
             double i1 = newtonIteration();
           
-            m = -0.16;
+            m = -0.2;
             n = object.getPosition().getY() - m*xn;
             sign = object.velocity.getX()>=0 ?  1 : -1;
             double i2 = newtonIteration();
 
             set_slope = false;
           
-            return i1 + Math.abs(i1-i2) * ((oldm-0.15)/0.32);
+            return i1 + Math.abs(i1-i2) * ((oldm-0.15)/0.4);
         }
         
         // the ordinary newton iteration
