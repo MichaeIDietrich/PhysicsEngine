@@ -54,8 +54,8 @@ public class CollisionDetector
         // Tests the collision between objects and ground
         if (scene.existGround())
         {
-//            objectGroundCollision();
-            objectGroundCollision2();
+            objectGroundCollision();
+//            objectGroundCollision2();
         }
         
     }

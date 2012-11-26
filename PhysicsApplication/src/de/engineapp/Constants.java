@@ -161,6 +161,7 @@ public interface Constants
     public final static String ICO_SQUARE = "square";
     public final static String ICO_HELP = "help";
     public final static String ICO_ABOUT = "about";
+    public final static String ICO_BLANK = "blank";
     
     public final static String ICO_MAIN_16 = "main/16";
     public final static String ICO_MAIN_24 = "main/24";
