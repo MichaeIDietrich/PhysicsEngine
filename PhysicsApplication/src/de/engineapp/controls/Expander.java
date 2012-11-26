@@ -93,6 +93,16 @@ public class Expander extends JPanel implements ActionListener
         {
             this.remove(label);
         }
+//        this.updateUI();
+//        Container c = this;
+//        do
+//        {
+//            System.out.println(c);
+//            c.invalidate();
+//            c.validate();
+//            c.revalidate();
+//            c.repaint();
+//        } while ((c = c.getParent()) != null);
         this.getTopLevelAncestor().validate();
         this.getTopLevelAncestor().repaint();
     }
