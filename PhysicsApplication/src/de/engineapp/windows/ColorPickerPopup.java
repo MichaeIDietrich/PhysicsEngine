@@ -20,11 +20,11 @@ public final class ColorPickerPopup
         private Point posCursor;
         private Color chosenColor;
         
-        public ColorArea()
+        public ColorArea(Color chosenColor)
         {
             colorAngle = Color.RED;
-            posCursor = new Point();
-            chosenColor = Color.BLACK;
+            
+            setChosenColor(chosenColor);
             
             this.addMouseListener(new MouseAdapter()
             {
@@ -104,10 +104,10 @@ public final class ColorPickerPopup
             
             g.setColor(invColor);
             
-            g.drawLine(posCursor.x, posCursor.y - 4, posCursor.x, posCursor.y - 1);
-            g.drawLine(posCursor.x, posCursor.y + 1, posCursor.x, posCursor.y + 4);
-            g.drawLine(posCursor.x - 4, posCursor.y, posCursor.x - 1, posCursor.y);
-            g.drawLine(posCursor.x + 1, posCursor.y, posCursor.x + 4, posCursor.y);
+            g.drawLine(posCursor.x,     posCursor.y - 4, posCursor.x,     posCursor.y - 1);
+            g.drawLine(posCursor.x,     posCursor.y + 1, posCursor.x,     posCursor.y + 4);
+            g.drawLine(posCursor.x - 4, posCursor.y,     posCursor.x - 1, posCursor.y);
+            g.drawLine(posCursor.x + 1, posCursor.y,     posCursor.x + 4, posCursor.y);
         }
         
         
@@ -120,7 +120,7 @@ public final class ColorPickerPopup
         {
             this.colorAngle = colorAngle;
             
-            this.setChosenColor(getColorFromPoint(posCursor.x, posCursor.y));
+            this.chosenColor = getColorFromPoint(posCursor.x, posCursor.y);
             
             for (ChangeListener listener : listenerList.getListeners(ChangeListener.class))
             {
@@ -141,7 +141,7 @@ public final class ColorPickerPopup
             this.posCursor = new Point(Math.min(Math.max(cursor.x, 0), this.getWidth() - 1),
                                        Math.min(Math.max(cursor.y, 0), this.getHeight() - 1));
             
-            this.setChosenColor(getColorFromPoint(posCursor.x, posCursor.y));
+            this.chosenColor = getColorFromPoint(posCursor.x, posCursor.y);
             
             for (ChangeListener listener : listenerList.getListeners(ChangeListener.class))
             {
@@ -159,7 +159,9 @@ public final class ColorPickerPopup
         
         public void setChosenColor(Color chosenColor)
         {
-            this.chosenColor = chosenColor;
+            float[] parts = Color.RGBtoHSB(chosenColor.getRed(), chosenColor.getGreen(), chosenColor.getBlue(), null);
+            setPosCursor(new Point((int) ((this.getWidth()  - 1) * parts[1]), 
+                                   (int) ((this.getHeight() - 1) * (1 - parts[2]))));
         }
     }
     
@@ -175,11 +177,8 @@ public final class ColorPickerPopup
         private int posCursor;
         
         
-        public ColorSlider()
+        public ColorSlider(Color chosenColor)
         {
-            setChosenColor(Color.RED);
-            setPosCursor(0);
-            
             this.addMouseListener(new MouseAdapter()
             {
                 @Override
@@ -203,6 +202,8 @@ public final class ColorPickerPopup
                     }
                 }
             });
+            
+            setChosenColor(chosenColor);
         }
         
         
@@ -286,7 +287,16 @@ public final class ColorPickerPopup
         
         public void setChosenColor(Color chosenColor)
         {
-            this.chosenColor = chosenColor;
+            float[] parts = Color.RGBtoHSB(chosenColor.getRed(), chosenColor.getGreen(), chosenColor.getBlue(), null);
+            
+            if (parts[0] == 0)
+            {
+                setPosCursor(0);
+            }
+            else
+            {
+                setPosCursor((int) ((1 - parts[0]) * (this.getHeight() - 1)));
+            }
         }
     }
     
@@ -298,9 +308,12 @@ public final class ColorPickerPopup
         
         private ColorBox colorBox;
         
-        JTabbedPane tabbedPane;
+        private JTabbedPane tabbedPane;
+        private static int lastChosenTab = 0;
         
         // tab 1 - RGB
+        
+        private boolean doNotUpdate = false;
         
         private JSlider sliderRed;
         private JSlider sliderGreen;
@@ -361,10 +374,12 @@ public final class ColorPickerPopup
             
             // tab 2
             
-            colorArea   = new ColorArea();
-            colorArea.addChangeListener(this);
-            colorSlider = new ColorSlider();
+//            colorSlider = new ColorSlider(colorBox.getForeground());
+            colorSlider = new ColorSlider(Color.RED);
             colorSlider.addChangeListener(this);
+            colorArea   = new ColorArea(Color.RED);
+//            colorArea   = new ColorArea(colorBox.getForeground());
+            colorArea.addChangeListener(this);
             
             colorSlider.setPreferredSize(new Dimension(20, 1));
             
@@ -380,8 +395,22 @@ public final class ColorPickerPopup
             tabbedPane.setBackground(this.getBackground());
             tabbedPane.addTab("RGB", pnlRGB);
             tabbedPane.addTab("HSV", pnlHSV);
+            tabbedPane.setSelectedIndex(lastChosenTab);
             
-            this.add(tabbedPane);
+            tabbedPane.addChangeListener(new ChangeListener()
+            {
+                @Override
+                public void stateChanged(ChangeEvent e)
+                {
+                    lastChosenTab = ((JTabbedPane) e.getSource()).getSelectedIndex();
+                }
+            });
+            
+            JPanel pnlSimpleBorder = new JPanel(new BorderLayout());
+            pnlSimpleBorder.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+            pnlSimpleBorder.add(tabbedPane);
+            
+            this.add(pnlSimpleBorder);
             
             this.pack();
             
@@ -416,33 +445,72 @@ public final class ColorPickerPopup
         @Override
         public void stateChanged(ChangeEvent e)
         {
-            if (e.getSource().equals(sliderRed) || e.getSource().equals(sliderGreen) || e.getSource().equals(sliderBlue))
+            if (!doNotUpdate)
             {
-                Color color = new Color(sliderRed.getValue(), sliderGreen.getValue(), sliderBlue.getValue());
-                boxRed.setForeground(new Color(sliderRed.getValue(), 0, 0));
-                boxGreen.setForeground(new Color(0, sliderGreen.getValue(), 0));
-                boxBlue.setForeground(new Color(0, 0, sliderBlue.getValue()));
+                doNotUpdate = true;
                 
-                colorBox.setForeground(color);
-            }
-            else if (e.getSource().equals(colorArea))
-            {
-                colorBox.setForeground(colorArea.getChosenColor());
-            }
-            else if (e.getSource().equals(colorSlider))
-            {
-                colorArea.setColorAngle(colorSlider.getChosenColor());
+                if ((e.getSource().equals(sliderRed)   || 
+                        e.getSource().equals(sliderGreen) || 
+                        e.getSource().equals(sliderBlue)))
+                {
+                    Color color = getRGBColor();
+                    setRGBColor(color);
+                    
+                    colorBox.setForeground(color);
+                    
+                    colorSlider.setChosenColor(color);
+                    colorArea.setColorAngle(colorSlider.getChosenColor());
+                    colorArea.setChosenColor(color);
+                }
+                else if (e.getSource().equals(colorArea))
+                {
+                    Color color = colorArea.getChosenColor();
+                    
+                    setRGBColor(color);
+                    colorBox.setForeground(color);
+                }
+                else if (e.getSource().equals(colorSlider))
+                {
+                    Color color = colorSlider.getChosenColor();
+                    colorArea.setColorAngle(color);
+                    
+                    setRGBColor(colorArea.getChosenColor());
+                    colorBox.setForeground(color);
+                }
+                
+                doNotUpdate = false;
             }
         }
         
         
-        @Override
-        public void paint(Graphics g)
+        private Color getRGBColor()
         {
-            super.paint(g);
+            return new Color(sliderRed.getValue(), sliderGreen.getValue(), sliderBlue.getValue());
+        }
+        
+        
+        private void setRGBColor(Color color)
+        {
+            int red = color.getRed();
+            int green = color.getGreen();
+            int blue = color.getBlue();
             
-            g.setColor(Color.DARK_GRAY);
-            g.drawRect(0, 0, this.getWidth() - 1, this.getHeight() - 1);
+            boxRed.setForeground(new Color(red, 0, 0));
+            boxGreen.setForeground(new Color(0, green, 0));
+            boxBlue.setForeground(new Color(0, 0, blue));
+            
+            if (sliderRed.getValue() != red)
+            {
+                sliderRed.setValue(red);
+            }
+            if (sliderGreen.getValue() != green)
+            {
+                sliderGreen.setValue(green);
+            }
+            if (sliderBlue.getValue() != blue)
+            {
+                sliderBlue.setValue(blue);
+            }
         }
         
         
