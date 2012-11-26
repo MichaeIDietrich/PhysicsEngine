@@ -441,8 +441,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void objectSelected(ObjectProperties object)
     {
-        System.out.println("objectSelected: " + ((ISelectable) object).getName());
-        
         // get the decor functionality of on object
         IDecorable decorableObject = (IDecorable) object;
         
@@ -479,8 +477,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void objectDeselected(ObjectProperties object)
     {
-        System.out.println("objectDeselected: " + ((ISelectable) object).getName());
-        
         IDecorable decorableObject = (IDecorable) object;
         
         decorableObject.removeDecor(DECOR_ARROW);
@@ -499,8 +495,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void multipleObjectsSelected(ObjectProperties object)
     {
-        System.out.println("multipleObjectsSelected: " + ((ISelectable) object).getName());
-        
         Range selection = new Range(object, "radius", 1.5f);
         selection.setBorder(new Color(100, 100, 255, 200));
         ((IDecorable) object).putDecor(DECOR_SELECTION, selection);
@@ -509,8 +503,6 @@ public class Canvas extends JComponent implements MouseListener, MouseMotionList
     @Override
     public void multipleObjectsDeselected(ObjectProperties object)
     {
-        System.out.println("multipleObjectsDeselected: " + ((ISelectable) object).getName());
-        
         ((IDecorable) object).removeDecor(DECOR_SELECTION);
     }
     
