@@ -54,8 +54,8 @@ public class CollisionDetector
         // Tests the collision between objects and ground
         if (scene.existGround())
         {
-            objectGroundCollision();
-//            objectGroundCollision2();
+//            objectGroundCollision();
+            objectGroundCollision2();
         }
         
     }
@@ -68,7 +68,7 @@ public class CollisionDetector
         
         for (ObjectProperties object : scene.getObjects())
         {
-            if (scene.getCount() > 0 && object != null && scene.getGround() != null)
+            if (!object.isPinned && scene.getCount() > 0 && object != null && scene.getGround() != null)
             {
                 Ground ground = scene.getGround();
                 Util.ground = ground;
@@ -80,34 +80,55 @@ public class CollisionDetector
                 
                 double x = object.last_intersection.getX();
                 double y = object.last_intersection.getY();
- 
-                // calc distance by pythagoras
-                double c = Math.sqrt( Math.pow(x - object.getPosition().getX(), 2.0) + Math.pow(y - object.getPosition().getY(), 2.0) );
 
-                if (c <= object.getRadius())
+                // initializing for finding shortest distance between ground and object
+                double dist_coll_mp = Double.MAX_VALUE;
+                double grx = object.getPosition().getX();
+                double gry = Util.functions( grx ).getY();
+                double spx = x;
+                double spy = y;
+                double nearest_point = Double.MAX_VALUE;
+                
+                for(int i=0; i<10; i++)
                 {
-                    Vector coll_normal = new Vector( x, -x/Util.derive1Dr( x ) + y).norm();
+                    nearest_point = dist_coll_mp;
+                    dist_coll_mp = Math.sqrt( Math.pow( grx - object.getPosition().getX(), 2d) + Math.pow( gry - object.getPosition().getY(), 2d ));
                     
-                    Vector r_o1 = new Vector( x - object.getPosition().getX(), y - object.getPosition().getY()).norm();
+                    if (dist_coll_mp < nearest_point) nearest_point = dist_coll_mp;
+                    
+                    grx = (grx + spx)/2;
+                    spx = grx;
+                    
+                    gry = Util.functions( grx ).getY();
+                }
+                
+
+                if (nearest_point <= object.getRadius()-1)
+                {
+                    Vector coll_normal = new Vector(Util.u, Util.getNormalFuncValue(object.last_intersection, x + Util.u) - y).norm();
+                    
+                    Vector r_o1 = new Vector( object.getPosition().getX()-x, object.getPosition().getY() - y).norm();
                     double r_o1_cross_n = Util.crossProduct(r_o1, coll_normal);
 
-                    double j_z = -Util.scalarProduct(object.velocity, coll_normal) * (1d + (object.surface.elasticity() + ground.surface.elasticity()) / 2d);
+                    double j_z = -Util.scalarProduct(object.velocity, coll_normal) * (1d + object.surface.elasticity()/ground.surface.elasticity());
                     double j_n = (1d / object.getMass()) + (r_o1_cross_n * r_o1_cross_n) / object.moment_of_inertia;
                     
                     double j = j_z / j_n;
                     
-                    Vector v_vec = object.velocity.add( coll_normal.multi( j ).multi( 1d / object.getMass() ));
+                    Vector v_vec = object.velocity.add( coll_normal.multi( j / object.getMass()) );
                     
                     object.velocity.setX( v_vec.getX() );
-                    object.velocity.setY( v_vec.getY() );       
+                    object.velocity.setY( v_vec.getY() );  
+                    
+                    if (object.velocity.getX()*object.velocity.getX()+object.velocity.getX()*object.velocity.getX()<1) object.isPinned = true;
                 }
             }
         }
         
         DebugMonitor.getInstance().updateMessage("groundColl", "" + (System.currentTimeMillis() - time));
-        // System.out.println(System.currentTimeMillis() - time + " ms / " + "SP: [ " + (int) scene.getObject(0).last_intersection.getX() + ", " + (int) scene.getObject(0).last_intersection.getY() + " ]");
     }
 
+    
     public void objectGroundCollision2()
     {
         long t = System.currentTimeMillis();

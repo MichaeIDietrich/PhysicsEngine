@@ -94,7 +94,7 @@ public class Square extends de.engine.objects.Square implements IDrawable, ISele
             square.lineTo(point.getX(), point.getY());
         }
         
-        square.transform(AffineTransform.getRotateInstance(this.world_position.rotation.getAngle()));
+        square.transform(AffineTransform.getRotateInstance(this.getRotationAngle()));
         square.transform(AffineTransform.getTranslateInstance(this.getPosition().getX(), this.getPosition().getY()));
         
         g.setColor(color);

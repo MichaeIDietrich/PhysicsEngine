@@ -8,8 +8,8 @@
   <String id="MATERIAL">Object Material</String>
   <String id="X_COORDINATE">x-Coordinate</String>
   <String id="Y_COORDINATE">y-Coordinate</String>
-  <String id="X_VELOCITY">&lt;html&gt;v&lt;sub&gt;x&lt;/sub&gt; in m/s&lt;/html&gt;</String>
-  <String id="Y_VELOCITY">&lt;html&gt;v&lt;sub&gt;y&lt;/sub&gt; in m/s&lt;/html&gt;</String>
+  <String id="X_VELOCITY"><html>v<sub>x</sub> in m/s</html></String>
+  <String id="Y_VELOCITY"><html>v<sub>y</sub> in m/s</html></String>
   <String id="MASS">Mass in kg</String>
   <String id="RADIUS">Radius</String>
   <String id="POT_ENERGY">Potential Energy: </String>
@@ -39,8 +39,9 @@
   <String id="PHYSICS_MODE">Physics Mode</String>
   <String id="RECORDING_MODE">Physics Recording Mode</String>
   <String id="PLAYBACK_MODE">Playback Mode</String>
-  <String id="WRONG_VERSION">&lt;html&gt;The file version differs from the application version.&lt;br/&gt;This may lead to problems.&lt;br/&gt;Do you want to continue?&lt;/html&gt;</String>
+  <String id="WRONG_VERSION"><html>The file version differs from the application version.<br/>This may lead to problems.<br/>Do you want to continue?</html></String>
   <String id="TITLE_IMPORT">File Import</String>
+  <String id="TITLE_EXPORT">File-Export</String>
   <String id="OBJECTS">Objects</String>
   <String id="HELP">Help</String>
   <String id="ABOUT">About</String>
@@ -74,7 +75,7 @@
       %s.%s.%s<br/><br/>
       The Oizys Physics Engine is an application<br/>
       that represents physical laws in real time.<br/><br/>
-      This application is licensed under the GPL.<br/><br/>
+      This application is licensed under the <a href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>.<br/><br/>
       <h4>Contributers:</h4>
       <div style="text-indent:10px;"/>● Johannes Hackel<br/>
       <div style="text-indent:10px;"/>● Carsten Krahl<br/>
