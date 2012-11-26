@@ -35,7 +35,7 @@
   <String id="RUBBER">Gummi</String>
   <String id="STEEL">Stahl</String>
   <String id="WATER">Wasser</String>
-  <String id="NACL">Orange</String>
+  <String id="NACL">Salz</String>
   <String id="WOOD">Holz</String>
   <String id="PHYSICS_MODE">Physik-Modus</String>
   <String id="RECORDING_MODE">Physik-Aufnahme-Modus</String>
