@@ -26,8 +26,6 @@ public class CollisionDetector
     
     private DistanceCalcer distCalcer;
     
-    private ArrayList<CollisionData> restingContacts;
-    
     public CollisionDetector(Scene scene)
     {
         v = new de.engine.math.Vector();
@@ -37,8 +35,6 @@ public class CollisionDetector
         this.scene = scene;
         
         distCalcer = new DistanceCalcer(0.1);
-        
-        restingContacts = new ArrayList<>();
     }
     
     public void checkScene()
@@ -52,19 +48,19 @@ public class CollisionDetector
                 CollisionData restingContact = PhysicsCalcer.run(collPair);
                 if(restingContact != null)
                 {
-                    restingContacts.add(restingContact);
+                    scene.restingContacts.add(restingContact);
                 }
 
                 int i = 0;
-                while ( i < restingContacts.size())
+                while ( i < scene.restingContacts.size())
                 {
-                    if(restingContacts.get(i).obj1 == collPair.obj1 || restingContacts.get(i).obj1 == collPair.obj2 ||
-                            restingContacts.get(i).obj2 == collPair.obj1 || restingContacts.get(i).obj2 == collPair.obj2)
+                    if((scene.restingContacts.get(i).obj1 == collPair.obj1 || scene.restingContacts.get(i).obj1 == collPair.obj2) ^
+                            (scene.restingContacts.get(i).obj2 == collPair.obj1 || scene.restingContacts.get(i).obj2 == collPair.obj2))
                     {
-                        restingContacts.get(i).coll_time = (restingContacts.get(i).obj1.getFrameTime() > restingContacts.get(i).obj2.getFrameTime()) ? restingContacts.get(i).obj1.getFrameTime() : restingContacts.get(i).obj2.getFrameTime();
-                        if(PhysicsCalcer.run(restingContacts.get(i)) == null)
+                        scene.restingContacts.get(i).coll_time = (scene.restingContacts.get(i).obj1.getFrameTime() > scene.restingContacts.get(i).obj2.getFrameTime()) ? scene.restingContacts.get(i).obj1.getFrameTime() : scene.restingContacts.get(i).obj2.getFrameTime();
+                        if(PhysicsCalcer.run(scene.restingContacts.get(i)) == null)
                         {
-                            restingContacts.remove(i);
+                            scene.restingContacts.remove(i);
                             continue;
                         }
                         
@@ -80,11 +76,11 @@ public class CollisionDetector
         }
         
         int i = 0;
-        while ( i < restingContacts.size())
+        while ( i < scene.restingContacts.size())
         {
-            if(PhysicsCalcer.run(restingContacts.get(i)) == null)
+            if(PhysicsCalcer.run(scene.restingContacts.get(i)) == null)
             {
-                restingContacts.remove(i);
+                scene.restingContacts.remove(i);
                 continue;
             }
             i++;

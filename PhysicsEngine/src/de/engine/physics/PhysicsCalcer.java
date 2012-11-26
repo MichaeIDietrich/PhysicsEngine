@@ -149,7 +149,7 @@ public class PhysicsCalcer
     
     private static CollisionData getRestingContact(ObjectProperties obj1, ObjectProperties obj2, Vector coll_normal, double penetration)
     {
-        double min_v = 1.0;
+        double min_v = 2;
         
         Vector obj1_comp = Util.getVectorComponents(obj1.velocity, coll_normal, coll_normal.getNormalVector());
         Vector obj2_comp = Util.getVectorComponents(obj2.velocity, coll_normal, coll_normal.getNormalVector());
@@ -157,17 +157,19 @@ public class PhysicsCalcer
         Vector normal_part2 = Util.scale(coll_normal, obj2_comp.getX());
         
         //abhänigkeit zu fallbeschleunigung einbauen
-        if (((-1 * min_v < normal_part1.getX() && normal_part1.getX() < min_v) && (-1 * min_v < normal_part1.getY() && normal_part1.getY() < min_v)) && ((-1 * min_v < normal_part2.getX() && normal_part2.getX() < min_v) && (-1 * min_v < normal_part2.getY() && normal_part2.getY() < min_v)))
+        if (normal_part1.getLength() < min_v && normal_part2.getLength() < min_v)
         {
             CollisionData restingContact = new CollisionData(obj1, obj2, 0.0, EnvProps.deltaTime());
             restingContact.coll_time = EnvProps.deltaTime();
             restingContact.calc_time = EnvProps.deltaTime();
-            if(!obj1.isPinned)
-                obj1.world_position.translation.add(Util.scale(coll_normal, penetration));
-            if(!obj2.isPinned)
-                obj2.world_position.translation.add(Util.scale(coll_normal, -1 * penetration));
-            //obj1.velocity.minus(normal_part1);
-            //obj2.velocity.minus(normal_part2);
+            if(!obj1.isPinned) {
+                obj1.world_position.translation.add(Util.scale(coll_normal, penetration - 0.1));
+                obj1.velocity.minus(normal_part1);
+            }
+            if(!obj2.isPinned) {
+                obj2.world_position.translation.add(Util.scale(coll_normal, -1 * penetration - 0.1));
+                obj2.velocity.minus(normal_part2);
+            }
             return restingContact;
         }
         
