@@ -8,7 +8,13 @@ import de.engine.objects.ObjectProperties;
 import de.engineapp.util.PropertyConnector;
 import de.engineapp.visual.IDrawable;
 
-public class Coordinate implements IDrawable
+
+/**
+ * Visual decor object the display a specific vector.
+ * 
+ * @author Micha
+ */
+public final class Coordinate implements IDrawable
 {
     private Color color = Color.BLACK;
     private Color border = Color.WHITE;

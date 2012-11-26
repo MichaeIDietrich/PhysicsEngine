@@ -6,7 +6,13 @@ import java.awt.image.BufferedImage;
 
 import de.engineapp.PresentationModel;
 
-public class Grid
+
+/**
+ * Visual class for the rendering a grid within the scene.
+ * 
+ * @author Micha
+ */
+public final class Grid
 {
     private static final int GAP_SIZE = 50;
     

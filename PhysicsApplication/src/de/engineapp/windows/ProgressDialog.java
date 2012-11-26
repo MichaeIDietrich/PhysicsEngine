@@ -4,6 +4,12 @@ import java.awt.*;
 
 import javax.swing.*;
 
+
+/**
+ * Unfinished dialog that should provide progress response for some long term processes.
+ * 
+ * @author Micha
+ */
 public final class ProgressDialog
 {
     private JDialog dialog;

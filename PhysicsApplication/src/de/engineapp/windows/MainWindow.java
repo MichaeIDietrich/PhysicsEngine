@@ -21,6 +21,11 @@ import de.engineapp.util.*;
 import static de.engineapp.Constants.*;
 
 
+/**
+ * Main Application Window.
+ * 
+ * @author Micha
+ */
 public final class MainWindow extends JFrame implements StorageListener
 {
     private static final long serialVersionUID = -1405279482198323306L;
@@ -45,6 +50,7 @@ public final class MainWindow extends JFrame implements StorageListener
         
         Scene scene = null;
         
+        // open a scene, if there is one assigned
         if (pModel.getProperty(PRP_CURRENT_FILE) != null)
         {
             SceneManager sceneManager = new SceneManager(pModel, this);
@@ -61,6 +67,7 @@ public final class MainWindow extends JFrame implements StorageListener
             }
         }
         
+        // sets the path to the used skin
         if (Configuration.getInstance().getProperty(PRP_SKIN) != null)
         {
             GuiUtil.setImageSourcePath(Configuration.getInstance().getProperty(PRP_SKIN));
@@ -77,6 +84,7 @@ public final class MainWindow extends JFrame implements StorageListener
                 Configuration.save();
             }
         });
+        // handle full screen and windows mode
         this.addWindowStateListener(new WindowStateListener()
         {
             @Override
@@ -99,6 +107,7 @@ public final class MainWindow extends JFrame implements StorageListener
         
         pModel.setPhysicsEngine2D(new PhysicsEngine2D());
         
+        // create a new scene, if there is not already one loaded
         if (scene == null)
         {
             scene = new Scene();
@@ -106,7 +115,7 @@ public final class MainWindow extends JFrame implements StorageListener
         
         pModel.setScene(scene);
         
-        pModel.setPhysicsState(new Physics(pModel, 1000L / 30L, new Physics.FinishedCallback()
+        pModel.setPhysicsState(new PhysicsConnector(pModel, 1000L / 30L, new PhysicsConnector.FinishedCallback()
         {
             @Override
             public void done()
@@ -210,6 +219,7 @@ public final class MainWindow extends JFrame implements StorageListener
     @Override
     public void propertyChanged(String id, String value)
     {
+        // handle window title (dependent on the opened file)
         if (id.equals(PRP_CURRENT_FILE))
         {
             if (value == null)

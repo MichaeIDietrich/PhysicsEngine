@@ -11,6 +11,12 @@ import java.util.zip.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+
+/**
+ * Util class, the provides easy methods for GUI usage.
+ * 
+ * @author Micha
+ */
 public final class GuiUtil
 {
     private static HashMap<String, ImageIcon> iconMap;

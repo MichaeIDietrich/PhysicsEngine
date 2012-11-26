@@ -14,7 +14,13 @@ import de.engineapp.PresentationModel.*;
 
 import static de.engineapp.Constants.*;
 
-public class Configuration implements Serializable, Cloneable, StorageListener, ViewBoxListener
+
+/**
+ * Handles the load and save of config files.
+ * 
+ * @author Micha
+ */
+public final class Configuration implements Serializable, Cloneable, StorageListener, ViewBoxListener
 {
     private static final long serialVersionUID = 6847314270730904825L;
     

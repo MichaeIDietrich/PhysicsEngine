@@ -1,6 +1,12 @@
 package de.engineapp.util;
 
 
+/**
+ * Util class to implement delayed actions easily.
+ * 
+ * @author Micha
+ * @author Cartsten
+ */
 public final class Task
 {
     private boolean done = false;

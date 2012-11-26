@@ -6,7 +6,13 @@ import javax.xml.xpath.*;
 
 import org.w3c.dom.*;
 
-public class Element
+
+/**
+ * XML-Node class for easier xml usage.
+ * 
+ * @author Micha
+ */
+public final class Element
 {
     private Node domNode;
     

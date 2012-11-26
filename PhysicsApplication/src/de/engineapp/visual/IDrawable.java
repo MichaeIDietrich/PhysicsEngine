@@ -2,6 +2,12 @@ package de.engineapp.visual;
 
 import java.awt.*;
 
+
+/**
+ * Interface that provides methods for visual objects.
+ * 
+ * @author Micha
+ */
 public interface IDrawable
 {
     public Color getColor();

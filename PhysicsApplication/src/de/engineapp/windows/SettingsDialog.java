@@ -11,6 +11,12 @@ import de.engineapp.util.*;
 
 import static de.engineapp.Constants.*;
 
+
+/**
+ * Dialog for some application settings.
+ * 
+ * @author Micha
+ */
 public final class SettingsDialog extends JDialog implements ActionListener, ItemListener
 {
     private static final long serialVersionUID = 7034070996690341136L;

@@ -7,7 +7,13 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.event.*;
 
-public class ColorBox extends JComponent
+
+/**
+ * Small component for displaying of a color.
+ * 
+ * @author Micha
+ */
+public final class ColorBox extends JComponent
 {
     private static final long serialVersionUID = 3922749468925958953L;
     

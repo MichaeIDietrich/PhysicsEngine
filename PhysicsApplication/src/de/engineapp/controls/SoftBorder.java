@@ -4,7 +4,13 @@ import java.awt.*;
 
 import javax.swing.border.AbstractBorder;
 
-public class SoftBorder extends AbstractBorder
+
+/**
+ * Unused border class for soft component borders.
+ * 
+ * @author Micha
+ */
+public final class SoftBorder extends AbstractBorder
 {
     private static final long serialVersionUID = -3310455406832647655L;
     
