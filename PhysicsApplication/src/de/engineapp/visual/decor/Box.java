@@ -8,7 +8,13 @@ import de.engine.objects.ObjectProperties;
 import de.engineapp.util.PropertyConnector;
 import de.engineapp.visual.IDrawable;
 
-public class Box implements IDrawable
+
+/**
+ * Visual object decor to display an easy rect.
+ * 
+ * @author Micha
+ */
+public final class Box implements IDrawable
 {
     private Color color = null;
     private Color border = Color.CYAN;

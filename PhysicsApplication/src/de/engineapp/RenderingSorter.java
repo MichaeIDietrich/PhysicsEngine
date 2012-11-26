@@ -4,6 +4,12 @@ import java.util.*;
 
 import de.engineapp.visual.IDrawable;
 
+
+/**
+ * Simple class, to support render order.
+ * 
+ * @author Micha
+ */
 public final class RenderingSorter extends PriorityQueue<IDrawable>
 {
     private static final long serialVersionUID = 4203785184464683783L;

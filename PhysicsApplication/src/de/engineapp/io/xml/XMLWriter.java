@@ -3,6 +3,12 @@ package de.engineapp.io.xml;
 import java.io.*;
 import java.util.Stack;
 
+
+/**
+ * Easy xml writer class.
+ * 
+ * @author Micha
+ */
 public final class XMLWriter
 {
     private enum Elements { NONE, DECLARATION, OPEN_TAG, CLOSED_TAG, STRING, ATTRIBUTE }

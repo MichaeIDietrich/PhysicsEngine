@@ -12,6 +12,13 @@ import de.engineapp.controls.Canvas;
 import de.engineapp.util.AsyncWorker;
 import de.engineapp.visual.*;
 
+
+/**
+ * This class is the connection between the scene object and the visual
+ * representation of these objects within the canvas component.
+ * 
+ * @author Micha
+ */
 public final class Renderer extends AsyncWorker implements PaintListener, StorageListener
 {
     private final static RenderingHints ANTIALIAS = new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

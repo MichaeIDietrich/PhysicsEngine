@@ -7,7 +7,12 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 
-public class SliderEx extends JComponent implements MouseListener, MouseMotionListener
+/**
+ * Custom slider class, that handles grouped information indices an a well-arranged way.
+ * 
+ * @author Micha
+ */
+public final class SliderEx extends JComponent implements MouseListener, MouseMotionListener
 {
     private static final long serialVersionUID = 7474353843456397216L;
     

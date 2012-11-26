@@ -18,6 +18,12 @@ import de.engineapp.visual.*;
 
 import static de.engineapp.Constants.*;
 
+
+/**
+ * Class that manages the load and save of scenes and recorded animations.
+ * 
+ * @author Micha
+ */
 public final class SceneManager
 {
     private final static Localizer LOCALIZER = Localizer.getInstance();

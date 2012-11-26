@@ -12,6 +12,14 @@ import de.engineapp.util.*;
 
 import static de.engineapp.Constants.*;
 
+
+/**
+ * ComboBoc that support supports icons and text labels in a fast and easy way.
+ * 
+ * @author Micha
+ *
+ * @param <T> - class type of the used items
+ */
 public final class IconComboBox<T> extends JComboBox<T>
 {
     private final static Localizer LOCALIZER = Localizer.getInstance();
