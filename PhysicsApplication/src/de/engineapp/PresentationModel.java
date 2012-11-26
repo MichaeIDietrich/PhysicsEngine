@@ -344,7 +344,7 @@ public class PresentationModel
     
     
     /**
-     * Navigates the scene to a specific location.
+     * Navigates the scene offset to a specific scene location.
      * 
      * @param pos - location to navigate to
      */
