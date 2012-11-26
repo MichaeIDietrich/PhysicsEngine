@@ -58,6 +58,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     
     private ColorBox colorBox;
     private ColorPickerPopup colorPicker;
+    private JPanel groupColorDel;
     
     //ComboBox und CheckBox erstellen
     private JCheckBox fix;
@@ -154,6 +155,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         groupName = new JPanel(new BorderLayout(3, 0));
         groupName.setOpaque(true);
         
+        groupColorDel = new JPanel(new BorderLayout(3, 0));
+
         //Combobox + CheckBox
         fix          = new JCheckBox(LOCALIZER.getString(L_PINNED));
     }
@@ -217,6 +220,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         colorBox.setForeground(((IDrawable) object).getColor());
         colorBox.addChangeListener(this);
 
+        groupColorDel.add(colorBox);
+
         //Hinzufügen
         
         this.addGap(10);
@@ -225,8 +230,9 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
 //        this.addGroup(3,previous,name,next);
         this.addGroup(3, groupName);
         //this.addGap(25);
-        this.add(colorBox, LEFT_ALIGNMENT);
-        this.add(del, RIGHT_ALIGNMENT);
+//        this.add(colorBox, LEFT_ALIGNMENT);
+//        this.add(del, RIGHT_ALIGNMENT);
+        this.addGroup(5, colorBox, del);
         this.addGap(10);
         this.addSeparator();
         this.addGap(15);
