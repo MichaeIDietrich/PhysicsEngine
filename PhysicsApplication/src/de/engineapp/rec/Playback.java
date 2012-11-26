@@ -5,6 +5,12 @@ import de.engineapp.util.AsyncWorker;
 
 import static de.engineapp.Constants.*;
 
+
+/**
+ * Class for playing back recorded animation.
+ * 
+ * @author Micha
+ */
 public final class Playback extends AsyncWorker
 {
     private PresentationModel pModel;

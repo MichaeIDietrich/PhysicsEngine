@@ -13,7 +13,13 @@ import de.engineapp.util.*;
 
 import static de.engineapp.Constants.*;
 
-public class ObjectToolBar extends JToolBar implements MouseListener, StorageListener
+
+/**
+ * Panel to handle the supported scene objects.
+ * 
+ * @author Micha
+ */
+public final class ObjectToolBar extends JToolBar implements MouseListener, StorageListener
 {
     private static final long serialVersionUID = -5441109476332523959L;
     

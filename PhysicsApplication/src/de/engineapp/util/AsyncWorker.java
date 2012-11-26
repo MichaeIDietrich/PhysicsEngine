@@ -1,5 +1,11 @@
 package de.engineapp.util;
 
+
+/**
+ * Class interface for threaded processes.
+ * 
+ * @author Micha
+ */
 public abstract class AsyncWorker
 {
     protected Thread worker;

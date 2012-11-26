@@ -4,6 +4,12 @@ import java.io.File;
 
 import javax.swing.filechooser.FileFilter;
 
+
+/**
+ * Fast file filter for JFileChooser.
+ * 
+ * @author Micha
+ */
 public final class QuickFileFilter extends FileFilter
 {
     private String descrition;

@@ -6,7 +6,13 @@ import java.awt.geom.Path2D;
 
 import de.engineapp.PresentationModel;
 
-public class Ground extends de.engine.objects.Ground implements IDrawable, Cloneable
+
+/**
+ * Visual representation of the physics engine groudn object.
+ * 
+ * @author Micha
+ */
+public final class Ground extends de.engine.objects.Ground implements IDrawable, Cloneable
 {
     public final static Color GRASS_GREEN_LIGHT = new Color( 052, 158, 052 );
     public final static Color GRASS_GREEN       = new Color( 032, 128, 032 );

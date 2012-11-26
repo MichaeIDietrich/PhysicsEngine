@@ -18,7 +18,12 @@ import de.engineapp.PresentationModel;
 import static de.engineapp.Constants.*;
 
 
-public class DragAndDropController extends DropTarget
+/**
+ * Controller that handles dnd drops.
+ * 
+ * @author Micha
+ */
+public final class DragAndDropController extends DropTarget
 {
     private static final long serialVersionUID = 5L;
     

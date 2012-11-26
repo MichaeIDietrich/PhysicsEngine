@@ -2,7 +2,14 @@ package de.engineapp.util;
 
 import java.lang.reflect.*;
 
-public class PropertyConnector<T>
+/**
+ * Creates a reflected access to an object property.
+ * 
+ * @author Micha
+ *
+ * @param <T> - class type of the connected property
+ */
+public final class PropertyConnector<T>
 {
     private enum PropertyType { FIELD, METHOD }
     
@@ -56,7 +63,7 @@ public class PropertyConnector<T>
                     return clazz.cast(fieldValue);
                     
                 case METHOD:
-                    Object methodValue = connectedMethod.invoke(connectedObject, (Object[]) null);//.get(connectedObject);
+                    Object methodValue = connectedMethod.invoke(connectedObject, (Object[]) null);
                     return clazz.cast(methodValue);
             }
         }

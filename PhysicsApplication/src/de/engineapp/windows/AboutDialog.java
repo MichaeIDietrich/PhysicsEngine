@@ -13,6 +13,11 @@ import de.engineapp.util.*;
 
 import static de.engineapp.Constants.*;
 
+
+/**
+ * Dialog that displays information about the application and the contributers.
+ * @author Micha
+ */
 public final class AboutDialog extends JDialog implements ActionListener
 {
     private static final long serialVersionUID = -666810517612909816L;

@@ -5,7 +5,12 @@ import java.awt.event.ActionListener;
 import javax.swing.Icon;
 import javax.swing.JButton;
 
-public class QuickButton extends JButton
+/**
+ * Utilized button class to create button dependent GUI faster.
+ * 
+ * @author Micha
+ */
+public final class QuickButton extends JButton
 {
     private static final long serialVersionUID = 4928796962220540321L;
     

@@ -3,7 +3,7 @@ package de.engineapp;
 import de.engine.DebugMonitor;
 import de.engineapp.util.AsyncWorker;
 
-public class Physics extends AsyncWorker
+public class PhysicsConnector extends AsyncWorker
 {
     // interface to recognize repaints caused by finishing of frame calculation
     public interface FinishedCallback
@@ -17,7 +17,7 @@ public class Physics extends AsyncWorker
     private FinishedCallback finishedCallback;
     
     
-    public Physics(PresentationModel model, long deltaTime, FinishedCallback finishedCallback)
+    public PhysicsConnector(PresentationModel model, long deltaTime, FinishedCallback finishedCallback)
     {
         pModel = model;
         this.deltaTime = deltaTime;

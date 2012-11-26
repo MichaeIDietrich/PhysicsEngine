@@ -23,6 +23,11 @@ import de.engineapp.visual.decor.Box;
 import static de.engineapp.Constants.*;
 
 
+/**
+ * Graphical representation component for all the scene related stuff.
+ * 
+ * @author Micha
+ */
 public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener, 
                                                   MouseWheelListener, StorageListener, ActionListener, IDecorable
 {
