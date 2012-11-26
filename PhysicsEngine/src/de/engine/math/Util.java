@@ -9,8 +9,8 @@ import de.engine.objects.Square;
 public class Util
 {
     // needed for derivation
-    private static final Double h = Math.pow(10d, -7d);
-    private static final Double u = Math.pow(10d, 12d);
+    public static final Double h = Math.pow(10d, -7d);
+    public static final Double u = Math.pow(10d, 12d);
     private static Vector function = new Vector();
     private static double  m = 0;
     private static double  n = 0;
@@ -65,6 +65,11 @@ public class Util
     }
     
     
+    public static double getNormalFuncValue( Vector intersection, double pos_on_fkt )
+    {
+        return -pos_on_fkt / Util.derive1Dr( intersection.getX()) + intersection.getY();
+    }
+    
     public static Double newtonIteration()
     {
         // If the object has no velocity in x direction, return the objects x-coordinate.
@@ -89,19 +94,19 @@ public class Util
           
             set_slope = true;
           
-            m = 0.16;
+            m = 0.2;
             n = object.getPosition().getY() - m*xn;
             sign = object.velocity.getX()>=0 ? -1 :  1;
             double i1 = newtonIteration();
           
-            m = -0.16;
+            m = -0.2;
             n = object.getPosition().getY() - m*xn;
             sign = object.velocity.getX()>=0 ?  1 : -1;
             double i2 = newtonIteration();
 
             set_slope = false;
           
-            return i1 + Math.abs(i1-i2) * ((oldm-0.15)/0.32);
+            return i1 + Math.abs(i1-i2) * ((oldm-0.15)/0.4);
         }
         
         // the ordinary newton iteration

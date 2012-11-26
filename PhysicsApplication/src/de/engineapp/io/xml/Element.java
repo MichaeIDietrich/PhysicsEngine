@@ -1,6 +1,8 @@
-package de.engineapp.xml;
+package de.engineapp.io.xml;
 
 import java.util.*;
+
+import javax.xml.xpath.*;
 
 import org.w3c.dom.*;
 
@@ -68,6 +70,64 @@ public class Element
         }
         
         return attributes;
+    }
+    
+    
+    public Element getNode(String xpath)
+    {
+        try
+        {
+            XPathFactory xpathfactory = XPathFactory.newInstance();
+            XPath xPath = xpathfactory.newXPath();
+            XPathExpression expr = xPath.compile(xpath);
+            Object result = expr.evaluate(domNode, XPathConstants.NODE);
+            if (result != null)
+            {
+                return new Element((Node) result);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        catch (XPathExpressionException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    
+    public List<Element> getNodes(String xpath)
+    {
+        try
+        {
+            XPathFactory xpathfactory = XPathFactory.newInstance();
+            XPath xPath = xpathfactory.newXPath();
+            XPathExpression expr = xPath.compile(xpath);
+            Object result = expr.evaluate(domNode, XPathConstants.NODESET);
+            if (result != null)
+            {
+                NodeList nodeList = (NodeList) result;
+                List<Element> list = new ArrayList<>();
+                
+                for (int i = 0; i < nodeList.getLength(); i++)
+                {
+                    list.add(new Element(nodeList.item(i)));
+                }
+                
+                return list;
+            }
+            else
+            {
+                return XMLReader.EMPTY_NODE_LIST;
+            }
+        }
+        catch (XPathExpressionException ex)
+        {
+            ex.printStackTrace();
+            return XMLReader.EMPTY_NODE_LIST;
+        }
     }
     
     

@@ -1,14 +1,24 @@
 package de.engineapp.util;
 
-public class Task
+
+public final class Task
 {
     private boolean done = false;
     private long ms;
+    private Runnable callback;
     
     
     public Task(long milliseconds)
     {
         ms = milliseconds;
+        callback = null;
+    }
+    
+    
+    public Task(long milliseconds, Runnable callback)
+    {
+        ms = milliseconds;
+        this.callback = callback;
     }
     
     
@@ -27,7 +37,13 @@ public class Task
                 {
                     e.printStackTrace();
                 }
+                
                 done = true;
+                
+                if (callback != null)
+                {
+                    callback.run();
+                }
             }
         }.start();
     }
