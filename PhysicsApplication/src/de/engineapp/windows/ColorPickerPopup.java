@@ -2,6 +2,7 @@ package de.engineapp.windows;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -90,15 +91,18 @@ public final class ColorPickerPopup
         @Override
         public void paint(Graphics g)
         {
+            BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), 
+                    BufferedImage.TYPE_INT_RGB);
+            
             for (int x = 0; x < this.getWidth(); x++)
             {
                 for (int y = 0; y < this.getHeight(); y++)
                 {
-                    g.setColor(getColorFromPoint(x, y));
-                    
-                    g.drawLine(x, y, x, y);
+                    image.setRGB(x, y, getColorFromPoint(x, y).getRGB());
                 }
             }
+            
+            g.drawImage(image, 0, 0, null);
             
             Color invColor = new Color(255 - chosenColor.getRed(), 255 - chosenColor.getGreen(), 255 - chosenColor.getBlue());
             

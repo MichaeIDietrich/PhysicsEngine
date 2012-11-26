@@ -48,7 +48,6 @@ public final class Localizer
         String langResource = "i18n/" + langCode + ".xml";
         if (GuiUtil.resourceExists(langResource))
         {
-            //System.out.println("loaded '" + langCode + "'");
             return langResource;
         }
         else
@@ -84,7 +83,6 @@ public final class Localizer
                 
                 stringTable.put(id, entry.getValue());
             }
-            System.out.println("loaded: " + path);
         }
     }
     

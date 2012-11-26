@@ -106,7 +106,7 @@ public class HelpDialog extends JDialog
     }
     
     
-    private String getDocument(String resourceName)
+    private String getDocument(String resourceName, String... images)
     {
         try
         {
@@ -124,7 +124,14 @@ public class HelpDialog extends JDialog
             
             br.close();
             
-            return builder.toString();
+            if (images == null)
+            {
+                return builder.toString();
+            }
+            else
+            {
+                return String.format(builder.toString(), (Object[]) images);
+            }
         }
         catch (Exception ex)
         {
@@ -138,15 +145,18 @@ public class HelpDialog extends JDialog
     private void addTopics(List<Expander> topics)
     {
         // TODO - add all topics
-        topics.add(new Expander("title", getDocument("doc/topic1.html")));
-        topics.add(new Expander("title", getDocument("doc/topic1.html")));
-        topics.add(new Expander("title", getDocument("doc/topic1.html")));
-        topics.add(new Expander("Steuerleiste", String.format(getDocument("doc/toolbar.html"), 
+        topics.add(new Expander("Steuerleiste", getDocument("doc/toolbar.html", 
                 GuiUtil.getHtmlImage(ICO_NEW), GuiUtil.getHtmlImage(ICO_OPEN), GuiUtil.getHtmlImage(ICO_SAVE),
                 GuiUtil.getHtmlImage(ICO_PLAY), GuiUtil.getHtmlImage(ICO_PAUSE), GuiUtil.getHtmlImage(ICO_RESET),
                 GuiUtil.getHtmlImage(ICO_GRID), GuiUtil.getHtmlImage(ICO_OBJECT_ARROWS), GuiUtil.getHtmlImage(ICO_FOCUS),
-                GuiUtil.getHtmlImage("blank"), GuiUtil.getHtmlImage("blank"),
+                GuiUtil.getHtmlImage(ICO_BLANK), GuiUtil.getHtmlImage(ICO_BLANK),
                 GuiUtil.getHtmlImage(ICO_PHYSICS), GuiUtil.getHtmlImage(ICO_RECORD), GuiUtil.getHtmlImage(ICO_PLAYBACK),
                 GuiUtil.getHtmlImage(ICO_SETTINGS), GuiUtil.getHtmlImage(ICO_HELP), GuiUtil.getHtmlImage(ICO_ABOUT))));
+        topics.add(new Expander("Objektbereich", getDocument("doc/object-panel.html", 
+                GuiUtil.getHtmlImage(ICO_SQUARE), GuiUtil.getHtmlImage(ICO_CIRCLE), GuiUtil.getHtmlImage(ICO_GROUND))));
+        topics.add(new Expander("Objekteigenschaftsbereich", String.format(getDocument("doc/object-properties-panel.html"))));
+        topics.add(new Expander("Statusleiste", getDocument("doc/statusbar.html", 
+                GuiUtil.getHtmlImage(ICO_DISCARD))));
+        topics.add(new Expander("Szenebereich", getDocument("doc/scene.html")));
     }
 }
