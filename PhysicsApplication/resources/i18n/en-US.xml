@@ -36,6 +36,7 @@
   <String id="STEEL">Steel</String>
   <String id="WATER">Water</String>
   <String id="NACL">Orange</String>
+  <String id="WOOD">Wood</String>
   <String id="PHYSICS_MODE">Physics Mode</String>
   <String id="RECORDING_MODE">Physics Recording Mode</String>
   <String id="PLAYBACK_MODE">Playback Mode</String>
