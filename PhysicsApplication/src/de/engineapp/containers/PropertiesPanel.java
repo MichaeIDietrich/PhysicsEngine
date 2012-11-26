@@ -32,6 +32,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     
     //Label erstellen
     private JLabel nameLabel;
+    private JLabel colorLabel;
     private JLabel materialLabel;
     private JLabel xCordinateLabel;
     private JLabel yCordinateLabel;
@@ -39,6 +40,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     private JLabel ySpeedLabel;
     private JLabel massLabel;
     private JLabel radiusLabel;
+    private JLabel angle;
     
     private JLabel LabelPotE; //Schriftzug
     private JLabel LabelKinE; //Schriftzug
@@ -135,6 +137,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     {
         //Labels
         nameLabel       = new JLabel(LOCALIZER.getString(L_NAME_OF_OBJECT));
+        colorLabel      = new JLabel(LOCALIZER.getString(L_COLOR_OF_OBJECT));
         materialLabel   = new JLabel(LOCALIZER.getString(L_MATERIAL));
         xCordinateLabel = new JLabel(LOCALIZER.getString(L_X_COORDINATE));
         yCordinateLabel = new JLabel(LOCALIZER.getString(L_Y_COORDINATE));
@@ -142,6 +145,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         ySpeedLabel     = new JLabel(LOCALIZER.getString(L_Y_VELOCITY));
         massLabel       = new JLabel(LOCALIZER.getString(L_MASS));
         radiusLabel     = new JLabel(LOCALIZER.getString(L_RADIUS));
+        angle           = new JLabel(LOCALIZER.getString(id));
         
         LabelPotE       = new JLabel(LOCALIZER.getString(L_POT_ENERGY));
         LabelKinE       = new JLabel(LOCALIZER.getString(L_KIN_ENERGY));
@@ -296,6 +300,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                 {
                     pModel.setSelectedObject(pModel.getScene().getObject(0));
                 }
+                this.removeAll();
                 showPanel(pModel.getSelectedObject());
                 pModel.fireRepaint();
                 break;
@@ -316,6 +321,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                         }
                     }
                 }
+                this.removeAll();
                 showPanel(pModel.getSelectedObject());
                 pModel.fireRepaint();
                 break;
