@@ -8,7 +8,14 @@ import java.util.*;
 import de.engine.math.Vector;
 import de.engineapp.PresentationModel;
 
-public class Square extends de.engine.objects.Square implements IDrawable, ISelectable, IDecorable, Cloneable
+
+/**
+ * Visual representation of the physics engine square object.
+ * 
+ * @author Micha
+ * @author Johannes
+ */
+public final class Square extends de.engine.objects.Square implements IDrawable, ISelectable, IDecorable, Cloneable
 {
     private String name;
     private Color color = Color.GREEN;

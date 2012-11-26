@@ -9,6 +9,12 @@ import javax.swing.event.*;
 
 import de.engineapp.controls.ColorBox;
 
+
+/**
+ * Popup window to support the change of colors on the fly.
+ * 
+ * @author Micha
+ */
 public final class ColorPickerPopup
 {
     private static final class ColorArea extends JComponent

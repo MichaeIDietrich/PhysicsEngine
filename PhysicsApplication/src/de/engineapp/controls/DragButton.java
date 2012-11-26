@@ -9,7 +9,13 @@ import javax.swing.*;
 
 import de.engineapp.controls.dnd.CommandHandler;
 
-public class DragButton extends JToggleButton implements MouseMotionListener, DropTargetListener, Serializable
+
+/**
+ * Simple button that provides an easy interface for Drag'n'Drop.
+ * 
+ * @author Micha
+ */
+public final class DragButton extends JToggleButton implements MouseMotionListener, DropTargetListener, Serializable
 {
     private static final long serialVersionUID = 6946598301964868381L;
     

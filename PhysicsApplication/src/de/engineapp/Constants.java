@@ -1,5 +1,10 @@
 package de.engineapp;
 
+/**
+ * Overview of the used applications constants.
+ * 
+ * @author Micha
+ */
 public interface Constants
 {
     // software-version

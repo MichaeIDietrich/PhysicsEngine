@@ -8,7 +8,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicHTML;
 import javax.swing.text.View;
 
-public class Expander extends JPanel implements ActionListener
+
+/**
+ * Expandable button container for html documents.
+ * 
+ * @author Micha
+ */
+public final class DocumentExpander extends JPanel implements ActionListener
 {
     private static class HtmlViewer extends JLabel
     {
@@ -31,7 +37,7 @@ public class Expander extends JPanel implements ActionListener
     HtmlViewer label;
     
     
-    public Expander(String text, String doc)
+    public DocumentExpander(String text, String doc)
     {
         label = new HtmlViewer(doc);
         
