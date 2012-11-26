@@ -92,8 +92,8 @@ public class HelpDialog extends JDialog
         
         
         scrollPane = new JScrollPane(container, 
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                                     JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+                                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
         
         this.add(scrollPane);

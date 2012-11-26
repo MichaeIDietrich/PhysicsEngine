@@ -120,6 +120,7 @@ public interface Constants
     public final static String CMD_ABOUT = "about";
     public final static String CMD_COPY = "copy";
     public final static String CMD_PASTE = "paste";
+    public final static String CMD_SELECT_ALL = "selectAll";
     
     // decor ID's
     public final static String DECOR_SELECTION = "selection";
