@@ -30,4 +30,7 @@
   <String id="STEEL">Cталь</String>
   <String id="WATER">Водa</String>
   <String id="NACL">Orange</String>
+  <String id="COLOR_OF_OBJECT">Цвет Oбъекта:</String>
+  <String id="ANGLE">Угол</String>
+  
 </Localization>

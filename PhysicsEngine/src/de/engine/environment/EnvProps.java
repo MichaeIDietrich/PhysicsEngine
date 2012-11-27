@@ -17,6 +17,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 package de.engine.environment;
 
+import de.engine.math.Vector;
+
 public class EnvProps
 {
     
@@ -77,5 +79,14 @@ public class EnvProps
                 return 0;
         else
             return props.default_environment_friction;
+    }
+    
+    public static double getHightToGround(Vector pos)
+    {
+        EnvProps props = getInstance(); 
+        if (props.scene != null && props.scene.existGround())
+            return pos.getY() - props.scene.getGround().function(pos.getX());
+        else
+            return 0;
     }
 }

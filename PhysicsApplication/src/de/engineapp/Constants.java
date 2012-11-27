@@ -40,6 +40,7 @@ public interface Constants
     // localization
     public final static String L_APP_NAME = "APP_NAME";
     public final static String L_NAME_OF_OBJECT = "NAME_OF_OBJECT";
+    public final static String L_COLOR_OF_OBJECT = "COLOR_OF_OBJECT";
     public final static String L_MATERIAL = "MATERIAL";
     public final static String L_X_COORDINATE = "X_COORDINATE";
     public final static String L_Y_COORDINATE = "Y_COORDINATE";
@@ -47,6 +48,7 @@ public interface Constants
     public final static String L_Y_VELOCITY = "Y_VELOCITY";
     public final static String L_MASS = "MASS";
     public final static String L_RADIUS = "RADIUS";
+    public final static String L_ANGLE = "ANGLE";
     public final static String L_POT_ENERGY = "POT_ENERGY";
     public final static String L_KIN_ENERGY = "KIN_ENERGY";
     public final static String L_REMOVE = "REMOVE";
