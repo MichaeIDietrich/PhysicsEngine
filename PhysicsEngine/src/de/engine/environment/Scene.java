@@ -96,7 +96,7 @@ public class Scene implements Cloneable
         
         for (ObjectProperties object : this.getObjects())
         {
-            newScene.add(object.clone());
+            newScene.add(object.clone(cloneObjectIds));
         }
         
         return newScene;
