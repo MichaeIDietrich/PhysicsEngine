@@ -18,7 +18,13 @@ public final class PropertySpinner extends JSpinner implements MouseMotionListen
     
     public PropertySpinner(double start, double min, double max, double step, ChangeListener cl)
     {
-        super(new SpinnerNumberModel(start, min, max, step));
+        this(start, min, max, step, cl, false);
+    }
+    
+    public PropertySpinner(double start, double min, double max, double step, ChangeListener cl, boolean wrap)
+    {
+        super(wrap ? new CyclingSpinnerNumberModel(start, min, max, step) : 
+                     new SpinnerNumberModel(start, min, max, step));
         this.min = min;
         this.max = max;
         
@@ -27,8 +33,8 @@ public final class PropertySpinner extends JSpinner implements MouseMotionListen
         NumberEditor numEditor = (NumberEditor) this.getEditor();
         numEditor.getTextField().addMouseMotionListener(this);
         numEditor.getTextField().addMouseListener(this);
+        
     }
-    
     
     @Override
     public Double getValue()
@@ -46,7 +52,7 @@ public final class PropertySpinner extends JSpinner implements MouseMotionListen
     @Override
     public void mouseDragged(MouseEvent e)
     {
-        if (SwingUtilities.isMiddleMouseButton(e))
+        if (SwingUtilities.isMiddleMouseButton(e) || SwingUtilities.isRightMouseButton(e))
         {
             int diff = e.getX() - mouseDown.x;
             
