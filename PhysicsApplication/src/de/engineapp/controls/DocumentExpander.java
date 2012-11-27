@@ -32,6 +32,8 @@ public final class DocumentExpander extends JPanel implements ActionListener
     
     private static final long serialVersionUID = 4480221797736558685L;
     
+    private final static RenderingHints ANTIALIAS = new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    
     
     JToggleButton button;
     HtmlViewer label;
@@ -50,16 +52,21 @@ public final class DocumentExpander extends JPanel implements ActionListener
             @Override
             public void paint(Graphics g)
             {
-                super.paint(g);
+                Graphics2D g2d = (Graphics2D) g;
                 
-                if (this.isSelected())
-                {
-                    g.drawString("▼", this.getWidth() - 20, 15);
-                }
-                else
-                {
-                    g.drawString("■", this.getWidth() - 20, 15);
-                }
+                super.paint(g2d);
+                
+                g2d.addRenderingHints(ANTIALIAS);
+                
+                String stateChar = this.isSelected() ? "▼" : "■";
+                
+                Shape charShape = g.getFont().createGlyphVector(g2d.getFontRenderContext(), stateChar).getOutline();
+                
+                float y = this.getHeight() / 2 - (float) charShape.getBounds2D().getCenterY();
+                float x = this.getWidth() - y - (float) charShape.getBounds2D().getCenterX();
+                
+                g2d.translate(x, y);
+                g2d.fill(charShape);
             }
         };
         

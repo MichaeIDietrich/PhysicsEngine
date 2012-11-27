@@ -147,9 +147,9 @@ public final class HelpDialog extends JDialog
     }
     
     
+    // currently German only (inlined)
     private void addTopics(List<DocumentExpander> topics)
     {
-        // TODO - add all topics
         topics.add(new DocumentExpander("Steuerleiste", getDocument("doc/toolbar.html", 
                 GuiUtil.getHtmlImage(ICO_NEW), GuiUtil.getHtmlImage(ICO_OPEN), GuiUtil.getHtmlImage(ICO_SAVE),
                 GuiUtil.getHtmlImage(ICO_PLAY), GuiUtil.getHtmlImage(ICO_PAUSE), GuiUtil.getHtmlImage(ICO_RESET),
@@ -163,5 +163,7 @@ public final class HelpDialog extends JDialog
         topics.add(new DocumentExpander("Statusleiste", getDocument("doc/statusbar.html", 
                 GuiUtil.getHtmlImage(ICO_DISCARD))));
         topics.add(new DocumentExpander("Szenebereich", getDocument("doc/scene.html")));
+        topics.add(new DocumentExpander("Unterstützte Funktionen", getDocument("doc/supported-features.html")));
+        topics.add(new DocumentExpander("Noch nicht unterstützte Funktionen", getDocument("doc/unsupported-features.html")));
     }
 }
