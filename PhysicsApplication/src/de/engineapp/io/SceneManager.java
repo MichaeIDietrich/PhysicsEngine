@@ -9,7 +9,7 @@ import javax.swing.*;
 import de.engine.environment.Scene;
 import de.engine.math.*;
 import de.engine.objects.ObjectProperties;
-import de.engine.objects.ObjectProperties.Material;
+import de.engine.objects.Material;
 import de.engineapp.PresentationModel;
 import de.engineapp.io.xml.*;
 import de.engineapp.rec.Recorder;

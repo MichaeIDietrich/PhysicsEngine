@@ -15,7 +15,7 @@ import de.engine.environment.EnvProps;
 import de.engine.environment.Scene;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
-import de.engine.objects.ObjectProperties.Material;
+import de.engine.objects.Material;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.*;
 import de.engineapp.controls.*;
@@ -196,8 +196,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     {
         this.removeAll();
         //Instanzieren
-        potLabel     = new JLabel(this.formatDoubleValue(-object.getMass() * EnvProps.grav_acc() * object.world_position.translation.getY()));
-        kinLabel     = new JLabel(this.formatDoubleValue(0.5 * object.getMass() * Math.abs( object.velocity.getX() )));
+        potLabel     = new JLabel(this.formatDoubleValue(object.getPotEnergy()));
+        kinLabel     = new JLabel(this.formatDoubleValue(object.getKinEnergy()));
     
         massInput    = new PropertySpinner(object.getMass(),1,10000,10,this);
         radiusInput  = new PropertySpinner(object.getRadius(), 1, 1000000, 10, this);
@@ -391,8 +391,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             MaterialCombo.setSelectedItem(pModel.getSelectedObject().surface);
             fix.setSelected(pModel.getSelectedObject().isPinned);
             angle.setValue(Math.toDegrees(pModel.getSelectedObject().getRotationAngle()));
-            potLabel.setText(this.formatDoubleValue(-object.getMass() * EnvProps.grav_acc() * object.world_position.translation.getY()));
-            kinLabel.setText(this.formatDoubleValue(0.5 * object.getMass() * Math.abs( object.velocity.getX() )));
+            potLabel.setText(this.formatDoubleValue(object.getPotEnergy()));
+            kinLabel.setText(this.formatDoubleValue(object.getKinEnergy()));
             name.setText(((ISelectable)pModel.getSelectedObject()).getName());
             
             avoidUpdate = 0;
@@ -418,8 +418,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             
             name.setText(((ISelectable)pModel.getSelectedObject()).getName());
             
-            potLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().potential_energy));
-            kinLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().kinetic_energy));
+            potLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().getPotEnergy()));
+            kinLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().getKinEnergy()));
             avoidUpdate = 0;
         }
         
