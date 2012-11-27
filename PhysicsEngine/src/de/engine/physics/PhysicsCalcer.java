@@ -176,6 +176,7 @@ public class PhysicsCalcer
         return null;
     }
     
+    // Quelle: http://www.myphysicslab.com/collision.html
     private static CollisionData resolveContact(CollisionData collPair, Contact contact)
     {
         if (contact == null)
@@ -229,82 +230,5 @@ public class PhysicsCalcer
             
             return getRestingContact(collPair.obj1, collPair.obj2, contact.normal, contact.penetration);
         }
-    }
-    
-    // Quelle: http://www.myphysicslab.com/collision.html
-    private static CollisionData resolveContact2(CollisionData collPair, Contact contact)
-    {
-        if (contact == null)
-            return null;
-        
-        Vector coll_point = contact.point;
-        Vector coll_normal = contact.normal;
-        
-        Vector r_o1 = Util.minus(coll_point, collPair.obj1.getPosition(collPair.coll_time));
-        Vector r_o2 = Util.minus(coll_point, collPair.obj2.getPosition(collPair.coll_time));
-        Vector v_o1 = new Vector();
-        if (!collPair.obj1.isPinned)
-            v_o1 = new Vector(collPair.obj1.angular_velocity * r_o1.getX(), collPair.obj1.angular_velocity * r_o1.getY()).add(collPair.obj1.velocity);
-        Vector v_o2 = new Vector();
-        if (!collPair.obj2.isPinned)
-            v_o2 = new Vector(collPair.obj2.angular_velocity * r_o2.getX(), collPair.obj2.angular_velocity * r_o2.getY()).add(collPair.obj2.velocity);
-        
-        double r_o1_cross_n = Util.crossProduct(r_o1, coll_normal);
-        double r_o2_cross_n = Util.crossProduct(r_o2, coll_normal);
-        
-        Vector v_rel = Util.minus(v_o1, v_o2);
-        double j_z = Util.scalarProduct(v_rel, coll_normal) * -(1 + (collPair.obj1.surface.elasticity() + collPair.obj2.surface.elasticity()) / 2);
-        double j_n = 0;
-        
-        if (!collPair.obj2.isPinned)
-            j_n += (1 / collPair.obj2.getMass()) + (r_o2_cross_n * r_o2_cross_n) / collPair.obj2.moment_of_inertia;
-        if (!collPair.obj1.isPinned)
-            j_n += (1 / collPair.obj1.getMass()) + (r_o1_cross_n * r_o1_cross_n) / collPair.obj1.moment_of_inertia;
-        
-        double j = j_z / j_n;
-        
-        // weird hack, but solves a problem in square_n_circles.scnx, will check this later again
-        // if(j < 0 && !collPair.obj1.isPinned && !collPair.obj2.isPinned) j *= -1.0;
-        // if (j < 0 && (collPair.obj1 instanceof Polygon || collPair.obj2 instanceof Polygon)) j *= -1.0;
-        
-        Vector j_normal = Util.scale(coll_normal, j);
-        
-        double min_v = 1.0;
-        
-        if (!collPair.obj1.isPinned)
-        {
-            if (collPair.obj1.sleeps())
-                collPair.obj1.wakeUp();
-            collPair.obj1.update(collPair.coll_time);
-            
-            collPair.obj1.velocity.add(Util.scale(j_normal, 1 / collPair.obj1.getMass()));
-            collPair.obj1.angular_velocity += Util.crossProduct(r_o1, j_normal) / collPair.obj1.moment_of_inertia;
-            
-            if ((collPair.obj2.isPinned || collPair.obj2.sleeps()) && ((-1 * min_v < collPair.obj1.velocity.getX() && collPair.obj1.velocity.getX() < min_v) && (-1 * min_v < collPair.obj1.velocity.getY() && collPair.obj1.velocity.getY() < min_v)))
-            {
-                collPair.obj1.velocity = new Vector();
-                collPair.obj1.fallAsleep(collPair.obj2);
-            }
-            
-        }
-        
-        if (!collPair.obj2.isPinned)
-        {
-            if (collPair.obj2.sleeps())
-                collPair.obj2.wakeUp();
-            collPair.obj2.update(collPair.coll_time);
-            
-            collPair.obj2.velocity.minus(Util.scale(j_normal, 1 / collPair.obj2.getMass()));
-            collPair.obj2.angular_velocity -= Util.crossProduct(r_o2, j_normal) / collPair.obj2.moment_of_inertia;
-            
-            if ((collPair.obj1.isPinned || collPair.obj1.sleeps()) && ((-1 * min_v < collPair.obj2.velocity.getX() && collPair.obj2.velocity.getX() < min_v) && (-1 * min_v < collPair.obj2.velocity.getY() && collPair.obj2.velocity.getY() < min_v)))
-            {
-                collPair.obj2.velocity = new Vector();
-                collPair.obj2.fallAsleep(collPair.obj1);
-            }
-            
-        }
-        
-        return getRestingContact(collPair.obj1, collPair.obj2, coll_normal, contact.penetration);
     }
 }
