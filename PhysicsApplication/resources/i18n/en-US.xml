@@ -48,6 +48,8 @@
   <String id="ABOUT">About</String>
   <String id="OVERWRITE_FILE">The file already exists. Do you want to overwrite it?</String>
   <String id="FILE_ACCESS_DENIED">File '%s' could not be loaded.</String>
+  <String id="COLOR_OF_OBJECT">Object Color:</String>
+  <String id="ANGLE">Angle</String>
   
   
   <!--  Tooltips -->
