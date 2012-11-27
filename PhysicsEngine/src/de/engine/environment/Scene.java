@@ -84,6 +84,11 @@ public class Scene implements Cloneable
     @Override
     public Scene clone()
     {
+        return clone(false);
+    }
+    
+    public Scene clone(boolean cloneObjectIds)
+    {
         // TODO - add all properties, that need to be copied
         Scene newScene = new Scene();
         

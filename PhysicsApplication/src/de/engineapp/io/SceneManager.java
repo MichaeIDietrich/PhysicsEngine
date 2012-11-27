@@ -6,10 +6,10 @@ import java.util.zip.*;
 
 import javax.swing.*;
 
-import de.engine.environment.Scene;
+import de.engine.environment.*;
 import de.engine.math.*;
 import de.engine.objects.ObjectProperties;
-import de.engine.objects.ObjectProperties.Material;
+import de.engine.objects.Material;
 import de.engineapp.PresentationModel;
 import de.engineapp.io.xml.*;
 import de.engineapp.rec.Recorder;
@@ -234,12 +234,16 @@ public final class SceneManager
             
             Scene scene = new Scene();
             
+            scene.gravitational_acceleration = getDouble(node.getAttribute("gravity"), 
+                                                         EnvProps.getInstance().default_gravitational_acceleration);
+            
             ObjectProperties object = null;
             node = reader.getNode("Scene/Ground");
             
             if (node != null)
             {
-                scene.setGround(new Ground(pModel, getInt(node.getAttribute("type")), getInt(node.getAttribute("watermark"))));
+                scene.setGround(new Ground(pModel, getInt(node.getAttribute("type"),      DEFAULT_GROUND), 
+                                                   getInt(node.getAttribute("watermark"), 0)));
             }
             
             for (Element obj : reader.getNodes("Scene/Circle | Scene/Square"))
@@ -247,13 +251,15 @@ public final class SceneManager
                 switch (obj.getName())
                 {
                     case "Circle":
-                        object = new Circle(pModel, new Vector(getDouble(obj.getAttribute("x")), getDouble(obj.getAttribute("y"))), 
-                                getDouble(obj.getAttribute("radius")));
+                        object = new Circle(pModel, new Vector(getDouble(obj.getAttribute("x"), 0), 
+                                                               getDouble(obj.getAttribute("y"), 0)), 
+                                getDouble(obj.getAttribute("radius"), 0));
                         break;
                         
                     case "Square":
-                        object = new Square(pModel, new Vector(getDouble(obj.getAttribute("x")), getDouble(obj.getAttribute("y"))), 
-                                getDouble(obj.getAttribute("radius")));
+                        object = new Square(pModel, new Vector(getDouble(obj.getAttribute("x"), 0), 
+                                                               getDouble(obj.getAttribute("y"), 0)), 
+                                getDouble(obj.getAttribute("radius"), 0));
                         break;
                         
                     default:
@@ -261,10 +267,11 @@ public final class SceneManager
                 }
                 
                 ((ISelectable) object).setName(obj.getAttribute("name"));
-                ((IDrawable) object).setColor(new Color(getInt(obj.getAttribute("color"))));
-                object.setMass(getDouble(obj.getAttribute("mass")));
-                object.velocity = new Vector(getDouble(obj.getAttribute("vx")), getDouble(obj.getAttribute("vy")));
-                object.setRotationAngle(getDouble(obj.getAttribute("rotation")));
+                ((IDrawable) object).setColor(new Color(getInt(obj.getAttribute("color"), Color.RED.getRGB())));
+                object.setMass(getDouble(obj.getAttribute("mass"), 10));
+                object.velocity = new Vector(getDouble(obj.getAttribute("vx"), 0), 
+                                             getDouble(obj.getAttribute("vy"), 0));
+                object.setRotationAngle(getDouble(obj.getAttribute("rotation"), 0));
                 
                 String strMat = obj.getAttribute("material");
                 for (Material mat : Material.values())
@@ -314,12 +321,16 @@ public final class SceneManager
             {
                 Scene scene = new Scene();
                 
+                scene.gravitational_acceleration = getDouble(sceneFrame.getAttribute("gravity"), 
+                                                             EnvProps.getInstance().default_gravitational_acceleration);
+                
                 ObjectProperties object = null;
                 node = sceneFrame.getNode("Ground");
                 
                 if (node != null)
                 {
-                    scene.setGround(new Ground(pModel, getInt(node.getAttribute("type")), getInt(node.getAttribute("watermark"))));
+                    scene.setGround(new Ground(pModel, getInt(node.getAttribute("type"), DEFAULT_GROUND), 
+                                                       getInt(node.getAttribute("watermark"), 0)));
                 }
                 
                 for (Element obj : sceneFrame.getNodes("Circle | Square"))
@@ -327,13 +338,15 @@ public final class SceneManager
                     switch (obj.getName())
                     {
                         case "Circle":
-                            object = new Circle(pModel, new Vector(getDouble(obj.getAttribute("x")), getDouble(obj.getAttribute("y"))), 
-                                    getDouble(obj.getAttribute("radius")));
+                            object = new Circle(pModel, new Vector(getDouble(obj.getAttribute("x"), 0), 
+                                                                   getDouble(obj.getAttribute("y"), 0)), 
+                                    getDouble(obj.getAttribute("radius"), 10));
                             break;
                             
                         case "Square":
-                            object = new Square(pModel, new Vector(getDouble(obj.getAttribute("x")), getDouble(obj.getAttribute("y"))), 
-                                    getDouble(obj.getAttribute("radius")));
+                            object = new Square(pModel, new Vector(getDouble(obj.getAttribute("x"), 0), 
+                                                                   getDouble(obj.getAttribute("y"), 0)), 
+                                    getDouble(obj.getAttribute("radius"), 10));
                             break;
                             
                         default:
@@ -341,10 +354,11 @@ public final class SceneManager
                     }
                     
                     ((ISelectable) object).setName(obj.getAttribute("name"));
-                    ((IDrawable) object).setColor(new Color(getInt(obj.getAttribute("color"))));
-                    object.setMass(getDouble(obj.getAttribute("mass")));
-                    object.velocity = new Vector(getDouble(obj.getAttribute("vx")), getDouble(obj.getAttribute("vy")));
-                    object.setRotationAngle(getDouble(obj.getAttribute("rotation")));
+                    ((IDrawable) object).setColor(new Color(getInt(obj.getAttribute("color"), Color.red.getRGB())));
+                    object.setMass(getDouble(obj.getAttribute("mass"), 10));
+                    object.velocity = new Vector(getDouble(obj.getAttribute("vx"), 0), 
+                                                 getDouble(obj.getAttribute("vy"), 0));
+                    object.setRotationAngle(getDouble(obj.getAttribute("rotation"), 0));
                     
                     String strMat = obj.getAttribute("material");
                     for (Material mat : Material.values())
@@ -378,7 +392,7 @@ public final class SceneManager
         writer.writeDeclaration();
         writer.writeStartElement("Scene");
         writer.writeAttribute("version", FILE_VERSION);
-        writer.writeAttribute("gravitation", "9.81"); // missing property
+        writer.writeAttribute("gravity", "" + scene.gravitational_acceleration);
         
         if (scene.getGround() != null)
         {
@@ -432,7 +446,7 @@ public final class SceneManager
             Scene scene = recorder.getFrame(frameStart + i);
             
             writer.writeStartElement("Scene");
-            writer.writeAttribute("gravitation", "9.81"); // missing property
+            writer.writeAttribute("gravitation", "" + scene.gravitational_acceleration);
             
             if (scene.getGround() != null)
             {
@@ -477,22 +491,22 @@ public final class SceneManager
     }
     
     
-    private double getDouble(String value)
+    private double getDouble(String value, double defaultValue)
     {
         if (value == null)
         {
-            return 0.0;
+            return defaultValue;
         }
         
         return Double.parseDouble(value);
     }
     
     
-    private int getInt(String value)
+    private int getInt(String value, int defaultValue)
     {
         if (value == null)
         {
-            return 0;
+            return defaultValue;
         }
         
         return Integer.parseInt(value);

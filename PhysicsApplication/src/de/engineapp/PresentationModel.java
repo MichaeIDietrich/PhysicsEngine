@@ -350,7 +350,7 @@ public class PresentationModel
      */
     public void navigateTo(Vector pos)
     {
-        
+        setViewOffset((int) (pos.getX() * -zoom), (int) (pos.getY() * zoom));
     }
     
     
@@ -476,7 +476,7 @@ public class PresentationModel
      */
     public void storeScene()
     {
-        storedScene = scene.clone();
+        storedScene = scene.clone(true);
     }
     
     /**

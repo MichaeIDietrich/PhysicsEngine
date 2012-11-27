@@ -605,7 +605,7 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
                 break;
                 
             case OBJ_GROUND:
-                pModel.setGround(new Ground(pModel, Ground.STAIRS, (int) sceneLocation.getY()));
+                pModel.setGround(new Ground(pModel, DEFAULT_GROUND, (int) sceneLocation.getY()));
                 break;
                 
             default:
