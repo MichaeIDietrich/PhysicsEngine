@@ -52,7 +52,7 @@
   <String id="ANGLE">Angle</String>
   
   
-  <!--  Tooltips -->
+  <!--  Tooltips  /MainToolBar-->
   <String id="TT_NEW">Creates a new scene</String>
   <String id="TT_OPEN">Open a scene from file</String>
   <String id="TT_SAVE">Saves the current scene to file</String>
@@ -71,6 +71,24 @@
   <String id="TT_HELP">Show help about Oizys Physics Engine (currently German only)</String>
   <String id="TT_ABOUT">About Oizys Physics Engine</String>
   
+  <!--  Tooltips  /PropertiesPanel-->
+  <String id="TT_OBJECT_NAME">Insert object name</String>
+  <String id="TT_NEXT">Next object</String>
+  <String id="TT_PREVIOUS">Previous object</String>
+  <String id="TT_COLOR">Change object color</String>
+  <String id="TT_DEL">Delete current object</String>
+  <String id="TT_MATERIAL">Select object material</String>
+  <String id="TT_X_CORDINATE">Horizontal position</String>
+  <String id="TT_Y_CORDINATE">Vertical position</String>
+  <String id="TT_X_SPEED">Horizontal velocity</String>
+  <String id="TT_Y_SPEED">Vertical velocity</String>
+  <String id="TT_MASS">Object mass</String>
+  <String id="TT_RADIUS">Object radius</String>
+  <String id="TT_ANGLE">Object angle</String>
+  <String id="TT_FIX">Pin object</String>
+  <String id="TT_POTE">Current potential energy</String>
+  <String id="TT_KINE">Current kinetic energy</String>
+  <String id="TT_CLOSE">Close Properties Panel</String>
   
   <String id="ABOUT_TEXT">
     <html>

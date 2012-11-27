@@ -217,6 +217,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         
         colorPicker = new ColorPickerPopup(colorBox);
         
+        //ToolTips hinzufügen
+        setToolTips();
         //Konfigurieren
         
         name.setText(((ISelectable)pModel.getSelectedObject()).getName());
@@ -280,6 +282,28 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         this.setVisible(true);
     }
     
+    public void setToolTips()
+    {
+        name.setToolTipText(         LOCALIZER.getString("TT_OBJECT_NAME"));
+        next.setToolTipText(         LOCALIZER.getString("TT_NEXT"));
+        previous.setToolTipText(     LOCALIZER.getString("TT_PREVIOUS"));
+        colorBox.setToolTipText(     LOCALIZER.getString("TT_COLOR"));
+        del.setToolTipText(          LOCALIZER.getString("TT_DEL"));
+        MaterialCombo.setToolTipText(LOCALIZER.getString("TT_MATERIAL"));
+        xCord.setToolTipText(        LOCALIZER.getString("TT_X_CORDINATE"));
+        yCord.setToolTipText(        LOCALIZER.getString("TT_Y_CORDINATE"));
+        vx.setToolTipText(           LOCALIZER.getString("TT_X_SPEED"));
+        vy.setToolTipText(           LOCALIZER.getString("TT_Y_SPEED"));
+        massInput.setToolTipText(    LOCALIZER.getString("TT_MASS"));
+        radiusInput.setToolTipText(  LOCALIZER.getString("TT_RADIUS"));
+        angle.setToolTipText(        LOCALIZER.getString("TT_ANGLE"));
+        fix.setToolTipText(          LOCALIZER.getString("TT_FIX"));
+        potLabel.setToolTipText(     LOCALIZER.getString("TT_POTE"));
+        LabelPotE.setToolTipText(    LOCALIZER.getString("TT_POTE"));
+        kinLabel.setToolTipText(     LOCALIZER.getString("TT_KINE"));
+        LabelKinE.setToolTipText(    LOCALIZER.getString("TT_KINE"));
+        close.setToolTipText(        LOCALIZER.getString("TT_CLOSE"));
+    }
     
     @Override
     public void objectDeselected(ObjectProperties object)
