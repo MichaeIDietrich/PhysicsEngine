@@ -5,23 +5,6 @@ import de.engine.math.*;
 
 public abstract class ObjectProperties implements Cloneable
 {
-    public enum Material
-    {
-        STEEL(0.9), ALUMINIUM(0.6), NACL(0.4), RUBBER(1), WATER(0.05), WOOD(0.3);
-        
-        private final double elasticity;
-        
-        private Material(double elasticity)
-        {
-            this.elasticity = elasticity;
-        }
-        
-        public double elasticity()
-        {
-            return elasticity;
-        }
-    };
-    
     private double frametime = 0;
     
     public double getFrameTime()
@@ -197,12 +180,6 @@ public abstract class ObjectProperties implements Cloneable
         // * deltaTime + obj.getPosition().getY());
         velocity.add(0, (EnvProps.grav_acc() / 2d * getTime())).scale(1 - (EnvProps.friction() * getTime()));
         
-        // calc potential energy: Epot = m*g*h (mass * grav_const * y-coordinate)
-        potential_energy = -mass * EnvProps.grav_acc() * world_position.translation.getY();
-        
-        // calc kinetic energy: Epot = m/2*v² (mass * grav_const * y-coordinate)
-        kinetic_energy = 0.5 * mass * Math.abs( this.velocity.getX() );
-        
         frametime = 0;
     }
     
@@ -222,4 +199,16 @@ public abstract class ObjectProperties implements Cloneable
     public abstract ObjectProperties clone(boolean cloneId);
     
     public abstract boolean contains(double x, double y);
+
+    // calc potential energy: Epot = m*g*h
+    public double getPotEnergy()
+    {
+        return -mass * EnvProps.grav_acc() * EnvProps.getHightToGround(getPosition());
+    }
+
+    // calc kinetic energy: Epot = m/2*v²
+    public double getKinEnergy()
+    {
+        return 0.5 * mass * velocity.getLength();
+    }
 }
