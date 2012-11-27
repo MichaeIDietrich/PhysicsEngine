@@ -435,7 +435,7 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
     @Override
     public void objectAdded(ObjectProperties object)
     {
-        if (pModel.isState(STG_SHOW_ARROWS_ALWAYS))
+        if (pModel.isState(STG_SHOW_ARROWS_ALWAYS) && pModel.getSelectedObject() != object)
         {
             attachVelocityArrow(object);
         }
@@ -482,7 +482,7 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
         }
         
         // show object radius
-        Range selection = new Range(object, "radius", 3);
+        Outline selection = new Outline(object, 3);
         selection.setBorder(new Color(100, 100, 255, 200));
         decorableObject.putDecor(DECOR_SELECTION, selection);
         
@@ -516,7 +516,7 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
     @Override
     public void multipleObjectsSelected(ObjectProperties object)
     {
-        Range selection = new Range(object, "radius", 1.5f);
+        Outline selection = new Outline(object, 1.5f);
         selection.setBorder(new Color(100, 100, 255, 200));
         ((IDecorable) object).putDecor(DECOR_SELECTION, selection);
     }

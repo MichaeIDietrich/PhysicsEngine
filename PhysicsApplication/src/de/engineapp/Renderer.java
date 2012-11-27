@@ -95,6 +95,11 @@ public final class Renderer extends AsyncWorker implements PaintListener, Storag
     }
     
     
+    /**
+     * Add a new scene to the render queue.
+     * 
+     * @param scene
+     */
     public void pushScene(Scene scene)
     {
         currentScene = scene;
