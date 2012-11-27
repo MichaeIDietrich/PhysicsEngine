@@ -11,6 +11,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import de.engine.environment.Scene;
+import de.engine.math.Vector;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.PresentationModel.ViewBoxListener;
@@ -210,6 +211,7 @@ public final class MainToolBar extends JToolBar implements ActionListener, Chang
             case CMD_SHOW_ARROWS:
                 pModel.toggleState(STG_SHOW_ARROWS_ALWAYS);
                 showArrowsButton.setSelected(pModel.isState(STG_SHOW_ARROWS_ALWAYS));
+                pModel.fireRepaint();
                 break;
                 
             case CMD_FOCUS:
