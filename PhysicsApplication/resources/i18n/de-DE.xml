@@ -48,6 +48,8 @@
   <String id="ABOUT">Über</String>
   <String id="OVERWRITE_FILE">Die Datei existiert bereits. Soll die Datei überschrieben werden?</String>
   <String id="FILE_ACCESS_DENIED">Datei '%s' konnte nicht geladen werden.</String>
+  <String id="COLOR_OF_OBJECT">Objektfarbe:</String>
+  <String id="ANGLE">Winkel</String>
   
   <!--  Tooltips -->
   <String id="TT_NEW">Erstellt eine neue Szene</String>

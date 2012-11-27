@@ -158,7 +158,7 @@ public final class HelpDialog extends JDialog
                 GuiUtil.getHtmlImage(ICO_PHYSICS), GuiUtil.getHtmlImage(ICO_RECORD), GuiUtil.getHtmlImage(ICO_PLAYBACK),
                 GuiUtil.getHtmlImage(ICO_SETTINGS), GuiUtil.getHtmlImage(ICO_HELP), GuiUtil.getHtmlImage(ICO_ABOUT))));
         topics.add(new DocumentExpander("Objektbereich", getDocument("doc/object-panel.html", 
-                GuiUtil.getHtmlImage(ICO_SQUARE), GuiUtil.getHtmlImage(ICO_CIRCLE), GuiUtil.getHtmlImage(ICO_GROUND))));
+                GuiUtil.getHtmlImage(ICO_CIRCLE), GuiUtil.getHtmlImage(ICO_SQUARE), GuiUtil.getHtmlImage(ICO_GROUND))));
         topics.add(new DocumentExpander("Objekteigenschaftsbereich", String.format(getDocument("doc/object-properties-panel.html"))));
         topics.add(new DocumentExpander("Statusleiste", getDocument("doc/statusbar.html", 
                 GuiUtil.getHtmlImage(ICO_DISCARD))));
