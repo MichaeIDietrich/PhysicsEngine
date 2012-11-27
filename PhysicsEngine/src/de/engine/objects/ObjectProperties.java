@@ -103,7 +103,7 @@ public abstract class ObjectProperties implements Cloneable
     
     public void setRotationAngle(double angle)
     {
-        world_position.rotation = new Rotation(angle);
+        world_position.rotation.setAngle(angle);
     }
     
     
@@ -114,18 +114,7 @@ public abstract class ObjectProperties implements Cloneable
     public Vector velocity = null;
     public double angular_velocity;
     
-    public Vector momentum = null;
-    public Vector normal_force = null;
-    public Vector downhill_force = null;
-    public double kinetic_energy = 0;
-    public double potential_energy = 0;
-    public double angular_momentum = 0;
-    
     public double moment_of_inertia = 0;
-    
-    // Schwerpunkt relativ zum Objektursprung
-    public Vector centroid = null;
-    public Vector moving_direction = null;
     
     public Material surface = Material.STEEL;
     
