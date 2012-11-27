@@ -51,7 +51,7 @@
   <String id="COLOR_OF_OBJECT">Objektfarbe:</String>
   <String id="ANGLE">Winkel</String>
   
-  <!--  Tooltips -->
+  <!--  Tooltips  /MainToolBar-->
   <String id="TT_NEW">Erstellt eine neue Szene</String>
   <String id="TT_OPEN">Öffnet eine Szene aus einer Datei</String>
   <String id="TT_SAVE">Speichert die aktuelle Szene in eine Datei</String>
@@ -70,6 +70,24 @@
   <String id="TT_HELP">Hilfe zur Oizys Physics Engine anzeigen</String>
   <String id="TT_ABOUT">Über Oizys Physics Engine</String>
   
+  <!--  Tooltips  /PropertiesPanel-->
+  <String id="TT_OBJECT_NAME">Objektnamen hier eintragen</String>
+  <String id="TT_NEXT">Nächstes Objekt</String>
+  <String id="TT_PREVIOUS">Vorheriges Objekt</String>
+  <String id="TT_COLOR">Objektfarbe ändern</String>
+  <String id="TT_DEL">Gewähltes Objekt löschen</String>
+  <String id="TT_MATERIAL">Objektmaterial festlegen</String>
+  <String id="TT_X_CORDINATE">Horizontale Position</String>
+  <String id="TT_Y_CORDINATE">Vertikale Position</String>
+  <String id="TT_X_SPEED">Horizontale Geschwindigkeit</String>
+  <String id="TT_Y_SPEED">Vertikale Geschwindigkeit</String>
+  <String id="TT_MASS">Objektmasse</String>
+  <String id="TT_RADIUS">Objektradius</String>
+  <String id="TT_ANGLE">Neigungswinkel</String>
+  <String id="TT_FIX">Objekt fixieren</String>
+  <String id="TT_POTE">Momentane potenzielle Energie</String>
+  <String id="TT_KINE">Momentane kinetische Energie</String>
+  <String id="TT_CLOSE">Eigenschaftenbereich schließen</String>
   
   <String id="ABOUT_TEXT">
     <html>
