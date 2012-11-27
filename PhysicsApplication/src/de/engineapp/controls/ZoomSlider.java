@@ -1,7 +1,5 @@
 package de.engineapp.controls;
 
-import static de.engineapp.Constants.PRP_LOOK_AND_FEEL;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -14,6 +12,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import de.engineapp.Configuration;
+
+import static de.engineapp.Constants.*;
 
 public class ZoomSlider extends JPanel
 {

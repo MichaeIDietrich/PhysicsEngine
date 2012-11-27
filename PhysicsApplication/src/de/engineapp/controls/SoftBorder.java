@@ -1,9 +1,6 @@
 package de.engineapp.controls;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Insets;
+import java.awt.*;
 
 import javax.swing.border.AbstractBorder;
 

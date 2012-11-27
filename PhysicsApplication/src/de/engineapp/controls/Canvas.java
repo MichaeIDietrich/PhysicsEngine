@@ -1,63 +1,25 @@
 package de.engineapp.controls;
 
-import static de.engineapp.Constants.CMD_COPY;
-import static de.engineapp.Constants.CMD_PASTE;
-import static de.engineapp.Constants.CMD_PLAYBACK_MODE;
-import static de.engineapp.Constants.DECOR_ANGLE_VIEWER;
-import static de.engineapp.Constants.DECOR_ARROW;
-import static de.engineapp.Constants.DECOR_CLOSEST_POINT;
-import static de.engineapp.Constants.DECOR_COORDINATE;
-import static de.engineapp.Constants.DECOR_MULTIPLE_ARROW;
-import static de.engineapp.Constants.DECOR_RANGE;
-import static de.engineapp.Constants.OBJ_CIRCLE;
-import static de.engineapp.Constants.OBJ_GROUND;
-import static de.engineapp.Constants.OBJ_SQUARE;
-import static de.engineapp.Constants.PRP_MODE;
-import static de.engineapp.Constants.PRP_OBJECT_MODE;
-import static de.engineapp.Constants.STG_DEBUG;
-import static de.engineapp.Constants.STG_SHOW_ARROWS_ALWAYS;
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import de.engine.environment.Scene;
-import de.engine.math.Util;
-import de.engine.math.Vector;
-import de.engine.objects.ObjectProperties;
-import de.engineapp.PresentationModel;
-import de.engineapp.PresentationModel.SceneListener;
-import de.engineapp.PresentationModel.StorageListener;
-import de.engineapp.util.GuiUtil;
-import de.engineapp.util.Task;
+import de.engine.math.*;
+import de.engine.objects.*;
+import de.engineapp.*;
+import de.engineapp.PresentationModel.*;
+import de.engineapp.util.*;
+import de.engineapp.visual.*;
 import de.engineapp.visual.Circle;
 import de.engineapp.visual.Ground;
-import de.engineapp.visual.IDecorable;
 import de.engineapp.visual.Square;
-import de.engineapp.visual.decor.AngleViewer;
-import de.engineapp.visual.decor.Arrow;
+import de.engineapp.visual.decor.*;
 import de.engineapp.visual.decor.Box;
-import de.engineapp.visual.decor.Coordinate;
-import de.engineapp.visual.decor.Range;
+
+import static de.engineapp.Constants.*;
 
 
 public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener, KeyListener, MouseWheelListener, StorageListener, ActionListener

@@ -1,8 +1,9 @@
 package de.engineapp.rec;
 
-import static de.engineapp.Constants.PRP_CURRENT_PLAYBACK_FRAME;
 import de.engineapp.PresentationModel;
 import de.engineapp.util.AsyncWorker;
+
+import static de.engineapp.Constants.*;
 
 public final class Playback extends AsyncWorker
 {

@@ -1,18 +1,12 @@
 package de.engineapp.controls.dnd;
 
-import static de.engineapp.Constants.OBJ_CIRCLE;
-import static de.engineapp.Constants.OBJ_GROUND;
-import static de.engineapp.Constants.OBJ_SQUARE;
-
 import java.awt.Component;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.*;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -20,6 +14,8 @@ import java.lang.reflect.Field;
 import javax.swing.JComponent;
 
 import de.engineapp.PresentationModel;
+
+import static de.engineapp.Constants.*;
 
 
 public class DragAndDropController extends DropTarget
