@@ -1,7 +1,9 @@
 package de.engineapp;
 
+import de.engine.objects.Ground;
+
 /**
- * Overview of the used applications constants.
+ * Overview of the used application constants.
  * 
  * @author Micha
  */
@@ -11,7 +13,9 @@ public interface Constants
     public final static int MAJOR = 0;
     public final static int MINOR = 1;
     public final static int REVISION = 1;
-    public final static String FILE_VERSION = "1.2";
+    public final static String FILE_VERSION = "1.3";
+    
+    public final static int DEFAULT_GROUND = Ground.STAIRS;
     
     // properties, states (storage)
     public final static String STG_GRID = "grid";
