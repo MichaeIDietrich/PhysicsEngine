@@ -1,26 +1,7 @@
 package de.engine.objects;
 
-import de.engine.objects.ObjectProperties.Material;
-
 public class Ground //extends ObjectProperties
-{
-    public enum Material
-    {
-        STEEL(1), ALUMINIUM(1), NACL(1), RUBBER(1), WATER(1);
-        
-        private final double elasticity;
-        
-        private Material(double elasticity)
-        {
-            this.elasticity = elasticity;
-        }
-        
-        public double elasticity()
-        {
-            return elasticity;
-        }
-    };
-    
+{   
     public static final int HILLANDVALLEY = 1;
     public static final int DOWNHILL      = 2;
     public static final int STAIRS        = 3;

@@ -92,7 +92,7 @@ public class CollisionDetector
         if (scene.existGround())
         {
             objectGroundCollision();
-//            objectGroundCollision2();
+            objectGroundCollision2();
         }
         
     }

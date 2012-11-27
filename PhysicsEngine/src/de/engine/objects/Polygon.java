@@ -130,10 +130,15 @@ public class Polygon extends ObjectProperties implements Cloneable
     public boolean contains(double x, double y)
     {
         Vector pos = new Vector(x, y);
-        Vector[] aabb = getAABB();
-        if(pos.getX() > aabb[0].getX() && pos.getX() < aabb[1].getX() &&
-                pos.getY() > aabb[0].getY() && pos.getY() < aabb[1].getY())
-            return true;
+        for (int i = 0; i < points.length; i++)
+        {
+            int j = (i == points.length - 1) ? 0 : i + 1;
+            boolean e1 = Util.crossProduct(Util.minus(pos, this.getWorldPointPos(i)), Util.minus(this.getPosition(), this.getWorldPointPos(i))) < 0.0;
+            boolean e2 = Util.crossProduct(Util.minus(pos, this.getWorldPointPos(j)), Util.minus(this.getWorldPointPos(i), this.getWorldPointPos(j))) < 0.0;
+            boolean e3 = Util.crossProduct(Util.minus(pos, this.getPosition()), Util.minus(this.getWorldPointPos(j), this.getPosition())) < 0.0;
+            if(e1 == e2 && e2 == e3)
+                return true;
+        }
         return false;
     }
     
