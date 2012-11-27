@@ -8,7 +8,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicHTML;
 import javax.swing.text.View;
 
-public class Expander extends JPanel implements ActionListener
+
+/**
+ * Expandable button container for html documents.
+ * 
+ * @author Micha
+ */
+public final class DocumentExpander extends JPanel implements ActionListener
 {
     private static class HtmlViewer extends JLabel
     {
@@ -26,12 +32,14 @@ public class Expander extends JPanel implements ActionListener
     
     private static final long serialVersionUID = 4480221797736558685L;
     
+    private final static RenderingHints ANTIALIAS = new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    
     
     JToggleButton button;
     HtmlViewer label;
     
     
-    public Expander(String text, String doc)
+    public DocumentExpander(String text, String doc)
     {
         label = new HtmlViewer(doc);
         
@@ -44,16 +52,21 @@ public class Expander extends JPanel implements ActionListener
             @Override
             public void paint(Graphics g)
             {
-                super.paint(g);
+                Graphics2D g2d = (Graphics2D) g;
                 
-                if (this.isSelected())
-                {
-                    g.drawString("▼", this.getWidth() - 20, 15);
-                }
-                else
-                {
-                    g.drawString("■", this.getWidth() - 20, 15);
-                }
+                super.paint(g2d);
+                
+                g2d.addRenderingHints(ANTIALIAS);
+                
+                String stateChar = this.isSelected() ? "▼" : "■";
+                
+                Shape charShape = g.getFont().createGlyphVector(g2d.getFontRenderContext(), stateChar).getOutline();
+                
+                float y = this.getHeight() / 2 - (float) charShape.getBounds2D().getCenterY();
+                float x = this.getWidth() - y - (float) charShape.getBounds2D().getCenterX();
+                
+                g2d.translate(x, y);
+                g2d.fill(charShape);
             }
         };
         
@@ -93,6 +106,16 @@ public class Expander extends JPanel implements ActionListener
         {
             this.remove(label);
         }
+//        this.updateUI();
+//        Container c = this;
+//        do
+//        {
+//            System.out.println(c);
+//            c.invalidate();
+//            c.validate();
+//            c.revalidate();
+//            c.repaint();
+//        } while ((c = c.getParent()) != null);
         this.getTopLevelAncestor().validate();
         this.getTopLevelAncestor().repaint();
     }

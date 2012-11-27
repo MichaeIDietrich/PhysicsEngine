@@ -13,7 +13,12 @@ import de.engineapp.util.*;
 
 import static de.engineapp.Constants.*;
 
-public class HelpDialog extends JDialog
+
+/**
+ * Dialog that provides html documentation about the usage of this application.
+ * @author Micha
+ */
+public final class HelpDialog extends JDialog
 {
     private static final long serialVersionUID = -5599465139356687661L;
     
@@ -21,7 +26,7 @@ public class HelpDialog extends JDialog
     
     private static boolean opened;
     
-    private List<Expander> topics;
+    private List<DocumentExpander> topics;
     private JPanel container;
     private JScrollPane scrollPane;
     
@@ -54,7 +59,7 @@ public class HelpDialog extends JDialog
             @Override
             public void componentResized(ComponentEvent e)
             {
-                for (Expander expander : topics)
+                for (DocumentExpander expander : topics)
                 {
                     expander.setWidth(scrollPane.getViewport().getWidth() - 10);
                 }
@@ -79,7 +84,7 @@ public class HelpDialog extends JDialog
         constraints.weightx = 1;
         constraints.weighty = 0;
         
-        for (Expander expander : topics)
+        for (DocumentExpander expander : topics)
         {
             constraints.gridy = container.getComponentCount();
             
@@ -92,8 +97,8 @@ public class HelpDialog extends JDialog
         
         
         scrollPane = new JScrollPane(container, 
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                                     JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+                                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
         
         this.add(scrollPane);
@@ -106,7 +111,7 @@ public class HelpDialog extends JDialog
     }
     
     
-    private String getDocument(String resourceName)
+    private String getDocument(String resourceName, String... images)
     {
         try
         {
@@ -124,7 +129,14 @@ public class HelpDialog extends JDialog
             
             br.close();
             
-            return builder.toString();
+            if (images == null)
+            {
+                return builder.toString();
+            }
+            else
+            {
+                return String.format(builder.toString(), (Object[]) images);
+            }
         }
         catch (Exception ex)
         {
@@ -135,18 +147,23 @@ public class HelpDialog extends JDialog
     }
     
     
-    private void addTopics(List<Expander> topics)
+    // currently German only (inlined)
+    private void addTopics(List<DocumentExpander> topics)
     {
-        // TODO - add all topics
-        topics.add(new Expander("title", getDocument("doc/topic1.html")));
-        topics.add(new Expander("title", getDocument("doc/topic1.html")));
-        topics.add(new Expander("title", getDocument("doc/topic1.html")));
-        topics.add(new Expander("Steuerleiste", String.format(getDocument("doc/toolbar.html"), 
+        topics.add(new DocumentExpander("Steuerleiste", getDocument("doc/toolbar.html", 
                 GuiUtil.getHtmlImage(ICO_NEW), GuiUtil.getHtmlImage(ICO_OPEN), GuiUtil.getHtmlImage(ICO_SAVE),
                 GuiUtil.getHtmlImage(ICO_PLAY), GuiUtil.getHtmlImage(ICO_PAUSE), GuiUtil.getHtmlImage(ICO_RESET),
                 GuiUtil.getHtmlImage(ICO_GRID), GuiUtil.getHtmlImage(ICO_OBJECT_ARROWS), GuiUtil.getHtmlImage(ICO_FOCUS),
-                GuiUtil.getHtmlImage("blank"), GuiUtil.getHtmlImage("blank"),
+                GuiUtil.getHtmlImage(ICO_BLANK), GuiUtil.getHtmlImage(ICO_BLANK),
                 GuiUtil.getHtmlImage(ICO_PHYSICS), GuiUtil.getHtmlImage(ICO_RECORD), GuiUtil.getHtmlImage(ICO_PLAYBACK),
                 GuiUtil.getHtmlImage(ICO_SETTINGS), GuiUtil.getHtmlImage(ICO_HELP), GuiUtil.getHtmlImage(ICO_ABOUT))));
+        topics.add(new DocumentExpander("Objektbereich", getDocument("doc/object-panel.html", 
+                GuiUtil.getHtmlImage(ICO_CIRCLE), GuiUtil.getHtmlImage(ICO_SQUARE), GuiUtil.getHtmlImage(ICO_GROUND))));
+        topics.add(new DocumentExpander("Objekteigenschaftsbereich", String.format(getDocument("doc/object-properties-panel.html"))));
+        topics.add(new DocumentExpander("Statusleiste", getDocument("doc/statusbar.html", 
+                GuiUtil.getHtmlImage(ICO_DISCARD))));
+        topics.add(new DocumentExpander("Szenebereich", getDocument("doc/scene.html")));
+        topics.add(new DocumentExpander("Unterstützte Funktionen", getDocument("doc/supported-features.html")));
+        topics.add(new DocumentExpander("Noch nicht unterstützte Funktionen", getDocument("doc/unsupported-features.html")));
     }
 }

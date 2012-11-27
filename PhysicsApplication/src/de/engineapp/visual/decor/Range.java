@@ -7,7 +7,13 @@ import de.engine.objects.ObjectProperties;
 import de.engineapp.util.PropertyConnector;
 import de.engineapp.visual.IDrawable;
 
-public class Range implements IDrawable
+
+/**
+ * Visual representation of a connected circle.
+ * 
+ * @author Micha
+ */
+public final class Range implements IDrawable
 {
     private Color color = null;
     private Color border = Color.CYAN;

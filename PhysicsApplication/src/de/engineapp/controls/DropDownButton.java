@@ -5,6 +5,12 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+
+/**
+ * Context menu related button.
+ * 
+ * @author Micha
+ */
 public final class DropDownButton extends JButton implements MouseListener, ActionListener
 {
     private static final long serialVersionUID = 4047868024547576930L;

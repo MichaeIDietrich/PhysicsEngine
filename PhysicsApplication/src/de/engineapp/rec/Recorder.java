@@ -5,6 +5,11 @@ import java.util.*;
 import de.engine.environment.Scene;
 
 
+/**
+ * Class that records animation within a scene.
+ * 
+ * @author Micha
+ */
 public final class Recorder
 {
     private static Recorder instance = null;

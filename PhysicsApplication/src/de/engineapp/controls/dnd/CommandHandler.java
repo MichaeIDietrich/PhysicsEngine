@@ -8,7 +8,13 @@ import java.awt.datatransfer.Transferable;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
-public class CommandHandler extends TransferHandler implements Transferable
+
+/**
+ * Drag'n'Drop handler for easy command transfer.
+ * 
+ * @author Micha
+ */
+public final class CommandHandler extends TransferHandler implements Transferable
 {
     private static final long serialVersionUID = -4596146228196882904L;
     

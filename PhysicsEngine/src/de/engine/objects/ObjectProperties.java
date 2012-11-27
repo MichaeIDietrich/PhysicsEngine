@@ -22,13 +22,20 @@ public abstract class ObjectProperties implements Cloneable
         }
     };
     
-    private double frametime = -0.01;
+    private double frametime = 0;
     
     public double getFrameTime()
     {
         if(isPinned)
             return 0;
         return frametime;
+    }
+    
+    public void setFrameTime(double frametime)
+    {
+        if(isPinned)
+            return;
+        this.frametime = frametime;
     }
     
     public double getTime()
@@ -184,11 +191,11 @@ public abstract class ObjectProperties implements Cloneable
         if (isPinned || sleeps())
             return;
         world_position.translation = getNextPosition();
-        world_position.rotation.setAngle(world_position.rotation.getAngle() + (angular_velocity * getTime() * (1 - EnvProps.friction())));
+        world_position.rotation.setAngle(world_position.rotation.getAngle() + (angular_velocity * getTime() * (1 - (EnvProps.friction() * getTime()))));
         // obj.getPosition().setY(
         // -9.81 / 2d * deltaTime + obj.velocity.getY()
         // * deltaTime + obj.getPosition().getY());
-        velocity.add(0, (EnvProps.grav_acc() / 2d * getTime())).scale(1 - EnvProps.friction());
+        velocity.add(0, (EnvProps.grav_acc() / 2d * getTime())).scale(1 - (EnvProps.friction() * getTime()));
         
         // calc potential energy: Epot = m*g*h (mass * grav_const * y-coordinate)
         potential_energy = -mass * EnvProps.grav_acc() * world_position.translation.getY();
@@ -196,7 +203,7 @@ public abstract class ObjectProperties implements Cloneable
         // calc kinetic energy: Epot = m/2*v² (mass * grav_const * y-coordinate)
         kinetic_energy = 0.5 * mass * Math.abs( this.velocity.getX() );
         
-        frametime = -0.01;
+        frametime = 0;
     }
     
     public void update(double time)
@@ -205,8 +212,8 @@ public abstract class ObjectProperties implements Cloneable
             return;
         double localtime = getTime(time);
         world_position.translation = getPosition(time);
-        velocity.add(0, (EnvProps.grav_acc() / 2d * localtime)).scale(1 - EnvProps.friction());
-        world_position.rotation.setAngle(world_position.rotation.getAngle() + (angular_velocity * localtime * (1 - EnvProps.friction())));
+        velocity.add(0, (EnvProps.grav_acc() / 2d * localtime)).scale(1 - (EnvProps.friction() * getTime()));
+        world_position.rotation.setAngle(world_position.rotation.getAngle() + (angular_velocity * localtime * (1 - (EnvProps.friction() * getTime()))));
         frametime = time;
     }
     
