@@ -1,7 +1,6 @@
 package de.engineapp.visual;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 
 public interface IDrawable
 {

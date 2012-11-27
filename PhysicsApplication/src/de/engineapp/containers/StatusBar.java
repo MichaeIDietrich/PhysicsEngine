@@ -1,52 +1,26 @@
 package de.engineapp.containers;
 
-import static de.engineapp.Constants.CMD_DISCARD;
-import static de.engineapp.Constants.CMD_PHYSICS_MODE;
-import static de.engineapp.Constants.CMD_PLAYBACK_MODE;
-import static de.engineapp.Constants.CMD_RECORDING_MODE;
-import static de.engineapp.Constants.EVT_SCENE_LOADED;
-import static de.engineapp.Constants.ICO_DISCARD;
-import static de.engineapp.Constants.L_OBJECTS;
-import static de.engineapp.Constants.PRP_CURRENT_PLAYBACK_FRAME;
-import static de.engineapp.Constants.PRP_LANGUAGE_CODE;
-import static de.engineapp.Constants.PRP_MODE;
-import static de.engineapp.Constants.STG_DEBUG;
-import static de.engineapp.Constants.STG_RUN_PHYSICS;
-import static de.engineapp.Constants.TT_DISCARD;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.event.*;
 
-import de.engine.DebugMonitor;
+import de.engine.*;
 import de.engine.DebugMonitor.MessageListener;
 import de.engine.environment.Scene;
 import de.engine.math.Vector;
-import de.engine.objects.Ground;
-import de.engine.objects.ObjectProperties;
-import de.engineapp.PresentationModel;
+import de.engine.objects.*;
+import de.engineapp.*;
 import de.engineapp.PresentationModel.EventListener;
-import de.engineapp.PresentationModel.SceneListener;
-import de.engineapp.PresentationModel.StorageListener;
-import de.engineapp.controls.QuickButton;
-import de.engineapp.controls.SliderEx;
+import de.engineapp.PresentationModel.*;
+import de.engineapp.controls.*;
 import de.engineapp.rec.Recorder;
-import de.engineapp.util.GuiUtil;
-import de.engineapp.util.Localizer;
+import de.engineapp.util.*;
+
+import static de.engineapp.Constants.*;
 
 public class StatusBar extends JPanel implements MouseMotionListener, StorageListener, SceneListener, ChangeListener, MessageListener, ActionListener, EventListener
 {

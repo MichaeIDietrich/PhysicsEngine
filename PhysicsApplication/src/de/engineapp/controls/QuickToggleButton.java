@@ -2,8 +2,7 @@ package de.engineapp.controls;
 
 import java.awt.event.ActionListener;
 
-import javax.swing.Icon;
-import javax.swing.JToggleButton;
+import javax.swing.*;
 
 public class QuickToggleButton extends JToggleButton
 {

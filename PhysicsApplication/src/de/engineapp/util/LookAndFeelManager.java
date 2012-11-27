@@ -2,10 +2,8 @@ package de.engineapp.util;
 
 import java.awt.Component;
 
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
 
 
 public final class LookAndFeelManager

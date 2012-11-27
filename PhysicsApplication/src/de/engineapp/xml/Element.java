@@ -1,10 +1,8 @@
 package de.engineapp.xml;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 public class Element
 {

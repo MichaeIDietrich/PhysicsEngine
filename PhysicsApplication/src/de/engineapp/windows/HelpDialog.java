@@ -1,23 +1,16 @@
 package de.engineapp.windows;
 
-import static de.engineapp.Constants.L_HELP;
-
-import java.awt.BorderLayout;
-import java.awt.Window;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.awt.*;
+import java.io.*;
+import java.util.*;
 import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
-import de.engineapp.controls.Expander;
-import de.engineapp.util.GuiUtil;
-import de.engineapp.util.Localizer;
+import de.engineapp.controls.*;
+import de.engineapp.util.*;
+
+import static de.engineapp.Constants.*;
 
 public class HelpDialog extends JDialog
 {

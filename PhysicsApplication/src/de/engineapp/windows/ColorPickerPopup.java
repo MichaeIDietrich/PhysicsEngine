@@ -1,22 +1,10 @@
 package de.engineapp.windows;
 
-import java.awt.AWTEvent;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JWindow;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.*;
+import javax.swing.event.*;
 
 import de.engineapp.controls.ColorBox;
 

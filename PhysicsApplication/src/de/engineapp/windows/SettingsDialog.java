@@ -1,41 +1,15 @@
 package de.engineapp.windows;
 
-import static de.engineapp.Constants.CMD_CANCEL;
-import static de.engineapp.Constants.CMD_OK;
-import static de.engineapp.Constants.L_CANCEL;
-import static de.engineapp.Constants.L_DBLCLICK_OBJECT;
-import static de.engineapp.Constants.L_LANGUAGE;
-import static de.engineapp.Constants.L_LOOKANDFEEL;
-import static de.engineapp.Constants.L_OBJECT_SELECTED;
-import static de.engineapp.Constants.L_OK;
-import static de.engineapp.Constants.L_SETTINGS;
-import static de.engineapp.Constants.L_SHOW_PROPERTIES;
-import static de.engineapp.Constants.PRP_LANGUAGE_CODE;
-import static de.engineapp.Constants.PRP_LOOK_AND_FEEL;
-import static de.engineapp.Constants.STG_DBLCLICK_SHOW_PROPERTIES;
+import java.awt.*;
+import java.awt.event.*;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import javax.swing.*;
 
-import javax.swing.Box;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import de.engineapp.*;
+import de.engineapp.controls.*;
+import de.engineapp.util.*;
 
-import de.engineapp.Configuration;
-import de.engineapp.controls.IconComboBox;
-import de.engineapp.controls.QuickButton;
-import de.engineapp.controls.VerticalBoxPanel;
-import de.engineapp.util.Localizer;
-import de.engineapp.util.LookAndFeelManager;
+import static de.engineapp.Constants.*;
 
 public final class SettingsDialog extends JDialog implements ActionListener, ItemListener
 {

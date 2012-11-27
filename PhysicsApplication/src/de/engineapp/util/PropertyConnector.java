@@ -1,8 +1,6 @@
 package de.engineapp.util;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 public class PropertyConnector<T>
 {

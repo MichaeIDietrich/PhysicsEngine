@@ -1,12 +1,9 @@
 package de.engineapp.visual.decor;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
-import java.awt.geom.Path2D;
+import java.awt.*;
+import java.awt.geom.*;
 
-import de.engine.math.Vector;
+import de.engine.math.*;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.util.PropertyConnector;
 import de.engineapp.visual.IDrawable;

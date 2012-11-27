@@ -1,17 +1,12 @@
 package de.engineapp.util;
 
-import static de.engineapp.Constants.PRP_LANGUAGE_CODE;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 import de.engineapp.Configuration;
-import de.engineapp.xml.Element;
-import de.engineapp.xml.XMLReader;
+import de.engineapp.xml.*;
+
+import static de.engineapp.Constants.*;
 
 public final class Localizer
 {

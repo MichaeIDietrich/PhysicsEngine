@@ -1,12 +1,8 @@
 package de.engineapp.controls;
 
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 
-import javax.swing.Box;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 /**

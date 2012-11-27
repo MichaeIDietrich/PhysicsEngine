@@ -1,26 +1,16 @@
 package de.engineapp.controls;
 
-import static de.engineapp.Constants.PRP_LOOK_AND_FEEL;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.util.ArrayList;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.Border;
 
-import de.engineapp.Configuration;
-import de.engineapp.util.GuiUtil;
-import de.engineapp.util.Localizer;
+import de.engineapp.*;
+import de.engineapp.util.*;
+
+import static de.engineapp.Constants.*;
 
 public final class IconComboBox<T> extends JComboBox<T>
 {
