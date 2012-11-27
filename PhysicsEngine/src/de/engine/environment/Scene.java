@@ -18,7 +18,9 @@ public class Scene implements Cloneable
     
     public double gravitational_acceleration = -9.80665; // m/s²
     
-    private double environment_friction = 0.002;
+    private double environment_friction = 0.02;
+    
+    boolean enable_env_friction = true;
     
     
     public Scene()
