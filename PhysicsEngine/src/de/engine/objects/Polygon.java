@@ -1,7 +1,6 @@
 package de.engine.objects;
 
 import de.engine.environment.EnvProps;
-import de.engine.math.Rotation;
 import de.engine.math.Transformation;
 import de.engine.math.Util;
 import de.engine.math.Vector;
@@ -12,13 +11,13 @@ public class Polygon extends ObjectProperties implements Cloneable
     
     public Polygon(Vector position)
     {
-        this.world_position = new Transformation(position, new Rotation(0));
+        this.world_position = new Transformation(position, 0);
         radius = 0;
     }
     
     public Polygon(Vector position, double rotation)
     {
-        this.world_position = new Transformation(position, new Rotation(rotation));
+        this.world_position = new Transformation(position, rotation);
         radius = 0;
     }
     
@@ -68,7 +67,7 @@ public class Polygon extends ObjectProperties implements Cloneable
     	if (isPinned)
     		return getWorldPointPos(i); 
         double localtime = getTime(time);
-        Transformation tr = new Transformation(Util.add(world_position.translation, Util.scale(velocity, localtime)), new Rotation(world_position.rotation.getAngle() + angular_velocity * localtime));
+        Transformation tr = new Transformation(Util.add(world_position.translation, Util.scale(velocity, localtime)), world_position.rotation.getAngle() + angular_velocity * localtime);
         return tr.getPostion(points[i]);
     }
     

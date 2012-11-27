@@ -1,6 +1,5 @@
 package de.engine.objects;
 
-import de.engine.math.Rotation;
 import de.engine.math.Transformation;
 import de.engine.math.Util;
 import de.engine.math.Vector;
@@ -9,7 +8,7 @@ public class Circle extends ObjectProperties implements Cloneable
 {
     public Circle(Vector position, double radius)
     {
-        this.world_position = new Transformation(position, new Rotation(0));
+        this.world_position = new Transformation(position, 0);
         this.radius = radius;
         
         this.velocity = new Vector();
