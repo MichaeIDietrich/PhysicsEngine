@@ -15,7 +15,13 @@ import de.engineapp.Configuration;
 
 import static de.engineapp.Constants.*;
 
-public class ZoomSlider extends JPanel
+
+/**
+ * Custom slider, that handles thr application zoom of the scene well. ;)
+ * 
+ * @author Micha
+ */
+public final class ZoomSlider extends JPanel
 {
     private static final long serialVersionUID = -8005150860316824860L;
     

@@ -4,11 +4,19 @@ import de.engineapp.windows.MainWindow;
 
 import static de.engineapp.Constants.*;
 
-public class Main
+/**
+ * Entry point for the PhysicsApplication.
+ * 
+ * @author Micha
+ */
+public final class Main
 {
+    // no instance desired
+    private Main() { }
     
     public static void main(String[] args)
     {
+        // checks wether there is an config file within the application directory
         Configuration.load();
         Configuration config = Configuration.getInstance();
         
@@ -16,6 +24,7 @@ public class Main
         
         int index = -1;
         
+        // check the assigned parameters
         while (++index < args.length)
         {
             switch (args[index].toLowerCase())
@@ -59,7 +68,7 @@ public class Main
                     config.setState(STG_DEBUG, true);
                     break;
                     
-                case "-nodebug":
+                case "-nodebug": // necessary, if the debug flag is saved in the config file
                     config.setState(STG_DEBUG, false);
                     break;
                     
@@ -82,6 +91,7 @@ public class Main
             }
         }
         
+        // creates a new window that combines all the GUI stuff
         new MainWindow();
     }
     

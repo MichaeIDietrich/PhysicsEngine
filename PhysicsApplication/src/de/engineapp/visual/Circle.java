@@ -7,7 +7,13 @@ import java.util.*;
 import de.engine.math.Vector;
 import de.engineapp.*;
 
-public class Circle extends de.engine.objects.Circle implements IDrawable, ISelectable, IDecorable, Cloneable
+
+/**
+ * Visual representation of a physics engine circle object.
+ * 
+ * @author Micha
+ */
+public final class Circle extends de.engine.objects.Circle implements IDrawable, ISelectable, IDecorable, Cloneable
 {
     private String name;
     private Color color = Color.RED;

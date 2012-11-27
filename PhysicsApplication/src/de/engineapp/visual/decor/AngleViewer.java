@@ -6,7 +6,13 @@ import java.awt.geom.*;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.visual.IDrawable;
 
-public class AngleViewer implements IDrawable
+
+/**
+ * Visual object decor to display its angle.
+ * 
+ * @author Micha
+ */
+public final class AngleViewer implements IDrawable
 {
     private static final Color DEFAULT_FILL = new Color(255, 255, 255, 200);
     

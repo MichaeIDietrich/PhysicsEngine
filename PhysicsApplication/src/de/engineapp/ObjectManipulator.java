@@ -7,6 +7,12 @@ import de.engine.objects.ObjectProperties;
 import de.engineapp.visual.IDecorable;
 import de.engineapp.visual.decor.*;
 
+
+/**
+ * Class that provides methods to manipulate scene objects.
+ * 
+ * @author Micha
+ */
 public final class ObjectManipulator
 {
     private PresentationModel pModel;

@@ -10,7 +10,12 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 
-public class XMLReader
+/**
+ * Easy xml reader class.
+ * 
+ * @author Micha
+ */
+public final class XMLReader
 {
     Document document = null;
     XPath xPath = null;

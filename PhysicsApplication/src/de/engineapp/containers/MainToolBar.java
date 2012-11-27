@@ -23,7 +23,12 @@ import de.engineapp.windows.*;
 import static de.engineapp.Constants.*;
 
 
-public class MainToolBar extends JToolBar implements ActionListener, ChangeListener, StorageListener, ViewBoxListener
+/**
+ * Toolbar for the main handling of this application.
+ * 
+ * @author Micha
+ */
+public final class MainToolBar extends JToolBar implements ActionListener, ChangeListener, StorageListener, ViewBoxListener
 {
     private static final long serialVersionUID = 4164673212238397915L;
     

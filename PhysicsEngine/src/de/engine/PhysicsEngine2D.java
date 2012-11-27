@@ -1,9 +1,9 @@
 package de.engine;
 
-import de.engine.colldetect.CollisionDetector;
 import de.engine.environment.EnvProps;
 import de.engine.environment.Scene;
 import de.engine.objects.ObjectProperties;
+import de.engine.physics.CollisionDetector;
 
 public class PhysicsEngine2D
 {

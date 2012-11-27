@@ -22,7 +22,13 @@ import de.engineapp.util.*;
 
 import static de.engineapp.Constants.*;
 
-public class StatusBar extends JPanel implements MouseMotionListener, StorageListener, SceneListener, ChangeListener, MessageListener, ActionListener, EventListener
+
+/**
+ * Handles mostly information related stuff for this application.
+ * 
+ * @author Micha
+ */
+public final class StatusBar extends JPanel implements MouseMotionListener, StorageListener, SceneListener, ChangeListener, MessageListener, ActionListener, EventListener
 {
     private static final long serialVersionUID = 8107903887585331982L;
     

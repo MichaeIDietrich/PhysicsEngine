@@ -8,7 +8,14 @@ import de.engine.objects.ObjectProperties;
 import de.engineapp.util.PropertyConnector;
 import de.engineapp.visual.IDrawable;
 
-public class Arrow implements IDrawable
+
+/**
+ * Visual object decor to display a vector / direction.
+ * 
+ * @authos Carsten
+ * @author Micha
+ */
+public final class Arrow implements IDrawable
 {
     private Color color = new Color(180, 120, 20);
     private Color border = Color.DARK_GRAY;

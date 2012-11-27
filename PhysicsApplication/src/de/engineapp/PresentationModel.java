@@ -103,7 +103,7 @@ public class PresentationModel
     /** stores all String properties */
     private HashMap<String, String> propertyMap;
     
-    private Physics physicsState = null;
+    private PhysicsConnector physicsState = null;
     
     /** Instance of the PhysicsEngine */
     private PhysicsEngine2D physicsEngine2D = null;
@@ -249,6 +249,12 @@ public class PresentationModel
     }
     
     
+    /**
+     * Creates a new scene obejct depended on the given object id.
+     * 
+     * @param id - object id
+     * @param location - location where the new scene object will be created
+     */
     public void createObjectOnCanvas(String id, Point location)
     {
         canvas.createObject(id, location);
@@ -259,11 +265,22 @@ public class PresentationModel
     /// GETTER // SETTER ///
     ////////////////////////
     
+    /**
+     * Retrieves the x-coordinate of the current scene offset.
+     * 
+     * @return - x-coordinate
+     */
     public int getViewOffsetX()
     {
         return viewOffsetX;
     }
     
+    /**
+     * Changes the x-coordinate of the scene offset.
+     * 
+     * @param x - x-coordinate
+     * @param y - y-coordinate
+     */
     public void setViewOffsetX(int viewOffsetX)
     {
         this.viewOffsetX = viewOffsetX;
@@ -272,11 +289,22 @@ public class PresentationModel
     }
     
     
+    /**
+     * Retrieves the y-coordinate of the current scene offset.
+     * 
+     * @return - y-coordinate
+     */
     public int getViewOffsetY()
     {
         return viewOffsetY;
     }
     
+    /**
+    * Changes the y-coordinate of the scene offset.
+    * 
+    * @param x - x-coordinate
+    * @param y - y-coordinate
+    */
     public void setViewOffsetY(int viewOffsetY)
     {
         this.viewOffsetY = viewOffsetY;
@@ -285,6 +313,12 @@ public class PresentationModel
     }
     
     
+    /**
+    * Moves the scene offset to a specific point.
+    * 
+    * @param x - x-coordinate
+    * @param y - y-coordinate
+    */
     public void setViewOffset(int viewOffsetX, int viewOffsetY)
     {
         this.viewOffsetX = viewOffsetX;
@@ -294,6 +328,12 @@ public class PresentationModel
     }
     
     
+    /**
+     * Moves the scene offset for a specific distance.
+     * 
+     * @param x - x-coordinate
+     * @param y - y-coordinate
+     */
     public void moveViewOffset(int x, int y)
     {
         this.viewOffsetX += x;
@@ -303,11 +343,32 @@ public class PresentationModel
     }
     
     
+    /**
+     * Navigates the scene offset to a specific scene location.
+     * 
+     * @param pos - location to navigate to
+     */
+    public void navigateTo(Vector pos)
+    {
+        
+    }
+    
+    
+    /**
+     * Returns the current zoom.
+     * 
+     * @return - current zoom
+     */
     public double getZoom()
     {
         return zoom;
     }
     
+    /**
+     * Sets the current zoom.
+     * 
+     * @param zoom - new zoom
+     */
     public void setZoom(double zoom)
     {
         this.zoom = zoom;
@@ -319,6 +380,12 @@ public class PresentationModel
         }
     }
     
+    /**
+     * Sets the current zoom at a point in the canvas.
+     * 
+     * @param zoom - new zoom
+     * @param point - point on canvas
+     */
     public void setZoom(double zoom, Point point)
     {
         Configuration.getInstance().setZoom(zoom);
@@ -328,9 +395,6 @@ public class PresentationModel
         this.setViewOffset((int) (-center.getX() * zoom -  canvasWidth / 2 + point.x), 
                            (int) ( center.getY() * zoom - canvasHeight / 2 + point.y));
         
-        
-//        this.setViewOffset((int) (-center.getX() * zoom + center.getX() + viewOffsetX * zoom), (int) (center.getY() * zoom - center.getY() - viewOffsetX / zoom));
-        
         for (ViewBoxListener listener : listenerList.getListeners(ViewBoxListener.class))
         {
             listener.zoomChanged(zoom);
@@ -338,33 +402,63 @@ public class PresentationModel
     }
     
     
-    public Physics getPhysicsState()
+    /**
+     * Returns the the entry point to the physics engine.
+     * 
+     * @return - physics engine enty point
+     */
+    public PhysicsConnector getPhysicsState()
     {
         return physicsState;
     }
     
-    public void setPhysicsState(Physics physicsState)
+    /**
+     * Sets a new physics engine entry point.
+     * 
+     * @param physicsState - new physics engine entry point
+     */
+    public void setPhysicsState(PhysicsConnector physicsState)
     {
         this.physicsState = physicsState;
     }
     
     
+    /**
+     * Gets the physics engine.
+     * 
+     * @return - physics engine
+     */
     public PhysicsEngine2D getPhysicsEngine2D()
     {
         return physicsEngine2D;
     }
     
+    /**
+     * Sets a new physics engine.
+     * 
+     * @param physicsEngine2D - physics engine
+     */
     public void setPhysicsEngine2D(PhysicsEngine2D physicsEngine2D)
     {
         this.physicsEngine2D = physicsEngine2D;
     }
     
     
+    /**
+     * Gets the current scene.
+     * 
+     * @return - current scene
+     */
     public Scene getScene()
     {
         return scene;
     }
     
+    /**
+     * Sets the current scene
+     * 
+     * @param scene - new scene
+     */
     public void setScene(Scene scene)
     {
         setSelectedObject(null);
@@ -377,11 +471,17 @@ public class PresentationModel
     }
     
     
+    /**
+     * Stores a copy of the current scene, to make a reset possible.
+     */
     public void storeScene()
     {
         storedScene = scene.clone();
     }
     
+    /**
+     * Restores the previously stored scene copy.
+     */
     public void restoreScene()
     {
         setSelectedObject(null);
@@ -389,27 +489,53 @@ public class PresentationModel
         physicsEngine2D.setScene(scene);
     }
     
+    /**
+     * Checks, wether a scene copy is stored.
+     * 
+     * @return - true, if a scene copy is stored
+     */
     public boolean hasStoredScene()
     {
         return storedScene != null;
     }
     
     
+    /**
+     * Checks, wether an object within the scene is selected.
+     * 
+     * @return - true, if there is a selected scene object
+     */
     public boolean hasSelectedObject()
     {
         return selectedObject != null;
     }
     
+    /**
+     * Gets the selected scene object.
+     * 
+     * @return  selected scene object, or null if there is no selected
+     */
     public ObjectProperties getSelectedObject()
     {
         return selectedObject;
     }
     
+    /**
+     * Sets the selected scene object.
+     * 
+     * @param object - scene object that will be selected
+     */
     public void setSelectedObject(ObjectProperties object)
     {
         setSelectedObject(object, false);
     }
     
+    /**
+     * Sets the selected scene object. Preserves the multi selection list, if the second parameter is true.
+     * 
+     * @param object - scene object that will be selected
+     * @param preserveSelectionList - wether the multi selection list should be preserved
+     */
     public void setSelectedObject(ObjectProperties object, boolean preserveSelectionList)
     {
         if (selectedObject != object)
@@ -468,34 +594,62 @@ public class PresentationModel
     }
     
     
+    /**
+     * Checks, wether there are multiple objects selected.
+     * 
+     * @return - true, if there is more than one object selected
+     */
     public boolean hasMultiSelectionObjects()
     {
         return selectedObjects.size() > 1;
     }
     
+    /**
+     * Gets the list of all selected scene objects.
+     * 
+     * @return - list of scene objects
+     */
     public List<ObjectProperties> getMultipleSelectionObjects()
     {
         return selectedObjects;
     }
     
+    /**
+     * Adds a new scene object to the selected objects list, as long as it is not already in the list.
+     * 
+     * @param object - scene object
+     */
     public void addMultiSelectionObject(ObjectProperties object)
     {
-        selectedObjects.add(object);
-        for (SceneListener listener : listenerList.getListeners(SceneListener.class))
+        if (!selectedObjects.contains(object))
         {
-            listener.multipleObjectsSelected(object);
+            selectedObjects.add(object);
+            
+            for (SceneListener listener : listenerList.getListeners(SceneListener.class))
+            {
+                listener.multipleObjectsSelected(object);
+            }
         }
     }
     
+    /**
+     * Removes an object from the selected objects list.
+     * 
+     * @param object - scene object to be removed
+     */
     public void removeMultiSelectionObject(ObjectProperties object)
     {
         selectedObjects.remove(object);
+        
         for (SceneListener listener : listenerList.getListeners(SceneListener.class))
         {
             listener.multipleObjectsDeselected(object);
         }
     }
     
+    /**
+     * Clears the selected obejcts list.
+     */
     public void clearMultiSelectionObjects()
     {
         for (ObjectProperties object : selectedObjects)
@@ -512,12 +666,22 @@ public class PresentationModel
     }
     
     
+    /**
+     * Sets the canvas on which the scene will be drawn.
+     * 
+     * @param canvas - canvas object
+     */
     public void setCanvas(Canvas canvas)
     {
         this.canvas = canvas;
     }
     
     
+    /**
+     * Adds an object to the current scene.
+     * 
+     * @param object - new scene object
+     */
     public void addObject(ObjectProperties object)
     {
         if (scene != null && object != null)
@@ -533,6 +697,11 @@ public class PresentationModel
         }
     }
     
+    /**
+     * Removes an object from the current scene.
+     * 
+     * @param object - scene object to be removed
+     */
     public void removeObject(ObjectProperties object)
     {
         if (scene != null && object != null)
@@ -555,6 +724,11 @@ public class PresentationModel
     }
     
     
+    /**
+     * Sets the groundof the current scene.
+     * 
+     * @param ground - new ground
+     */
     public void setGround(Ground ground)
     {
         if (scene != null && ground != null)
@@ -568,6 +742,11 @@ public class PresentationModel
         }
     }
     
+    /**
+     * Removes the ground from the current scene.
+     * 
+     * @param ground - ground to be removed
+     */
     public void removeGround(Ground ground)
     {
         if (scene != null && ground != null)
@@ -582,11 +761,21 @@ public class PresentationModel
     }
     
     
+    /**
+     * Gets the width of the canvas component.
+     * 
+     * @return - width of the canvas component
+     */
     public int getCanvasWidth()
     {
         return (int) canvasWidth;
     }
     
+    /**
+     * Sets a new width for the canvas component.
+     * 
+     * @param canvasWidth - new width
+     */
     public void setCanvasWidth(int canvasWidth)
     {
         this.canvasWidth = canvasWidth;
@@ -595,11 +784,21 @@ public class PresentationModel
     }
     
     
+    /**
+     * Gets the height of the canvas component.
+     * 
+     * @return - height of the canvas component
+     */
     public int getCanvasHeight()
     {
         return (int) canvasHeight;
     }
     
+    /**
+     * Sets a new height for the canvas component.
+     * 
+     * @param canvasHeight - new height
+     */
     public void setCanvasHeight(int canvasHeight)
     {
         this.canvasHeight = canvasHeight;
@@ -607,6 +806,12 @@ public class PresentationModel
         fireResizeCanvasEvents();
     }
     
+    /**
+     * Resizes the canvas component.
+     * 
+     * @param width - new width
+     * @param height - new height
+     */
     public void resizeCanvas(int width, int height)
     {
         this.canvasWidth = width;
@@ -641,6 +846,9 @@ public class PresentationModel
     }
     
     
+    /**
+     * Fires an event to all registered scene listeners that the scene has been updated.
+     */
     public void fireSceneUpdated()
     {
         for (SceneListener listener : listenerList.getListeners(SceneListener.class))
@@ -650,6 +858,11 @@ public class PresentationModel
     }
     
     
+    /**
+     * Fires an event to all registered scene listeners that a scene object has been updated.
+     * 
+     * @param object
+     */
     public void fireObjectUpdated(ObjectProperties object)
     {
         for (SceneListener listener : listenerList.getListeners(SceneListener.class))
@@ -659,11 +872,23 @@ public class PresentationModel
     }
     
     
+    /**
+     * Checks, wether a state has been set.
+     * 
+     * @param id - id of the state
+     * @return - true, if the state is set
+     */
     public boolean isState(String id)
     {
         return Boolean.TRUE.equals(stateMap.get(id));
     }
     
+    /**
+     * Sets a state.
+     * 
+     * @param id - id of the state
+     * @param value - new boolean value of the state
+     */
     public void setState(String id, boolean value)
     {
         stateMap.put(id, value);
@@ -671,17 +896,34 @@ public class PresentationModel
         fireStateListeners(id);
     }
     
+    /**
+     * Toggles a state.
+     * 
+     * @param id - id of the state
+     */
     public void toggleState(String id)
     {
         setState(id, !isState(id));
     }
     
     
+    /**
+     * Retrieves the string value of a property.
+     * 
+     * @param id - id of the property
+     * @return - string value of the property
+     */
     public String getProperty(String id)
     {
         return propertyMap.get(id);
     }
     
+    /**
+     * Sets the string value of a property.
+     * 
+     * @param id - id of the property
+     * @param value - new string value of the property
+     */
     public void setProperty(String id, String value)
     {
         propertyMap.put(id, value);
@@ -689,9 +931,13 @@ public class PresentationModel
         firePropertyListeners(id);
     }
     
-    
-    // this method will transform a local cursor position on the canvas
-    // to the internal Physics Engine coordinates
+    /**
+     * This method will transform a local cursor position on the canvas 
+     * to the internal scene coordinates.
+     * 
+     * @param point - point on the canvas
+     * @return - position within the scene
+     */
     public Vector toTransformedVector(Point point)
     {
         return new Vector(
@@ -701,11 +947,21 @@ public class PresentationModel
     }
     
     
+    /**
+     * Gets the copied scene object.
+     * 
+     * @return - scene object that has been copied, or null if there is not one
+     */
     public ObjectProperties getCopiedObject()
     {
         return copiedObject;
     }
     
+    /**
+     * Sets a scene object, that will be copied.
+     * 
+     * @param copiedObject - scene object to copy
+     */
     public void setCopiedObject(ObjectProperties copiedObject)
     {
         this.copiedObject = copiedObject;

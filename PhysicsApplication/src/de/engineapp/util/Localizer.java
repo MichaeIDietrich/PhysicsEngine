@@ -8,6 +8,12 @@ import de.engineapp.io.xml.*;
 
 import static de.engineapp.Constants.*;
 
+
+/**
+ * Handles all the stuff, that is necessary to support and provice localization.
+ * 
+ * @author Micha
+ */
 public final class Localizer
 {
     private static Localizer instance = null;
@@ -48,7 +54,6 @@ public final class Localizer
         String langResource = "i18n/" + langCode + ".xml";
         if (GuiUtil.resourceExists(langResource))
         {
-            //System.out.println("loaded '" + langCode + "'");
             return langResource;
         }
         else
@@ -84,7 +89,6 @@ public final class Localizer
                 
                 stringTable.put(id, entry.getValue());
             }
-            System.out.println("loaded: " + path);
         }
     }
     

@@ -4,7 +4,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-public class QuickToggleButton extends JToggleButton
+/**
+ * Utilized button class to create button dependent GUI faster.
+ * 
+ * @author Micha
+ */
+public final class QuickToggleButton extends JToggleButton
 {
     private static final long serialVersionUID = 4928796962220540321L;
     

@@ -1,26 +1,29 @@
-package de.engine.colldetect;
+package de.engine.physics;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.engine.DebugMonitor;
-import de.engine.colldetect.Grid.CollPair;
 import de.engine.environment.Scene;
-import de.engine.math.*;
-import de.engine.math.DistanceCalcer.*;
+import de.engine.math.DistanceCalcer;
+import de.engine.math.DistanceCalcer.IFunction;
+import de.engine.math.DistanceCalcer.StraightLine;
+import de.engine.math.Util;
 import de.engine.math.Vector;
 import de.engine.objects.Circle;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engine.objects.Polygon;
 import de.engine.physics.ContactCreator.Contact;
-import de.engine.physics.PhysicsCalcer;
+import de.engine.physics.colldetect.CollisionData;
+import de.engine.physics.colldetect.Grid;
 
 public class CollisionDetector
 {
     
     private Grid grid;
     private Scene scene;
-    private de.engine.math.Vector v = null;
+    private Vector v = null;
     
     private DistanceCalcer distCalcer;
     private Contact gcontact = null;
@@ -39,23 +42,57 @@ public class CollisionDetector
     public void checkScene()
     {
         grid.scanScene();
-        CollPair collPair = grid.getNextCollision();
+        CollisionData collPair = grid.getNextCollision();
         while (collPair != null)
         {
             if (null != collPair.coll_time)
             {
-                PhysicsCalcer.run(collPair.obj1, collPair.obj2, collPair.coll_time);
+                CollisionData restingContact = PhysicsCalcer.run(collPair);
+                if(restingContact != null)
+                {
+                    scene.restingContacts.add(restingContact);
+                }
+
+                int i = 0;
+                while ( i < scene.restingContacts.size())
+                {
+                    if((scene.restingContacts.get(i).obj1 == collPair.obj1 || scene.restingContacts.get(i).obj1 == collPair.obj2) ^
+                            (scene.restingContacts.get(i).obj2 == collPair.obj1 || scene.restingContacts.get(i).obj2 == collPair.obj2))
+                    {
+                        scene.restingContacts.get(i).coll_time = (scene.restingContacts.get(i).obj1.getFrameTime() > scene.restingContacts.get(i).obj2.getFrameTime()) ? scene.restingContacts.get(i).obj1.getFrameTime() : scene.restingContacts.get(i).obj2.getFrameTime();
+                        if(PhysicsCalcer.run(scene.restingContacts.get(i)) == null)
+                        {
+                            scene.restingContacts.remove(i);
+                            continue;
+                        }
+                        
+                    }
+                    
+                    i++;
+                }
+                
                 grid.update(collPair.obj1);
                 grid.update(collPair.obj2);
             }
             collPair = grid.getNextCollision();
         }
         
+        int i = 0;
+        while ( i < scene.restingContacts.size())
+        {
+            if(PhysicsCalcer.run(scene.restingContacts.get(i)) == null)
+            {
+                scene.restingContacts.remove(i);
+                continue;
+            }
+            i++;
+        }
+        
         // Tests the collision between objects and ground
         if (scene.existGround())
         {
-//            objectGroundCollision();
-            objectGroundCollision2();
+            objectGroundCollision();
+//            objectGroundCollision2();
         }
         
     }
@@ -64,7 +101,7 @@ public class CollisionDetector
     {
         long time = System.currentTimeMillis();
 
-        if (gcontact==null) gcontact = new Contact(new Vector(), new Vector());
+        if (gcontact==null) gcontact = new Contact(new Vector(), new Vector(), 0);
         
         for (ObjectProperties object : scene.getObjects())
         {

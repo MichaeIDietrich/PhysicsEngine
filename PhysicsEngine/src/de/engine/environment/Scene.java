@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
+import de.engine.physics.colldetect.CollisionData;
 
 public class Scene implements Cloneable
 {
@@ -12,15 +13,20 @@ public class Scene implements Cloneable
     
     // ground is unique thats why it has it's own property
     protected Ground ground;
+
+    public ArrayList<CollisionData> restingContacts;
     
     public double gravitational_acceleration = -9.80665; // m/s²
     
-    private double environment_friction = 0.002;
+    private double environment_friction = 0.02;
+    
+    boolean enable_env_friction = true;
     
     
     public Scene()
     {
         this.objects = new ArrayList<ObjectProperties>();
+        this.restingContacts = new ArrayList<CollisionData>();
     }
     
     public void add(ObjectProperties object)
