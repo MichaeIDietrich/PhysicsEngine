@@ -60,17 +60,22 @@ public class EnvProps
     
     public static double grav_acc()
     {
-        if (getInstance().scene != null)
-            return getInstance().scene.gravitational_acceleration;
+        EnvProps props = getInstance(); 
+        if (props.scene != null)
+            return props.scene.gravitational_acceleration;
         else
-            return getInstance().default_gravitational_acceleration;
+            return props.default_gravitational_acceleration;
     }
     
     public static double friction()
     {
-        if (getInstance().scene != null)
-            return getInstance().scene.getEnvironmentFriction();
+        EnvProps props = getInstance(); 
+        if (props.scene != null)
+            if(props.scene.enable_env_friction)
+                return props.scene.getEnvironmentFriction();
+            else
+                return 0;
         else
-            return getInstance().default_environment_friction;
+            return props.default_environment_friction;
     }
 }

@@ -33,26 +33,6 @@ public class Grid
         }
     }
     
-    /*public static class CollPair
-    {
-        ObjectProperties obj1;
-        ObjectProperties obj2;
-        
-        Double min_time;
-        Double max_time;
-        
-        Double coll_time;
-        
-        public CollPair(ObjectProperties obj1, ObjectProperties obj2, Double min_time, Double max_time)
-        {
-            this.obj1 = obj1;
-            this.obj2 = obj2;
-            this.min_time = min_time;
-            this.max_time = max_time;
-            this.coll_time = null;
-        }
-    }*/
-    
     private double cellSize = 50;
     public Scene scene;
     private HashMap<Integer, HashMap<Integer, ArrayList<Element>>> objectFields;
@@ -340,6 +320,5 @@ public class Grid
                 max_time = (e1.max_time > e2.max_time) ? e1.max_time : e2.max_time;
             collisionPairs.add(new CollisionData(e1.obj, e2.obj, min_time, max_time));
         }
-        
     }
 }
