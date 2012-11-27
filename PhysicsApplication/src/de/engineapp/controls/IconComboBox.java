@@ -14,7 +14,7 @@ import static de.engineapp.Constants.*;
 
 
 /**
- * ComboBoc that support supports icons and text labels in a fast and easy way.
+ * ComboBox that support supports icons and text labels in a fast and easy way.
  * 
  * @author Micha
  *
@@ -25,13 +25,11 @@ public final class IconComboBox<T> extends JComboBox<T>
     private final static Localizer LOCALIZER = Localizer.getInstance();
     private static boolean isGTK = Configuration.getInstance().getProperty(PRP_LOOK_AND_FEEL).equals("GTK+");
     
-//    private final static Color FOREGROUND = UIManager.getColor("List.foreground");
-//    private final static Color BACKGROUND = UIManager.getColor("List.background");
-    private final static Color SELECTION_FOREGROUND = UIManager.getColor("List.selectionForeground");
-    private final static Color SELECTION_BACKGROUND = UIManager.getColor("List.selectionBackground");
+    private final Color SELECTION_FOREGROUND = UIManager.getColor("List.selectionForeground");
+    private final Color SELECTION_BACKGROUND = UIManager.getColor("List.selectionBackground");
     
     
-    private class ItemRenderer implements ListCellRenderer<T>
+    private final class ItemRenderer implements ListCellRenderer<T>
     {
         private Border MARGIN = BorderFactory.createEmptyBorder(0, 2, 0, 0);
         private Border GTK_BORDER = BorderFactory.createLineBorder(new Color(170, 170, 170));
@@ -62,6 +60,10 @@ public final class IconComboBox<T> extends JComboBox<T>
                 cell.setOpaque(true);
                 cell.setForeground(SELECTION_FOREGROUND);
                 cell.setBackground(SELECTION_BACKGROUND);
+            }
+            else if (isGTK)
+            {
+                cell.setBackground(Color.WHITE);
             }
 //            else
 //            {
@@ -123,6 +125,8 @@ public final class IconComboBox<T> extends JComboBox<T>
     {
         super(data);
         this.setFocusable(false);
+        
+        this.setPreferredSize(this.getUI().getPreferredSize(this));
         
         List<String> entries = new ArrayList<>();
         List<Icon> icons = new ArrayList<>();

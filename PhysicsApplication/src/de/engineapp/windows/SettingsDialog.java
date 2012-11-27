@@ -47,7 +47,7 @@ public final class SettingsDialog extends JDialog implements ActionListener, Ite
         
         this.setModal(true);
         
-        this.setSize(250, 250);
+        this.setSize(250, 260);
         this.setLocationRelativeTo(parent);
         this.setResizable(false);
         

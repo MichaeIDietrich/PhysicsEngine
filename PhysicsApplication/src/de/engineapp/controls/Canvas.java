@@ -28,7 +28,7 @@ import static de.engineapp.Constants.*;
  * 
  * @author Micha
  */
-public class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener, 
+public final class Canvas extends JComponent implements MouseListener, MouseMotionListener, SceneListener, 
                                                   MouseWheelListener, StorageListener, ActionListener, IDecorable
 {
     private static class ActionMapper
