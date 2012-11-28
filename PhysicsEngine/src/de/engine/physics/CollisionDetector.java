@@ -148,7 +148,7 @@ public class CollisionDetector
                     double r_o1_cross_n = Util.crossProduct(r_o1, coll_normal);
 
                     double j_z = -Util.scalarProduct(object.velocity, coll_normal) * (1d + object.surface.elasticity()/ground.surface.elasticity());
-                    double j_n = (1d / object.getMass()) + (r_o1_cross_n * r_o1_cross_n) / object.moment_of_inertia;
+                    double j_n = (1d / object.getMass()) + (r_o1_cross_n * r_o1_cross_n) / object.getMoment_of_inertia();
                     
                     double j = j_z / j_n;
                     

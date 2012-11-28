@@ -471,6 +471,10 @@ public final class PresentationModel
         {
             physicsEngine2D.setScene(scene);
         }
+        else
+        {
+            physicsEngine2D = new PhysicsEngine2D(scene);
+        }
     }
     
     
