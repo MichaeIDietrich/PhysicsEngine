@@ -11,7 +11,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import de.engine.environment.Scene;
-import de.engine.math.Vector;
 import de.engineapp.*;
 import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.PresentationModel.ViewBoxListener;
@@ -126,6 +125,10 @@ public final class MainToolBar extends JToolBar implements ActionListener, Chang
         sceneManager = new SceneManager(pModel, this.getTopLevelAncestor());
     }
     
+    
+    /**
+     * Update tool tips on language changes.
+     */
     private void setToolTips()
     {
         newButton.setToolTipText(       LOCALIZER.getString(TT_NEW));
@@ -396,6 +399,9 @@ public final class MainToolBar extends JToolBar implements ActionListener, Chang
     }
     
     
+    /**
+     * Opens a FileDialog to save a scene or an animation.
+     */
     private void saveScene()
     {
         File stdSceneDir = new File("scenes");
@@ -473,6 +479,9 @@ public final class MainToolBar extends JToolBar implements ActionListener, Chang
     }
     
     
+    /**
+     * Opens a FileDialog to open a scene or an animation.
+     */
     private void loadScene()
     {
         File stdSceneDir = new File("scenes");
