@@ -69,6 +69,10 @@ public class Util
         return -pos_on_fkt / Util.derive1Dr( intersection.getX()) + intersection.getY();
     }
 
+    /**
+     * Calculate intersection between both functions defined in <i>functions</i>. 
+     * @return Intersection
+     */
     public static Double newtonIteration()
     {
         // If the object has no velocity in x direction, return the objects x-coordinate.
@@ -122,11 +126,11 @@ public class Util
     
     /**
      * Calculates the 1st derivation of the function given in <i>functions</i>.
+     * by using a five-point derivation. It's more exact than the standard way
+     * <i>derive1Dr</i>, but more complex too.
      * 
-     * @param x
-     *            - determines the point of which the derivation is wanted
-     * @param object
-     *            -
+     * @param x - determines the point of which the derivation is wanted
+     * @param object -
      * @param ground
      * @return
      */
@@ -136,6 +140,11 @@ public class Util
         return sign * (-newFkt(x + 2d * u) + 8d * newFkt(x + u) - 8d * newFkt(x - u) + newFkt(x - 2d * u)) / (2d * u);
     }
     
+    /**
+     * Standard first derivation of funktion two in <i>functions</i>.
+     * @param x
+     * @return
+     */
     public static Double derive1Dr(Double x)
     {
         // df(x) = ( f(x+h) - f(x-h) ) / 2h
@@ -148,18 +157,19 @@ public class Util
         return function.getY() - function.getX();
     }
     
+    /**
+     * Defines a liniear and a non linear function.
+     * @param x - the probable intersection
+     * @return
+     */
     public static Vector functions(Double x)
     {
         function.setX(m * x + n);
         function.setY(ground.function(x));
-        
-        // System.out.println( m + "*x "+ (n<0 ? "":"+") + n);
-        
+
         return function;
     }
-    
-    // ************************************************************
-    
+
     /**
      * returns all axis between a Polygon and a Circle for the seperating axis theorem
      */
