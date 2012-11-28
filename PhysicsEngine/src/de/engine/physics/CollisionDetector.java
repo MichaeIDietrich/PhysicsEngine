@@ -119,28 +119,23 @@ public class CollisionDetector
                 double y = object.last_intersection.getY();
 
                 // initializing for finding shortest distance between ground and object
-                double dist_coll_mp = Double.MAX_VALUE;
                 double grx = object.getPosition().getX();
                 double gry = Util.functions( grx ).getY();
                 double spx = x;
-                double spy = y;
+                double dist_coll_mp  = Double.MAX_VALUE;
                 double nearest_point = Double.MAX_VALUE;
                 
                 for(int i=0; i<10; i++)
                 {
-                    nearest_point = dist_coll_mp;
-                    dist_coll_mp = Math.sqrt( Math.pow( grx - object.getPosition().getX(), 2d) + Math.pow( gry - object.getPosition().getY(), 2d ));
+                    dist_coll_mp = Math.sqrt( Math.pow( spx - object.getPosition().getX(), 2d) + Math.pow( gry - object.getPosition().getY(), 2d ));
                     
                     if (dist_coll_mp < nearest_point) nearest_point = dist_coll_mp;
                     
-                    grx = (grx + spx)/2;
-                    spx = grx;
-                    
-                    gry = Util.functions( grx ).getY();
+                    spx = grx + (spx - grx)/2;
+                    gry = Util.functions( spx ).getY();
                 }
-                
 
-                if (nearest_point <= object.getRadius()-1)
+                if (nearest_point < object.getRadius())
                 {
                     Vector coll_normal = new Vector(Util.u, Util.getNormalFuncValue(object.last_intersection, x + Util.u) - y).norm();
                     
@@ -156,12 +151,9 @@ public class CollisionDetector
                     
                     object.velocity.setX( v_vec.getX() );
                     object.velocity.setY( v_vec.getY() );  
-                    
-                    if (object.velocity.getX()*object.velocity.getX()+object.velocity.getX()*object.velocity.getX()<1) object.isPinned = true;
                 }
             }
         }
-        
         DebugMonitor.getInstance().updateMessage("groundColl", "" + (System.currentTimeMillis() - time));
     }
 
