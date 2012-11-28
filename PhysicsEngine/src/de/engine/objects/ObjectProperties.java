@@ -119,6 +119,11 @@ public abstract class ObjectProperties implements Cloneable
         return moment_of_inertia;
     }
     
+    public void setMoment_of_inertia( double value )
+    {
+        moment_of_inertia = value;
+    }
+    
     // calc potential energy: Epot = m*g*h
     public double getPotEnergy()
     {
