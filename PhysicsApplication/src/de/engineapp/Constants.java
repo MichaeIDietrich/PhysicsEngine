@@ -52,6 +52,7 @@ public interface Constants
     public final static String L_POT_ENERGY = "POT_ENERGY";
     public final static String L_KIN_ENERGY = "KIN_ENERGY";
     public final static String L_REMOVE = "REMOVE";
+    public final static String L_CENTER = "CENTER";
     public final static String L_CLOSE = "CLOSE";
     public final static String L_PINNED = "PINNED";
     public final static String L_SETTINGS = "SETTINGS";
@@ -122,6 +123,7 @@ public interface Constants
     public final static String CMD_SETTINGS = "settings";
     public final static String CMD_DISCARD = "discard";
     public final static String CMD_DELETE = "delete";
+    public final static String CMD_CENTER = "center";
     public final static String CMD_CLOSE = "close";
     public final static String CMD_NEXT = "next";
     public final static String CMD_PREVIOUS = "previous";
