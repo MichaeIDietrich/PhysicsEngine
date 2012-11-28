@@ -15,6 +15,7 @@
   <String id="POT_ENERGY">Potenzielle Energie: </String>
   <String id="KIN_ENERGY">Kinetische Energie: </String>
   <String id="REMOVE">Entfernen</String>
+  <String id="CENTER">Zentrieren</String>
   <String id="CLOSE">Schließen</String>
   <String id="PINNED">fixiert</String>
   <String id="SETTINGS">Einstellungen</String>
@@ -84,6 +85,7 @@
   <String id="TT_MASS">Objektmasse</String>
   <String id="TT_RADIUS">Objektradius</String>
   <String id="TT_ANGLE">Neigungswinkel</String>
+  <String id="TT_CENTER">Zum Objekt springen</String>
   <String id="TT_FIX">Objekt fixieren</String>
   <String id="TT_POTE">Momentane potenzielle Energie</String>
   <String id="TT_KINE">Momentane kinetische Energie</String>

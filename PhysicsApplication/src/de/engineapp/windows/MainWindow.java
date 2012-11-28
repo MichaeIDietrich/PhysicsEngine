@@ -7,7 +7,6 @@ import java.util.*;
 
 import javax.swing.*;
 
-import de.engine.*;
 import de.engine.environment.Scene;
 import de.engineapp.*;
 import de.engineapp.Renderer;
@@ -101,11 +100,7 @@ public final class MainWindow extends JFrame implements StorageListener
             }
         });
         
-        
         initializeWindow();
-        
-        
-        pModel.setPhysicsEngine2D(new PhysicsEngine2D());
         
         // create a new scene, if there is not already one loaded
         if (scene == null)

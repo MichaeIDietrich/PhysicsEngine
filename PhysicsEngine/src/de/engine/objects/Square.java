@@ -16,7 +16,6 @@ public class Square extends Polygon implements Cloneable {
 		
 		this.velocity = new Vector();
 		calcMomentOfInertia();
-		//this.moment_of_inertia = this.getMass() * (Math.pow((corner.getX() * 2), 2) + Math.pow((corner.getY() * 2), 2)) / 12;
 	}
     
     @Override
