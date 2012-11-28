@@ -13,13 +13,14 @@ import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engineapp.controls.Canvas;
 
+
 /**
  * The PresentationModel handles the whole communication between the application GUI and
  * provides a lot of functionality and event-handling to cover all the communication stuff.
  * 
  * @author Michael
  */
-public class PresentationModel
+public final class PresentationModel
 {
     /**
      * The SceneListener recognizes changes to the scene and objects within the scene.
@@ -276,7 +277,7 @@ public class PresentationModel
     }
     
     /**
-     * Changes the x-coordinate of the scene offset.
+     * Changes the x-coordinate of the scene offset on canvas.
      * 
      * @param x - x-coordinate
      * @param y - y-coordinate
@@ -300,7 +301,7 @@ public class PresentationModel
     }
     
     /**
-    * Changes the y-coordinate of the scene offset.
+    * Changes the y-coordinate of the scene offset on canvas.
     * 
     * @param x - x-coordinate
     * @param y - y-coordinate
@@ -314,7 +315,8 @@ public class PresentationModel
     
     
     /**
-    * Moves the scene offset to a specific point.
+    * Moves the scene offset to a specific point on canvas.
+    * (Do not mix it up with <code>navigateTo(Vector)</code>!)
     * 
     * @param x - x-coordinate
     * @param y - y-coordinate
@@ -329,7 +331,7 @@ public class PresentationModel
     
     
     /**
-     * Moves the scene offset for a specific distance.
+     * Moves the scene offset for a specific canvas distance.
      * 
      * @param x - x-coordinate
      * @param y - y-coordinate
@@ -344,7 +346,8 @@ public class PresentationModel
     
     
     /**
-     * Navigates the scene offset to a specific scene location.
+     * Navigates the scene offset to a specific scene location. 
+     * (Do not mix it up with <code>setViewOffset(int, int)</code>!)
      * 
      * @param pos - location to navigate to
      */
@@ -467,6 +470,10 @@ public class PresentationModel
         if (physicsEngine2D != null)
         {
             physicsEngine2D.setScene(scene);
+        }
+        else
+        {
+            physicsEngine2D = new PhysicsEngine2D(scene);
         }
     }
     
@@ -874,6 +881,7 @@ public class PresentationModel
     
     /**
      * Checks, wether a state has been set.
+     * (Check <code>Constants.java</code> for supported states.)
      * 
      * @param id - id of the state
      * @return - true, if the state is set
@@ -885,6 +893,7 @@ public class PresentationModel
     
     /**
      * Sets a state.
+     * (Check <code>Constants.java</code> for supported states.)
      * 
      * @param id - id of the state
      * @param value - new boolean value of the state
@@ -898,6 +907,7 @@ public class PresentationModel
     
     /**
      * Toggles a state.
+     * (Check <code>Constants.java</code> for supported states.)
      * 
      * @param id - id of the state
      */
@@ -909,6 +919,7 @@ public class PresentationModel
     
     /**
      * Retrieves the string value of a property.
+     * (Check <code>Constants.java</code> for supported properties.)
      * 
      * @param id - id of the property
      * @return - string value of the property
@@ -920,6 +931,7 @@ public class PresentationModel
     
     /**
      * Sets the string value of a property.
+     * (Check <code>Constants.java</code> for supported properties.)
      * 
      * @param id - id of the property
      * @param value - new string value of the property
