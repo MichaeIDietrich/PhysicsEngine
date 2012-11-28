@@ -126,7 +126,6 @@ public final class MainToolBar extends JToolBar implements ActionListener, Chang
         sceneManager = new SceneManager(pModel, this.getTopLevelAncestor());
     }
     
-    
     private void setToolTips()
     {
         newButton.setToolTipText(       LOCALIZER.getString(TT_NEW));
