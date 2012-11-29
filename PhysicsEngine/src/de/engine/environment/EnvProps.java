@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2012 Michael Dietrich, Carsten Krahl, Johannes Hackel
+Copyright (C) 2012 Michael Dietrich, Carsten Krahl, Johannes Hackel, Tim Illner
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,6 +19,10 @@ package de.engine.environment;
 
 import de.engine.math.Vector;
 
+/**
+ * Singleton to access Environment Properties
+ *
+ */
 public class EnvProps
 {
     

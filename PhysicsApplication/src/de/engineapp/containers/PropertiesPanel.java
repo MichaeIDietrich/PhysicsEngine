@@ -11,7 +11,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import de.engine.environment.EnvProps;
 import de.engine.environment.Scene;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
@@ -54,6 +53,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     
     //Buttons erstellen
     private JButton del;
+    private JButton center;
     private JButton close;
     private QuickButton next;
     private QuickButton previous;
@@ -68,7 +68,6 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     
     //ComboBox und CheckBox erstellen
     private JCheckBox fix;
-    
     private IconComboBox<Material> MaterialCombo;
     
     //Spinner erstellen
@@ -94,11 +93,13 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
        //+++++++++++++++++++++++++++++++++++++++++++++++++//
         
         //Buttons
-          del.addActionListener(this);
+        del.addActionListener(this);
+        del.setActionCommand(CMD_DELETE);
+        center.addActionListener(this);
+        center.setActionCommand(CMD_CENTER);
         close.addActionListener(this);
-          del.setActionCommand(CMD_DELETE);
         close.setActionCommand(CMD_CLOSE);
-        
+
         //Namensfeld konfigurieren
         name.setEditable(isEnabled());
         name.addFocusListener(new FocusAdapter()
@@ -155,6 +156,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
 
         //Buttons
         del             = new JButton(LOCALIZER.getString(L_REMOVE));
+        center          = new JButton(LOCALIZER.getString(L_CENTER));
         close           = new JButton(LOCALIZER.getString(L_CLOSE));
         
         //Namensfeld
@@ -205,7 +207,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         yCord        = new PropertySpinner(object.getPosition().getY(),-100000,100000,10,this);
         vx           = new PropertySpinner(object.velocity.getX(),-10000,10000,10,this);
         vy           = new PropertySpinner(object.velocity.getY(),-10000,10000,10,this);
-        angle        = new PropertySpinner(object.getRotationAngle(), 0, 359, 1, this, true);
+        angle        = new PropertySpinner(Math.toDegrees(object.getRotationAngle()), 0, 359, 1, this, true);
         
         MaterialCombo = new IconComboBox<Material>(Material.values(), "materials");
         
@@ -219,8 +221,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         
         //ToolTips hinzufügen
         setToolTips();
-        //Konfigurieren
         
+        //Konfigurieren
         name.setText(((ISelectable)pModel.getSelectedObject()).getName());
         
         MaterialCombo.setSelectedItem(pModel.getSelectedObject().surface);
@@ -236,7 +238,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         groupColorBox.add(colorLabel);
         groupColorBox.add(colorBox);
         
-        //Ausgrauen, Prüfung in Methode enthalten
+        //Ausgrauen, Prüfungen in Methode enthalten
         disableControls();
         
         //Hinzufügen
@@ -268,7 +270,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         this.addGroup(5, massInput, radiusInput);
         this.addGap(8);
         this.add(angleLabel);
-        this.addGroup(5, angle, emptyLabel);
+//        this.addGroup(5, angle, emptyLabel);
+        this.addGroup(5, angle, center);
         this.addGap(20);
         this.add(fix, LEFT_ALIGNMENT);
         this.addGap(20);
@@ -319,6 +322,11 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         {
             case CMD_DELETE:
                 pModel.removeObject(pModel.getSelectedObject());
+                pModel.fireRepaint();
+                break;
+                
+            case CMD_CENTER:
+                pModel.navigateTo(pModel.getSelectedObject().getPosition());
                 pModel.fireRepaint();
                 break;
                 
