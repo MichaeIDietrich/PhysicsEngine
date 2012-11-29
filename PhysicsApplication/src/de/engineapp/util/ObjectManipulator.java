@@ -1,9 +1,10 @@
-package de.engineapp;
+package de.engineapp.util;
 
 import static de.engineapp.Constants.DECOR_ANGLE_VIEWER;
 import static de.engineapp.Constants.DECOR_RANGE;
 import de.engine.math.*;
-import de.engine.objects.ObjectProperties;
+import de.engine.objects.*;
+import de.engineapp.PresentationModel;
 import de.engineapp.visual.IDecorable;
 import de.engineapp.visual.decor.*;
 
@@ -85,6 +86,23 @@ public final class ObjectManipulator
             {
                 object.setRadius(distance);
             }
+        }
+    }
+    
+    
+    public void scaleRect(Vector cursor)
+    {
+        if (pModel.hasSelectedObject() && !pModel.hasMultiSelectionObjects() && 
+                pModel.getSelectedObject() instanceof Square)
+        {
+            Square rect = (Square) pModel.getSelectedObject();
+            
+            Vector localCursor = Util.minus(cursor, rect.getPosition());
+            
+            Matrix inverseRotationMatrix = new Transformation.Rotation(-rect.getRotationAngle()).getMatrix();
+            Vector distanceVector = inverseRotationMatrix.multVector(localCursor);
+            
+            rect.setSize(Math.abs(distanceVector.getX()) * 2, Math.abs(distanceVector.getY()) * 2);
         }
     }
     

@@ -13,7 +13,7 @@ import javax.swing.*;
 
 
 /**
- * Util class, the provides easy methods for GUI usage.
+ * Util class, that provides easy methods for GUI usage.
  * 
  * @author Micha
  */
@@ -30,10 +30,18 @@ public final class GuiUtil
         path = "default/";
     }
     
-    // hidden constructor
+    /**
+     * Hidden constructor
+     */
     private GuiUtil() { }
     
     
+    /**
+     * Loads an icon from a resource name.
+     * 
+     * @param id - if of icon to be loaded
+     * @return - loaded icon
+     */
     public static ImageIcon getIcon(String id)
     {
         ImageIcon icon = iconMap.get(id);
@@ -65,6 +73,12 @@ public final class GuiUtil
     }
     
     
+    /**
+     * Loads an image from a resource name.
+     * 
+     * @param id - id of image to be loaded
+     * @return - loaded image
+     */
     public static Image getImage(String id)
     {
         ImageIcon icon = getIcon(id);
@@ -78,6 +92,12 @@ public final class GuiUtil
     }
     
     
+    /**
+     * Helper method, to load icons from a resource name.
+     * 
+     * @param path - path to icon to be loaded
+     * @return - laoded icon
+     */
     private static ImageIcon loadImage(String path)
     {
         try
@@ -103,28 +123,54 @@ public final class GuiUtil
     }
     
     
+    /**
+     * Gets the path name that is related to current skin image path.
+     * 
+     * @return
+     */
     public static String getImageSourcePath()
     {
         return path;
     }
     
+    /**
+     * Sets the path name for for the current skin related images.
+     * 
+     * @param path - skin path
+     */
     public static void setImageSourcePath(String path)
     {
         GuiUtil.path = path.endsWith("/") ? path : path + "/";
     }
     
     
+    /**
+     * Gets the root path of the images.
+     * 
+     * @return - root path
+     */
     public static String getImageRootPath()
     {
         return root;
     }
     
+    /**
+     * Sets the root path of the images.
+     * 
+     * @param path - root path
+     */
     public static void setImageRootPath(String path)
     {
         GuiUtil.root = path.endsWith("/") ? path : path + "/";
     }
     
     
+    /**
+     * Creates a stream from a resource name.
+     * 
+     * @param name - name of the resource
+     * @return - resource stream
+     */
     public static InputStream getResource(String name)
     {
         if (name.charAt(0) != '/')
@@ -136,6 +182,12 @@ public final class GuiUtil
     }
     
     
+    /**
+     * Checks, wether a resource exists.
+     * 
+     * @param name - resource to be checked
+     * @return - true, if the resource exists
+     */
     public static boolean resourceExists(String name)
     {
         if (name.charAt(0) != '/')
@@ -147,6 +199,12 @@ public final class GuiUtil
     }
     
     
+    /**
+     * Retrieves an array of available resources within a directory.
+     * 
+     * @param path - direcoty to be analyzied
+     * @return - array of resources
+     */
     public static String[] getResources(String path)
     {
         if (path == null)
@@ -162,7 +220,6 @@ public final class GuiUtil
         try
         {
             String classPath = System.getProperty("java.class.path");
-//            String classPath = "C:\\Users\\Micha\\Desktop\\pe.jar";
             
             if (classPath.endsWith(".jar"))
             {
@@ -215,6 +272,12 @@ public final class GuiUtil
     }
     
     
+    /**
+     * Creates a HTML-Image-Tag with the specified image id.
+     * 
+     * @param id - id of the image to be loaded
+     * @return - created HTML-Image-Tag
+     */
     public static String getHtmlImage(String id)
     {
         URL url = GuiUtil.class.getResource("/" + root + path + id + ".png");
@@ -228,21 +291,93 @@ public final class GuiUtil
     }
     
     
-    public static boolean isLeftButton(MouseEvent e, boolean ctrlDown, boolean shiftDown, boolean altDown)
+    /**
+     * Checks, wether the left mouse button and the specified modifier keys are pressed.
+     * 
+     * @param e - mouse event to be checked
+     * @param ctrlDown - wether ctrl is pressed or not, or null if not important
+     * @param shiftDown - wether shift is pressed or not, or null if not important
+     * @param altDown - wether alt is pressed or not, or null if not important
+     * @return - true, if the mouse event equals the specified parameters
+     */
+    public static boolean isLeftButton(MouseEvent e, Boolean ctrlDown, Boolean shiftDown, Boolean altDown)
     {
-        return SwingUtilities.isLeftMouseButton(e) && e.isControlDown() == ctrlDown &&
-                e.isShiftDown() == shiftDown && e.isAltDown() == altDown;
+        return (e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) != 0 && 
+               (e.getModifiersEx() & MouseEvent.BUTTON2_DOWN_MASK) == 0 && 
+               (e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) == 0 && 
+               (ctrlDown  == null || e.isControlDown() == ctrlDown)  &&
+               (shiftDown == null || e.isShiftDown()   == shiftDown) && 
+               (altDown   == null || e.isAltDown()     == altDown);
     }
     
-    public static boolean isRightButton(MouseEvent e, boolean ctrlDown, boolean shiftDown, boolean altDown)
+    /**
+     * Checks, wether the right mouse button and the specified modifier keys are pressed.
+     * 
+     * @param e - mouse event to be checked
+     * @param ctrlDown - wether ctrl is pressed or not, or null if not important
+     * @param shiftDown - wether shift is pressed or not, or null if not important
+     * @param altDown - wether alt is pressed or not, or null if not important
+     * @return - true, if the mouse event equals the specified parameters
+     */
+    public static boolean isRightButton(MouseEvent e, Boolean ctrlDown, Boolean shiftDown, Boolean altDown)
     {
-        return SwingUtilities.isRightMouseButton(e) && e.isControlDown() == ctrlDown &&
-                e.isShiftDown() == shiftDown && e.isAltDown() == altDown;
+        return (e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == 0 && 
+               (e.getModifiersEx() & MouseEvent.BUTTON2_DOWN_MASK) == 0 && 
+               (e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) != 0 && 
+               (ctrlDown  == null || e.isControlDown() == ctrlDown)  &&
+               (shiftDown == null || e.isShiftDown()   == shiftDown) && 
+               (altDown   == null || e.isAltDown()     == altDown);
     }
     
-    public static boolean isMiddleButton(MouseEvent e, boolean ctrlDown, boolean shiftDown, boolean altDown)
+    /**
+     * Checks, wether the left and the right mouse button and the specified modifier keys are pressed.
+     * 
+     * @param e - mouse event to be checked
+     * @param ctrlDown - wether ctrl is pressed or not, or null if not important
+     * @param shiftDown - wether shift is pressed or not, or null if not important
+     * @param altDown - wether alt is pressed or not, or null if not important
+     * @return - true, if the mouse event equals the specified parameters
+     */
+    public static boolean isLeftRightButton(MouseEvent e, Boolean ctrlDown, Boolean shiftDown, Boolean altDown)
     {
-        return SwingUtilities.isMiddleMouseButton(e) && e.isControlDown() == ctrlDown &&
-                e.isShiftDown() == shiftDown && e.isAltDown() == altDown;
+        return (e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) != 0 && 
+               (e.getModifiersEx() & MouseEvent.BUTTON2_DOWN_MASK) == 0 && 
+               (e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) != 0 && 
+               (ctrlDown  == null || e.isControlDown() == ctrlDown)  &&
+               (shiftDown == null || e.isShiftDown()   == shiftDown) && 
+               (altDown   == null || e.isAltDown()     == altDown);
+    }
+    
+    /**
+     * Checks, wether the middle mouse button and the specified modifier keys are pressed.
+     * 
+     * @param e - mouse event to be checked
+     * @param ctrlDown - wether ctrl is pressed or not, or null if not important
+     * @param shiftDown - wether shift is pressed or not, or null if not important
+     * @param altDown - wether alt is pressed or not, or null if not important
+     * @return - true, if the mouse event equals the specified parameters
+     */
+    public static boolean isMiddleButton(MouseEvent e, Boolean ctrlDown, Boolean shiftDown, Boolean altDown)
+    {
+        return (e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == 0 && 
+               (e.getModifiersEx() & MouseEvent.BUTTON2_DOWN_MASK) != 0 && 
+               (e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) == 0 && 
+               (ctrlDown  == null || e.isControlDown() == ctrlDown)  &&
+               (shiftDown == null || e.isShiftDown()   == shiftDown) && 
+               (altDown   == null || e.isAltDown()     == altDown);
+    }
+    
+    
+    /**
+     * Checks, wether no mouse button is currently pressed.
+     * 
+     * @param e - mouse event to be checked
+     * @return - true, if no mouse button is pressed
+     */
+    public static boolean isNoButtonDown(MouseEvent e)
+    {
+        return (e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == 0 && 
+               (e.getModifiersEx() & MouseEvent.BUTTON2_DOWN_MASK) == 0 && 
+               (e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) == 0;
     }
 }

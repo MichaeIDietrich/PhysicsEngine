@@ -15,7 +15,7 @@ import de.engineapp.PresentationModel;
  * @author Micha
  * @author Johannes
  */
-public final class Square extends de.engine.objects.Square implements IDrawable, ISelectable, IDecorable, Cloneable
+public final class Polygon extends de.engine.objects.Square implements IDrawable, ISelectable, IDecorable, Cloneable
 {
     private String name;
     private Color color = Color.GREEN;
@@ -23,14 +23,14 @@ public final class Square extends de.engine.objects.Square implements IDrawable,
     private int drawPriority = 1;
     private HashMap<String, IDrawable> decorMap;
     
-    public Square(PresentationModel model, Vector position, Vector corner)
+    public Polygon(PresentationModel model, Vector position, Vector corner)
     {
         super(position, corner);
         name = "Object " + this.id;
         decorMap = new HashMap<>();
     }
     
-    public Square(PresentationModel model, Vector position, double radius)
+    public Polygon(PresentationModel model, Vector position, double radius)
     {
         super(position, new Vector(radius * Math.cos(Math.PI / 4), radius * Math.sin(Math.PI / 4)));
         name = "Object " + this.id;
@@ -93,26 +93,27 @@ public final class Square extends de.engine.objects.Square implements IDrawable,
     @Override
     public void render(Graphics2D g)
     {
-        Path2D.Double square = new Path2D.Double();
-        square.moveTo(this.points[3].getX(), this.points[3].getY());
+        Path2D.Double polygon = new Path2D.Double();
+        polygon.moveTo(this.points[points.length - 1].getX(), this.points[points.length - 1].getY());
         
         for (Vector point : this.points)
         {
-            square.lineTo(point.getX(), point.getY());
+            polygon.lineTo(point.getX(), point.getY());
         }
         
-        square.transform(AffineTransform.getRotateInstance(this.getRotationAngle()));
-        square.transform(AffineTransform.getTranslateInstance(this.getPosition().getX(), this.getPosition().getY()));
+        polygon.transform(AffineTransform.getRotateInstance(this.getRotationAngle()));
+        polygon.transform(AffineTransform.getTranslateInstance(this.getPosition().getX(), this.getPosition().getY()));
         
         g.setColor(color);
-        g.fill(square);
+        g.fill(polygon);
         
         if (border != null)
         {
             g.setColor(border);
-            g.draw(square);
+            g.draw(polygon);
         }
     }
+    
     
     @Override
     public void putDecor(String key, IDrawable decor)
@@ -140,19 +141,18 @@ public final class Square extends de.engine.objects.Square implements IDrawable,
     
     
     @Override
-    public Square clone()
+    public Polygon clone()
     {
         return clone(true);
     }
     
     @Override
-    public Square clone(boolean cloneId)
+    public Polygon clone(boolean cloneId)
     {
-        Square newSquare = new Square(null, this.getPosition(), this.getRadius());
+        Polygon newSquare = new Polygon(null, this.getPosition(), this.getRadius());
         newSquare.name = this.name;
         newSquare.color = this.color;
         newSquare.border = this.border;
-//        newSquare.decorMap = this.decorMap; // bad idea :p
         
         super.clone(newSquare, cloneId);
         

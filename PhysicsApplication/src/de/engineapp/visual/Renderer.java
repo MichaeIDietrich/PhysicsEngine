@@ -1,4 +1,4 @@
-package de.engineapp;
+package de.engineapp.visual;
 
 import static de.engineapp.Constants.STG_GRID;
 
@@ -7,10 +7,10 @@ import java.awt.*;
 import de.engine.DebugMonitor;
 import de.engine.environment.Scene;
 import de.engine.objects.ObjectProperties;
+import de.engineapp.PresentationModel;
 import de.engineapp.PresentationModel.*;
 import de.engineapp.controls.Canvas;
 import de.engineapp.util.AsyncWorker;
-import de.engineapp.visual.*;
 
 
 /**

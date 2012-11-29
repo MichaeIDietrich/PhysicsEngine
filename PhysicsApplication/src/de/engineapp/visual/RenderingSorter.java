@@ -1,8 +1,7 @@
-package de.engineapp;
+package de.engineapp.visual;
 
 import java.util.*;
 
-import de.engineapp.visual.IDrawable;
 
 
 /**

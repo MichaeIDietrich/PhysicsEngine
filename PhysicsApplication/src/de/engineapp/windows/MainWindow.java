@@ -10,13 +10,13 @@ import javax.swing.*;
 import de.engine.*;
 import de.engine.environment.Scene;
 import de.engineapp.*;
-import de.engineapp.Renderer;
 import de.engineapp.PresentationModel.StorageListener;
 import de.engineapp.containers.*;
 import de.engineapp.controls.Canvas;
 import de.engineapp.controls.dnd.DragAndDropController;
 import de.engineapp.io.SceneManager;
 import de.engineapp.util.*;
+import de.engineapp.visual.Renderer;
 
 import static de.engineapp.Constants.*;
 
