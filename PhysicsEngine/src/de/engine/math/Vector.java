@@ -2,6 +2,10 @@ package de.engine.math;
 
 import java.text.MessageFormat;
 
+/**
+ * a 2D Vector
+ *
+ */
 public class Vector implements Cloneable
 {
     public static final Integer ZEILENSUMMENNORM = 10;
@@ -183,15 +187,6 @@ public class Vector implements Cloneable
     private Double eunorm()
     {
         return getLength();
-        /*
-         * Double euklidNorm = 0d; Double sum = 0d;
-         * 
-         * for(int i=0; i < 2; i++) sum = sum + get(i)*get(i);
-         * 
-         * euklidNorm = Math.sqrt( sum );
-         * 
-         * return euklidNorm;
-         */
     }
     
     public Vector setUnitVector(Vector vector)

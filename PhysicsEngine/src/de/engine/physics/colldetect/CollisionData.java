@@ -10,7 +10,6 @@ public class CollisionData
     public Double max_time;
     
     public Double coll_time;
-    public Double calc_time;
     
     public CollisionData(ObjectProperties o1, ObjectProperties o2, Double min_time, Double max_time)
     {
@@ -19,6 +18,5 @@ public class CollisionData
         this.min_time = min_time;
         this.max_time = max_time;
         this.coll_time = null;
-        this.calc_time = null;
     }
 }

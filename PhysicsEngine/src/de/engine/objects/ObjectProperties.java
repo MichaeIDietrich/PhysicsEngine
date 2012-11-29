@@ -3,6 +3,10 @@ package de.engine.objects;
 import de.engine.environment.EnvProps;
 import de.engine.math.*;
 
+/**
+ * base-properties of an object
+ *
+ */
 public abstract class ObjectProperties implements Cloneable
 {
     // will get incremented every time it's used, to apply unique id's to each
@@ -11,6 +15,7 @@ public abstract class ObjectProperties implements Cloneable
     
     protected int id = 0;
     
+    //local time of the object
     private double frametime = 0;
 
     public Transformation world_position;
@@ -131,6 +136,9 @@ public abstract class ObjectProperties implements Cloneable
         return 0.5 * mass * velocity.getLength() * velocity.getLength();
     }
     
+    /**
+     * returns the axis-aligned bounding box
+     */
     public Vector[] getAABB()
     {
         Vector aabb[] = new Vector[2];
