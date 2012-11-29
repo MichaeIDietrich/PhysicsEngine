@@ -16,7 +16,7 @@ import de.engineapp.util.*;
 import de.engineapp.visual.*;
 import de.engineapp.visual.Circle;
 import de.engineapp.visual.Ground;
-import de.engineapp.visual.Square;
+import de.engineapp.visual.Polygon;
 import de.engineapp.visual.decor.*;
 import de.engineapp.visual.decor.Box;
 
@@ -60,7 +60,8 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
     }
     
     
-    private static enum Events { NONE, TRANSLATE_OBJECT, SPEED_OBJECT, SCALE_OBJECT, ROTATE_OBJECT, SELECTION_RECT }
+    private static enum Events { NONE, TRANSLATE_OBJECT, SPEED_OBJECT, SCALE_OBJECT, SCALE_RECT,
+                                 ROTATE_OBJECT, SELECTION_RECT, MOVE_OFFSET }
     
     
     private static final long serialVersionUID = -5320479580417617983L;
@@ -208,36 +209,34 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
         Vector cursor = pModel.toTransformedVector(e.getPoint());
         boolean hasSelection = pModel.hasSelectedObject();
         
-        if (SwingUtilities.isLeftMouseButton(e))
-        {
-            // start a timer, to make moving objects possible after a short delay
-            dragDelay = new Task(200);
-            dragDelay.start();
-        }
-        
-        // right mouse button initializes the move the view offset
-        else if (SwingUtilities.isRightMouseButton(e))
+        if (GuiUtil.isMiddleButton(e, false, false, null) || GuiUtil.isLeftRightButton(e, false, false, null))
         {
             mouseOffset = new Point(e.getPoint());
+            lastEvent = Events.MOVE_OFFSET;
         }
         
         // show radius if shift is pressed
-        if (hasSelection && GuiUtil.isLeftButton(e, false, true, false))
+        if (hasSelection && GuiUtil.isRightButton(e, false, false, null))
         {
             objectManipulator.initScaleObjects();
             lastEvent = Events.SCALE_OBJECT;
         }
         
+        // show radius if shift is pressed
+        else if (hasSelection && GuiUtil.isRightButton(e, true, false, null))
+        {
+            lastEvent = Events.SCALE_RECT;
+        }
+        
         // show angle if alt is pressed
-        else if (hasSelection && (GuiUtil.isLeftButton(e, false, false, true) || 
-                GuiUtil.isLeftButton(e, true, true, false)))
+        else if (hasSelection && GuiUtil.isLeftButton(e, false, true, null))
         {
             objectManipulator.initRotateObjects();
             lastEvent = Events.ROTATE_OBJECT;
         }
         
         // if ctrl is pressed modify the velocity vector
-        else if (hasSelection && GuiUtil.isLeftButton(e, true, false, false))
+        else if (hasSelection && GuiUtil.isLeftButton(e, true, false, null))
         {
             // set new velocity
             objectManipulator.speedObjects(cursor);
@@ -247,8 +246,12 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
         }
         
         // if no modifier key is pressed either selected an object or create new objects
-        else if (GuiUtil.isLeftButton(e, false, false, false))
+        else if (GuiUtil.isLeftButton(e, false, false, null))
         {
+            // start a timer, to make moving objects possible after a short delay
+            dragDelay = new Task(200);
+            dragDelay.start();
+            
             ObjectProperties object = pModel.getScene().getObjectFromPoint(cursor.getX(), cursor.getY());
             
             if (pModel.getMultipleSelectionObjects().contains(object))
@@ -283,13 +286,6 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
             }
         }
         
-        // if middle mouse button is pressed, show the object radius
-        else if (hasSelection && SwingUtilities.isMiddleMouseButton(e))
-        {
-            objectManipulator.initScaleObjects();
-            lastEvent= Events.SCALE_OBJECT;
-        }
-        
         pModel.fireRepaint();
     }
     
@@ -298,7 +294,7 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
     @Override
     public void mouseReleased(MouseEvent e)
     {
-        if (SwingUtilities.isLeftMouseButton(e))
+        if (GuiUtil.isNoButtonDown(e))
         {
             dragDelay = null;
             
@@ -308,7 +304,7 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
                 ((IDecorable) pModel.getSelectedObject()).removeDecor(DECOR_ANGLE_VIEWER);
             }
             
-            if (lastEvent == Events.SELECTION_RECT && getDecor(DECOR_SELECTION_RECT) != null)
+            if (getDecor(DECOR_SELECTION_RECT) != null)
             {
                 Box selectionRect = (Box) getDecor(DECOR_SELECTION_RECT);
                 
@@ -342,15 +338,15 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
                 removeDecor(DECOR_SELECTION_RECT);
                 
             }
+            lastEvent = Events.NONE;
+            
             pModel.fireRepaint();
         }
-        else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
-        {
-            ((IDecorable) pModel.getSelectedObject()).removeDecor(DECOR_RANGE);
-            pModel.fireRepaint();
-        }
-        
-        lastEvent = Events.NONE;
+//        else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
+//        {
+//            ((IDecorable) pModel.getSelectedObject()).removeDecor(DECOR_RANGE);
+//            pModel.fireRepaint();
+//        }
     }
     
     
@@ -413,8 +409,19 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
             pModel.fireRepaint();
         }
         
+        //
+        else if (hasSelection && lastEvent == Events.SCALE_RECT && 
+                !pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
+        {
+            objectManipulator.scaleRect(cursor);
+            
+            // send an update for the selected object, needs some tweaks maybe
+            pModel.fireObjectUpdated(pModel.getSelectedObject());
+            pModel.fireRepaint();
+        }
+        
         // right mouse button moves the view offset
-        else if (SwingUtilities.isRightMouseButton(e))
+        else if (lastEvent == Events.MOVE_OFFSET)
         {
             pModel.moveViewOffset(e.getX() - mouseOffset.x, e.getY() - mouseOffset.y);
             mouseOffset.x = e.getPoint().x;
@@ -598,7 +605,7 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
                 break;
                 
             case OBJ_SQUARE:
-                Square square = new Square(pModel, sceneLocation, 12);
+                Polygon square = new Polygon(pModel, sceneLocation, 12);
                 square.setMass(10);
                 pModel.addObject( square );
                 

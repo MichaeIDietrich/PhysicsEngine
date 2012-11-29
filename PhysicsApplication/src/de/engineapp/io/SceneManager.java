@@ -15,6 +15,7 @@ import de.engineapp.io.xml.*;
 import de.engineapp.rec.Recorder;
 import de.engineapp.util.Localizer;
 import de.engineapp.visual.*;
+import de.engineapp.visual.Polygon;
 
 import static de.engineapp.Constants.*;
 
@@ -32,6 +33,12 @@ public final class SceneManager
     private Component topLevelComponent;
     
     
+    /**
+     * Creates a new instance of the <code>SceneManager</code>
+     * 
+     * @param model - application PresentationModel
+     * @param topLevelComponent - related component for displaying model dialogs
+     */
     public SceneManager(PresentationModel model, Component topLevelComponent)
     {
         pModel = model;
@@ -39,6 +46,12 @@ public final class SceneManager
     }
     
     
+    /**
+     * Loads a scene from file.
+     * 
+     * @param file - file to be laoded from
+     * @return - loaded scene
+     */
     public Scene loadScene(File file)
     {
         if (file.exists() && file.isFile())
@@ -87,6 +100,12 @@ public final class SceneManager
     }
     
     
+    /**
+     * Loads an animation from a file.
+     * 
+     * @param file - file to be loaded from
+     * @return - loaded animation
+     */
     public Recorder loadAnimation(File file)
     {
         if (file.exists() && file.isFile())
@@ -135,6 +154,12 @@ public final class SceneManager
     }
     
     
+    /**
+     * Saves a scene into a file.
+     * 
+     * @param file - file be written to
+     * @param scene - scene to be saved
+     */
     public void saveScene(File file, Scene scene)
     {
         try
@@ -154,6 +179,12 @@ public final class SceneManager
     }
     
     
+    /**
+     * Saves an animation into a file.
+     * 
+     * @param file - file to be written to
+     * @param recorder - animation to be saved
+     */
     public void saveAnimation(File file, Recorder recorder)
     {
         try
@@ -188,6 +219,12 @@ public final class SceneManager
     }
     
     
+    /**
+     * Checks, wether the specified file as an XML-file.
+     * 
+     * @param file - file to be checked
+     * @return - true, if file is an XML-file
+     */
     private static boolean isXmlFile(File file)
     {
         try
@@ -210,6 +247,12 @@ public final class SceneManager
     }
     
     
+    /**
+     * Loads a scene from stream.
+     * 
+     * @param stream - stream that contains a scene
+     * @return - loaded scene
+     */
     private Scene loadSceneFromStream(InputStream stream)
     {
         XMLReader reader = new XMLReader(stream);
@@ -257,7 +300,7 @@ public final class SceneManager
                         break;
                         
                     case "Square":
-                        object = new Square(pModel, new Vector(getDouble(obj.getAttribute("x"), 0), 
+                        object = new Polygon(pModel, new Vector(getDouble(obj.getAttribute("x"), 0), 
                                                                getDouble(obj.getAttribute("y"), 0)), 
                                 getDouble(obj.getAttribute("radius"), 0));
                         break;
@@ -295,6 +338,13 @@ public final class SceneManager
     }
     
     
+    /**
+     * Loads an animation from stream.
+     * 
+     * @param stream - stream that contains an animation
+     * @param recorder - animated scene container
+     * @return
+     */
     private boolean loadAnimationFromStream(InputStream stream, Recorder recorder)
     {
         XMLReader reader = new XMLReader(stream);
@@ -344,7 +394,7 @@ public final class SceneManager
                             break;
                             
                         case "Square":
-                            object = new Square(pModel, new Vector(getDouble(obj.getAttribute("x"), 0), 
+                            object = new Polygon(pModel, new Vector(getDouble(obj.getAttribute("x"), 0), 
                                                                    getDouble(obj.getAttribute("y"), 0)), 
                                     getDouble(obj.getAttribute("radius"), 10));
                             break;
@@ -385,6 +435,12 @@ public final class SceneManager
     }
     
     
+    /**
+     * Saves a scene into a stream.
+     * 
+     * @param stream - stream to be written to
+     * @param scene - scene to be saved
+     */
     private void saveSceneToStream(OutputStream stream, Scene scene)
     {
         XMLWriter writer = new XMLWriter(stream);
@@ -408,7 +464,7 @@ public final class SceneManager
             {
                 writer.writeStartElement("Circle");
             }
-            else if (object instanceof Square)
+            else if (object instanceof Polygon)
             {
                 writer.writeStartElement("Square");
             }
@@ -433,6 +489,14 @@ public final class SceneManager
     }
     
     
+    /**
+     * Saves an animation into a stream. 
+     * 
+     * @param stream - strsam to be written to
+     * @param recorder - animations to be saved
+     * @param frameStart - first animation frame index
+     * @param frameCount - last animation frame index
+     */
     private void saveAnimationToStream(OutputStream stream, Recorder recorder, int frameStart, int frameCount)
     {
         XMLWriter writer = new XMLWriter(stream);
@@ -462,7 +526,7 @@ public final class SceneManager
                 {
                     writer.writeStartElement("Circle");
                 }
-                else if (object instanceof Square)
+                else if (object instanceof Polygon)
                 {
                     writer.writeStartElement("Square");
                 }
@@ -491,6 +555,13 @@ public final class SceneManager
     }
     
     
+    /**
+     * Converts a String value to a double if possible, or uses a default value if not.
+     * 
+     * @param value - value to be converted
+     * @param defaultValue - alternative value, if convertion fails
+     * @return - converted value or defaultValue
+     */
     private double getDouble(String value, double defaultValue)
     {
         if (value == null)
@@ -502,6 +573,13 @@ public final class SceneManager
     }
     
     
+    /**
+     * Converts a String value to a double if possible, or uses a default value if not.
+     * 
+     * @param value - value to be converted
+     * @param defaultValue - alternative value, if convertion fails
+     * @return - converted value or defaultValue
+     */
     private int getInt(String value, int defaultValue)
     {
         if (value == null)
