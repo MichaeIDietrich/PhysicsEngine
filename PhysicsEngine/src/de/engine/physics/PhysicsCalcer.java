@@ -160,7 +160,6 @@ public class PhysicsCalcer
         {
             CollisionData restingContact = new CollisionData(obj1, obj2, 0.0, EnvProps.deltaTime());
             restingContact.coll_time = EnvProps.deltaTime();
-            restingContact.calc_time = EnvProps.deltaTime();
             if(!obj1.isPinned) {
                 obj1.world_position.translation.add(Util.scale(coll_normal, penetration - 0.1));
                 obj1.velocity.minus(normal_part1);

@@ -19,6 +19,10 @@ package de.engine.environment;
 
 import de.engine.math.Vector;
 
+/**
+ * Singleton to access Environment Properties
+ *
+ */
 public class EnvProps
 {
     

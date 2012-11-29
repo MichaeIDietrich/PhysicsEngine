@@ -33,7 +33,6 @@ public class CollisionTimer
             return;
         else {
             collPair.coll_time = coll_time;
-            collPair.calc_time = coll_time - (0.01 / velocity);
         }
     }
     
@@ -116,7 +115,6 @@ public class CollisionTimer
                 if (coll_id > 0)
                 {
                     collPair.coll_time = times.get(coll_id);
-                    collPair.calc_time = times.get(pre.get(coll_id));
                 }
                 break;
             }
