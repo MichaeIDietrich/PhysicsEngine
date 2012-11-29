@@ -92,11 +92,15 @@ public class CollisionDetector
         if (scene.existGround())
         {
             objectGroundCollision();
-            objectGroundCollision2();
+//            objectGroundCollision2();
         }
         
     }
     
+    /**
+     * Calculates the moment of inertia and the resulting reflection of any kind of primitiv
+     * objects to the ground. 
+     */
     public void objectGroundCollision()
     {
         long time = System.currentTimeMillis();
@@ -107,6 +111,7 @@ public class CollisionDetector
         {
             if (!object.isPinned && scene.getCount() > 0 && object != null && scene.getGround() != null)
             {
+                // get the collision coordinates the object points to 
                 Ground ground = scene.getGround();
                 Util.ground = ground;
                 Util.object = object;
@@ -118,29 +123,27 @@ public class CollisionDetector
                 double x = object.last_intersection.getX();
                 double y = object.last_intersection.getY();
 
-                // initializing for finding shortest distance between ground and object
-                double dist_coll_mp = Double.MAX_VALUE;
-                double grx = object.getPosition().getX();
-                double gry = Util.functions( grx ).getY();
-                double spx = x;
-                double spy = y;
-                double nearest_point = Double.MAX_VALUE;
-                
-                for(int i=0; i<10; i++)
+                // calculate smallest distance between object and ground
+                IFunction func = new IFunction()
                 {
-                    nearest_point = dist_coll_mp;
-                    dist_coll_mp = Math.sqrt( Math.pow( grx - object.getPosition().getX(), 2d) + Math.pow( gry - object.getPosition().getY(), 2d ));
-                    
-                    if (dist_coll_mp < nearest_point) nearest_point = dist_coll_mp;
-                    
-                    grx = (grx + spx)/2;
-                    spx = grx;
-                    
-                    gry = Util.functions( grx ).getY();
-                }
+                    @Override
+                    public double function(double x)
+                    {
+                        return scene.getGround().function((int) x);
+                    }
+                };
                 
-
-                if (nearest_point <= object.getRadius()-1)
+                double range = object.getRadius() * 5;
+                de.engine.math.Vector nextPos = object.getNextPosition();
+                
+                distCalcer.setPoint(nextPos);
+                distCalcer.setFunction(func);
+                double dist = distCalcer.calculateDistanceBetweenFunctionPoint(nextPos.getX() - range, nextPos.getX() + range);
+                
+                object.closest_point = new de.engine.math.Vector(distCalcer.getLastSolvedX(), scene.getGround().function((int) distCalcer.getLastSolvedX()));
+                
+                // check the object collision
+                if (dist < object.getRadius())
                 {
                     Vector coll_normal = new Vector(Util.u, Util.getNormalFuncValue(object.last_intersection, x + Util.u) - y).norm();
                     
@@ -155,13 +158,12 @@ public class CollisionDetector
                     Vector v_vec = object.velocity.add( coll_normal.multi( j / object.getMass()) );
                     
                     object.velocity.setX( v_vec.getX() );
-                    object.velocity.setY( v_vec.getY() );  
+                    object.velocity.setY( v_vec.getY() ); 
                     
-                    if (object.velocity.getX()*object.velocity.getX()+object.velocity.getX()*object.velocity.getX()<1) object.isPinned = true;
+                    object.setMoment_of_inertia( j );
                 }
             }
         }
-        
         DebugMonitor.getInstance().updateMessage("groundColl", "" + (System.currentTimeMillis() - time));
     }
 
