@@ -12,20 +12,14 @@ public class PhysicsEngine2D
     
     CollisionDetector collDetector;
     
-    public PhysicsEngine2D()
+    /*public PhysicsEngine2D()
     {
         this.collDetector = new CollisionDetector(scene);
-        //
-    }
+    }*/
     
-    public void Rotation()
+    public PhysicsEngine2D(Scene scene)
     {
-        //
-    }
-    
-    public void Translation()
-    {
-        //
+        setScene(scene);
     }
     
     public void setScene(Scene scene)

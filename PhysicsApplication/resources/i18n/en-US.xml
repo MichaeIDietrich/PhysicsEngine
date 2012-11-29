@@ -15,6 +15,7 @@
   <String id="POT_ENERGY">Potential Energy: </String>
   <String id="KIN_ENERGY">Kinetic Energy: </String>
   <String id="REMOVE">Remove</String>
+  <String id="CENTER">Center</String>
   <String id="CLOSE">Close</String>
   <String id="PINNED">Pinned</String>
   <String id="SETTINGS">Settings</String>
@@ -85,6 +86,7 @@
   <String id="TT_MASS">Object mass</String>
   <String id="TT_RADIUS">Object radius</String>
   <String id="TT_ANGLE">Object angle</String>
+  <String id="TT_CENTER">Center selected object</String>
   <String id="TT_FIX">Pin object</String>
   <String id="TT_POTE">Current potential energy</String>
   <String id="TT_KINE">Current kinetic energy</String>

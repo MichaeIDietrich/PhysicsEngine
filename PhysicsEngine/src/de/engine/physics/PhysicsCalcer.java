@@ -77,7 +77,7 @@ public class PhysicsCalcer
      * @param obj
      * @param contact
      * @param time
-     * @return the relaive Postion between an Object and the Contact-Point
+     * @return the relative Postion between an Object and the Contact-Point
      */
     private static Vector getRelContactPos(ObjectProperties obj, Contact contact, double time)
     {
@@ -88,7 +88,7 @@ public class PhysicsCalcer
      * @param relPos
      * @param velocity
      * @param angularV
-     * @return the Velocity on th Contactpoint
+     * @return the Velocity on the Contactpoint
      */
     private static Vector getContactVelocity(Vector relPos, Vector velocity, double angularV)
     {
@@ -118,7 +118,7 @@ public class PhysicsCalcer
         Vector rel_pos = getRelContactPos(obj, contact, time);
         Vector pos_v = getContactVelocity(rel_pos, obj.velocity, obj.angular_velocity);
         double j_z = getJzaehler(pos_v, contact.normal, elasticity);
-        double j_n = getJnennerPart(contact.normal, rel_pos, obj.getMass(), obj.moment_of_inertia);
+        double j_n = getJnennerPart(contact.normal, rel_pos, obj.getMass(), obj.getMoment_of_inertia());
         return Util.scale(contact.normal, j_z / j_n);
     }
     
@@ -130,21 +130,21 @@ public class PhysicsCalcer
         Vector pos_v2 = getContactVelocity(rel_pos2, obj2.velocity, obj2.angular_velocity);
         double elasticity = (obj1.surface.elasticity() + obj2.surface.elasticity()) / 2;
         double j_z = getJzaehler(Util.minus(pos_v1, pos_v2), contact.normal, elasticity);
-        double j_n = getJnennerPart(contact.normal, rel_pos1, obj1.getMass(), obj1.moment_of_inertia);
-        j_n += getJnennerPart(contact.normal, rel_pos2, obj2.getMass(), obj2.moment_of_inertia);
+        double j_n = getJnennerPart(contact.normal, rel_pos1, obj1.getMass(), obj1.getMoment_of_inertia());
+        j_n += getJnennerPart(contact.normal, rel_pos2, obj2.getMass(), obj2.getMoment_of_inertia());
         return Util.scale(contact.normal, j_z / j_n);
     }
     
     private static void updateVobj1(ObjectProperties obj, Vector rel_pos, Vector j_normal)
     {
         obj.velocity.add(Util.scale(j_normal, 1 / obj.getMass()));
-        obj.angular_velocity += Util.crossProduct(rel_pos, j_normal) / obj.moment_of_inertia;
+        obj.angular_velocity += Util.crossProduct(rel_pos, j_normal) / obj.getMoment_of_inertia();
     }
     
     private static void updateVobj2(ObjectProperties obj, Vector rel_pos, Vector j_normal)
     {
         obj.velocity.minus(Util.scale(j_normal, 1 / obj.getMass()));
-        obj.angular_velocity -= Util.crossProduct(rel_pos, j_normal) / obj.moment_of_inertia;
+        obj.angular_velocity -= Util.crossProduct(rel_pos, j_normal) / obj.getMoment_of_inertia();
     }
     
     private static CollisionData getRestingContact(ObjectProperties obj1, ObjectProperties obj2, Vector coll_normal, double penetration)
@@ -156,12 +156,10 @@ public class PhysicsCalcer
         Vector normal_part1 = Util.scale(coll_normal, obj1_comp.getX());
         Vector normal_part2 = Util.scale(coll_normal, obj2_comp.getX());
         
-        //abhänigkeit zu fallbeschleunigung einbauen
         if (normal_part1.getLength() < min_v && normal_part2.getLength() < min_v)
         {
             CollisionData restingContact = new CollisionData(obj1, obj2, 0.0, EnvProps.deltaTime());
             restingContact.coll_time = EnvProps.deltaTime();
-            restingContact.calc_time = EnvProps.deltaTime();
             if(!obj1.isPinned) {
                 obj1.world_position.translation.add(Util.scale(coll_normal, penetration - 0.1));
                 obj1.velocity.minus(normal_part1);
@@ -176,7 +174,6 @@ public class PhysicsCalcer
         return null;
     }
     
-    // Quelle: http://www.myphysicslab.com/collision.html
     private static CollisionData resolveContact(CollisionData collPair, Contact contact)
     {
         if (contact == null)

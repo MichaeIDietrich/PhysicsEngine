@@ -2,10 +2,14 @@ package de.engine.math;
 
 import java.text.MessageFormat;
 
+/**
+ * a 2D Vector
+ *
+ */
 public class Vector implements Cloneable
 {
-    public static final Integer ZEILENSUMMENNORM = 10; 
-    public static final Integer EUKLIDISCHENORM  = 11;
+    public static final Integer ZEILENSUMMENNORM = 10;
+    public static final Integer EUKLIDISCHENORM = 11;
     
     public static final Vector UNDEFINED = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
     
@@ -14,7 +18,7 @@ public class Vector implements Cloneable
     
     private double x;
     private double y;
-  
+    
     public Vector()
     {
         x = 0.0;
@@ -127,16 +131,13 @@ public class Vector implements Cloneable
         return Util.scale(this, scale);
     }
     
-    
-    
-    
     // An other form calculating with vectors -- maybe rewrite the old variant?
     // import from numeric project is major essential for jakobiMatrix calculation
     public Double get(int index)
     {
-        if(index == 0)
+        if (index == 0)
             return x;
-        else if(index == 1)
+        else if (index == 1)
             return y;
         else
             return null;
@@ -144,15 +145,15 @@ public class Vector implements Cloneable
     
     public void set(int index, Double value)
     {
-        if(index == 0)
+        if (index == 0)
             x = value;
-        else if(index == 1)
+        else if (index == 1)
             y = value;
     }
     
     public Vector norm()
     {
-        double normfact = Math.sqrt(x*x + y*y);
+        double normfact = Math.sqrt(x * x + y * y);
         
         x = x / normfact;
         y = y / normfact;
@@ -160,48 +161,41 @@ public class Vector implements Cloneable
         return this;
     }
     
-    public Double norm( Integer n ) throws RuntimeException 
+    public Double norm(Integer n) throws RuntimeException
     {
-        if( n==10 ) return zsnorm();
-        if( n==11 ) return eunorm();
+        if (n == 10)
+            return zsnorm();
+        if (n == 11)
+            return eunorm();
         
-        throw new RuntimeException( MessageFormat.format("'MathLib.getNorm()' liefert den Wert {0}, für welche es keine Normimplementierung für Vektoren gibt.", n ));
+        throw new RuntimeException(MessageFormat.format("'MathLib.getNorm()' liefert den Wert {0}, für welche es keine Normimplementierung für Vektoren gibt.", n));
     }
     
-    private Double zsnorm() 
+    private Double zsnorm()
     {
         Double sum = 0d;
         Double max = 0d;
         sum = Math.abs(x);
-        if ( max.compareTo( sum ) == -1 ) max = sum;
+        if (max.compareTo(sum) == -1)
+            max = sum;
         sum = Math.abs(y);
-        if ( max.compareTo( sum ) == -1 ) max = sum;
+        if (max.compareTo(sum) == -1)
+            max = sum;
         return max;
     }
     
-    
-    private Double eunorm() 
+    private Double eunorm()
     {
         return getLength();
-        /*Double euklidNorm = 0d;
-        Double        sum = 0d;
-        
-        for(int i=0; i < 2; i++) sum = sum + get(i)*get(i);
-        
-        euklidNorm = Math.sqrt( sum );
-        
-        return euklidNorm;*/
     }
     
-    
-    public Vector setUnitVector(Vector vector) 
+    public Vector setUnitVector(Vector vector)
     {
         vector.x = 1;
         vector.y = 1;
         
         return vector;
     }
-    
     
     @Override
     public Vector clone()
@@ -214,8 +208,7 @@ public class Vector implements Cloneable
         return copy;
     }
     
-    
-    public Double[] toDoubleArray() 
+    public Double[] toDoubleArray()
     {
         Double x[] = new Double[2];
         x[0] = this.x;
@@ -224,14 +217,12 @@ public class Vector implements Cloneable
         return x;
     }
     
-    
     public Vector subtract(Vector vector)
     {
-        return addit( vector.multi( -1d ));
+        return addit(vector.multi(-1d));
     }
     
-    
-    public Vector multi( Double value)
+    public Vector multi(Double value)
     {
         return new Vector(this.x * value, this.y * value);
     }
@@ -243,8 +234,11 @@ public class Vector implements Cloneable
     
     /**
      * Tauscht die Reihen eines Vektors durch zwei Indizes
-     * @param rowIndex1 erster Index
-     * @param rowIndex2 zweiter Index
+     * 
+     * @param rowIndex1
+     *            erster Index
+     * @param rowIndex2
+     *            zweiter Index
      */
     public Vector swapRows(int rowIndex1, int rowIndex2)
     {
@@ -257,11 +251,11 @@ public class Vector implements Cloneable
         return tempVector;
     }
     
-    public Vector rotate( double angle )
+    public Vector rotate(double angle)
     {
-        double temp_x = -x*Math.sin( 2*angle );
-        double temp_y =  y*Math.cos( 2*angle );
+        double temp_x = -x * Math.sin(2 * angle);
+        double temp_y = y * Math.cos(2 * angle);
         
-        return new Vector( temp_x, temp_y );
+        return new Vector(temp_x, temp_y);
     }
 }

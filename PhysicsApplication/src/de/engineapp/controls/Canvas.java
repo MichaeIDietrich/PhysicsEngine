@@ -342,11 +342,6 @@ public final class Canvas extends JComponent implements MouseListener, MouseMoti
             
             pModel.fireRepaint();
         }
-//        else if (SwingUtilities.isMiddleMouseButton(e) && pModel.getSelectedObject() != null)
-//        {
-//            ((IDecorable) pModel.getSelectedObject()).removeDecor(DECOR_RANGE);
-//            pModel.fireRepaint();
-//        }
     }
     
     

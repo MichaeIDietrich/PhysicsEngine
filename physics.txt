@@ -1,8 +1,0 @@
-Ablauf der PhysikEngine:
-
-1. Berechnung aller neuen Positionen (durch aktuelle Geschwindigkeiten, Beschleungiungen ...) für Zeitpunkt T
-2. Überprüfen ob sich Objekte überschneiden
- -> Position und Zeitpunkt der Berührung berechnen
- -> neue Geschwindigkeit/Beschleunigung der Körper berechnen
- -> so lange von Schritt 1 wieder beginnen bis keine Kollisionen mehr vorhanden sind
-3. danach sind alle Objekte für Zeitpunkt T berechnet

@@ -6,6 +6,10 @@ import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engine.physics.colldetect.CollisionData;
 
+/**
+ * a scene contains all objects and defines the environment
+ *
+ */
 public class Scene implements Cloneable
 {
     
