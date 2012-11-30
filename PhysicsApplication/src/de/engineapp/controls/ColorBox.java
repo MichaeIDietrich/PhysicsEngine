@@ -65,7 +65,7 @@ public final class ColorBox extends JComponent
         }
         else
         {
-            g.setColor(Color.DARK_GRAY);
+            g.setColor(Color.LIGHT_GRAY);
         }
         g.fillRect(2, 2, this.getWidth() - 4, this.getHeight() - 4);
     }
