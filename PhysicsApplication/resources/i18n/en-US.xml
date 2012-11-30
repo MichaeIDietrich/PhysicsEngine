@@ -51,7 +51,9 @@
   <String id="FILE_ACCESS_DENIED">File '%s' could not be loaded.</String>
   <String id="COLOR_OF_OBJECT">Object Color:</String>
   <String id="ANGLE">Angle</String>
-  
+  <String id="GRAVITY">Gravity</String>
+  <String id="FRICTION">Friction</String>
+  <String id="DELETE_GROUND">Delete Ground</String>
   
   <!--  Tooltips  /MainToolBar-->
   <String id="TT_NEW">Creates a new scene</String>

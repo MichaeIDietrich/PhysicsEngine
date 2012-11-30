@@ -24,7 +24,7 @@ public class Scene implements Cloneable
     
     private double environment_friction = 0.02;
     
-    boolean enable_env_friction = true;
+    public boolean enable_env_friction = true;
     
     
     public Scene()

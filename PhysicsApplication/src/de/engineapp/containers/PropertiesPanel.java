@@ -44,6 +44,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     private JLabel radiusLabel;
     private JLabel angleLabel;
     private JLabel emptyLabel;
+    private JLabel gravityLabel;
     
     private JLabel LabelPotE; //Schriftzug
     private JLabel LabelKinE; //Schriftzug
@@ -57,6 +58,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     private JButton close;
     private QuickButton next;
     private QuickButton previous;
+    private JButton delGround;
     
     //Namensfeld erstellen
     private JTextField name;
@@ -68,6 +70,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     
     //ComboBox und CheckBox erstellen
     private JCheckBox fix;
+    private JCheckBox friction;
     private IconComboBox<Material> MaterialCombo;
     
     //Spinner erstellen
@@ -78,6 +81,10 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     private PropertySpinner vx;
     private PropertySpinner vy;
     private PropertySpinner angle;
+    private PropertySpinner gravity;
+    {
+        
+    }
     
     //Variablen
     private int avoidUpdate;
@@ -99,7 +106,9 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         center.setActionCommand(CMD_CENTER);
         close.addActionListener(this);
         close.setActionCommand(CMD_CLOSE);
-
+        delGround.addActionListener(this);
+        delGround.setActionCommand(CMD_DELETE_GROUND);
+        
         //Namensfeld konfigurieren
         name.setEditable(isEnabled());
         name.addFocusListener(new FocusAdapter()
@@ -119,7 +128,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                if (SwingUtilities.isLeftMouseButton(e))
+                if (SwingUtilities.isLeftMouseButton(e) && colorBox.isEnabled())
                 {
                     colorPicker.setVisible(true);
                 }
@@ -150,6 +159,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         radiusLabel     = new JLabel(LOCALIZER.getString(L_RADIUS));
         angleLabel      = new JLabel(LOCALIZER.getString(L_ANGLE));
         emptyLabel      = new JLabel();
+        gravityLabel    = new JLabel(LOCALIZER.getString(L_GRAVITY));
         
         LabelPotE       = new JLabel(LOCALIZER.getString(L_POT_ENERGY));
         LabelKinE       = new JLabel(LOCALIZER.getString(L_KIN_ENERGY));
@@ -158,6 +168,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         del             = new JButton(LOCALIZER.getString(L_REMOVE));
         center          = new JButton(LOCALIZER.getString(L_CENTER));
         close           = new JButton(LOCALIZER.getString(L_CLOSE));
+        
+        delGround       = new JButton(LOCALIZER.getString(L_DELETE_GROUND));
         
         //Namensfeld
         name            = new JTextField();
@@ -169,6 +181,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         //Combobox + CheckBox
         fix             = new JCheckBox(LOCALIZER.getString(L_PINNED));
         colorBox        = new ColorBox();
+        
+        friction        = new JCheckBox(LOCALIZER.getString(L_FRICTION));
     }
 
     @Override
@@ -189,12 +203,12 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     {
         if (!pModel.isState(STG_DBLCLICK_SHOW_PROPERTIES))
         {
-            showPanel(object);
+            showPropertyPanel(object);
         }
     }
     
     
-    private void showPanel(ObjectProperties object)
+    private void showPropertyPanel(ObjectProperties object)
     {
         this.removeAll();
         //Instanzieren
@@ -242,8 +256,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         disableControls();
         
         //Hinzufügen
-        
-        this.addGap(10);
+        this.add(close, LEFT_ALIGNMENT);
+        this.addGap(6);
         this.add(nameLabel, CENTER_ALIGNMENT);
         this.addGap(5);
         this.addGroup(3, groupName);
@@ -279,7 +293,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         this.addGap(5);
         this.addGroup(5,LabelKinE, kinLabel);
         this.addGap(25);
-        this.add(close, LEFT_ALIGNMENT);
+//        this.add(close, LEFT_ALIGNMENT);
         
         this.updateUI();
         this.setVisible(true);
@@ -307,6 +321,39 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         LabelKinE.setToolTipText(    LOCALIZER.getString("TT_KINE"));
         close.setToolTipText(        LOCALIZER.getString("TT_CLOSE"));
     }
+    
+    public void showEnvironmentPanel()
+    {
+        this.removeAll();
+        gravity = new PropertySpinner(pModel.getScene().gravitational_acceleration, -100, 100, 0.2, this);
+        
+        delGround.addActionListener(this);
+        colorBox.setPreferredSize(new Dimension(20, 20));
+        colorBox.addChangeListener(this);
+
+        if (pModel.getScene().existGround())
+        {
+            colorBox.setForeground(((IDrawable) pModel.getScene().getGround()).getColor());
+        }else 
+        {
+            delGround.setEnabled(false);
+            colorBox.setEnabled(false);
+        }
+        
+        
+        this.add(gravityLabel, CENTER_ALIGNMENT);
+        this.add(gravity, CENTER_ALIGNMENT);
+        this.addGap(10);
+        this.add(friction);
+        this.addGap(10);
+        this.add(delGround);
+        this.addGap(5);
+        this.add(colorBox);
+
+        this.updateUI();
+        this.setVisible(true);
+    }
+    
     
     @Override
     public void objectDeselected(ObjectProperties object)
@@ -346,7 +393,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                 {
                     pModel.setSelectedObject(pModel.getScene().getObject(0));
                 }
-                showPanel(pModel.getSelectedObject());
+                showPropertyPanel(pModel.getSelectedObject());
                 pModel.fireRepaint();
                 break;
                 
@@ -366,7 +413,12 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                         }
                     }
                 }
-                showPanel(pModel.getSelectedObject());
+                showPropertyPanel(pModel.getSelectedObject());
+                pModel.fireRepaint();
+                break;
+                
+            case CMD_DELETE_GROUND:
+                pModel.getScene().removeGround();
                 pModel.fireRepaint();
                 break;
         }
@@ -387,7 +439,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     @Override
     public void stateChanged(ChangeEvent e)
     {
-        if(avoidUpdate != 1)
+        if(this.isAncestorOf(name) && avoidUpdate != 1)
         {
             ((IDrawable) pModel.getSelectedObject()).setColor(colorBox.getForeground());
             ((ISelectable) pModel.getSelectedObject()).setName(name.getText());
@@ -405,6 +457,13 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             pModel.fireRepaint();
         }
         
+        if(this.isAncestorOf(gravity))
+        {
+            pModel.getScene().gravitational_acceleration = gravity.getValue();
+            pModel.getScene().enable_env_friction = friction.isSelected();
+            ((IDrawable) pModel.getScene()).setColor(colorBox.getForeground());
+        }
+        
     }
     
     @Override
@@ -412,6 +471,13 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     {
         if(this.isVisible())
         {
+            if(this.isAncestorOf(gravity))
+            {
+                gravity.setValue(pModel.getScene().gravitational_acceleration);
+                friction.setSelected(pModel.getScene().enable_env_friction);
+            }
+            else
+            {
             avoidUpdate = 1;    //vermeidet ungewollten Aufruf des ChangeListeners (Endlosschleife)
             
             xCord.setValue(pModel.getSelectedObject().world_position.translation.getX());
@@ -428,6 +494,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             name.setText(((ISelectable)pModel.getSelectedObject()).getName());
             
             avoidUpdate = 0;
+            }
         }
     }
     
@@ -438,6 +505,13 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     {
         if(this.isVisible())
         {
+            if(this.isAncestorOf(gravity))
+            {
+                gravity.setValue(pModel.getScene().gravitational_acceleration);
+                friction.setSelected(pModel.getScene().enable_env_friction);
+            }
+            else
+            {
             avoidUpdate = 1;    //vermeidet ungewollten Aufruf des ChangeListeners (Endlosschleife)
             massInput.setValue(pModel.getSelectedObject().getMass());
             radiusInput.setValue(pModel.getSelectedObject().getRadius());
@@ -452,7 +526,9 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             
             potLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().getPotEnergy()));
             kinLabel.setText(this.formatDoubleValue(pModel.getSelectedObject().getKinEnergy()));
+            
             avoidUpdate = 0;
+            }
         }
         
     }
@@ -506,7 +582,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             {
                 this.setVisible(false);
 //                this.removeAll();
-                showPanel(pModel.getSelectedObject());
+                showPropertyPanel(pModel.getSelectedObject());
             }
         }
     }
@@ -534,14 +610,21 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
 
     }
     
-    
     @Override
     public void mouseClicked(MouseEvent e)
     {
         if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2 && 
-                pModel.isState(STG_DBLCLICK_SHOW_PROPERTIES) && pModel.getSelectedObject() != null)
+                pModel.isState(STG_DBLCLICK_SHOW_PROPERTIES) && pModel.hasSelectedObject())
         {
-            showPanel(pModel.getSelectedObject());
+            showPropertyPanel(pModel.getSelectedObject());
+        }
+        if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2 && !pModel.hasSelectedObject())
+        {
+            showEnvironmentPanel();
+        }
+        if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() < 2 && this.isVisible() && !pModel.hasSelectedObject())
+        {
+            this.setVisible(false);
         }
     }
     

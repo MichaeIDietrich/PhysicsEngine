@@ -85,6 +85,9 @@ public interface Constants
     public final static String L_HELP = "HELP";
     public final static String L_ABOUT_TEXT = "ABOUT_TEXT";
     public final static String L_OVERWRITE_FILE = "OVERWRITE_FILE";
+    public final static String L_GRAVITY = "GRAVITY";
+    public final static String L_DELETE_GROUND = "DELETE_GROUND";
+    public final static String L_FRICTION = "FRICTION";
     
     //tooltips
     public final static String TT_NEW = "TT_NEW";
@@ -134,6 +137,7 @@ public interface Constants
     public final static String CMD_COPY = "copy";
     public final static String CMD_PASTE = "paste";
     public final static String CMD_SELECT_ALL = "selectAll";
+    public final static String CMD_DELETE_GROUND = "delGround";
     
     // decor ID's
     public final static String DECOR_SELECTION = "selection";
