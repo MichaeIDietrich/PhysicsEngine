@@ -31,6 +31,8 @@ public class Square extends Polygon implements Cloneable
         this.points[1] = new Vector( halfWidth, -halfHeight);
         this.points[2] = new Vector(-halfWidth, -halfHeight);
         this.points[3] = new Vector(-halfWidth,  halfHeight);
+        
+        calcRadius();
     }
     
     @Override

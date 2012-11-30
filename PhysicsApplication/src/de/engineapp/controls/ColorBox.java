@@ -1,15 +1,13 @@
 package de.engineapp.controls;
 
 import java.awt.*;
-import java.util.*;
-import java.util.List;
 
 import javax.swing.*;
 import javax.swing.event.*;
 
 
 /**
- * Small component for displaying of a color.
+ * Small component for displaying a color.
  * 
  * @author Micha
  */
@@ -18,16 +16,11 @@ public final class ColorBox extends JComponent
     private static final long serialVersionUID = 3922749468925958953L;
     
     
-    private List<ChangeListener> changeListeners;
-    
-    
     public ColorBox()
     {
         this.setPreferredSize(new Dimension(20, 20));
         this.setBorder(BorderFactory.createLoweredBevelBorder());
         this.setOpaque(true);
-        
-        changeListeners = new ArrayList<>();
     }
     
     
@@ -36,7 +29,7 @@ public final class ColorBox extends JComponent
     {
         super.setForeground(fg);
         
-        for (ChangeListener listener : changeListeners)
+        for (ChangeListener listener : listenerList.getListeners(ChangeListener.class))
         {
             listener.stateChanged(new ChangeEvent(this));
         }
@@ -45,19 +38,19 @@ public final class ColorBox extends JComponent
     
     public void addChangeListener(ChangeListener listener)
     {
-        changeListeners.add(listener);
+        listenerList.add(ChangeListener.class, listener);
     }
     
     
     public void removeChangeListener(ChangeListener listener)
     {
-        changeListeners.remove(listener);
+        listenerList.remove(ChangeListener.class, listener);
     }
     
     
     public ChangeListener[] getChangeListeners()
     {
-        return changeListeners.toArray(new ChangeListener[changeListeners.size()]);
+        return listenerList.getListeners(ChangeListener.class);
     }
     
     
@@ -66,7 +59,14 @@ public final class ColorBox extends JComponent
     {
         super.paint(g);
         
-        g.setColor(this.getForeground());
+        if (this.isEnabled())
+        {
+            g.setColor(this.getForeground());
+        }
+        else
+        {
+            g.setColor(Color.DARK_GRAY);
+        }
         g.fillRect(2, 2, this.getWidth() - 4, this.getHeight() - 4);
     }
 }

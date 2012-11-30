@@ -751,14 +751,14 @@ public final class PresentationModel
     
     /**
      * Removes the ground from the current scene.
-     * 
-     * @param ground - ground to be removed
      */
-    public void removeGround(Ground ground)
+    public void removeGround()
     {
+        Ground ground = scene.getGround();
+        
         if (scene != null && ground != null)
         {
-            scene.setGround(null);
+            scene.removeGround();
             
             for (SceneListener listener : listenerList.getListeners(SceneListener.class))
             {
