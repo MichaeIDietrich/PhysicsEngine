@@ -51,6 +51,9 @@
   <String id="FILE_ACCESS_DENIED">Datei '%s' konnte nicht geladen werden.</String>
   <String id="COLOR_OF_OBJECT">Objektfarbe:</String>
   <String id="ANGLE">Winkel</String>
+  <String id="GRAVITY">Fallbeschleunigung</String>
+  <String id="FRICTION">Reibung</String>
+  <String id="DELETE_GROUND">Boden entfernen</String>
   
   <!--  Tooltips  /MainToolBar-->
   <String id="TT_NEW">Erstellt eine neue Szene</String>
