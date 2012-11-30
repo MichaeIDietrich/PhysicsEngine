@@ -136,7 +136,6 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         });
         
         
-        
         this.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
         
         
@@ -220,7 +219,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         //Instanzieren
         potLabel     = new JLabel(this.formatDoubleValue(object.getPotEnergy()));
         kinLabel     = new JLabel(this.formatDoubleValue(object.getKinEnergy()));
-    
+        
         massInput    = new PropertySpinner(object.getMass(),1,10000,10,this);
         radiusInput  = new PropertySpinner(object.getRadius(), 1, 1000000, 10, this);
         xCord        = new PropertySpinner(object.getPosition().getX(),-100000.0,100000,10,this);
@@ -271,8 +270,9 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
 //        this.add(groupColorBox);
 //        this.addGroup(5, colorLabel, colorBox);
         this.addGroup(0, groupColorBox);
-        this.addGap(8);
-        this.add(del, RIGHT_ALIGNMENT);
+        this.addGap(10);
+//        this.add(del, RIGHT_ALIGNMENT);
+        this.addGroup(35, center, del);
         this.addGap(10);
         this.addSeparator();
         this.addGap(15);
@@ -290,8 +290,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         this.addGroup(5, massInput, radiusInput);
         this.addGap(8);
         this.add(angleLabel);
-//        this.addGroup(5, angle, emptyLabel);
-        this.addGroup(5, angle, center);
+        this.addGroup(5, angle, emptyLabel);
+//        this.addGroup(5, angle, center);
         this.addGap(20);
         this.add(fix, LEFT_ALIGNMENT);
         this.addGap(20);
@@ -326,6 +326,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         kinLabel.setToolTipText(     LOCALIZER.getString("TT_KINE"));
         LabelKinE.setToolTipText(    LOCALIZER.getString("TT_KINE"));
         close.setToolTipText(        LOCALIZER.getString("TT_CLOSE"));
+        center.setToolTipText(       LOCALIZER.getString("TT_CENTER"));
     }
     
     public void showEnvironmentPanel()
@@ -463,8 +464,6 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             pModel.getSelectedObject().surface = MaterialCombo.getSelectedItem();
             pModel.getSelectedObject().isPinned = fix.isSelected();
             pModel.getSelectedObject().setRotationAngle(Math.toRadians(angle.getValue()));
-            
-            pModel.fireRepaint();
         }
         
         if(this.isAncestorOf(gravity) && pModel.getScene().existGround())
@@ -473,7 +472,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             pModel.getScene().enable_env_friction = friction.isSelected();
             ((IDrawable) pModel.getScene().getGround()).setColor(colorBox.getForeground());
         }
-        
+        pModel.fireRepaint();
     }
     
     @Override

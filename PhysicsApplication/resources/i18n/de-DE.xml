@@ -73,6 +73,7 @@
   <String id="TT_DISCARD">Löscht die bestehende Aufnahme</String>
   <String id="TT_HELP">Hilfe zur Oizys Physics Engine anzeigen</String>
   <String id="TT_ABOUT">Über Oizys Physics Engine</String>
+  <String id="TT_CENTER">Zentriert gewähltes Objekt</String>
   
   <!--  Tooltips  /PropertiesPanel-->
   <String id="TT_OBJECT_NAME">Objektnamen hier eintragen</String>

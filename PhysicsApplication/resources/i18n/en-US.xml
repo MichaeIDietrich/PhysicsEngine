@@ -73,6 +73,7 @@
   <String id="TT_DISCARD">Deletes the current Record</String>
   <String id="TT_HELP">Show help about Oizys Physics Engine (currently German only)</String>
   <String id="TT_ABOUT">About Oizys Physics Engine</String>
+  <String id="TT_CENTER">Centers selected object</String>
   
   <!--  Tooltips  /PropertiesPanel-->
   <String id="TT_OBJECT_NAME">Insert object name</String>

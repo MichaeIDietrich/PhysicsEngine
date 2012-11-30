@@ -107,6 +107,7 @@ public interface Constants
     public final static String TT_DISCARD = "TT_DISCARD";
     public final static String TT_HELP = "TT_HELP";
     public final static String TT_ABOUT = "TT_ABOUT";
+    public final static String TT_CENTER = "TT_CENTER"; 
     
     // commands
     // TODO - add all string constants for action commands
