@@ -12,7 +12,7 @@ public interface Constants
     // software-version
     public final static int MAJOR = 0;
     public final static int MINOR = 1;
-    public final static int REVISION = 1;
+    public final static int REVISION = 2;
     public final static String FILE_VERSION = "1.3";
     
     public final static int DEFAULT_GROUND = Ground.STAIRS;
