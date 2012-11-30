@@ -105,6 +105,7 @@ public final class ObjectToolBar extends JToolBar implements MouseListener, Stor
                 if (ground.isSelected())
                 {
                     pModel.setProperty(PRP_OBJECT_MODE, OBJ_GROUND);
+                    
                 }
                 else
                 {
