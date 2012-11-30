@@ -192,10 +192,16 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     public void objectRemoved(ObjectProperties object) {}
 
     @Override
-    public void groundAdded(Ground ground) {}
+    public void groundAdded(Ground ground) 
+    {
+        showEnvironmentPanel();
+    }
 
     @Override
-    public void groundRemoved(Ground ground) {}
+    public void groundRemoved(Ground ground) 
+    {
+        
+    }
 
 
     @Override
@@ -325,14 +331,17 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     public void showEnvironmentPanel()
     {
         this.removeAll();
-        gravity = new PropertySpinner(pModel.getScene().gravitational_acceleration, -100, 100, 0.2, this);
+        gravity = new PropertySpinner(-pModel.getScene().gravitational_acceleration, -100, 100, 0.2, this);
         
         delGround.addActionListener(this);
         colorBox.setPreferredSize(new Dimension(20, 20));
         colorBox.addChangeListener(this);
+        colorPicker = new ColorPickerPopup(colorBox);
 
         if (pModel.getScene().existGround())
         {
+            delGround.setEnabled(true);
+            colorBox.setEnabled(true);
             colorBox.setForeground(((IDrawable) pModel.getScene().getGround()).getColor());
         }else 
         {
@@ -420,6 +429,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             case CMD_DELETE_GROUND:
                 pModel.getScene().removeGround();
                 pModel.fireRepaint();
+                showEnvironmentPanel();
                 break;
         }
 
@@ -457,11 +467,11 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             pModel.fireRepaint();
         }
         
-        if(this.isAncestorOf(gravity))
+        if(this.isAncestorOf(gravity) && pModel.getScene().existGround())
         {
-            pModel.getScene().gravitational_acceleration = gravity.getValue();
+            pModel.getScene().gravitational_acceleration = -gravity.getValue();
             pModel.getScene().enable_env_friction = friction.isSelected();
-            ((IDrawable) pModel.getScene()).setColor(colorBox.getForeground());
+            ((IDrawable) pModel.getScene().getGround()).setColor(colorBox.getForeground());
         }
         
     }
@@ -473,7 +483,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         {
             if(this.isAncestorOf(gravity))
             {
-                gravity.setValue(pModel.getScene().gravitational_acceleration);
+                gravity.setValue(-pModel.getScene().gravitational_acceleration);
                 friction.setSelected(pModel.getScene().enable_env_friction);
             }
             else
@@ -507,7 +517,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         {
             if(this.isAncestorOf(gravity))
             {
-                gravity.setValue(pModel.getScene().gravitational_acceleration);
+                gravity.setValue(-pModel.getScene().gravitational_acceleration);
                 friction.setSelected(pModel.getScene().enable_env_friction);
             }
             else
@@ -530,7 +540,6 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             avoidUpdate = 0;
             }
         }
-        
     }
 
     //Formatvorlage für die Labels Epot & Ekin
