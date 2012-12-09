@@ -96,6 +96,10 @@ public class Scene implements Cloneable
         // TODO - add all properties, that need to be copied
         Scene newScene = new Scene();
         
+        newScene.gravitational_acceleration = this.gravitational_acceleration;
+        newScene.environment_friction = this.environment_friction;
+        newScene.enable_env_friction = this.enable_env_friction;
+        
         newScene.setGround(this.getGround() != null ? this.getGround().clone() : null);
         
         for (ObjectProperties object : this.getObjects())
