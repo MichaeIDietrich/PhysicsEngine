@@ -254,7 +254,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         }
         else if (pModel.hasMultiSelectionObjects())
         {
-            selObjectsLabel.setText(String.format(LOCALIZER.getString(L_SELECTED_OBJECTS), pModel.getMultipleSelectionObjects().size() - 1));
+            selObjectsLabel.setText(String.format(LOCALIZER.getString(L_SELECTED_OBJECTS), 
+                    pModel.getMultipleSelectionObjects().size() - 1));
         }
         
         colorPicker = new ColorPickerPopup(colorBox);
@@ -742,7 +743,22 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     
     
     @Override
-    public void multipleObjectsSelected(ObjectProperties object) { }
+    public void multipleObjectsSelected(ObjectProperties object)
+    {
+        if (!pModel.isState(STG_DBLCLICK_SHOW_PROPERTIES))
+        {
+            if (pModel.getMultipleSelectionObjects().size() == 2)
+            {
+                selObjectsLabel.setText(LOCALIZER.getString(L_SELECTED_OBJECT));
+            }
+            else if (pModel.hasMultiSelectionObjects())
+            {
+                selObjectsLabel.setText(String.format(LOCALIZER.getString(L_SELECTED_OBJECTS), 
+                        pModel.getMultipleSelectionObjects().size() - 1));
+            }
+            selObjectsLabel.setVisible(true);
+        }
+    }
     
     @Override
     public void multipleObjectsDeselected(ObjectProperties object) { }
