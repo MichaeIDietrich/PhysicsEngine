@@ -119,11 +119,6 @@ public class Scene implements Cloneable
         return null;
     }
 
-    public ObjectProperties getObject( ObjectProperties selectedObject )
-    {
-        return objects.get( selectedObject.getId());
-    }
-
     public double getEnvironmentFriction()
     {
         return environment_friction;
