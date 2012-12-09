@@ -107,7 +107,14 @@ public class Polygon extends ObjectProperties implements Cloneable
     public void clone(Polygon newPolygon, boolean cloneId)
     {
         // TODO
-        newPolygon.world_position.rotation.setAngle(this.world_position.rotation.getAngle());
+        newPolygon.points = new Vector[this.points.length];
+        
+        for (int i = 0; i < this.points.length; i++)
+        {
+            newPolygon.points[i] = this.points[i].clone();
+        }
+        
+        newPolygon.setRotationAngle(this.getRotationAngle());
         newPolygon.setMass(getMass());
         newPolygon.velocity = this.velocity.clone();
         if (cloneId)

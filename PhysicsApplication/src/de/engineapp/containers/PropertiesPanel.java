@@ -25,6 +25,12 @@ import de.engineapp.windows.ColorPickerPopup;
 
 import static de.engineapp.Constants.*;
 
+
+/**
+ * Panel to manipulate properties of selected objects and the environment.
+ * 
+ * @author Tim
+ */
 public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, ActionListener, ChangeListener, StorageListener, MouseListener, DocumentListener
 {
     private static final long serialVersionUID = 8656904964293251249L;
@@ -212,7 +218,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     @Override
     public void objectSelected(ObjectProperties object)
     {
-        if (!pModel.isState(STG_DBLCLICK_SHOW_PROPERTIES))
+        if (!pModel.isState(STG_DBLCLICK_SHOW_PROPERTIES) || pModel.hasMultiSelectionObjects())
         {
             showPropertyPanel(object);
         }

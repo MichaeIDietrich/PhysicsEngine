@@ -289,7 +289,7 @@ public final class SceneManager
                                                    getInt(node.getAttribute("watermark"), 0)));
             }
             
-            for (Element obj : reader.getNodes("Scene/Circle | Scene/Square"))
+            for (Element obj : reader.getNodes("Scene/Circle | Scene/Square | Scene/Polygon"))
             {
                 switch (obj.getName())
                 {
@@ -299,9 +299,26 @@ public final class SceneManager
                                 getDouble(obj.getAttribute("radius"), 0));
                         break;
                         
+                    case "Polygon":
+                        Polygon polygon = new Polygon(pModel, new Vector(getDouble(obj.getAttribute("x"), 0), 
+                                                               getDouble(obj.getAttribute("y"), 0)), 
+                                getDouble(obj.getAttribute("radius"), 0));
+                        
+                        java.util.List<Element> points = obj.getNodes("Point");
+                        Vector[] pointList = new Vector[points.size()];
+                        for (int i = 0; i < points.size(); i++)
+                        {
+                            double x = getDouble(points.get(i).getAttribute("x"), polygon.points[i].getX());
+                            double y = getDouble(points.get(i).getAttribute("y"), polygon.points[i].getX());
+                            pointList[i] = new Vector(x, y);
+                        }
+                        polygon.points = pointList;
+                        object = polygon;
+                        break;
+                        
                     case "Square":
                         object = new Polygon(pModel, new Vector(getDouble(obj.getAttribute("x"), 0), 
-                                                               getDouble(obj.getAttribute("y"), 0)), 
+                                getDouble(obj.getAttribute("y"), 0)), 
                                 getDouble(obj.getAttribute("radius"), 0));
                         break;
                         
@@ -383,7 +400,7 @@ public final class SceneManager
                                                        getInt(node.getAttribute("watermark"), 0)));
                 }
                 
-                for (Element obj : sceneFrame.getNodes("Circle | Square"))
+                for (Element obj : sceneFrame.getNodes("Circle | Square | Polygon"))
                 {
                     switch (obj.getName())
                     {
@@ -391,6 +408,23 @@ public final class SceneManager
                             object = new Circle(pModel, new Vector(getDouble(obj.getAttribute("x"), 0), 
                                                                    getDouble(obj.getAttribute("y"), 0)), 
                                     getDouble(obj.getAttribute("radius"), 10));
+                            break;
+                            
+                        case "Polygon":
+                            Polygon polygon = new Polygon(pModel, new Vector(getDouble(obj.getAttribute("x"), 0), 
+                                                                   getDouble(obj.getAttribute("y"), 0)), 
+                                    getDouble(obj.getAttribute("radius"), 0));
+                            
+                            java.util.List<Element> points = obj.getNodes("Point");
+                            Vector[] pointList = new Vector[points.size()];
+                            for (int i = 0; i < points.size(); i++)
+                            {
+                                double x = getDouble(points.get(i).getAttribute("x"), polygon.points[i].getX());
+                                double y = getDouble(points.get(i).getAttribute("y"), polygon.points[i].getX());
+                                pointList[i] = new Vector(x, y);
+                            }
+                            polygon.points = pointList;
+                            object = polygon;
                             break;
                             
                         case "Square":
@@ -466,7 +500,7 @@ public final class SceneManager
             }
             else if (object instanceof Polygon)
             {
-                writer.writeStartElement("Square");
+                writer.writeStartElement("Polygon");
             }
             
             writer.writeAttribute("name", ((ISelectable) object).getName());
@@ -480,6 +514,17 @@ public final class SceneManager
             writer.writeAttribute("radius", "" + object.getRadius());
             writer.writeAttribute("rotation", "" + object.getRotationAngle());
             writer.writeAttribute("pinned", object.isPinned ? "true" : "false");
+            
+            if (object instanceof Polygon)
+            {
+                for (Vector point : ((Polygon) object).points)
+                {
+                    writer.writeStartElement("Point");
+                    writer.writeAttribute("x", "" + point.getX());
+                    writer.writeAttribute("y", "" + point.getY());
+                    writer.writeEndElement();
+                }
+            }
             
             writer.writeEndElement();
         }
@@ -528,7 +573,7 @@ public final class SceneManager
                 }
                 else if (object instanceof Polygon)
                 {
-                    writer.writeStartElement("Square");
+                    writer.writeStartElement("Polygon");
                 }
                 
                 writer.writeAttribute("name", ((ISelectable) object).getName());
@@ -542,6 +587,17 @@ public final class SceneManager
                 writer.writeAttribute("radius", "" + object.getRadius());
                 writer.writeAttribute("rotation", "" + object.getRotationAngle());
                 writer.writeAttribute("pinned", object.isPinned ? "true" : "false");
+                
+                if (object instanceof Polygon)
+                {
+                    for (Vector point : ((Polygon) object).points)
+                    {
+                        writer.writeStartElement("Point");
+                        writer.writeAttribute("x", "" + point.getX());
+                        writer.writeAttribute("y", "" + point.getY());
+                        writer.writeEndElement();
+                    }
+                }
                 
                 writer.writeEndElement();
             }
