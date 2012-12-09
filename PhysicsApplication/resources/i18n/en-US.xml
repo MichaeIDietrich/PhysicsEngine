@@ -54,6 +54,8 @@
   <String id="GRAVITY">Gravity</String>
   <String id="FRICTION">Friction</String>
   <String id="DELETE_GROUND">Delete Ground</String>
+  <String id="SELECTED_OBJECT">1 additional object selected</String>
+  <String id="SELECTED_OBJECTS">%s additional objects selected</String>
   
   <!--  Tooltips  /MainToolBar-->
   <String id="TT_NEW">Creates a new scene</String>
@@ -82,8 +84,8 @@
   <String id="TT_COLOR">Change object color</String>
   <String id="TT_DEL">Delete current object</String>
   <String id="TT_MATERIAL">Select object material</String>
-  <String id="TT_X_CORDINATE">Horizontal position</String>
-  <String id="TT_Y_CORDINATE">Vertical position</String>
+  <String id="TT_X_COORDINATE">Horizontal position</String>
+  <String id="TT_Y_COORDINATE">Vertical position</String>
   <String id="TT_X_SPEED">Horizontal velocity</String>
   <String id="TT_Y_SPEED">Vertical velocity</String>
   <String id="TT_MASS">Object mass</String>

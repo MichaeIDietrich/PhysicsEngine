@@ -88,6 +88,8 @@ public interface Constants
     public final static String L_GRAVITY = "GRAVITY";
     public final static String L_DELETE_GROUND = "DELETE_GROUND";
     public final static String L_FRICTION = "FRICTION";
+    public final static String L_SELECTED_OBJECT = "SELECTED_OBJECT";
+    public final static String L_SELECTED_OBJECTS = "SELECTED_OBJECTS";
     
     //tooltips
     public final static String TT_NEW = "TT_NEW";
@@ -107,7 +109,25 @@ public interface Constants
     public final static String TT_DISCARD = "TT_DISCARD";
     public final static String TT_HELP = "TT_HELP";
     public final static String TT_ABOUT = "TT_ABOUT";
-    public final static String TT_CENTER = "TT_CENTER"; 
+    public final static String TT_CENTER = "TT_CENTER";
+    public final static String TT_OBJECT_NAME = "TT_OBJECT_NAME";
+    public final static String TT_NEXT = "TT_NEXT";
+    public final static String TT_PREVIOUS = "TT_PREVIOUS";
+    public final static String TT_COLOR = "TT_COLOR";
+    public final static String TT_DEL = "TT_DEL";
+    public final static String TT_MATERIAL = "TT_MATERIAL";
+    public final static String TT_X_COORDINATE = "TT_X_CORDINATE";
+    public final static String TT_Y_COORDINATE = "TT_Y_CORDINATE";
+    public final static String TT_X_SPEED = "TT_X_SPEED";
+    public final static String TT_Y_SPEED = "TT_Y_SPEED";
+    public final static String TT_MASS = "TT_MASS";
+    public final static String TT_RADIUS = "TT_RADIUS";
+    public final static String TT_ANGLE = "TT_ANGLE";
+    public final static String TT_FIX = "TT_FIX";
+    public final static String TT_POTE = "TT_POTE";
+    public final static String TT_KINE = "TT_KINE";
+    public final static String TT_CLOSE = "TT_CLOSE";
+    public final static String TT_JUMP_TO = "TT_JUMP_TO";
     
     // commands
     // TODO - add all string constants for action commands

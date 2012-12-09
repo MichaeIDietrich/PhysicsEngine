@@ -54,6 +54,8 @@
   <String id="GRAVITY">Fallbeschleunigung</String>
   <String id="FRICTION">Reibung</String>
   <String id="DELETE_GROUND">Boden entfernen</String>
+  <String id="SELECTED_OBJECT">1 weiteres Objekt ausgewählt</String>
+  <String id="SELECTED_OBJECTS">%s weitere Objekte ausgewählt</String>
   
   <!--  Tooltips  /MainToolBar-->
   <String id="TT_NEW">Erstellt eine neue Szene</String>
@@ -82,14 +84,14 @@
   <String id="TT_COLOR">Objektfarbe ändern</String>
   <String id="TT_DEL">Gewähltes Objekt löschen</String>
   <String id="TT_MATERIAL">Objektmaterial festlegen</String>
-  <String id="TT_X_CORDINATE">Horizontale Position</String>
-  <String id="TT_Y_CORDINATE">Vertikale Position</String>
+  <String id="TT_X_COORDINATE">Horizontale Position</String>
+  <String id="TT_Y_COORDINATE">Vertikale Position</String>
   <String id="TT_X_SPEED">Horizontale Geschwindigkeit</String>
   <String id="TT_Y_SPEED">Vertikale Geschwindigkeit</String>
   <String id="TT_MASS">Objektmasse</String>
   <String id="TT_RADIUS">Objektradius</String>
   <String id="TT_ANGLE">Neigungswinkel</String>
-  <String id="TT_CENTER">Zum Objekt springen</String>
+  <String id="TT_JUMP_TO">Zum Objekt springen</String>
   <String id="TT_FIX">Objekt fixieren</String>
   <String id="TT_POTE">Momentane potenzielle Energie</String>
   <String id="TT_KINE">Momentane kinetische Energie</String>

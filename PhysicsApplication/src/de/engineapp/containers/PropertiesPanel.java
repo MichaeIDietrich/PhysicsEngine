@@ -12,6 +12,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import de.engine.environment.Scene;
+import de.engine.math.*;
 import de.engine.objects.Ground;
 import de.engine.objects.ObjectProperties;
 import de.engine.objects.Material;
@@ -45,6 +46,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     private JLabel angleLabel;
     private JLabel emptyLabel;
     private JLabel gravityLabel;
+    private JLabel selObjectsLabel;
     
     private JLabel LabelPotE; //Schriftzug
     private JLabel LabelKinE; //Schriftzug
@@ -159,6 +161,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         angleLabel      = new JLabel(LOCALIZER.getString(L_ANGLE));
         emptyLabel      = new JLabel();
         gravityLabel    = new JLabel(LOCALIZER.getString(L_GRAVITY));
+        selObjectsLabel = new JLabel();
         
         LabelPotE       = new JLabel(LOCALIZER.getString(L_POT_ENERGY));
         LabelKinE       = new JLabel(LOCALIZER.getString(L_KIN_ENERGY));
@@ -166,7 +169,10 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         //Buttons
         del             = new JButton(LOCALIZER.getString(L_REMOVE));
         center          = new JButton(LOCALIZER.getString(L_CENTER));
-        close           = new JButton(LOCALIZER.getString(L_CLOSE));
+        close           = new JButton("✗");//LOCALIZER.getString(L_CLOSE));
+        close.setBorder(BorderFactory.createEmptyBorder());
+        close.setFocusPainted(false);
+        close.setPreferredSize(new Dimension(15, 15));
         
         delGround       = new JButton(LOCALIZER.getString(L_DELETE_GROUND));
         
@@ -236,6 +242,15 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         groupName.add(next, BorderLayout.LINE_END);
         groupName.add(name);
         
+        if (pModel.getMultipleSelectionObjects().size() == 2)
+        {
+            selObjectsLabel.setText(LOCALIZER.getString(L_SELECTED_OBJECT));
+        }
+        else if (pModel.hasMultiSelectionObjects())
+        {
+            selObjectsLabel.setText(String.format(LOCALIZER.getString(L_SELECTED_OBJECTS), pModel.getMultipleSelectionObjects().size() - 1));
+        }
+        
         colorPicker = new ColorPickerPopup(colorBox);
         
         //ToolTips hinzufügen
@@ -258,14 +273,15 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         groupColorBox.add(colorBox);
         
         //Ausgrauen, Prüfungen in Methode enthalten
-        disableControls();
+        updateControls();
         
         //Hinzufügen
-        this.add(close, LEFT_ALIGNMENT);
+        this.add(close, RIGHT_ALIGNMENT);
         this.addGap(6);
         this.add(nameLabel, CENTER_ALIGNMENT);
         this.addGap(5);
         this.addGroup(3, groupName);
+        this.add(selObjectsLabel, RIGHT_ALIGNMENT);
         this.addGap(8);
 //        this.add(groupColorBox);
 //        this.addGroup(5, colorLabel, colorBox);
@@ -307,32 +323,37 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     
     public void setToolTips()
     {
-        name.setToolTipText(         LOCALIZER.getString("TT_OBJECT_NAME"));
-        next.setToolTipText(         LOCALIZER.getString("TT_NEXT"));
-        previous.setToolTipText(     LOCALIZER.getString("TT_PREVIOUS"));
-        colorBox.setToolTipText(     LOCALIZER.getString("TT_COLOR"));
-        del.setToolTipText(          LOCALIZER.getString("TT_DEL"));
-        MaterialCombo.setToolTipText(LOCALIZER.getString("TT_MATERIAL"));
-        xCord.setToolTipText(        LOCALIZER.getString("TT_X_CORDINATE"));
-        yCord.setToolTipText(        LOCALIZER.getString("TT_Y_CORDINATE"));
-        vx.setToolTipText(           LOCALIZER.getString("TT_X_SPEED"));
-        vy.setToolTipText(           LOCALIZER.getString("TT_Y_SPEED"));
-        massInput.setToolTipText(    LOCALIZER.getString("TT_MASS"));
-        radiusInput.setToolTipText(  LOCALIZER.getString("TT_RADIUS"));
-        angle.setToolTipText(        LOCALIZER.getString("TT_ANGLE"));
-        fix.setToolTipText(          LOCALIZER.getString("TT_FIX"));
-        potLabel.setToolTipText(     LOCALIZER.getString("TT_POTE"));
-        LabelPotE.setToolTipText(    LOCALIZER.getString("TT_POTE"));
-        kinLabel.setToolTipText(     LOCALIZER.getString("TT_KINE"));
-        LabelKinE.setToolTipText(    LOCALIZER.getString("TT_KINE"));
-        close.setToolTipText(        LOCALIZER.getString("TT_CLOSE"));
-        center.setToolTipText(       LOCALIZER.getString("TT_CENTER"));
+        name.setToolTipText(         LOCALIZER.getString(TT_OBJECT_NAME));
+        next.setToolTipText(         LOCALIZER.getString(TT_NEXT));
+        previous.setToolTipText(     LOCALIZER.getString(TT_PREVIOUS));
+        colorBox.setToolTipText(     LOCALIZER.getString(TT_COLOR));
+        del.setToolTipText(          LOCALIZER.getString(TT_DEL));
+        MaterialCombo.setToolTipText(LOCALIZER.getString(TT_MATERIAL));
+        xCord.setToolTipText(        LOCALIZER.getString(TT_X_COORDINATE));
+        yCord.setToolTipText(        LOCALIZER.getString(TT_Y_COORDINATE));
+        vx.setToolTipText(           LOCALIZER.getString(TT_X_SPEED));
+        vy.setToolTipText(           LOCALIZER.getString(TT_Y_SPEED));
+        massInput.setToolTipText(    LOCALIZER.getString(TT_MASS));
+        radiusInput.setToolTipText(  LOCALIZER.getString(TT_RADIUS));
+        angle.setToolTipText(        LOCALIZER.getString(TT_ANGLE));
+        fix.setToolTipText(          LOCALIZER.getString(TT_FIX));
+        potLabel.setToolTipText(     LOCALIZER.getString(TT_POTE));
+        LabelPotE.setToolTipText(    LOCALIZER.getString(TT_POTE));
+        kinLabel.setToolTipText(     LOCALIZER.getString(TT_KINE));
+        LabelKinE.setToolTipText(    LOCALIZER.getString(TT_KINE));
+        close.setToolTipText(        LOCALIZER.getString(TT_CLOSE));
+        center.setToolTipText(       LOCALIZER.getString(TT_JUMP_TO));
     }
     
     public void showEnvironmentPanel()
     {
         this.removeAll();
+        
+        this.add(close, RIGHT_ALIGNMENT);
+        this.addGap(6);
         gravity = new PropertySpinner(-pModel.getScene().gravitational_acceleration, -100, 100, 0.2, this);
+        
+        friction.setSelected(pModel.getScene().enable_env_friction);
         
         delGround.addActionListener(this);
         colorBox.setPreferredSize(new Dimension(20, 20));
@@ -378,7 +399,10 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         switch(e.getActionCommand())
         {
             case CMD_DELETE:
-                pModel.removeObject(pModel.getSelectedObject());
+                for (ObjectProperties object : pModel.getMultipleSelectionObjects())
+                {
+                    pModel.removeObject(object);
+                }
                 pModel.fireRepaint();
                 break;
                 
@@ -388,8 +412,15 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
                 break;
                 
             case CMD_CLOSE:
-                pModel.setSelectedObject(null);
-                pModel.fireRepaint();
+                if (this.isAncestorOf(gravity))
+                {
+                    this.setVisible(false);
+                }
+                else
+                {
+                    pModel.setSelectedObject(null);
+                    pModel.fireRepaint();
+                }
                 break;
                 
             case CMD_NEXT:
@@ -436,11 +467,17 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
 
         if(e.getSource() == MaterialCombo)
         {
-            pModel.getSelectedObject().surface = MaterialCombo.getSelectedItem();
+            for (ObjectProperties object : pModel.getMultipleSelectionObjects())
+            {
+                object.surface = MaterialCombo.getSelectedItem();
+            }
         }
         if(e.getSource() == fix)
         {
-            pModel.getSelectedObject().isPinned = fix.isSelected();
+            for (ObjectProperties object : pModel.getMultipleSelectionObjects())
+            {
+                object.isPinned = fix.isSelected();
+            }
         }
         
         
@@ -452,18 +489,36 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
     {
         if(this.isAncestorOf(name) && avoidUpdate != 1)
         {
-            ((IDrawable) pModel.getSelectedObject()).setColor(colorBox.getForeground());
-            ((ISelectable) pModel.getSelectedObject()).setName(name.getText());
+            if (!pModel.hasMultiSelectionObjects())
+            {
+                ((ISelectable) pModel.getSelectedObject()).setName(name.getText());
+            }
             
-            pModel.getSelectedObject().world_position.translation.setX(xCord.getValue());
-            pModel.getSelectedObject().world_position.translation.setY(yCord.getValue());
-            pModel.getSelectedObject().velocity.setX(vx.getValue());
-            pModel.getSelectedObject().velocity.setY(vy.getValue());
-            pModel.getSelectedObject().setMass(massInput.getValue());
-            pModel.getSelectedObject().setRadius(radiusInput.getValue());
-            pModel.getSelectedObject().surface = MaterialCombo.getSelectedItem();
-            pModel.getSelectedObject().isPinned = fix.isSelected();
-            pModel.getSelectedObject().setRotationAngle(Math.toRadians(angle.getValue()));
+            double deltaX = xCord.getValue() - pModel.getSelectedObject().getX();
+            double deltaY = yCord.getValue() - pModel.getSelectedObject().getY();
+            double deltaVeloX = vx.getValue() - pModel.getSelectedObject().velocity.getX();
+            double deltaVeloY = vy.getValue() - pModel.getSelectedObject().velocity.getY();
+            
+            Color newColor = colorBox.getForeground();
+            double newMass = massInput.getValue();
+            double newRadius = radiusInput.getValue();
+            Material newSurface = MaterialCombo.getSelectedItem();
+            double newAngle = Math.toRadians(angle.getValue());
+            boolean isPinned = fix.isSelected();
+            
+            for (ObjectProperties object : pModel.getMultipleSelectionObjects())
+            {
+                
+                ((IDrawable) object).setColor(newColor);
+                
+                object.world_position.translation = Util.add(object.getPosition(), new Vector(deltaX, deltaY));
+                object.velocity = Util.add(object.velocity, new Vector(deltaVeloX, deltaVeloY));
+                object.setMass(newMass);
+                object.setRadius(newRadius);
+                object.surface = newSurface;
+                object.setRotationAngle(newAngle);
+                object.isPinned = isPinned;
+            }
         }
         
         if(this.isAncestorOf(gravity) && pModel.getScene().existGround())
@@ -579,7 +634,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         if(id.equals(PRP_MODE))
         {
             if(this.isVisible())
-                disableControls();
+                updateControls();
         }
         
         if (id.equals(PRP_LANGUAGE_CODE))
@@ -595,8 +650,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         }
     }
     
-    //Ausgrauen im Wiedergabemodus
-    public void disableControls()
+    //Ausgrauen im Wiedergabemodus, sonst aktivieren
+    public void updateControls()
     {
         if(pModel.getProperty(PRP_MODE).equals(CMD_PLAYBACK_MODE))
         {
@@ -615,7 +670,38 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             
             del.setEnabled(false);
         }
-
+        else
+        {
+            massInput.setEnabled(true);
+            radiusInput.setEnabled(true);
+            xCord.setEnabled(true); 
+            yCord.setEnabled(true);
+            vx.setEnabled(true);
+            vy.setEnabled(true);
+            fix.setEnabled(true);
+            angle.setEnabled(true);
+            if (!pModel.hasMultiSelectionObjects())
+            {
+                name.setEnabled(true);
+            }
+            else
+            {
+                name.setEnabled(false);
+            }
+            
+            MaterialCombo.setEnabled(true);
+            colorBox.setEnabled(true);
+            
+            del.setEnabled(true);
+        }
+        if (pModel.hasMultiSelectionObjects())
+        {
+            selObjectsLabel.setVisible(true);
+        }
+        else
+        {
+            selObjectsLabel.setVisible(false);
+        }
     }
     
     @Override
