@@ -361,6 +361,7 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         gravity = new PropertySpinner(-pModel.getScene().gravitational_acceleration, -100, 100, 0.2, this);
         
         friction.setSelected(pModel.getScene().enable_env_friction);
+        friction.addActionListener(this);
         
         delGround.addActionListener(this);
         colorBox.setPreferredSize(new Dimension(20, 20));
@@ -487,7 +488,10 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             }
         }
         
-        
+        if (e.getSource() == friction)
+        {
+            pModel.getScene().enable_env_friction = friction.isSelected();
+        }
     }
 
     //Werte der Controls auf die Eigenschaften des Objekts übertragen
@@ -528,11 +532,15 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
             }
         }
         
-        if(this.isAncestorOf(gravity) && pModel.getScene().existGround())
+        if(this.isAncestorOf(gravity))
         {
             pModel.getScene().gravitational_acceleration = -gravity.getValue();
             pModel.getScene().enable_env_friction = friction.isSelected();
-            ((IDrawable) pModel.getScene().getGround()).setColor(colorBox.getForeground());
+            
+            if (pModel.getScene().existGround())
+            {
+                ((IDrawable) pModel.getScene().getGround()).setColor(colorBox.getForeground());
+            }
         }
         pModel.fireRepaint();
     }
@@ -544,8 +552,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         {
             if(this.isAncestorOf(gravity))
             {
-                gravity.setValue(-pModel.getScene().gravitational_acceleration);
-                friction.setSelected(pModel.getScene().enable_env_friction);
+//                gravity.setValue(-pModel.getScene().gravitational_acceleration);
+//                friction.setSelected(pModel.getScene().enable_env_friction);
             }
             else
             {
@@ -578,8 +586,8 @@ public class PropertiesPanel extends VerticalBoxPanel implements SceneListener, 
         {
             if(this.isAncestorOf(gravity))
             {
-                gravity.setValue(-pModel.getScene().gravitational_acceleration);
-                friction.setSelected(pModel.getScene().enable_env_friction);
+//                gravity.setValue(-pModel.getScene().gravitational_acceleration);
+//                friction.setSelected(pModel.getScene().enable_env_friction);
             }
             else
             {

@@ -155,12 +155,8 @@ public class CollisionDetector
                     
                     double j = j_z / j_n;
                     
-                    Vector v_vec = object.velocity.add( coll_normal.multi( j / object.getMass()) );
-                    
-                    object.velocity.setX( v_vec.getX() );
-                    object.velocity.setY( v_vec.getY() ); 
-                    
-                    object.setMoment_of_inertia( j );
+                    object.velocity.add( coll_normal.multi( j / object.getMass()) );
+                    object.angular_velocity -= Util.crossProduct(Util.minus(object.closest_point, object.getPosition()), coll_normal.multi(j)) / object.getMoment_of_inertia();
                 }
             }
         }
