@@ -15,7 +15,7 @@ public final class CyclingSpinnerNumberModel extends SpinnerNumberModel
     
     public CyclingSpinnerNumberModel(double start, double min, double max, double step)
     {
-        super(start, min, max, step);
+        super(Math.min(max, Math.max(min, start)), min, max, step);
     };
     
     
